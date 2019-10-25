@@ -7,3 +7,53 @@ DATA_DIR = osjoin(PROJ_HOME, 'Data')
 RAW_DATA_DIR = osjoin(DATA_DIR, 'Raw')
 ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
+SCALES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Scales')
+SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
+
+
+############
+# Raw data #
+############
+MOBILITY_RAW = osjoin(RAW_DATA_DIR, '20191024_mobility_transitions.txt')
+MOBILITY_RAW_YEARLY = osjoin(SCALES_DATA_DIR, 'org', '{year}_org_mobility.csv')
+MOBILITY_RAW_YEARLY_MULTISCALE = osjoin(SCALES_DATA_DIR, '{scale}', '{year}_{scale}_mobility.csv')
+
+######################
+# Mobility sentences #
+######################
+MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{scale}', '{year}_inst_sentences.csv')
+
+##################
+# Metadata files #
+##################
+INST_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'inst_to_scales.txt')
+
+
+ALL_YEARS = range(2008, 2019, 1)
+SCALES = ['org', 'city', 'country']
+
+###############################################################################
+# TARGET RULE
+###############################################################################
+rule all:
+    input:
+        expand(MOBILITY_RAW_YEARLY, year = ALL_YEARS),
+        expand(MOBILITY_RAW_YEARLY_MULTISCALE, year = ALL_YEARS, scale = SCALES),
+        expand(MOBILITY_SENTENCES, year = ALL_YEARS, scale = SCALES)
+
+rule dissagregate_pubs_to_yearly:
+    input: MOBILITY_RAW
+    output: MOBILITY_RAW_YEARLY
+    shell: "Rscript scripts/FilterRawMobilityToSingleYear.R {input} {wildcards.year} {output}"
+
+rule add_scales_to_yearly_pubs:
+    input: rules.dissagregate_pubs_to_yearly.output, INST_SCALES
+    output: MOBILITY_RAW_YEARLY_MULTISCALE
+    shell:
+        "Rscript scripts/AddMultiscaleInfoToMobility.R {input} {wildcards.scale} {output}"
+
+rule pubs_to_sentences:
+    input: rules.add_scales_to_yearly_pubs.output
+    output: MOBILITY_SENTENCES
+    shell:
+        "Rscript scripts/FormatPubsToSentences.R {input} {wildcards.scale} {output}"
