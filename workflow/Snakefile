@@ -1,0 +1,9 @@
+from os.path import join as osjoin
+import pandas as pd
+
+# store the local path to the dropbox folder in the 'PROJ_HOME_DIR' file.
+PROJ_HOME = open('PROJ_HOME_DIR').read().strip()
+DATA_DIR = osjoin(PROJ_HOME, 'Data')
+RAW_DATA_DIR = osjoin(DATA_DIR, 'Raw')
+ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
+DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
