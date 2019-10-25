@@ -1,0 +1,76 @@
+---
+title: "Visualizing Institution Mobility Vectors"
+author: "Dakota Murray"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+library(readr)
+
+inst_coords <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/dim_reduced/inst_umap.csv")
+colnames(inst_coords) <- c("rownum", "axis1", "axis2", "token")
+inst_lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/20191024_institution_lookup.txt", delim = "\t")
+
+country_lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/iso_to_country.txt", delim = "\t")
+country_lookup
+```
+
+
+
+```{r}
+inst_coords_details <- inst_coords %>%
+  left_join(inst_lookup, by = c("token" = "cwts_org_no")) %>%
+  left_join(country_lookup, by = c("country_iso_alpha" = "Alpha_code_3"))
+
+inst_coords
+inst_coords_details
+```
+
+
+```{r}
+org_types <- unique(inst_coords_details$org_type)
+org_types_simplified <- c("Univ", "Univ", "Institute", "Institute", "Other", 
+                          "Other", "Other", "Other","Hospital", "Other", 
+                          "Hospital", "Hospital", "Univ", "Industry")
+library(plotly)
+g <- inst_coords_details %>%
+  filter(!is.na(Continent_name)) %>%
+  mutate(
+    org = plyr::mapvalues(org_type, org_types, org_types_simplified),
+    org = factor(org, levels = c("Univ", "Hospital", "Industry", "Gov", "Other")),
+    to_highlight = ifelse(Country_name == "Italy, Italian Republic", T, F)
+  ) %>%
+  ggplot(aes(x = axis1, y = axis2, color = org, shape = org, group = city, label = full_name, label2 = Country_name, label3 = org_type)) +
+  geom_point(size = 0.6, alpha = 0.5, shape = 16) +
+  theme_minimal() +
+  guides(color = guide_legend(override.aes = list(size=5)),
+         shape = guide_legend(override.aes = list(size=5))) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom")
+
+ggsave("~/Desktop/mobility_institution_byorg.pdf", g)
+
+ggplotly(g, tooltip = c("Continent_name", "Country_name", "city", "full_name", "org_type"))
+```
+
+
+```{r}
+inst_coords <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/dim_reduced/inst_pca.csv")
+colnames(inst_coords) <- c("ignore", "axis1", "axis2", "token")
+inst_coords_details <- inst_coords %>%
+  left_join(inst_lookup, by = c("token" = "cwts_org_no")) %>%
+  left_join(country_lookup, by = c("country_iso_alpha" = "Alpha_code_3"))
+
+g <- inst_coords_details %>%
+  filter(!is.na(Continent_name)) %>%
+  ggplot(aes(x = axis1, y = axis2, color = Continent_name, group = city, label = full_name, label2 = Country_name, label3 = org_type)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  theme_minimal() +
+  guides(colour = guide_legend(override.aes = list(size=5))) +
+  scale_color_brewer(palette = "Set2")
+
+g
+ggplotly(g, tooltip = c("Continent_name", "Country_name", "city", "full_name", "org_type"))
+```

@@ -1,0 +1,59 @@
+---
+title: "Mobility Transition Processing"
+author: "Dakota Murray"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+
+# Read the transitions file, this will take a few seconds
+mobility <- readr::read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Raw/20191024_mobility_transitions.txt", delim = "\t")
+```
+
+The total number of publications represented
+```{r}
+dim(mobility)[1]
+```
+
+The head of the file, showing the features
+```{r}
+head(mobility)
+```
+
+Total number and proportion of publications by year
+```{r}
+t <- table(mobility$pub_year)
+t
+prop.table(t)
+```
+
+Select only the 6 most recent years
+```{r}
+mobility.2014to2019 <- mobility %>% filter(pub_year >= 2014)
+```
+
+Now, lets do the work of creating the mobility sentences
+```{r}
+mobility2014to2019.processed <- mobility.2014to2019 %>%
+  group_by(cluster_id) %>%
+  summarize(
+    inst_sentence = paste(cwts_org_no, collapse = " ")
+  )
+```
+
+
+Top rows showing these mobility sentences
+```{r}
+head(mobility2014to2019.processed)
+```
+
+The total number of mobility sentences
+```{r}
+dim(mobility2014to2019.processed)[1]
+```
+
+Save the result
+```{r}
+readr::write_csv(mobility2014to2019.processed, path = "/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/mobility_sentences/institution_sentences_2019to2019.csv")
+```
