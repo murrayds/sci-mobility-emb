@@ -9,28 +9,43 @@ ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
 SCALES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Scales')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
-
+EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
+PARAM_DIR = osjoin(ADDITIONAL_DATA_DIR, 'Model_Params')
 
 ############
 # Raw data #
 ############
 MOBILITY_RAW = osjoin(RAW_DATA_DIR, '20191024_mobility_transitions.txt')
-MOBILITY_RAW_YEARLY = osjoin(SCALES_DATA_DIR, 'org', '{year}_org_mobility.csv')
+MOBILITY_RAW_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{year}_raw_mobility.csv')
 MOBILITY_RAW_YEARLY_MULTISCALE = osjoin(SCALES_DATA_DIR, '{scale}', '{year}_{scale}_mobility.csv')
 
 ######################
 # Mobility sentences #
 ######################
-MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{scale}', '{year}_inst_sentences.csv')
+MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{scale}', '{year}_org_sentences.csv')
+
+##############
+# Embeddings #
+##############
+WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', '{scale}_{period}_word2vec_model.bin')
+WORD2VEC_PARAMS = osjoin(PARAM_DIR, '{scale}_word2vec_params.json')
 
 ##################
 # Metadata files #
 ##################
-INST_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'inst_to_scales.txt')
+ORG_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'org_to_scales.txt')
 
-
+##############
+# Parameters #
+##############
 ALL_YEARS = range(2008, 2019, 1)
+PERIODS = ['2008-2013', '2014-2019']
 SCALES = ['org', 'city', 'country']
+
+def get_sentences_for_period(params):
+    period_split = params.period.split("-")
+    period_years = range(int(period_split[0]), int(period_split[1]) + 1, 1)
+    return(expand(MOBILITY_SENTENCES, year = period_years, scale = params.scale))
 
 ###############################################################################
 # TARGET RULE
@@ -39,7 +54,8 @@ rule all:
     input:
         expand(MOBILITY_RAW_YEARLY, year = ALL_YEARS),
         expand(MOBILITY_RAW_YEARLY_MULTISCALE, year = ALL_YEARS, scale = SCALES),
-        expand(MOBILITY_SENTENCES, year = ALL_YEARS, scale = SCALES)
+        expand(MOBILITY_SENTENCES, year = ALL_YEARS, scale = SCALES),
+        expand(WORD2VEC_EMBEDDINGS, period = PERIODS, scale = SCALES)
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
@@ -47,7 +63,7 @@ rule dissagregate_pubs_to_yearly:
     shell: "Rscript scripts/FilterRawMobilityToSingleYear.R {input} {wildcards.year} {output}"
 
 rule add_scales_to_yearly_pubs:
-    input: rules.dissagregate_pubs_to_yearly.output, INST_SCALES
+    input: rules.dissagregate_pubs_to_yearly.output, ORG_SCALES
     output: MOBILITY_RAW_YEARLY_MULTISCALE
     shell:
         "Rscript scripts/AddMultiscaleInfoToMobility.R {input} {wildcards.scale} {output}"
@@ -57,3 +73,10 @@ rule pubs_to_sentences:
     output: MOBILITY_SENTENCES
     shell:
         "Rscript scripts/FormatPubsToSentences.R {input} {wildcards.scale} {output}"
+
+rule train_word2vec_model:
+    input: get_sentences_for_period
+    params: WORD2VEC_PARAMS
+    output: WORD2VEC_EMBEDDINGS
+    shell:
+        "python scripts/train_word2vec_embedding_from_sentences.py {input} {params} {output}"
