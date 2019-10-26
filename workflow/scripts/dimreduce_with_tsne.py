@@ -47,7 +47,7 @@ for value in new_values:
     x.append(value[0])
     y.append(value[1])
 
-df = pd.DataFrame({'axis1': x, 'axis2': y, 'labels': labels})
+tsne_coords_df = pd.DataFrame({'axis1': x, 'axis2': y, 'token': labels})
 
 # Save the output
-df.to_csv(OUTPUT_PATH)
+tsne_coords_df.to_csv(OUTPUT_PATH)
