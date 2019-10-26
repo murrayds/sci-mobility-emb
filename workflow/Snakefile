@@ -4,6 +4,7 @@ import pandas as pd
 # store the local path to the dropbox folder in the 'PROJ_HOME_DIR' file.
 PROJ_HOME = open('PROJ_HOME_DIR').read().strip()
 DATA_DIR = osjoin(PROJ_HOME, 'Data')
+FIGURE_DIR = osjoin(PROJ_HOME, 'Figures')
 RAW_DATA_DIR = osjoin(DATA_DIR, 'Raw')
 ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
@@ -11,6 +12,7 @@ SCALES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Scales')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 PARAM_DIR = osjoin(ADDITIONAL_DATA_DIR, 'Model_Params')
+TSNE_FIGURE_DIR = osjoin(FIGURE_DIR, 'TSNE')
 
 ############
 # Raw data #
@@ -29,6 +31,12 @@ MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{scale}', '{year}_org_sentences
 ##############
 WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', '{scale}_{period}_word2vec_model.bin')
 WORD2VEC_PARAMS = osjoin(PARAM_DIR, '{scale}_word2vec_params.json')
+
+##################
+# Visualizations #
+##################
+TSNE_DATA = osjoin(TSNE_FIGURE_DIR, 'data', '{scale}_{period}_tsne_data.csv')
+
 
 ##################
 # Metadata files #
@@ -55,7 +63,8 @@ rule all:
         expand(MOBILITY_RAW_YEARLY, year = ALL_YEARS),
         expand(MOBILITY_RAW_YEARLY_MULTISCALE, year = ALL_YEARS, scale = SCALES),
         expand(MOBILITY_SENTENCES, year = ALL_YEARS, scale = SCALES),
-        expand(WORD2VEC_EMBEDDINGS, period = PERIODS, scale = SCALES)
+        expand(WORD2VEC_EMBEDDINGS, period = PERIODS, scale = SCALES),
+        expand(TSNE_DATA, period = PERIODS, scale = SCALES)
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
@@ -80,3 +89,9 @@ rule train_word2vec_model:
     output: WORD2VEC_EMBEDDINGS
     shell:
         "python scripts/train_word2vec_embedding_from_sentences.py {input} {params} {output}"
+
+rule dimreduce_tsne:
+    input: rules.train_word2vec_model.output
+    output: TSNE_DATA
+    shell:
+        "python scripts/dimreduce_with_tsne.py {input} {output}"
