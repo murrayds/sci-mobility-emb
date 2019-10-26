@@ -30,7 +30,6 @@ lookup.table = readr::read_delim(LOOKUP_PATH, delim = "\t", col_types = readr::c
 # Join the lookup table and keep only what we are interested in
 mobility.at.scale = mobility.raw %>%
   left_join(lookup.table, by = "org") %>%
-  group_by(cluster_id) %>%
   select(cluster_id, TARGET_SCALE)
 
 # Write the output
