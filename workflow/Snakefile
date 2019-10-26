@@ -13,6 +13,7 @@ SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 PARAM_DIR = osjoin(ADDITIONAL_DATA_DIR, 'Model_Params')
 TSNE_FIGURE_DIR = osjoin(FIGURE_DIR, 'TSNE')
+UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 
 ############
 # Raw data #
@@ -36,7 +37,7 @@ WORD2VEC_PARAMS = osjoin(PARAM_DIR, '{scale}_word2vec_params.json')
 # Visualizations #
 ##################
 TSNE_DATA = osjoin(TSNE_FIGURE_DIR, 'data', '{scale}_{period}_tsne_data.csv')
-
+UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'data', '{scale}_{period}_umap_data.csv')
 
 ##################
 # Metadata files #
@@ -64,7 +65,8 @@ rule all:
         expand(MOBILITY_RAW_YEARLY_MULTISCALE, year = ALL_YEARS, scale = SCALES),
         expand(MOBILITY_SENTENCES, year = ALL_YEARS, scale = SCALES),
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, scale = SCALES),
-        expand(TSNE_DATA, period = PERIODS, scale = SCALES)
+        expand(TSNE_DATA, period = PERIODS, scale = SCALES),
+        expand(UMAP_DATA, period = PERIODS, scale = SCALES)
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
@@ -95,3 +97,9 @@ rule dimreduce_tsne:
     output: TSNE_DATA
     shell:
         "python scripts/dimreduce_with_tsne.py {input} {output}"
+
+rule dimreduce_umap:
+    input: rules.train_word2vec_model.output
+    output: UMAP_DATA
+    shell:
+        "python scripts/dimreduce_with_umap.py {input} {output}"
