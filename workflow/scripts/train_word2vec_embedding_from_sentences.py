@@ -39,6 +39,10 @@ for path in MOBILITY_SENTENCES_PATHS:
 
 mobility_df = pd.concat(mobility_frames)
 
+# We want a sentence represented the individual's mobility across the whole period,
+# so join the sentences
+mobility_df = mobility_df.groupby(['cluster_id'])['sentence'].apply(lambda x: ' '.join(x)).reset_index()
+
 
 # Tokenize the sentences into a format that gensim can work with
 mobility_tokens = []
