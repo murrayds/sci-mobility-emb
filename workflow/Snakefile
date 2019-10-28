@@ -40,6 +40,7 @@ TSNE_DATA = osjoin(TSNE_FIGURE_DIR, 'data', '{scale}_{period}_tsne_data.csv')
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'data', '{scale}_{period}_umap_data.csv')
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'org', 'org_{period}_umap.{ext}')
 UMAP_VISUALIZATIONS_CITY = osjoin(UMAP_FIGURE_DIR, 'city', 'city_{period}_umap.{ext}')
+UMAP_VISUALIZATIONS_COUNTRY = osjoin(UMAP_FIGURE_DIR, 'country', 'country_{period}_umap.{ext}')
 
 ##################
 # Metadata files #
@@ -74,6 +75,7 @@ rule all:
         expand(UMAP_DATA, period = PERIODS, scale = SCALES),
         expand(UMAP_VISUALIZATIONS_ORG, period = PERIODS, ext = FIG_EXTS),
         expand(UMAP_VISUALIZATIONS_CITY, period = PERIODS, ext = FIG_EXTS),
+        expand(UMAP_VISUALIZATIONS_COUNTRY, period = PERIODS, ext = FIG_EXTS)
 
 
 rule dissagregate_pubs_to_yearly:
@@ -125,3 +127,10 @@ rule plot_umap_city:
     output: UMAP_VISUALIZATIONS_CITY
     shell:
         "Rscript scripts/PlotCityDimReducedEmbedding.R {input} {params} {output}"
+
+rule plot_umap_country:
+    input: UMAP_DATA.format(scale = 'country', period = '{period}')
+    params: COUNTRY_LOOKUP
+    output: UMAP_VISUALIZATIONS_COUNTRY
+    shell:
+        "Rscript scripts/PlotCountryDimReducedEmbedding.R {input} {params} {output}"
