@@ -9,10 +9,9 @@ output: html_notebook
 library(tidyverse)
 library(readr)
 
-inst_coords <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/dim_reduced/inst_umap.csv")
-colnames(inst_coords) <- c("rownum", "axis1", "axis2", "token")
-inst_lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/20191024_institution_lookup.txt", delim = "\t")
+inst_coords <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/UMAP/data/org_2014-2019_umap_data.csv")
 
+inst_lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/20191024_institution_lookup.txt", delim = "\t") 
 country_lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/iso_to_country.txt", delim = "\t")
 country_lookup
 ```
@@ -39,38 +38,82 @@ g <- inst_coords_details %>%
   filter(!is.na(Continent_name)) %>%
   mutate(
     org = plyr::mapvalues(org_type, org_types, org_types_simplified),
-    org = factor(org, levels = c("Univ", "Hospital", "Industry", "Gov", "Other")),
-    to_highlight = ifelse(Country_name == "Italy, Italian Republic", T, F)
+    org = factor(org, levels = c("Univ", "Hospital", "Industry", "Institute", "Other")),
   ) %>%
-  ggplot(aes(x = axis1, y = axis2, color = org, shape = org, group = city, label = full_name, label2 = Country_name, label3 = org_type)) +
-  geom_point(size = 0.6, alpha = 0.5, shape = 16) +
+  ggplot(aes(x = axis1, y = axis2, color = Continent_name, shape = Continent_name, group = city, label = full_name, label2 = Country_name, label3 = org_type)) +
+  geom_point(size = 0.6, alpha = 0.8) +
   theme_minimal() +
   guides(color = guide_legend(override.aes = list(size=5)),
          shape = guide_legend(override.aes = list(size=5))) +
-  scale_color_brewer(palette = "Set1") +
+  scale_color_brewer(palette = "Set2") +
   theme(legend.position = "bottom")
 
-ggsave("~/Desktop/mobility_institution_byorg.pdf", g)
+#ggsave("~/Desktop/mobility_institution_bycontinent.pdf", g, width = 10, height = 8)
 
 ggplotly(g, tooltip = c("Continent_name", "Country_name", "city", "full_name", "org_type"))
 ```
 
-
 ```{r}
-inst_coords <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/dim_reduced/inst_pca.csv")
-colnames(inst_coords) <- c("ignore", "axis1", "axis2", "token")
-inst_coords_details <- inst_coords %>%
-  left_join(inst_lookup, by = c("token" = "cwts_org_no")) %>%
+city_lookup <- inst_lookup %>%
+  select(c(city_country, city, country_iso_alpha)) %>%
+  group_by(city_country) %>%
+  slice(1) %>% 
+  rowwise() %>%
+  mutate(city_country = gsub("[ ]", "_", city_country))
+
+city_lookup
+city_coords <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/UMAP/data/city_2014-2019_umap_data.csv") %>%
+  left_join(city_lookup, by = c("token" = "city_country")) %>%
   left_join(country_lookup, by = c("country_iso_alpha" = "Alpha_code_3"))
 
-g <- inst_coords_details %>%
-  filter(!is.na(Continent_name)) %>%
-  ggplot(aes(x = axis1, y = axis2, color = Continent_name, group = city, label = full_name, label2 = Country_name, label3 = org_type)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+g <- city_coords %>%
+  ggplot(aes(x = axis1, y = axis2,  label = token, color = Continent_name, label2 = Country_name)) +
+  geom_point(size = 0.8, alpha = 0.8) +
   theme_minimal() +
-  guides(colour = guide_legend(override.aes = list(size=5))) +
-  scale_color_brewer(palette = "Set2")
+  guides(color = guide_legend(override.aes = list(size=5)),
+         shape = guide_legend(override.aes = list(size=5))) +
+  scale_color_brewer(palette = "Set2") +
+  theme(legend.position = "bottom")
 
-g
-ggplotly(g, tooltip = c("Continent_name", "Country_name", "city", "full_name", "org_type"))
+ggplotly(g, tooltip = c("token", "name", "Continent_name", "Country_name"))
+
+unique(city_coords$labels)
+```
+
+
+```{r}
+country_coords <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/UMAP/data/country_2008-2013_umap_data.csv") %>%
+  left_join(country_lookup, by = c("token" = "Alpha_code_3"))
+
+g <- country_coords %>%
+  filter(!is.na(Continent_name)) %>%
+  ggplot(aes(x = axis1, y = axis2,  label = token, label2 = Country_name, color = Continent_name, shape = Continent_name)) +
+  #geom_point(size = 1.2, alpha = 0.8) +
+  theme_minimal() +
+  geom_text() +
+  guides(color = guide_legend(override.aes = list(size=5)),
+         shape = guide_legend(override.aes = list(size=5))) +
+  scale_color_brewer(palette = "Set2") +
+  theme(legend.position = "bottom")
+
+ggplotly(g, tooltip = c("labels", "Continent_name", "Country_name"))
+```
+
+
+```{r}
+country_coords <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/UMAP/data/country_2014-2019_umap_data.csv") %>%
+  left_join(country_lookup, by = c("token" = "Alpha_code_3"))
+
+g <- country_coords %>%
+  filter(!is.na(Continent_name)) %>%
+  ggplot(aes(x = axis1, y = axis2,  label = token, label2 = Country_name, color = Continent_name, shape = Continent_name)) +
+  #geom_point(size = 1.2, alpha = 0.8) +
+  theme_minimal() +
+  geom_text() +
+  guides(color = guide_legend(override.aes = list(size=5)),
+         shape = guide_legend(override.aes = list(size=5))) +
+  scale_color_brewer(palette = "Set2") +
+  theme(legend.position = "bottom")
+
+ggplotly(g, tooltip = c("labels", "Continent_name", "Country_name"))
 ```
