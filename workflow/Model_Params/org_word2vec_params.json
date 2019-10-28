@@ -1,0 +1,7 @@
+{
+  "vector_size": 80,
+  "window_size": 10,
+  "min_word_freq": 20,
+  "num_workers": 4,
+  "iterations": 50
+}

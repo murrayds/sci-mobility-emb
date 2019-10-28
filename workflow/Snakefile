@@ -11,7 +11,7 @@ DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
 SCALES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Scales')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
-PARAM_DIR = osjoin(ADDITIONAL_DATA_DIR, 'Model_Params')
+PARAM_DIR = osjoin('Model_Params')
 TSNE_FIGURE_DIR = osjoin(FIGURE_DIR, 'TSNE')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 
