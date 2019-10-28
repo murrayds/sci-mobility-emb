@@ -29,7 +29,7 @@ COUNTRY_LOOKUP_PATH = args[3]
 OUTPUT_FILE_PATH = last(args)
 
 # Read the components of the dim-reduced embedding
-org_components <- readr::read_csv(COMPONENTS_PATH, col_types = readr::cols())
+city_components <- readr::read_csv(COMPONENTS_PATH, col_types = readr::cols())
 
 # Open the lookup paths
 org_lookup <- readr::read_delim(ORG_LOOKUP_TABLE_PATH, delim = "\t", col_types = readr::cols())
@@ -44,11 +44,11 @@ city_lookup <- org_lookup %>%
   mutate(city_country = gsub("[ ]", "_", city_country))
 
 # Create a table linking organizational metadata with coordinates
-org_components_detailed <- org_components %>%
+city_components_detailed <- city_components %>%
   left_join(city_lookup, by = c("token" = "city_country")) %>%
   left_join(country_lookup, by = c("country_iso_alpha" = "Alpha_code_3"))
 
-g <- org_components_detailed %>%
+g <- city_components_detailed %>%
     filter(!is.na(Continent_name)) %>%
     ggplot(aes(x = axis1, y = axis2,
                color = Continent_name,
