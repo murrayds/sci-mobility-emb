@@ -38,11 +38,14 @@ WORD2VEC_PARAMS = osjoin(PARAM_DIR, '{scale}_word2vec_params.json')
 ##################
 TSNE_DATA = osjoin(TSNE_FIGURE_DIR, 'data', '{scale}_{period}_tsne_data.csv')
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'data', '{scale}_{period}_umap_data.csv')
+UMAP_VISUALIZATIONS = osjoin(UMAP_FIGURE_DIR, '{scale}_{period}_umap.{ext}')
 
 ##################
 # Metadata files #
 ##################
 ORG_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'org_to_scales.txt')
+ORG_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, '20191024_institution_lookup.txt')
+COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 
 ##############
 # Parameters #
@@ -50,6 +53,7 @@ ORG_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'org_to_scales.txt')
 ALL_YEARS = range(2008, 2019, 1)
 PERIODS = ['2008-2013', '2014-2019']
 SCALES = ['org', 'city', 'country']
+FIG_EXTS = ['.pdf', '.html']
 
 def get_sentences_for_period(params):
     period_split = params.period.split("-")
@@ -66,7 +70,8 @@ rule all:
         expand(MOBILITY_SENTENCES, year = ALL_YEARS, scale = SCALES),
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, scale = SCALES),
         expand(TSNE_DATA, period = PERIODS, scale = SCALES),
-        expand(UMAP_DATA, period = PERIODS, scale = SCALES)
+        expand(UMAP_DATA, period = PERIODS, scale = SCALES),
+        expand(UMAP_VISUALIZATIONS, period = PERIODS, scale = "org", ext = FIG_EXTS)
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
@@ -103,3 +108,10 @@ rule dimreduce_umap:
     output: UMAP_DATA
     shell:
         "python scripts/dimreduce_with_umap.py {input} {output}"
+
+rule plot_umap_org:
+    input: rules.dimreduce_umap.output
+    params: ORG_LOOKUP, COUNTRY_LOOKUP
+    output: UMAP_VISUALIZATIONS
+    shell:
+        "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params} {output}"
