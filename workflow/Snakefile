@@ -38,7 +38,8 @@ WORD2VEC_PARAMS = osjoin(PARAM_DIR, '{scale}_word2vec_params.json')
 ##################
 TSNE_DATA = osjoin(TSNE_FIGURE_DIR, 'data', '{scale}_{period}_tsne_data.csv')
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'data', '{scale}_{period}_umap_data.csv')
-UMAP_VISUALIZATIONS = osjoin(UMAP_FIGURE_DIR, '{scale}_{period}_umap.{ext}')
+UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'org', 'org_{period}_umap.{ext}')
+UMAP_VISUALIZATIONS_CITY = osjoin(UMAP_FIGURE_DIR, 'city', 'city_{period}_umap.{ext}')
 
 ##################
 # Metadata files #
@@ -71,7 +72,9 @@ rule all:
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, scale = SCALES),
         expand(TSNE_DATA, period = PERIODS, scale = SCALES),
         expand(UMAP_DATA, period = PERIODS, scale = SCALES),
-        expand(UMAP_VISUALIZATIONS, period = PERIODS, scale = "org", ext = FIG_EXTS)
+        expand(UMAP_VISUALIZATIONS_ORG, period = PERIODS, ext = FIG_EXTS),
+        expand(UMAP_VISUALIZATIONS_CITY, period = PERIODS, ext = FIG_EXTS),
+
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
@@ -110,8 +113,15 @@ rule dimreduce_umap:
         "python scripts/dimreduce_with_umap.py {input} {output}"
 
 rule plot_umap_org:
-    input: rules.dimreduce_umap.output
+    input: UMAP_DATA.format(scale = 'org', period = '{period}')
     params: ORG_LOOKUP, COUNTRY_LOOKUP
-    output: UMAP_VISUALIZATIONS
+    output: UMAP_VISUALIZATIONS_ORG
     shell:
         "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params} {output}"
+
+rule plot_umap_city:
+    input: UMAP_DATA.format(scale = 'city', period = '{period}')
+    params: ORG_LOOKUP, COUNTRY_LOOKUP
+    output: UMAP_VISUALIZATIONS_CITY
+    shell:
+        "Rscript scripts/PlotCityDimReducedEmbedding.R {input} {params} {output}"
