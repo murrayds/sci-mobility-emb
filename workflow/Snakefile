@@ -12,7 +12,6 @@ SCALES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Scales')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 PARAM_DIR = osjoin('Model_Params')
-TSNE_FIGURE_DIR = osjoin(FIGURE_DIR, 'TSNE')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 
 ############
@@ -36,13 +35,17 @@ WORD2VEC_PARAMS = osjoin(PARAM_DIR, '{scale}_word2vec_params.json')
 ##################
 # Visualizations #
 ##################
-TSNE_DATA = osjoin(TSNE_FIGURE_DIR, 'data', '{scale}_{period}_tsne_data.csv')
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'data', '{scale}_{period}_umap_data.csv')
+UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'org', 'org_{period}_umap.{ext}')
+UMAP_VISUALIZATIONS_CITY = osjoin(UMAP_FIGURE_DIR, 'city', 'city_{period}_umap.{ext}')
+UMAP_VISUALIZATIONS_COUNTRY = osjoin(UMAP_FIGURE_DIR, 'country', 'country_{period}_umap.{ext}')
 
 ##################
 # Metadata files #
 ##################
 ORG_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'org_to_scales.txt')
+ORG_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, '20191024_institution_lookup.txt')
+COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 
 ##############
 # Parameters #
@@ -50,6 +53,7 @@ ORG_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'org_to_scales.txt')
 ALL_YEARS = range(2008, 2019, 1)
 PERIODS = ['2008-2013', '2014-2019']
 SCALES = ['org', 'city', 'country']
+FIG_EXTS = ['.pdf', '.html']
 
 def get_sentences_for_period(params):
     period_split = params.period.split("-")
@@ -65,8 +69,11 @@ rule all:
         expand(MOBILITY_RAW_YEARLY_MULTISCALE, year = ALL_YEARS, scale = SCALES),
         expand(MOBILITY_SENTENCES, year = ALL_YEARS, scale = SCALES),
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, scale = SCALES),
-        expand(TSNE_DATA, period = PERIODS, scale = SCALES),
-        expand(UMAP_DATA, period = PERIODS, scale = SCALES)
+        expand(UMAP_DATA, period = PERIODS, scale = SCALES),
+        expand(UMAP_VISUALIZATIONS_ORG, period = PERIODS, ext = FIG_EXTS),
+        expand(UMAP_VISUALIZATIONS_CITY, period = PERIODS, ext = FIG_EXTS),
+        expand(UMAP_VISUALIZATIONS_COUNTRY, period = PERIODS, ext = FIG_EXTS)
+
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
@@ -92,14 +99,29 @@ rule train_word2vec_model:
     shell:
         "python scripts/train_word2vec_embedding_from_sentences.py {input} {params} {output}"
 
-rule dimreduce_tsne:
-    input: rules.train_word2vec_model.output
-    output: TSNE_DATA
-    shell:
-        "python scripts/dimreduce_with_tsne.py {input} {output}"
-
 rule dimreduce_umap:
     input: rules.train_word2vec_model.output
     output: UMAP_DATA
     shell:
         "python scripts/dimreduce_with_umap.py {input} {output}"
+
+rule plot_umap_org:
+    input: UMAP_DATA.format(scale = 'org', period = '{period}')
+    params: ORG_LOOKUP, COUNTRY_LOOKUP
+    output: UMAP_VISUALIZATIONS_ORG
+    shell:
+        "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params} {output}"
+
+rule plot_umap_city:
+    input: UMAP_DATA.format(scale = 'city', period = '{period}')
+    params: ORG_LOOKUP, COUNTRY_LOOKUP
+    output: UMAP_VISUALIZATIONS_CITY
+    shell:
+        "Rscript scripts/PlotCityDimReducedEmbedding.R {input} {params} {output}"
+
+rule plot_umap_country:
+    input: UMAP_DATA.format(scale = 'country', period = '{period}')
+    params: COUNTRY_LOOKUP
+    output: UMAP_VISUALIZATIONS_COUNTRY
+    shell:
+        "Rscript scripts/PlotCountryDimReducedEmbedding.R {input} {params} {output}"
