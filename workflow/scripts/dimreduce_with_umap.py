@@ -23,7 +23,7 @@ parser.add_argument("-mod", "--model", help = "Path to word2vec model", type = s
 parser.add_argument("-met", "--metric", help = "Metric to use for UMAP", type = str, required = True)
 parser.add_argument("-n", "--neighbors", help = "Number neighbors for UMAP", type = int, required = True)
 parser.add_argument("-d", "--mindistance", help = "Minimum distance for UMAP", type = float, required = True)
-parser.add_argument("-o", "--output", help = "Output data path", type = str)
+parser.add_argument("-o", "--output", help = "Output data path", type = str, required = True)
 
 args = parser.parse_args()
 
