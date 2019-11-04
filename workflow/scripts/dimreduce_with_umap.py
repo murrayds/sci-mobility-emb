@@ -19,11 +19,11 @@ N_COMPONENTS = 2
 parser = argparse.ArgumentParser()
 
 # System arguments
-parser.add_argument("-mod", "--model", help="Path to word2vec model", type=str)
-parser.add_argument("-met", "--metric", help="Metric to use for UMAP", type = str)
-parser.add_argument("-n", "--neighbors", help="Number neighbors for UMAP", type=int)
-parser.add_argument("-d", "--mindistance", help="Minimum distance for UMAP", type=float)
-parser.add_argument("-o", "--output", help="Output data path", type=str)
+parser.add_argument("-mod", "--model", help = "Path to word2vec model", type = str, required = True)
+parser.add_argument("-met", "--metric", help = "Metric to use for UMAP", type = str, required = True)
+parser.add_argument("-n", "--neighbors", help = "Number neighbors for UMAP", type = int, required = True)
+parser.add_argument("-d", "--mindistance", help = "Minimum distance for UMAP", type = float, required = True)
+parser.add_argument("-o", "--output", help = "Output data path", type = str)
 
 args = parser.parse_args()
 
