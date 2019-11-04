@@ -58,7 +58,7 @@ FIG_EXTS = ['.pdf', '.html']
 # UMAP parameters
 UMAP_METRICS = ['cosine', 'euclidean', 'correlation']
 UMAP_NEIGHBORS = [5, 10, 15, 20, 25]
-UMAP_MIN_DIST = [0.1, 0.2, 0.3]
+UMAP_MIN_DIST = ['0.1', '0.2', '0.3']
 
 def get_sentences_for_period(params):
     period_split = params.period.split("-")
