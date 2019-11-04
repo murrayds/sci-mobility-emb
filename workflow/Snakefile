@@ -8,7 +8,6 @@ FIGURE_DIR = osjoin(PROJ_HOME, 'Figures')
 RAW_DATA_DIR = osjoin(DATA_DIR, 'Raw')
 ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
-SCALES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Scales')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
@@ -18,7 +17,6 @@ UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 ############
 MOBILITY_RAW = osjoin(RAW_DATA_DIR, '20191024_mobility_transitions.txt')
 MOBILITY_RAW_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{year}_raw_mobility.csv')
-MOBILITY_RAW_YEARLY_MULTISCALE = osjoin(SCALES_DATA_DIR, '{year}_mobility.csv')
 
 ######################
 # Mobility sentences #
@@ -35,8 +33,6 @@ WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', '{period}_word2vec_d{di
 ##################
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'd{dimensions}', 'data', '{period}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_data.csv')
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'd{dimensions}', '{period}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
-#UMAP_VISUALIZATIONS_CITY = osjoin(UMAP_FIGURE_DIR, 'city', 'city_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
-#UMAP_VISUALIZATIONS_COUNTRY = osjoin(UMAP_FIGURE_DIR, 'country', 'country_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
 
 ##################
 # Metadata files #
@@ -74,9 +70,6 @@ def get_sentences_for_period(params):
 ###############################################################################
 rule all:
     input:
-        expand(MOBILITY_RAW_YEARLY, year = ALL_YEARS),
-        expand(MOBILITY_RAW_YEARLY_MULTISCALE, year = ALL_YEARS),
-        expand(MOBILITY_SENTENCES, year = ALL_YEARS),
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, dimensions = W2V_DIMENSIONS),
         expand(UMAP_DATA,
                period = PERIODS,
@@ -91,23 +84,14 @@ rule all:
                neighbors = UMAP_NEIGHBORS,
                mindist = UMAP_MIN_DIST,
                ext = FIG_EXTS)
-        #expand(UMAP_VISUALIZATIONS_CITY, period = PERIODS, ext = FIG_EXTS),
-        #expand(UMAP_VISUALIZATIONS_COUNTRY, period = PERIODS, ext = FIG_EXTS)
-
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
     output: MOBILITY_RAW_YEARLY
     shell: "Rscript scripts/FilterRawMobilityToSingleYear.R {input} {wildcards.year} {output}"
 
-rule add_scales_to_yearly_pubs:
-    input: rules.dissagregate_pubs_to_yearly.output, ORG_SCALES
-    output: MOBILITY_RAW_YEARLY_MULTISCALE
-    shell:
-        "Rscript scripts/AddMultiscaleInfoToMobility.R {input} org {output}"
-
 rule pubs_to_sentences:
-    input: rules.add_scales_to_yearly_pubs.output
+    input: rules.dissagregate_pubs_to_yearly.output
     output: MOBILITY_SENTENCES
     shell:
         "Rscript scripts/FormatPubsToSentences.R {input} org {output}"
@@ -117,10 +101,10 @@ rule train_word2vec_model:
     output: WORD2VEC_EMBEDDINGS
     threads: W2V_NUM_WORKERS
     params:
-        ws = W2V_WINDOW_SIZE = 20,
-        wf = W2V_MIN_WORD_FREQ = 50,
-        nw = W2V_NUM_WORKERS = 4,
-        niter = W2V_ITERATIONS = 10
+        ws = W2V_WINDOW_SIZE,
+        wf = W2V_MIN_WORD_FREQ,
+        nw = W2V_NUM_WORKERS,
+        niter = W2V_ITERATIONS
     shell:
         "python scripts/train_word2vec_embedding_from_sentences.py --files {input} \
                 --dimensions {wildcards.dimensions} --window {params.ws} \
@@ -141,17 +125,3 @@ rule plot_umap_org:
     output: UMAP_VISUALIZATIONS_ORG
     shell:
         "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params} {output}"
-
-# rule plot_umap_city:
-#     input: UMAP_DATA.format(scale = 'city', period = '{period}')
-#     params: ORG_LOOKUP, COUNTRY_LOOKUP
-#     output: UMAP_VISUALIZATIONS_CITY
-#     shell:
-#         "Rscript scripts/PlotCityDimReducedEmbedding.R {input} {params} {output}"
-#
-# rule plot_umap_country:
-#     input: UMAP_DATA.format(scale = 'country', period = '{period}')
-#     params: COUNTRY_LOOKUP
-#     output: UMAP_VISUALIZATIONS_COUNTRY
-#     shell:
-#         "Rscript scripts/PlotCountryDimReducedEmbedding.R {input} {params} {output}"
