@@ -35,10 +35,10 @@ WORD2VEC_PARAMS = osjoin(PARAM_DIR, '{scale}_word2vec_params.json')
 ##################
 # Visualizations #
 ##################
-UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'data', '{scale}_{period}_umap_data.csv')
-UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'org', 'org_{period}_umap.{ext}')
-UMAP_VISUALIZATIONS_CITY = osjoin(UMAP_FIGURE_DIR, 'city', 'city_{period}_umap.{ext}')
-UMAP_VISUALIZATIONS_COUNTRY = osjoin(UMAP_FIGURE_DIR, 'country', 'country_{period}_umap.{ext}')
+UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'data', '{scale}_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}.csv')
+UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'org', 'org_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}.{ext}')
+UMAP_VISUALIZATIONS_CITY = osjoin(UMAP_FIGURE_DIR, 'city', 'city_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}.{ext}')
+UMAP_VISUALIZATIONS_COUNTRY = osjoin(UMAP_FIGURE_DIR, 'country', 'country_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}.{ext}')
 
 ##################
 # Metadata files #
@@ -55,6 +55,11 @@ PERIODS = ['2008-2013', '2014-2019']
 SCALES = ['org', 'city', 'country']
 FIG_EXTS = ['.pdf', '.html']
 
+# UMAP parameters
+UMAP_METRICS = ['cosine', 'euclidean', 'correlation']
+UMAP_NEIGHBORS = [5, 10, 15, 20, 25]
+UMAP_MIN_DIST = [0.1, 0.2, 0.3]
+
 def get_sentences_for_period(params):
     period_split = params.period.split("-")
     period_years = range(int(period_split[0]), int(period_split[1]) + 1, 1)
@@ -69,10 +74,20 @@ rule all:
         expand(MOBILITY_RAW_YEARLY_MULTISCALE, year = ALL_YEARS, scale = SCALES),
         expand(MOBILITY_SENTENCES, year = ALL_YEARS, scale = SCALES),
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, scale = SCALES),
-        expand(UMAP_DATA, period = PERIODS, scale = SCALES),
-        expand(UMAP_VISUALIZATIONS_ORG, period = PERIODS, ext = FIG_EXTS),
-        expand(UMAP_VISUALIZATIONS_CITY, period = PERIODS, ext = FIG_EXTS),
-        expand(UMAP_VISUALIZATIONS_COUNTRY, period = PERIODS, ext = FIG_EXTS)
+        expand(UMAP_DATA,
+               period = PERIODS,
+               scale = SCALES,
+               metric = UMAP_METRICS,
+               neighbors = UMAP_NEIGHBORS,
+               mindist = UMAP_MIN_DIST),
+        expand(UMAP_VISUALIZATIONS_ORG,
+               period = PERIODS,
+               metric = UMAP_METRICS,
+               neighbors = UMAP_NEIGHBORS,
+               mindist = UMAP_MIN_DIST,
+               ext = FIG_EXTS)
+        #expand(UMAP_VISUALIZATIONS_CITY, period = PERIODS, ext = FIG_EXTS),
+        #expand(UMAP_VISUALIZATIONS_COUNTRY, period = PERIODS, ext = FIG_EXTS)
 
 
 rule dissagregate_pubs_to_yearly:
@@ -103,25 +118,27 @@ rule dimreduce_umap:
     input: rules.train_word2vec_model.output
     output: UMAP_DATA
     shell:
-        "python scripts/dimreduce_with_umap.py {input} {output}"
+        'python scripts/dimreduce_with_umap.py --model {input} \
+                --metric {wildcards.metric} --neighbors {wildcards.neighbors} \
+                --mindistance {wildcards.mindist} --output {output}'
 
 rule plot_umap_org:
-    input: UMAP_DATA.format(scale = 'org', period = '{period}')
+    input: UMAP_DATA.format(scale = 'org', period = '{period}', metric = '{metric}', neighbors = '{neighbors}', mindist = '{mindist}')
     params: ORG_LOOKUP, COUNTRY_LOOKUP
     output: UMAP_VISUALIZATIONS_ORG
     shell:
         "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params} {output}"
 
-rule plot_umap_city:
-    input: UMAP_DATA.format(scale = 'city', period = '{period}')
-    params: ORG_LOOKUP, COUNTRY_LOOKUP
-    output: UMAP_VISUALIZATIONS_CITY
-    shell:
-        "Rscript scripts/PlotCityDimReducedEmbedding.R {input} {params} {output}"
-
-rule plot_umap_country:
-    input: UMAP_DATA.format(scale = 'country', period = '{period}')
-    params: COUNTRY_LOOKUP
-    output: UMAP_VISUALIZATIONS_COUNTRY
-    shell:
-        "Rscript scripts/PlotCountryDimReducedEmbedding.R {input} {params} {output}"
+# rule plot_umap_city:
+#     input: UMAP_DATA.format(scale = 'city', period = '{period}')
+#     params: ORG_LOOKUP, COUNTRY_LOOKUP
+#     output: UMAP_VISUALIZATIONS_CITY
+#     shell:
+#         "Rscript scripts/PlotCityDimReducedEmbedding.R {input} {params} {output}"
+#
+# rule plot_umap_country:
+#     input: UMAP_DATA.format(scale = 'country', period = '{period}')
+#     params: COUNTRY_LOOKUP
+#     output: UMAP_VISUALIZATIONS_COUNTRY
+#     shell:
+#         "Rscript scripts/PlotCountryDimReducedEmbedding.R {input} {params} {output}"
