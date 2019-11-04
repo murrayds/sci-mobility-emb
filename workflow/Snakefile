@@ -35,10 +35,10 @@ WORD2VEC_PARAMS = osjoin(PARAM_DIR, '{scale}_word2vec_params.json')
 ##################
 # Visualizations #
 ##################
-UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'data', '{scale}_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}.csv')
-UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'org', 'org_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}.{ext}')
-UMAP_VISUALIZATIONS_CITY = osjoin(UMAP_FIGURE_DIR, 'city', 'city_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}.{ext}')
-UMAP_VISUALIZATIONS_COUNTRY = osjoin(UMAP_FIGURE_DIR, 'country', 'country_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}.{ext}')
+UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'data', '{scale}_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}_data.csv')
+UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'org', 'org_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
+UMAP_VISUALIZATIONS_CITY = osjoin(UMAP_FIGURE_DIR, 'city', 'city_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
+UMAP_VISUALIZATIONS_COUNTRY = osjoin(UMAP_FIGURE_DIR, 'country', 'country_{period}_umap_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
 
 ##################
 # Metadata files #
@@ -58,7 +58,7 @@ FIG_EXTS = ['.pdf', '.html']
 # UMAP parameters
 UMAP_METRICS = ['cosine', 'euclidean', 'correlation']
 UMAP_NEIGHBORS = [5, 10, 15, 20, 25]
-UMAP_MIN_DIST = ['0.1', '0.2', '0.3']
+UMAP_MIN_DIST = [0.0, 0.1, 0.25, 0.5, 0.8, 0.99]
 
 def get_sentences_for_period(params):
     period_split = params.period.split("-")
@@ -123,7 +123,11 @@ rule dimreduce_umap:
                 --mindistance {wildcards.mindist} --output {output}'
 
 rule plot_umap_org:
-    input: UMAP_DATA.format(scale = 'org', period = '{period}', metric = '{metric}', neighbors = '{neighbors}', mindist = '{mindist}')
+    input: UMAP_DATA.format(scale = 'org', \
+                            period = '{period}', \
+                            metric = '{metric}', \
+                            neighbors = '{neighbors}', \
+                            mindist = '{mindist}')
     params: ORG_LOOKUP, COUNTRY_LOOKUP
     output: UMAP_VISUALIZATIONS_ORG
     shell:
