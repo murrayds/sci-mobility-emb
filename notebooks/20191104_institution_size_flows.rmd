@@ -1,0 +1,90 @@
+---
+title: "Instituion sizes and flows"
+author: "Dakota Murray"
+output: html_notebook
+---
+
+```{r}
+library(readr)
+library(tidyverse)
+sizes <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Raw/2008-2019_inst_sizes.txt", delim = "\t")
+flows <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Descriptive/org/organization_flows.csv")
+lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/20191024_institution_lookup.txt", delim = "\t")
+
+
+geographic_distance <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Descriptive/org/organization_geographic_distance.csv")
+word2vec_similarities <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Descriptive/org/2014-2019_word2vec_d200_sim.csv")
+```
+
+```{r}
+flows <- flows %>%
+  select(-index) %>%
+  filter(org1 != org2) %>%
+  mutate(
+    count = ifelse(count == 0, 1, count)
+  )
+
+head(flows)
+```
+
+```{r}
+sizes <- sizes %>%
+  group_by(cwts_org_no) %>%
+  summarize(
+    all_person_count = mean(person_count)
+  ) %>%
+  arrange(desc(all_person_count))
+
+head(sizes)
+```
+
+
+```{r}
+flows_all <- flows %>%
+  left_join(sizes, by = c("org1" = "cwts_org_no")) %>%
+  left_join(sizes, by = c("org2" = "cwts_org_no")) %>%
+  rename(org1_size = all_person_count.x, org2_size = all_person_count.y) %>%
+  mutate(gravity = (org1_size * org2_size) / count) %>%
+  inner_join(geographic_distance) %>%
+  inner_join(word2vec_similarities) 
+
+head(flows_all, 100)
+```
+
+
+```{r}
+p1_all <- flows_all %>%
+  ggplot(aes(x = log(distance), y = log(gravity))) +
+  geom_hex(bins = 200) +
+  theme_minimal() +
+  labs(x = "Log(Kilometers distance)",
+       y = "P1 * P2 / F12")
+
+p1_all
+```
+
+
+```{r}
+p2_all <- flows_all %>%
+  ggplot(aes(x = (similarity), y = log(gravity))) +
+  geom_hex(bins = 100) +
+  theme_minimal() +
+  labs(x = "Cosine Similarity",
+       y = "Log(Kilometer Distance)")
+
+p2_all
+```
+
+
+```{r}
+p1_
+
+
+```
+
+```{r}
+library(grid)
+library(gridExtra)
+
+
+```
