@@ -16,6 +16,7 @@ sklearn = "*"
 matplotlib = "*"
 umap-learn = "*"
 geopy = "*"
+scipy = "*"
 
 [requires]
 python_version = "3.7"
