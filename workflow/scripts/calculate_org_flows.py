@@ -67,4 +67,4 @@ upper_tri = upper_tri.stack().reset_index()
 upper_tri.columns = ['org1', 'org2', 'count']
 
 # Write to csv
-upper_tri.to_csv(args.output, index_label = False)
+upper_tri.to_csv(args.output, index = False)
