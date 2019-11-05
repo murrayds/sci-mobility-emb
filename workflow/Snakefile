@@ -8,6 +8,7 @@ FIGURE_DIR = osjoin(PROJ_HOME, 'Figures')
 RAW_DATA_DIR = osjoin(DATA_DIR, 'Raw')
 ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
+DESCRIPTIVE_DATA_DIR = osjoin(DATA_DIR, 'Descriptive')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
@@ -22,6 +23,11 @@ MOBILITY_RAW_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{year}_raw_mobility.csv')
 # Mobility sentences #
 ######################
 MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{year}_org_sentences.csv')
+
+####################
+# Descriptive Data #
+####################
+ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_flows.csv')
 
 ##############
 # Embeddings #
@@ -71,6 +77,7 @@ def get_sentences_for_period(params):
 rule all:
     input:
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, dimensions = W2V_DIMENSIONS),
+        ORGANIZATION_FLOWS,
         expand(UMAP_DATA,
                period = PERIODS,
                dimensions = W2V_DIMENSIONS,
@@ -125,3 +132,9 @@ rule plot_umap_org:
     output: UMAP_VISUALIZATIONS_ORG
     shell:
         "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params} {output}"
+
+rule calculate_org_flows:
+    input: MOBILITY_RAW
+    output: ORGANIZATION_FLOWS
+    shell:
+        "python scripts/calculate_org_flows.py --input {input} --output {output}"
