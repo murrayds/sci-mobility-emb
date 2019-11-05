@@ -34,6 +34,8 @@ ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_
 # Embeddings #
 ##############
 WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', '{period}_word2vec_d{dimensions}_model.bin')
+ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{dimensions}_sim.csv')
+
 
 ##################
 # Visualizations #
@@ -80,6 +82,7 @@ rule all:
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, dimensions = W2V_DIMENSIONS),
         ORGANIZATION_FLOWS,
         ORG_GEO_DISTANCE,
+        expand(ORG_W2V_SIMILARITIES, dimensions = 200, period = '2014-2019'),
         expand(UMAP_DATA,
                period = PERIODS,
                dimensions = W2V_DIMENSIONS,
@@ -146,3 +149,9 @@ rule calculate_org_geographic_distance:
     output: ORG_GEO_DISTANCE
     shell:
         "python scripts/calculate_org_geo_distance.py --input {input} --output {output}"
+
+rule calculate_org_w2v_similarities:
+    input: rules.train_word2vec_model.output
+    output: ORG_W2V_SIMILARITIES
+    shell:
+        "python scripts/calculate_org_w2v_similarity.py --model {input} --output {output}"
