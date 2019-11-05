@@ -28,6 +28,7 @@ MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{year}_org_sentences.csv')
 # Descriptive Data #
 ####################
 ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_flows.csv')
+ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distance.csv')
 
 ##############
 # Embeddings #
@@ -78,6 +79,7 @@ rule all:
     input:
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, dimensions = W2V_DIMENSIONS),
         ORGANIZATION_FLOWS,
+        ORG_GEO_DISTANCE,
         expand(UMAP_DATA,
                period = PERIODS,
                dimensions = W2V_DIMENSIONS,
@@ -138,3 +140,9 @@ rule calculate_org_flows:
     output: ORGANIZATION_FLOWS
     shell:
         "python scripts/calculate_org_flows.py --input {input} --output {output}"
+
+rule calculate_org_geographic_distance:
+    input: ORG_LOOKUP
+    output: ORG_GEO_DISTANCE
+    shell:
+        "python scripts/calculate_org_geo_distance.py --input {input} --output {output}"
