@@ -47,7 +47,8 @@ distance_df = pd.DataFrame(squareform(dist))
 
 # Set the row and column names
 distance_df.columns = organizations.cwts_org_no
-distance_df.rows = organizations.cwts_org_no
+distance_df['org1'] = organizations.cwts_org_no
+distance_df = distance_df.set_index('org1')
 
 # Get upper triangle
 upper_tri = distance_df.where(np.triu(np.ones(distance_df.shape)).astype(np.bool))
@@ -57,4 +58,4 @@ upper_tri = upper_tri.stack().reset_index()
 upper_tri.columns = ['org1', 'org2', 'distance']
 
 # Write to csv
-upper_tri.to_csv(args.output, index = False)
+upper_tri.to_csv(args.output)
