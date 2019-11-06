@@ -18,6 +18,7 @@ UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 ############
 MOBILITY_RAW = osjoin(RAW_DATA_DIR, '20191024_mobility_transitions.txt')
 MOBILITY_RAW_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{year}_raw_mobility.csv')
+ORG_SIZES = osjoin(RAW_DATA_DIR, '2008-2019_inst_sizes.txt')
 
 ######################
 # Mobility sentences #
@@ -29,6 +30,8 @@ MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{year}_org_sentences.csv')
 ####################
 ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_flows.csv')
 ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distance.csv')
+AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate_org_distances.csv')
+
 
 ##############
 # Embeddings #
@@ -83,6 +86,7 @@ rule all:
         ORGANIZATION_FLOWS,
         ORG_GEO_DISTANCE,
         expand(ORG_W2V_SIMILARITIES, dimensions = 200, period = '2014-2019'),
+        AGGREGATE_ORG_DISTANCES,
         expand(UMAP_DATA,
                period = PERIODS,
                dimensions = W2V_DIMENSIONS,
@@ -155,3 +159,17 @@ rule calculate_org_w2v_similarities:
     output: ORG_W2V_SIMILARITIES
     shell:
         "python scripts/calculate_org_w2v_similarity.py --model {input} --output {output}"
+
+rule build_aggregate_org_distances:
+    input: flows = rules.calculate_org_flows.output,
+           geo = rules.calculate_org_geographic_distance.output,
+           emb = expand(rules.calculate_org_w2v_similarities.output,
+                        dimensions = 200, period = "2014-2019")
+    params:
+        sizes = ORG_SIZES,
+        orgs = ORG_LOOKUP
+    output: AGGREGATE_ORG_DISTANCES
+    shell:
+        "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
+                 --flows {input.flows} --geo {input.geo} --emb {input.emb} \
+                 --orgs {params.orgs} --out {output}"
