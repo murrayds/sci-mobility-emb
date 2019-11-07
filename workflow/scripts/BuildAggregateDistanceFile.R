@@ -78,7 +78,7 @@ distance_all <- org_flows %>%
   rename(emb_similarity = similarity) %>%
   # Calculate the "gravity", the product of sizes as a ratio of real flows.
   mutate(
-    gravity = (org1_size * org2_size) / imputed_count
+    gravity = imputed_count / (org1_size * org2_size)
   )
 
 # Write the output
