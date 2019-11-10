@@ -29,16 +29,16 @@ option_list = list(
 opt = parse_args(OptionParser(option_list=option_list))
 
 # Get org lookup information
-lookup <- readr::read_delim(opt$lookup, delim = "\t")
+lookup <- readr::read_delim(opt$lookup, delim = "\t", col_types = readr::cols())
 
 # Contains fixed coordinates
-coords.fixed <- readr::read_delim(opt$coordinates, delim = "\t")
+coords.fixed <- readr::read_delim(opt$coordinates, delim = "\t", col_types = readr::cols())
 
 lookup.fixed <- lookup %>%
   # This can be removed in the future, but I am keeping redundant columns
   # because I am nervous of deleting columns
   select(-new_lat, -new_long) %>%
-  left_join(coords, by = "cwts_org_no") %>%
+  left_join(coords.fixed, by = "cwts_org_no") %>%
   # Select the fixed coordiantes, when they are missing
   mutate(
     latitude = ifelse(latitude == "NULL", new_lat, latitude),
@@ -47,4 +47,4 @@ lookup.fixed <- lookup %>%
   select(-new_lat, -new_long) # remove redundant coordiantes
 
 # Write the output
-readr::write_csv(lookup.fixed, path = opt$output)
+readr::write_delim(lookup.fixed, path = opt$output, delim = "\t")
