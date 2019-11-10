@@ -40,7 +40,6 @@ option_list = list(
               help="If set, don't draw regression line"),
   make_option(c("--nofilter"), action="store_false", default=FALSE, dest = "filter",
               help="If set, plot imputed values"),
-
   make_option(c("-o", "--output"), action="store", default=NA, type='character',
               help="Path to save output image")
 ) # end option_list
@@ -56,8 +55,10 @@ if (opt$filter) {
       filter(count > 0)
 }
 
+
 # Build the plot object
 plot <- dist %>%
+  mutate(geo_distance = ifelse(geo_distance < 1, 1, geo_distance)) %>%
   # First log the geographic distance and the axes
   mutate(geo_distance_logged = log(geo_distance),
          gravity_logged = log(gravity)
