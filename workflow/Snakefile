@@ -116,7 +116,7 @@ rule fix_org_coordinates:
     params: fixed = ORG_FIXED_COORDINATES
     output: ORG_LOOKUP_FIXED
     shell:
-        "Rscript scripts/FixOrgCoordinates.R --input {input} \
+        "Rscript scripts/FixOrgCoordinates.R --lookup {input} \
         --coordinates {params.fixed} --output {output}"
 
 rule dissagregate_pubs_to_yearly:
