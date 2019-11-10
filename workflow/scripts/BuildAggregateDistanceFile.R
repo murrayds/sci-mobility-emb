@@ -77,7 +77,9 @@ distance_all <- org_flows %>%
   rename(emb_similarity = similarity) %>%
   # Calculate the "gravity", the product of sizes as a ratio of real flows.
   mutate(
-    gravity = imputed_count / (org1_size * org2_size)
+    gravity = imputed_count / (org1_size * org2_size),
+    # Threshold distances to be, at minimum, 1km
+    geo_distance = ifelse(geo_distance < 1, 1, geo_distance)
   )
 
 # Write the output
