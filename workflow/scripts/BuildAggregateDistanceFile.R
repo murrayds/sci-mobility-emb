@@ -55,7 +55,6 @@ org_sizes <- org_sizes %>%
 
 # Get average yearly flows between institutions
 org_flows <- org_flows %>%
-  select(-index) %>% # uneeded column. Remove to save memory
   # Remove cases in the "diagonal" of the distance matrix
   filter(org1 != org2) %>%
   mutate(
