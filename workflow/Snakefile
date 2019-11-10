@@ -52,6 +52,8 @@ GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'gravity_relationship_
 ##################
 ORG_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'org_to_scales.txt')
 ORG_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, '20191024_institution_lookup.txt')
+ORG_FIXED_COORDINATES = osjoin(ADDITIONAL_DATA_DIR, 'fixed_org_coordinates.txt')
+ORG_LOOKUP_FIXED = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_fixed.txt')
 COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 
 ##############
@@ -87,6 +89,7 @@ def get_sentences_for_period(params):
 ###############################################################################
 rule all:
     input:
+        ORG_LOOKUP_FIXED,
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, dimensions = W2V_DIMENSIONS),
         ORGANIZATION_FLOWS,
         ORG_GEO_DISTANCE,
@@ -106,6 +109,15 @@ rule all:
                mindist = UMAP_MIN_DIST,
                ext = FIG_EXTS),
         expand(GRAVITY_RELATIONSHIP_PLOT, to_filter = TO_FILTER, withreg = TO_PLOT_REG)
+
+
+rule fix_org_coordinates:
+    input: ORG_LOOKUP
+    params: fixed = ORG_FIXED_COORDINATES
+    output: ORG_LOOKUP_FIXED
+    shell:
+        "Rscript scripts/FixOrgCoordinates.R --input {input} \
+        --coordinates {params.fixed} --output {output}"
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
@@ -143,7 +155,7 @@ rule dimreduce_umap:
 
 rule plot_umap_org:
     input: rules.dimreduce_umap.output
-    params: ORG_LOOKUP, COUNTRY_LOOKUP
+    params: rules.fix_org_coordinates.output, COUNTRY_LOOKUP
     output: UMAP_VISUALIZATIONS_ORG
     shell:
         "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params} {output}"
@@ -155,7 +167,7 @@ rule calculate_org_flows:
         "python scripts/calculate_org_flows.py --input {input} --output {output}"
 
 rule calculate_org_geographic_distance:
-    input: ORG_LOOKUP
+    input: rules.fix_org_coordinates.output
     output: ORG_GEO_DISTANCE
     shell:
         "python scripts/calculate_org_geo_distance.py --input {input} --output {output}"
@@ -173,7 +185,7 @@ rule build_aggregate_org_distances:
                         dimensions = 200, period = "2014-2019")
     params:
         sizes = ORG_SIZES,
-        orgs = ORG_LOOKUP
+        orgs = rules.fix_org_coordinates.output
     output: AGGREGATE_ORG_DISTANCES
     shell:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
