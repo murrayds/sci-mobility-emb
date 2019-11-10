@@ -61,7 +61,7 @@ COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 ##############
 ALL_YEARS = range(2008, 2019, 1)
 PERIODS = ['2008-2013', '2014-2019']
-FIG_EXTS = ['.pdf', '.html']
+FIG_EXTS = ['pdf', 'html']
 
 # WORD2VEC parameters
 W2V_DIMENSIONS = [50, 100, 150, 200]
@@ -155,10 +155,13 @@ rule dimreduce_umap:
 
 rule plot_umap_org:
     input: rules.dimreduce_umap.output
-    params: rules.fix_org_coordinates.output, COUNTRY_LOOKUP
+    params:
+        orgs = rules.fix_org_coordinates.output,
+        countries = COUNTRY_LOOKUP
     output: UMAP_VISUALIZATIONS_ORG
     shell:
-        "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params} {output}"
+        "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params.orgs} \
+        {params.countries} {output}"
 
 rule calculate_org_flows:
     input: MOBILITY_RAW
