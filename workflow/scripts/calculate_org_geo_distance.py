@@ -12,8 +12,10 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from geopy.distance import great_circle
 
-import argparse
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
+import argparse
 parser = argparse.ArgumentParser()
 
 # System arguments
@@ -25,7 +27,8 @@ parser.add_argument("-o", "--output", help = "Output data path",
 args = parser.parse_args()
 
 # Load transition data
-organizations = pd.read_csv(args.input, sep = "\t")
+logging.info('Loading organization transitions')
+organizations = pd.read_csv(args.input, sep = "\t", encoding = "ISO-8859-1")
 
 # Small helper function to help us compute distnace. basically, just output
 # a NaN when the distances are NaN. Otherwise, compute the distance.
@@ -39,7 +42,7 @@ def compute_distance_helper(u, v):
 coordinates = [[row.latitude, row.longitude] for index, row in organizations.iterrows()]
 
 # Using the vincenty distance function.
-
+logging.info('Computing geographic distances')
 dist = pdist(coordinates, lambda u, v: compute_distance_helper(u, v))
 
 # Convert distance matrix to a dataframe

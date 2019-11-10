@@ -10,9 +10,11 @@ Calculates the geographic distance between organizations
 import pandas as pd
 import numpy as np
 from gensim.models import Word2Vec
+from collections import defaultdict
+from itertools import combinations
+
 
 import argparse
-
 parser = argparse.ArgumentParser()
 
 # System arguments
@@ -30,11 +32,11 @@ model = Word2Vec.load(args.model)
 vocab = model.wv.vocab
 
 # Construct the distnace matrix
-D = {}
-for word1 in vocab:
-    D[word1] = {}
-    for word2 in vocab:
-        D[word1][word2] = model.similarity(word1, word2)
+D = defaultdict(lambda: defaultdict(float))
+for word1, word2 in combinations(vocab, 2):
+    temp_sim = model.similarity(word1,word2)
+    d[word1][word2] = temp_sim
+    d[word2][word1] = temp_sim
 
 # Convert distance matrix to a dataframe
 distance_df = pd.DataFrame(D)

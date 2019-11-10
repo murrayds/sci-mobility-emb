@@ -10,9 +10,13 @@ by individual.
 """
 import pandas as pd
 import numpy as np
+from collections import defaultdict
+from itertools import combinations
+
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 import argparse
-
 parser = argparse.ArgumentParser()
 
 # System arguments
@@ -24,26 +28,24 @@ parser.add_argument("-o", "--output", help = "Output data path",
 args = parser.parse_args()
 
 # Load transition data
-print('Reading transitions')
+logging.info('Reading transitions')
 transitions = pd.read_csv(args.input, sep = "\t")
 
 # Get a list containing institutions for each individual
 transition_lists = transitions.groupby('cluster_id')['cwts_org_no'].apply(list)
 
 # Populate a dictionary of dictionaries, that will hold our co-occurence info
-print('Populating empty co-occurence matrix')
+logging.info('Populating empty co-occurence matrix')
 co_occur = {}
 vocab = transitions.cwts_org_no.unique()
-for v1 in vocab:
-    # If doesn't yet exist, create the sub-dictionary
-    if v1 not in co_occur.keys():
-        co_occur[v1] = {}
-    # Initialize to zero
-    for v2 in vocab:
-        co_occur[v1][v2] = 0
+
+co_occur = defaultdict(lambda: defaultdict(float))
+for v1, v2 in combinations(vocab, 2):
+    co_occur[v1][v2] = 0
+    co_occur[v1][v2] = 0
 
 # Iterate through each list, incremenet co-occurence count
-print('Filling in co-occurences')
+logging.info('Filling in co-occurences')
 for sublist in transition_lists:
     for org1 in sublist:
         for org2 in sublist:
@@ -53,11 +55,11 @@ for sublist in transition_lists:
 co_occur_df = pd.DataFrame(co_occur)
 
 # Fill the diagonal with the row sums
-print('Filling diagonal with zeroes')
+logging.info('Filling diagonal with zeroes')
 np.fill_diagonal(co_occur_df.values, 0)
 
 # Get the upper triangle of the matrix
-print('Converting to long format')
+logging.info('Converting to long format')
 upper_tri = co_occur_df.where(np.triu(np.ones(co_occur_df.shape)).astype(np.bool))
 
 # Convert into long format
