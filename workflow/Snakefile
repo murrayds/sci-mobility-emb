@@ -8,6 +8,7 @@ FIGURE_DIR = osjoin(PROJ_HOME, 'Figures')
 RAW_DATA_DIR = osjoin(DATA_DIR, 'Raw')
 ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
+DESCRIPTIVE_DATA_DIR = osjoin(DATA_DIR, 'Descriptive')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
@@ -17,28 +18,42 @@ UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 ############
 MOBILITY_RAW = osjoin(RAW_DATA_DIR, '20191024_mobility_transitions.txt')
 MOBILITY_RAW_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{year}_raw_mobility.csv')
+ORG_SIZES = osjoin(RAW_DATA_DIR, '2008-2019_inst_sizes.txt')
 
 ######################
 # Mobility sentences #
 ######################
 MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{year}_org_sentences.csv')
 
+####################
+# Descriptive Data #
+####################
+ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_flows.csv')
+ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distance.csv')
+AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate_org_distances.csv')
+
+
 ##############
 # Embeddings #
 ##############
 WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', '{period}_word2vec_d{dimensions}_model.bin')
+ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{dimensions}_sim.csv')
+
 
 ##################
 # Visualizations #
 ##################
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'd{dimensions}', 'data', '{period}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_data.csv')
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'd{dimensions}', '{period}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
+GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'gravity_relationship_{to_filter}_{withreg}.pdf')
 
 ##################
 # Metadata files #
 ##################
 ORG_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'org_to_scales.txt')
 ORG_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, '20191024_institution_lookup.txt')
+ORG_FIXED_COORDINATES = osjoin(ADDITIONAL_DATA_DIR, 'fixed_org_coordinates.txt')
+ORG_LOOKUP_FIXED = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_fixed.txt')
 COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 
 ##############
@@ -46,7 +61,7 @@ COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 ##############
 ALL_YEARS = range(2008, 2019, 1)
 PERIODS = ['2008-2013', '2014-2019']
-FIG_EXTS = ['.pdf', '.html']
+FIG_EXTS = ['pdf', 'html']
 
 # WORD2VEC parameters
 W2V_DIMENSIONS = [50, 100, 150, 200]
@@ -60,6 +75,10 @@ UMAP_METRICS = ['cosine', 'euclidean', 'correlation']
 UMAP_NEIGHBORS = [5, 10, 15, 20]
 UMAP_MIN_DIST = [0.0, 0.1, 0.25, 0.5]
 
+# Gravity law parameters
+TO_FILTER = ["filter", "nofilter"]
+TO_PLOT_REG = ["reg", "noreg"]
+
 def get_sentences_for_period(params):
     period_split = params.period.split("-")
     period_years = range(int(period_split[0]), int(period_split[1]) + 1, 1)
@@ -70,7 +89,12 @@ def get_sentences_for_period(params):
 ###############################################################################
 rule all:
     input:
+        ORG_LOOKUP_FIXED,
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, dimensions = W2V_DIMENSIONS),
+        ORGANIZATION_FLOWS,
+        ORG_GEO_DISTANCE,
+        expand(ORG_W2V_SIMILARITIES, dimensions = 200, period = '2014-2019'),
+        AGGREGATE_ORG_DISTANCES,
         expand(UMAP_DATA,
                period = PERIODS,
                dimensions = W2V_DIMENSIONS,
@@ -83,7 +107,17 @@ rule all:
                metric = UMAP_METRICS,
                neighbors = UMAP_NEIGHBORS,
                mindist = UMAP_MIN_DIST,
-               ext = FIG_EXTS)
+               ext = FIG_EXTS),
+        expand(GRAVITY_RELATIONSHIP_PLOT, to_filter = TO_FILTER, withreg = TO_PLOT_REG)
+
+
+rule fix_org_coordinates:
+    input: ORG_LOOKUP
+    params: fixed = ORG_FIXED_COORDINATES
+    output: ORG_LOOKUP_FIXED
+    shell:
+        "Rscript scripts/FixOrgCoordinates.R --lookup {input} \
+        --coordinates {params.fixed} --output {output}"
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
@@ -121,7 +155,52 @@ rule dimreduce_umap:
 
 rule plot_umap_org:
     input: rules.dimreduce_umap.output
-    params: ORG_LOOKUP, COUNTRY_LOOKUP
+    params:
+        orgs = rules.fix_org_coordinates.output,
+        countries = COUNTRY_LOOKUP
     output: UMAP_VISUALIZATIONS_ORG
     shell:
-        "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params} {output}"
+        "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params.orgs} \
+        {params.countries} {output}"
+
+rule calculate_org_flows:
+    input: MOBILITY_RAW
+    output: ORGANIZATION_FLOWS
+    shell:
+        "python scripts/calculate_org_flows.py --input {input} --output {output}"
+
+rule calculate_org_geographic_distance:
+    input: rules.fix_org_coordinates.output
+    output: ORG_GEO_DISTANCE
+    shell:
+        "python scripts/calculate_org_geo_distance.py --input {input} --output {output}"
+
+rule calculate_org_w2v_similarities:
+    input: rules.train_word2vec_model.output
+    output: ORG_W2V_SIMILARITIES
+    shell:
+        "python scripts/calculate_org_w2v_similarity.py --model {input} --output {output}"
+
+rule build_aggregate_org_distances:
+    input: flows = rules.calculate_org_flows.output,
+           geo = rules.calculate_org_geographic_distance.output,
+           emb = expand(rules.calculate_org_w2v_similarities.output,
+                        dimensions = 200, period = "2014-2019")
+    params:
+        sizes = ORG_SIZES,
+        orgs = rules.fix_org_coordinates.output
+    output: AGGREGATE_ORG_DISTANCES
+    shell:
+        "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
+                 --flows {input.flows} --geo {input.geo} --emb {input.emb} \
+                 --orgs {params.orgs} --out {output}"
+
+rule plot_gravity_relationship:
+    input: rules.build_aggregate_org_distances.output
+    output: GRAVITY_RELATIONSHIP_PLOT
+    params:
+        filterflag = lambda w: '--{}'.format(w.to_filter),
+        regflag = lambda w: '--{}'.format(w.withreg)
+    shell:
+        "Rscript scripts/PlotGravityLawRelationship.R --input {input} \
+                 --output {output} {params.filterflag} {params.regflag}"
