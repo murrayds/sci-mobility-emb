@@ -19,6 +19,7 @@ UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 MOBILITY_RAW = osjoin(RAW_DATA_DIR, '20191024_mobility_transitions.txt')
 MOBILITY_RAW_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{year}_raw_mobility.csv')
 ORG_SIZES = osjoin(RAW_DATA_DIR, '2008-2019_inst_sizes.txt')
+ORG_STATE_NAMES = osjoin(ADDITIONAL_DATA_DIR, 'org_states.csv')
 
 ######################
 # Mobility sentences #
@@ -31,7 +32,6 @@ MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{year}_org_sentences.csv')
 ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_flows.csv')
 ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distance.csv')
 AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate_org_distances.csv')
-
 
 ##############
 # Embeddings #
@@ -90,6 +90,7 @@ def get_sentences_for_period(params):
 rule all:
     input:
         ORG_LOOKUP_FIXED,
+        ORG_STATE_NAMES,
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, dimensions = W2V_DIMENSIONS),
         ORGANIZATION_FLOWS,
         ORG_GEO_DISTANCE,
@@ -118,6 +119,12 @@ rule fix_org_coordinates:
     shell:
         "Rscript scripts/FixOrgCoordinates.R --lookup {input} \
         --coordinates {params.fixed} --output {output}"
+
+rule lookup_state_from_coords:
+    input: rules.fix_org_coordinates.output
+    output: ORG_STATE_NAMES
+    shell:
+        "python scripts/lookup_state_from_coords.py --input {input} --sleep 1.1 --output {output}"
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
