@@ -1,2 +1,6 @@
 .snakemake
+
+# The authentication token for the LocationIQ Api
+LOCATIONIQ_API_KEY
+
 PROJ_HOME_DIR

@@ -19,6 +19,7 @@ UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 MOBILITY_RAW = osjoin(RAW_DATA_DIR, '20191024_mobility_transitions.txt')
 MOBILITY_RAW_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{year}_raw_mobility.csv')
 ORG_SIZES = osjoin(RAW_DATA_DIR, '2008-2019_inst_sizes.txt')
+ORG_STATE_NAMES = osjoin(ADDITIONAL_DATA_DIR, 'org_states.csv')
 
 ######################
 # Mobility sentences #
@@ -31,7 +32,6 @@ MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{year}_org_sentences.csv')
 ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_flows.csv')
 ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distance.csv')
 AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate_org_distances.csv')
-
 
 ##############
 # Embeddings #
@@ -54,6 +54,7 @@ ORG_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'org_to_scales.txt')
 ORG_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, '20191024_institution_lookup.txt')
 ORG_FIXED_COORDINATES = osjoin(ADDITIONAL_DATA_DIR, 'fixed_org_coordinates.txt')
 ORG_LOOKUP_FIXED = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_fixed.txt')
+ORG_LOOKUP_WITH_STATES = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_with_states.txt')
 COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 
 ##############
@@ -90,6 +91,8 @@ def get_sentences_for_period(params):
 rule all:
     input:
         ORG_LOOKUP_FIXED,
+        ORG_STATE_NAMES,
+        ORG_LOOKUP_WITH_STATES,
         expand(WORD2VEC_EMBEDDINGS, period = PERIODS, dimensions = W2V_DIMENSIONS),
         ORGANIZATION_FLOWS,
         ORG_GEO_DISTANCE,
@@ -118,6 +121,20 @@ rule fix_org_coordinates:
     shell:
         "Rscript scripts/FixOrgCoordinates.R --lookup {input} \
         --coordinates {params.fixed} --output {output}"
+
+rule lookup_state_from_coords:
+    input: rules.fix_org_coordinates.output
+    output: ORG_STATE_NAMES
+    shell:
+        "python scripts/lookup_state_from_coords.py --input {input} --sleep 1.1 --output {output}"
+
+rule add_state_to_lookup:
+    input: rules.fix_org_coordinates.output
+    params: states = rules.lookup_state_from_coords.output
+    output: ORG_LOOKUP_WITH_STATES
+    shell:
+        "Rscript scripts/AddStatesToLookup.R --lookup {input} --output {output} \
+                 --states {params.states}"
 
 rule dissagregate_pubs_to_yearly:
     input: MOBILITY_RAW
@@ -156,7 +173,7 @@ rule dimreduce_umap:
 rule plot_umap_org:
     input: rules.dimreduce_umap.output
     params:
-        orgs = rules.fix_org_coordinates.output,
+        orgs = rules.add_state_to_lookup.output,
         countries = COUNTRY_LOOKUP
     output: UMAP_VISUALIZATIONS_ORG
     shell:
@@ -170,7 +187,7 @@ rule calculate_org_flows:
         "python scripts/calculate_org_flows.py --input {input} --output {output}"
 
 rule calculate_org_geographic_distance:
-    input: rules.fix_org_coordinates.output
+    input: rules.add_state_to_lookup.output
     output: ORG_GEO_DISTANCE
     shell:
         "python scripts/calculate_org_geo_distance.py --input {input} --output {output}"
@@ -188,7 +205,7 @@ rule build_aggregate_org_distances:
                         dimensions = 200, period = "2014-2019")
     params:
         sizes = ORG_SIZES,
-        orgs = rules.fix_org_coordinates.output
+        orgs = rules.add_state_to_lookup.output
     output: AGGREGATE_ORG_DISTANCES
     shell:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
