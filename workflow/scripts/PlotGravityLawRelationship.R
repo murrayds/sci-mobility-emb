@@ -33,6 +33,8 @@ option_list = list(
               help="Path to file containing aggregate organization distances"),
   make_option(c("--filter"), action="store_true", default=FALSE,
               help="If set, don't plot imputed values"),
+  make_option(c("--geo"), action="store", default="none",
+              help="Geographic constraint, none, or same or different country, region, or city"),
   # These are mostly unecessary, but make automation easier since we can just
   # iterate over different items in a list
   make_option(c("--nofilter"), action="store_false", default=FALSE, dest = "filter",
@@ -65,6 +67,20 @@ dist <- dist %>%
                          levels = c("geo_distance_logged", "emb_similarity"),
                          labels = c("log(km distance)", "cosine similarity"))
   )
+
+# If the geographic constraint (--geo) is set, then filter the
+# distance dataframe accordingly. 
+if (opt$geo == "same-county") {
+  dist <- dist %>% filter(org1_country == org2_country)
+} else if (opt$geo == "same-region") {
+  dist <- dist %>% filter(org1_region == org2_region)
+} else if (opt$geo == "different-country") {
+  dist <- dist %>% filter(org1_country != org2_country)
+} else if (opt$geo == "different-region") {
+  dist <- dist %>% filter(org1_region != org2_region)
+} else if (opt$geo == "different-city") {
+  dist <- dist %>% filter(org1_city == org2_city)
+}
 
 # Create binned values that will be plotted over top
 dist_binned <- dist %>%
