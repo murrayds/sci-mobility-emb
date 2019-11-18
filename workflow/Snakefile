@@ -45,7 +45,7 @@ ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{
 ##################
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'd{dimensions}', 'data', '{period}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_data.csv')
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'd{dimensions}', '{period}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
-GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'gravity_relationship_{to_filter}_{withreg}.pdf')
+GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'gravity_relationship_{to_filter}.pdf')
 
 ##################
 # Metadata files #
@@ -78,7 +78,6 @@ UMAP_MIN_DIST = [0.0, 0.1, 0.25, 0.5]
 
 # Gravity law parameters
 TO_FILTER = ["filter", "nofilter"]
-TO_PLOT_REG = ["reg", "noreg"]
 
 def get_sentences_for_period(params):
     period_split = params.period.split("-")
@@ -111,7 +110,7 @@ rule all:
                neighbors = UMAP_NEIGHBORS,
                mindist = UMAP_MIN_DIST,
                ext = FIG_EXTS),
-        expand(GRAVITY_RELATIONSHIP_PLOT, to_filter = TO_FILTER, withreg = TO_PLOT_REG)
+        expand(GRAVITY_RELATIONSHIP_PLOT, to_filter = TO_FILTER)
 
 
 rule fix_org_coordinates:
@@ -216,8 +215,7 @@ rule plot_gravity_relationship:
     input: rules.build_aggregate_org_distances.output
     output: GRAVITY_RELATIONSHIP_PLOT
     params:
-        filterflag = lambda w: '--{}'.format(w.to_filter),
-        regflag = lambda w: '--{}'.format(w.withreg)
+        filterflag = lambda w: '--{}'.format(w.to_filter)
     shell:
         "Rscript scripts/PlotGravityLawRelationship.R --input {input} \
-                 --output {output} {params.filterflag} {params.regflag}"
+                 --output {output} {params.filterflag}"

@@ -8,7 +8,8 @@
 #
 
 # Plotting options
-NUM_BINS = 20
+NUM_HEX_BINS = 20
+NUM_DISTANCE_BINS = 40
 
 FILL_GRADIENT_MIN = "white"
 FILL_GRADIENT_MAX = "blue"
@@ -32,12 +33,8 @@ option_list = list(
               help="Path to file containing aggregate organization distances"),
   make_option(c("--filter"), action="store_true", default=FALSE,
               help="If set, don't plot imputed values"),
-  make_option(c("--reg"), action="store_true", default=FALSE,
-              help="If set, draw regression line"),
   # These are mostly unecessary, but make automation easier since we can just
-  # iterate over different flafs
-  make_option(c("--noreg"), action="store_false", default=FALSE, dest = "reg",
-              help="If set, don't draw regression line"),
+  # iterate over different items in a list
   make_option(c("--nofilter"), action="store_false", default=FALSE, dest = "filter",
               help="If set, plot imputed values"),
   make_option(c("-o", "--output"), action="store", default=NA, type='character',
@@ -55,9 +52,8 @@ if (opt$filter) {
       filter(count > 0)
 }
 
-
-# Build the plot object
-plot <- dist %>%
+# Format the distance dataframe, calculating necessary values
+dist <- dist %>%
   # First log the geographic distance and the axes
   mutate(geo_distance_logged = log(geo_distance),
          gravity_logged = log(gravity)
@@ -68,36 +64,58 @@ plot <- dist %>%
   mutate(metric = factor(metric,
                          levels = c("geo_distance_logged", "emb_similarity"),
                          labels = c("log(km distance)", "cosine similarity"))
-  ) %>%
-  # Start the GGPLOT code
-  ggplot(aes(x = gravity_logged, y = distance)) +
-    geom_hex(bins = NUM_BINS,
-           color = BIN_BORDER_COLOR) +
-    facet_wrap(~metric, scale = "free_y", strip.position = "left") +
-    theme_minimal() +
-    scale_fill_gradientn(colours=c(FILL_GRADIENT_MIN, FILL_GRADIENT_MAX),
-                        name = "Frequency",
-                        na.value=NA) +
-    theme(
-      legend.position = "right",
-      strip.text = element_text(size = 12),
-      axis.title.x = element_text(size = 12, face = "bold"),
-      axis.title.y = element_blank()
-    ) +
-    xlab(latex2exp::TeX("$\\log\\left(\\frac{F_{ij}}{P_{i}P_{j}}\\right)$")) +
-    ylab("Metric")
+  )
 
-# If the "reg" option is set, then draw a regression line with the correponding
-# value of R2
-if (opt$reg) {
-  plot <- plot +
+# Create binned values that will be plotted over top
+dist_binned <- dist %>%
+  group_by(metric) %>%
+  mutate(
+    bin = cut(round(distance, 2), NUM_DISTANCE_BINS)
+  ) %>%
+  arrange(bin) %>%
+  group_by(metric, bin) %>%
+  summarize(
+    # Plot the point at the midpoint in each bin
+    pos = min(distance) + ((max(distance) - min(distance)) / 2),
+    #pos = (as.numeric(first(bin)) * 0.05) - 0.025,
+    mu = mean(gravity_logged, na.rm = T),
+    ci = 2.576 * (sd(gravity_logged, na.rm = T) / sqrt(n())) # using the 99th percentile CI
+  )
+
+# Build the plot object
+plot <- dist %>%
+  ggplot(aes(x = distance, y = gravity_logged)) +
+    geom_hex(bins = NUM_HEX_BINS,
+             color = BIN_BORDER_COLOR) +
+    # Break into facets, but labels on bottom, allow different x axes
+    facet_wrap(~metric, scale = "free_x", strip.position = "bottom") +
+    # Draw a regression line
     stat_smooth(method = "lm", formula = y ~ x, color = REGRESSION_LINE_COLOR, size = 1.5) +
+    # Add the r-squared coefficient to the plot
     ggpmisc::stat_poly_eq(formula = y ~ x,
                           aes(label = paste(..rr.label.., sep = "~~~")),
                           parse=TRUE,
                           coef.digits = 2,
-                          label.x.npc = "right")
-}
+                          label.x.npc = "right"
+    ) +
+    # Add mean + 99% confidence intervals for each bin of data
+    geom_point(data = dist_binned, aes(x = pos, y = mu, group = bin), size = 2) +
+    geom_errorbar(data = dist_binned, aes(x = pos, ymin = mu - ci, ymax = mu + ci, y = NULL)) +
+    # Set the color gradient
+    scale_fill_gradientn(colours=c(FILL_GRADIENT_MIN, FILL_GRADIENT_MAX),
+                        name = "Frequency",
+                        na.value=NA
+    ) +
+    # Define the plotting theme
+    theme_minimal() +
+    theme(
+      legend.position = "right",
+      strip.text = element_text(size = 12),
+      axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
+      axis.title.x = element_blank()
+    ) +
+    # Add labels
+    ylab(latex2exp::TeX("$\\log\\left(\\frac{F_{ij}}{P_{i}P_{j}}\\right)$"))
 
 # Save the plot
 ggsave(opt$output, plot, width = FIG_WIDTH, height = FIG_HEIGHT)
