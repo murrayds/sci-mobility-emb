@@ -35,7 +35,8 @@ org_sizes <- read_delim(opt$sizes, delim = "\t", col_types = cols())
 org_flows <- read_csv(opt$flows, col_types = cols())
 
 # Org lookup table
-lookup <- read_delim(opt$orgs, delim = "\t", col_types = cols())
+lookup <- read_delim(opt$orgs, delim = "\t", col_types = cols()) %>%
+  select(cwts_org_no, city, region, country_iso_name)
 
 # Org geographic distances
 geographic_distance <- read_csv(opt$geo, col_types = cols())
@@ -80,7 +81,14 @@ distance_all <- org_flows %>%
     gravity = imputed_count / (org1_size * org2_size),
     # Threshold distances to be, at minimum, 1km
     geo_distance = ifelse(geo_distance < 1, 1, geo_distance)
-  )
+  ) %>%
+  # Add the information on city, region, and country for each org
+  left_join(lookup, by = c("org1" = "cwts_org_no")) %>%
+  rename(org1_city = city, org1_region = region, org1_country = country_iso_name) %>%
+  left_join(lookup, by = c("org2" = "cwts_org_no")) %>%
+  rename(org2_city = city, org2_region = region, org2_country = country_iso_name) %>%
+  # Get only unique rows, many of these merge steps tend to add duplicates
+  unique()
 
 # Write the output
 write_csv(distance_all, path = opt$out)
