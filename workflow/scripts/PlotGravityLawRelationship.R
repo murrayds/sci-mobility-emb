@@ -69,8 +69,8 @@ dist <- dist %>%
   )
 
 # If the geographic constraint (--geo) is set, then filter the
-# distance dataframe accordingly. 
-if (opt$geo == "same-county") {
+# distance dataframe accordingly.
+if (opt$geo == "same-country") {
   dist <- dist %>% filter(org1_country == org2_country)
 } else if (opt$geo == "same-region") {
   dist <- dist %>% filter(org1_region == org2_region)
@@ -79,7 +79,7 @@ if (opt$geo == "same-county") {
 } else if (opt$geo == "different-region") {
   dist <- dist %>% filter(org1_region != org2_region)
 } else if (opt$geo == "different-city") {
-  dist <- dist %>% filter(org1_city == org2_city)
+  dist <- dist %>% filter(org1_city != org2_city)
 }
 
 # Create binned values that will be plotted over top
