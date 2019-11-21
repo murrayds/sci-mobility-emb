@@ -26,10 +26,8 @@ mobility.formatted = mobility.raw %>%
   rename(token = TARGET_SCALE) %>%
   group_by(cluster_id) %>%
   summarize(
-    has_multiple_tokens = length(unique(token)) > 1,
     sentence = paste(token, collapse = " ")
   ) %>%
-  filter(has_multiple_tokens) %>%
   select(cluster_id, sentence)
 
 readr::write_csv(mobility.formatted, path = OUTPUT_FILE_PATH)
