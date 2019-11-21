@@ -43,8 +43,8 @@ ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{
 ##################
 # Visualizations #
 ##################
-UMAP_DATA = osjoin(UMAP_FIGURE_DIR, 'd{dimensions}', 'data', '{period}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_data.csv')
-UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, 'd{dimensions}', '{period}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
+UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 'data', '{period}_{country}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_data.csv')
+UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', '{period}_{country}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'gravity_relationship_{to_filter}_{geo_constraint}.pdf')
 
 ##################
@@ -72,6 +72,7 @@ W2V_NUM_WORKERS = 4
 W2V_ITERATIONS = 10
 
 # UMAP parameters
+COUNTRIES = ['all', 'USA', 'CHN', 'DEU']
 UMAP_METRICS = ['cosine', 'euclidean', 'correlation']
 UMAP_NEIGHBORS = [5, 10, 15, 20]
 UMAP_MIN_DIST = [0.0, 0.1, 0.25, 0.5]
@@ -112,6 +113,7 @@ rule all:
                metric = UMAP_METRICS,
                neighbors = UMAP_NEIGHBORS,
                mindist = UMAP_MIN_DIST,
+               country = 'all',
                ext = FIG_EXTS),
         expand(GRAVITY_RELATIONSHIP_PLOT, to_filter = TO_FILTER, geo_constraint = GEO_CONSTRAINTS)
 
@@ -166,11 +168,13 @@ rule train_word2vec_model:
 
 rule dimreduce_umap:
     input: rules.train_word2vec_model.output
+    params: lookup = rules.add_state_to_lookup.output
     output: UMAP_DATA
     shell:
         'python scripts/dimreduce_with_umap.py --model {input} \
                 --metric {wildcards.metric} --neighbors {wildcards.neighbors} \
-                --mindistance {wildcards.mindist} --output {output}'
+                --mindistance {wildcards.mindist} --country {wildcards.country} \
+                --lookup {params.lookup} --output {output}'
 
 rule plot_umap_org:
     input: rules.dimreduce_umap.output
