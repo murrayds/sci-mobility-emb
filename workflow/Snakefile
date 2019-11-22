@@ -32,23 +32,23 @@ MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{year}_org_sentences.csv')
 ####################
 ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_flows.csv')
 ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distance.csv')
-AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_aggregate_org_distances_d{dimensions}.csv')
+AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_aggregate_org_distances_d{dimensions}_ws{window}.csv')
 RESEARCHER_META = osjoin(DESCRIPTIVE_DATA_DIR, 'researcher', 'researcher_metadata.txt')
 ORG_META = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'org_metadata.txt')
 
 ##############
 # Embeddings #
 ##############
-WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', '{period}_word2vec_d{dimensions}_model.bin')
-ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{dimensions}_sim.csv')
+WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', '{period}_word2vec_d{dimensions}_ws{window}_model.bin')
+ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{dimensions}_ws{window}_sim.csv')
 
 
 ##################
 # Visualizations #
 ##################
-UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 'data', '{period}_{country}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_data.csv')
-UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', '{period}_{country}_umap_d{dimensions}_{metric}_neighbors{neighbors}_mindist{mindist}_vis.{ext}')
-GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{period}_gravity_relationship_{to_filter}_{geo_constraint}.pdf')
+UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 'data', '{period}_{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_data.csv')
+UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', '{period}_{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
+GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{period}_gravity_d{dimensions}_ws{window}_{to_filter}_{geo_constraint}.pdf')
 
 ##################
 # Metadata files #
@@ -68,17 +68,16 @@ PERIODS = ['2008-2019']
 FIG_EXTS = ['pdf', 'html']
 
 # WORD2VEC parameters
-W2V_DIMENSIONS = [100, 200]
-W2V_WINDOW_SIZE = 5
-W2V_MIN_WORD_FREQ = 100
+W2V_DIMENSIONS = [100, 200, 300]
+W2V_WINDOW_SIZE = [1, 2, 5, 10]
+W2V_MIN_WORD_FREQ = 50
 W2V_NUM_WORKERS = 4
 W2V_ITERATIONS = 5
 
 # UMAP parameters
 COUNTRIES = ['all', 'USA', 'CHN']
-UMAP_METRICS = ['cosine', 'euclidean', 'correlation']
+UMAP_METRICS = ['cosine']
 UMAP_NEIGHBORS = [20, 25]
-UMAP_MIN_DIST = [0.01]
 
 # Gravity law parameters
 TO_FILTER = ["filter", "nofilter"]
@@ -96,37 +95,41 @@ def get_sentences_for_period(params):
 ###############################################################################
 rule all:
     input:
-        ORG_LOOKUP_FIXED,
-        ORG_STATE_NAMES,
         ORG_LOOKUP_WITH_STATES,
         RESEARCHER_META,
         ORG_META,
-        expand(WORD2VEC_EMBEDDINGS, period = PERIODS, dimensions = W2V_DIMENSIONS),
-        ORGANIZATION_FLOWS,
-        ORG_GEO_DISTANCE,
+        expand(WORD2VEC_EMBEDDINGS,
+               period = PERIODS,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
         expand(ORG_W2V_SIMILARITIES,
                dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE,
                period = PERIODS),
-        expand(AGGREGATE_ORG_DISTANCES, dimensions = W2V_DIMENSIONS, period = PERIODS),
+        expand(AGGREGATE_ORG_DISTANCES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE,
+               period = PERIODS),
         expand(UMAP_DATA,
                period = PERIODS,
                dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE,
                metric = UMAP_METRICS,
                neighbors = UMAP_NEIGHBORS,
-               mindist = UMAP_MIN_DIST,
                country = COUNTRIES),
         expand(UMAP_VISUALIZATIONS_ORG,
                dimensions = W2V_DIMENSIONS,
                period = PERIODS,
                metric = UMAP_METRICS,
                neighbors = UMAP_NEIGHBORS,
-               mindist = UMAP_MIN_DIST,
+               window = W2V_WINDOW_SIZE,
                country = 'all',
                ext = FIG_EXTS),
         expand(GRAVITY_RELATIONSHIP_PLOT,
                to_filter = TO_FILTER,
                geo_constraint = GEO_CONSTRAINTS,
                dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE,
                period = PERIODS)
 
 
@@ -194,13 +197,12 @@ rule train_word2vec_model:
     output: WORD2VEC_EMBEDDINGS
     threads: W2V_NUM_WORKERS
     params:
-        ws = W2V_WINDOW_SIZE,
         wf = W2V_MIN_WORD_FREQ,
         nw = W2V_NUM_WORKERS,
         niter = W2V_ITERATIONS
     shell:
         "python scripts/train_word2vec_embedding_from_sentences.py --files {input} \
-                --dimensions {wildcards.dimensions} --window {params.ws} \
+                --dimensions {wildcards.dimensions} --window {wildcards.window} \
                 --minfrequency {params.wf} --numworkers {params.nw} \
                 --iterations {params.niter} --output {output}"
 
@@ -211,7 +213,7 @@ rule dimreduce_umap:
     shell:
         'python scripts/dimreduce_with_umap.py --model {input} \
                 --metric {wildcards.metric} --neighbors {wildcards.neighbors} \
-                --mindistance {wildcards.mindist} --country {wildcards.country} \
+                --mindistance 0.1 --country {wildcards.country} \
                 --lookup {params.lookup} --output {output}'
 
 rule plot_umap_org:
