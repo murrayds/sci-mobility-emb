@@ -49,7 +49,7 @@ researcher.meta <- mobility.raw %>%
    num_country = length(unique(country)),
    org_mobile = num_org > 1,
    city_mobile = num_city > 1,
-   region_mobile = num_city > 1,
+   region_mobile = num_region > 1,
    country_mobile = num_country > 1,
    num_fields = length(unique(LR_main_field_no))
  )
