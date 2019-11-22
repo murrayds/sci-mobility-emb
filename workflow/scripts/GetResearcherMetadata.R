@@ -46,7 +46,7 @@ researcher.meta <- mobility.raw %>%
    num_org = length(unique(cwts_org_no)),
    num_city = length(unique(city)),
    num_region = length(unique(region)),
-   num_country = length(unique(region)),
+   num_country = length(unique(country)),
    org_mobile = num_org > 1,
    city_mobile = num_city > 1,
    region_mobile = num_city > 1,
