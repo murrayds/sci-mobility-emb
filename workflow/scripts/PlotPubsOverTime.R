@@ -69,7 +69,7 @@ plot <- plotdata %>%
   expand_limits(y = 0) + # Make sure that y=axis stretches to 0
   scale_y_continuous(breaks = c(0, 1000000, 2000000, 3000000, 4000000),
                      labels = c("0", "1,000,000", "2,000,000", "3,000,000", "4,000,000")) +
-  viridis::scale_color_viridis(discrete = T) +
+  viridis::scale_fill_viridis(discrete = T) +
   guides(fill = guide_legend(ncol = 2)) +
   theme_minimal() +
   theme(
