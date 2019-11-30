@@ -66,8 +66,6 @@ upper_tri = co_occur_df.where(np.triu(np.ones(co_occur_df.shape)).astype(np.bool
 # Convert into long format
 upper_tri = upper_tri.stack().reset_index()
 
-#upper_tri = co_occur_df.stack().reset_index()
-
 # Set column names
 upper_tri.columns = ['org1', 'org2', 'count']
 
