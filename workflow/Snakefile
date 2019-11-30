@@ -72,7 +72,7 @@ FIG_EXTS = ['pdf', 'html']
 
 # WORD2VEC parameters
 W2V_DIMENSIONS = [100, 200]
-W2V_WINDOW_SIZE = [1, 2, 5, 10]
+W2V_WINDOW_SIZE = [2, 5]
 W2V_MIN_WORD_FREQ = 50
 W2V_NUM_WORKERS = 4
 W2V_ITERATIONS = 5
@@ -83,7 +83,7 @@ UMAP_METRICS = ['cosine']
 UMAP_NEIGHBORS = [25]
 
 # Gravity law parameters
-TO_FILTER = ["filter", "nofilter"]
+TO_FILTER = ["filter"]
 GEO_CONSTRAINTS = ['global',
                    'same-country', 'same-region',
                    'different-country', 'different-region', 'different-city']
@@ -152,20 +152,20 @@ rule lookup_state_from_coords:
         "python scripts/lookup_state_from_coords.py --input {input} --sleep 1.1 --output {output}"
 
 rule add_state_to_lookup:
-    input: rules.fix_org_coordinates.output
-    params: states = rules.lookup_state_from_coords.output
+    input: coords = rules.fix_org_coordinates.output,
+           states = rules.lookup_state_from_coords.output
     output: ORG_LOOKUP_WITH_STATES
     shell:
-        "Rscript scripts/AddStatesToLookup.R --lookup {input} --output {output} \
-                 --states {params.states}"
+        "Rscript scripts/AddStatesToLookup.R --lookup {input.coords} --output {output} \
+                 --states {input.states}"
 
 rule get_researcher_metadata:
-    input: MOBILITY_RAW
-    params: lookup = rules.add_state_to_lookup.output
+    input: raw = MOBILITY_RAW,
+           lookup = rules.add_state_to_lookup.output
     output: RESEARCHER_META
     shell:
-        "Rscript scripts/GetResearcherMetadata.R --input {input} \
-                --lookup {params.lookup} --output {output}"
+        "Rscript scripts/GetResearcherMetadata.R --input {input.raw} \
+                --lookup {input.lookup} --output {output}"
 
 rule get_org_metadata:
     input:
@@ -211,14 +211,14 @@ rule train_word2vec_model:
                 --iterations {params.niter} --output {output}"
 
 rule dimreduce_umap:
-    input: rules.train_word2vec_model.output
-    params: lookup = rules.add_state_to_lookup.output
+    input: model = rules.train_word2vec_model.output,
+           lookup = rules.add_state_to_lookup.output
     output: UMAP_DATA
     shell:
-        'python scripts/dimreduce_with_umap.py --model {input} \
+        'python scripts/dimreduce_with_umap.py --model {input.model} \
                 --metric {wildcards.metric} --neighbors {wildcards.neighbors} \
                 --mindistance 0.1 --country {wildcards.country} \
-                --lookup {params.lookup} --output {output}'
+                --lookup {input.lookup} --output {output}'
 
 rule plot_umap_org:
     input: rules.dimreduce_umap.output
@@ -251,10 +251,10 @@ rule calculate_org_w2v_similarities:
 rule build_aggregate_org_distances:
     input: flows = rules.calculate_org_flows.output,
            geo = rules.calculate_org_geographic_distance.output,
-           emb = rules.calculate_org_w2v_similarities.output
+           emb = rules.calculate_org_w2v_similarities.output,
+           orgs = rules.add_state_to_lookup.output
     params:
         sizes = ORG_SIZES,
-        orgs = rules.add_state_to_lookup.output
     # This can eat up a lot of memory which is a problem when running paralell.
     # Set a maximum, say 2.5-gb
     resources:
@@ -263,7 +263,7 @@ rule build_aggregate_org_distances:
     shell:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
-                 --orgs {params.orgs} --out {output}"
+                 --orgs {input.orgs} --out {output}"
 
 rule plot_gravity_relationship:
     input: rules.build_aggregate_org_distances.output
