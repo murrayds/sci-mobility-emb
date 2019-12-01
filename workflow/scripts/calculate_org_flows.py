@@ -42,7 +42,7 @@ vocab = transitions.cwts_org_no.unique()
 co_occur = defaultdict(lambda: defaultdict(float))
 for v1, v2 in combinations(vocab, 2):
     co_occur[v1][v2] = 0
-    co_occur[v1][v2] = 0
+    co_occur[v2][v1] = 0
 
 # Iterate through each list, incremenet co-occurence count
 logging.info('Filling in co-occurences')
@@ -50,6 +50,7 @@ for sublist in transition_lists:
     for org1 in sublist:
         for org2 in sublist:
             co_occur[org1][org2] += 1
+            co_occur[org2][org1] += 1
 
 # Convert into dataframe
 co_occur_df = pd.DataFrame(co_occur)

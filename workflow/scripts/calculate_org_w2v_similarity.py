@@ -35,8 +35,8 @@ vocab = model.wv.vocab
 D = defaultdict(lambda: defaultdict(float))
 for word1, word2 in combinations(vocab, 2):
     temp_sim = model.similarity(word1,word2)
-    d[word1][word2] = temp_sim
-    d[word2][word1] = temp_sim
+    D[word1][word2] = temp_sim
+    D[word2][word1] = temp_sim
 
 # Convert distance matrix to a dataframe
 distance_df = pd.DataFrame(D)
