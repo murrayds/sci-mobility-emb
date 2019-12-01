@@ -52,7 +52,7 @@ UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{period}_gravity_d{dimensions}_ws{window}_{to_filter}_{geo_constraint}.pdf')
 PUBS_OVER_TIME_PLOT = osjoin(FIGURE_DIR, 'Descriptive', 'pubs_over_time_plot.pdf')
 PUBS_DISC_OVER_TIME_PLOT = osjoin(FIGURE_DIR, 'Descriptive', 'pubs_over_time_by_discipline_plot.pdf')
-
+NUM_AFFILIATIONS_ECDF = osjoin(FIGURE_DIR, 'Descriptive', 'num_affiliations_ecdf.pdf')
 
 ##################
 # Metadata files #
@@ -136,7 +136,8 @@ rule all:
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
                period = PERIODS),
-        PUBS_OVER_TIME_PLOT
+        PUBS_OVER_TIME_PLOT,
+        NUM_AFFILIATIONS_ECDF
 
 
 rule fix_org_coordinates:
@@ -302,4 +303,11 @@ rule plot_pubs_over_time_by_discipline:
     output: PUBS_DISC_OVER_TIME_PLOT
     shell:
         "Rscript scripts/PlotPubsOverTimeByDiscipline.R --input {input} \
+                 --output {output}"
+
+rule plot_num_affiliations_ecdf:
+    input: rules.get_researcher_metadata.output
+    output: NUM_AFFILIATIONS_ECDF
+    shell:
+        "Rscript scripts/PlotMobilityECDF.R --input {input} \
                  --output {output}"
