@@ -18,6 +18,7 @@ UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 ############
 MOBILITY_RAW = osjoin(RAW_DATA_DIR, '2008-2019_transitions.txt')
 MOBILE_RESEARCHERS = osjoin(RAW_DATA_DIR, 'mobile_researcher_trajectories.txt')
+NONMOBILE_RESEARCHERS = osjoin(RAW_DATA_DIR, 'nonmobile_researcher_trajectories.txt')
 MOBILITY_RAW_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{year}_raw_mobility.csv')
 ORG_SIZES = osjoin(RAW_DATA_DIR, '2008-2019_inst_sizes.txt')
 ORG_STATE_NAMES = osjoin(ADDITIONAL_DATA_DIR, 'org_states.csv')
@@ -101,6 +102,7 @@ rule all:
         ORG_LOOKUP_WITH_STATES,
         RESEARCHER_META,
         ORG_META,
+        NONMOBILE_RESEARCHERS,
         expand(WORD2VEC_EMBEDDINGS,
                period = PERIODS,
                dimensions = W2V_DIMENSIONS,
@@ -183,7 +185,17 @@ rule filter_to_mobile:
         researchers = rules.get_researcher_metadata.output
     output: MOBILE_RESEARCHERS
     shell:
-        "Rscript scripts/FilterToOnlyMobileResearchers.R {input.raw} {input.researchers} {output}"
+        "Rscript scripts/FilterRawByMobilityStatus.R --input {input.raw} \
+        --researchers {input.researchers} --output {output} --mobile"
+
+rule filter_to_nonmobile:
+    input:
+        raw = MOBILITY_RAW,
+        researchers = rules.get_researcher_metadata.output
+    output: NONMOBILE_RESEARCHERS
+    shell:
+        "Rscript scripts/FilterRawByMobilityStatus.R --input {input.raw} \
+        --researchers {input.researchers} --output {output} --nonmobile"
 
 rule dissagregate_pubs_to_yearly:
     input: rules.filter_to_mobile.output
