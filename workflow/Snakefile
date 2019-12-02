@@ -53,6 +53,7 @@ GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{dis
 PUBS_OVER_TIME_PLOT = osjoin(FIGURE_DIR, 'Descriptive', 'pubs_over_time_plot.pdf')
 PUBS_DISC_OVER_TIME_PLOT = osjoin(FIGURE_DIR, 'Descriptive', 'pubs_over_time_by_discipline_plot.pdf')
 NUM_AFFILIATIONS_ECDF = osjoin(FIGURE_DIR, 'Descriptive', 'num_affiliations_ecdf.pdf')
+PROP_MOBILE_BY_COUNTRY = osjoin(FIGURE_DIR, 'Descriptive', 'prop_mobility_by_country.pdf')
 
 ##################
 # Metadata files #
@@ -139,7 +140,8 @@ rule all:
                window = W2V_WINDOW_SIZE,
                period = PERIODS),
         PUBS_OVER_TIME_PLOT,
-        NUM_AFFILIATIONS_ECDF
+        NUM_AFFILIATIONS_ECDF,
+        PROP_MOBILE_BY_COUNTRY
 
 
 rule fix_org_coordinates:
@@ -314,4 +316,15 @@ rule plot_num_affiliations_ecdf:
     output: NUM_AFFILIATIONS_ECDF
     shell:
         "Rscript scripts/PlotMobilityECDF.R --input {input} \
+                 --output {output}"
+
+rule plot_prop_mobile_by_country:
+    input:
+        flows = MOBILITY_RAW,
+        researchers = rules.get_researcher_metadata.output,
+        lookup = rules.add_state_to_lookup.output
+    output: PROP_MOBILE_BY_COUNTRY
+    shell:
+        "Rscript scripts/PlotProportionMobilityByCountry.R --flows {input.flows}\
+                 --researchers {input.researchers} --lookup {input.lookup} \
                  --output {output}"
