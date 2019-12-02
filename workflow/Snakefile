@@ -55,6 +55,7 @@ PUBS_DISC_OVER_TIME_PLOT = osjoin(FIGURE_DIR, 'Descriptive', 'pubs_over_time_by_
 NUM_AFFILIATIONS_ECDF = osjoin(FIGURE_DIR, 'Descriptive', 'num_affiliations_ecdf.pdf')
 PROP_MOBILE_BY_COUNTRY = osjoin(FIGURE_DIR, 'Descriptive', 'prop_mobility_by_country.pdf')
 PROP_ORG_COUNTRY_MOBILITY = osjoin(FIGURE_DIR, 'Descriptive', 'prop_org_country_mobility.pdf')
+COUNTRY_MOBILITY_ECDF = osjoin(FIGURE_DIR, 'Descriptive', 'prop_country_mobility_ecdf.pdf')
 
 ##################
 # Metadata files #
@@ -143,7 +144,8 @@ rule all:
         PUBS_OVER_TIME_PLOT,
         NUM_AFFILIATIONS_ECDF,
         PROP_MOBILE_BY_COUNTRY,
-        PROP_ORG_COUNTRY_MOBILITY
+        PROP_ORG_COUNTRY_MOBILITY,
+        COUNTRY_MOBILITY_ECDF
 
 
 rule fix_org_coordinates:
@@ -339,5 +341,16 @@ rule plot_org_country_mobility:
     output: PROP_ORG_COUNTRY_MOBILITY
     shell:
         "Rscript scripts/PlotOrgCountryMobility.R --flows {input.flows}\
+                 --researchers {input.researchers} --lookup {input.lookup} \
+                 --output {output}"
+
+rule plot_country_mobility_ecdf:
+    input:
+        flows = MOBILITY_RAW,
+        researchers = rules.get_researcher_metadata.output,
+        lookup = rules.add_state_to_lookup.output
+    output: COUNTRY_MOBILITY_ECDF
+    shell:
+        "Rscript scripts/PlotCountryMobilityECDF.R --flows {input.flows}\
                  --researchers {input.researchers} --lookup {input.lookup} \
                  --output {output}"
