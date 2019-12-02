@@ -20,7 +20,7 @@ LEGEND_POSITION = "right" # can be "right", "bottom", "left", or None
 REGRESSION_LINE_COLOR = "#c0392b"
 
 # Plot dimensions
-FIG_WIDTH = 9
+FIG_WIDTH = 7
 FIG_HEIGHT = 5
 
 library(ggplot2)
@@ -35,6 +35,8 @@ option_list = list(
               help="If set, don't plot imputed values"),
   make_option(c("--geo"), action="store", default="none",
               help="Geographic constraint, none, or same or different country, region, or city"),
+  make_option(c("--distance"), action="store", default="none",
+              help="One of 'geo' or 'emb', specifying which distance metric of the dataframe to use"),
   # These are mostly unecessary, but make automation easier since we can just
   # iterate over different items in a list
   make_option(c("--nofilter"), action="store_false", default=FALSE, dest = "filter",
@@ -54,20 +56,6 @@ if (opt$filter) {
       filter(count > 0)
 }
 
-# Format the distance dataframe, calculating necessary values
-dist <- dist %>%
-  # First log the geographic distance and the axes
-  mutate(geo_distance_logged = log10(geo_distance),
-         gravity_logged = log10(gravity)
-         ) %>%
-  # Convert to long format
-  tidyr::gather(metric, distance, geo_distance_logged, emb_similarity) %>%
-  # Rename the distance and similarity measure
-  mutate(metric = factor(metric,
-                         levels = c("geo_distance_logged", "emb_similarity"),
-                         labels = c("log(km distance)", "cosine similarity"))
-  )
-
 # If the geographic constraint (--geo) is set, then filter the
 # distance dataframe accordingly.
 if (opt$geo == "same-country") {
@@ -82,14 +70,40 @@ if (opt$geo == "same-country") {
   dist <- dist %>% filter(org1_city != org2_city)
 }
 
+# Reduce the size to save on memory
+dist <- dist %>%
+  select(geo_distance, emb_similarity, gravity)
+
+axislabel <- "DEFAULT"
+# Select the appropriate metric using the --distance command line argument
+
+if (opt$distance == "geo") {
+  dist <- dist %>%
+    mutate(distance = log10(geo_distance))
+
+  # Provide axis label
+  axislabel <- "log(km distance)"
+} else if (opt$distance == "emb") {
+  # Default, use embedding distance
+  dist <- dist %>%
+    rename(distance = emb_similarity)
+
+  # Provide axis label
+  axislabel <- "cosine similarity"
+}
+
+# Calculate the logged gravity and select only relevant columns
+dist <- dist %>%
+  mutate(gravity_logged = log10(gravity)) %>%
+  select(gravity_logged, distance)
+
 # Create binned values that will be plotted over top
 dist_binned <- dist %>%
-  group_by(metric) %>%
   mutate(
     bin = cut(round(distance, 2), NUM_DISTANCE_BINS)
   ) %>%
   arrange(bin) %>%
-  group_by(metric, bin) %>%
+  group_by(bin) %>%
   summarize(
     # Plot the point at the midpoint in each bin
     pos = min(distance) + ((max(distance) - min(distance)) / 2),
@@ -103,8 +117,6 @@ plot <- dist %>%
   ggplot(aes(x = distance, y = gravity_logged)) +
     geom_hex(bins = NUM_HEX_BINS,
              color = BIN_BORDER_COLOR) +
-    # Break into facets, but labels on bottom, allow different x axes
-    facet_wrap(~metric, scale = "free_x", strip.position = "bottom") +
     # Draw a regression line
     stat_smooth(method = "lm", formula = y ~ x, color = REGRESSION_LINE_COLOR, size = 1.5) +
     # Add the r-squared coefficient to the plot
@@ -126,11 +138,11 @@ plot <- dist %>%
     theme_minimal() +
     theme(
       legend.position = "right",
-      strip.text = element_text(size = 12),
       axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
-      axis.title.x = element_blank()
+      axis.title.x = element_text(size = 12, face = "bold"),
     ) +
     # Add labels
+    xlab(axislabel) +
     ylab(latex2exp::TeX("$\\log\\left(\\frac{F_{ij}}{P_{i}P_{j}}\\right)$"))
 
 # Save the plot
