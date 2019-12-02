@@ -57,8 +57,8 @@ if (opt$filter) {
 # Format the distance dataframe, calculating necessary values
 dist <- dist %>%
   # First log the geographic distance and the axes
-  mutate(geo_distance_logged = log(geo_distance),
-         gravity_logged = log(gravity)
+  mutate(geo_distance_logged = log10(geo_distance),
+         gravity_logged = log10(gravity)
          ) %>%
   # Convert to long format
   tidyr::gather(metric, distance, geo_distance_logged, emb_similarity) %>%
