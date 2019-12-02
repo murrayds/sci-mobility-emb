@@ -88,7 +88,10 @@ plot <- plotdata %>%
     ggrepel::geom_label_repel(data = labels_bot, aes(label = country_iso_alpha), size = 3, direction = "y", nudge_x = -5) +
     scale_x_continuous(expand = c(0, 0)) +
     theme_minimal() +
-    theme(axis.title.x = element_blank()) +
+    theme(
+      axis.title = element_text(size = 12, face = "bold"),
+      axis.title.x = element_blank()
+    ) +
     ylab("Proportion mobile")
 
 # Save the plot
