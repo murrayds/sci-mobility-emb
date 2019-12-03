@@ -317,7 +317,7 @@ rule plot_gravity_relationship:
     shell:
         "Rscript scripts/PlotGravityLawRelationship.R --input {input} \
                  --output {output} --geo {wildcards.geo_constraint} \
-                 --distance {wildcards.distance} {params.filterflag} "
+                 --distance {wildcards.distance} {params.filterflag} --showcoef"
 
 ## Descriptive plots
 rule plot_pubs_over_time:

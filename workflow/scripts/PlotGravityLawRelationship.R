@@ -20,7 +20,7 @@ LEGEND_POSITION = "right" # can be "right", "bottom", "left", or None
 REGRESSION_LINE_COLOR = "#c0392b"
 
 # Plot dimensions
-FIG_WIDTH = 7
+FIG_WIDTH = 6
 FIG_HEIGHT = 5
 
 library(ggplot2)
@@ -37,6 +37,8 @@ option_list = list(
               help="Geographic constraint, none, or same or different country, region, or city"),
   make_option(c("--distance"), action="store", default="none",
               help="One of 'geo' or 'emb', specifying which distance metric of the dataframe to use"),
+  make_option(c("--showcoef"), action="store_true", default=FALSE,
+              help="If set, add R squared coefficient to the plot"),
   # These are mostly unecessary, but make automation easier since we can just
   # iterate over different items in a list
   make_option(c("--nofilter"), action="store_false", default=FALSE, dest = "filter",
@@ -116,16 +118,10 @@ dist_binned <- dist %>%
 plot <- dist %>%
   ggplot(aes(x = distance, y = gravity_logged)) +
     geom_hex(bins = NUM_HEX_BINS,
-             color = BIN_BORDER_COLOR) +
+             color = BIN_BORDER_COLOR,
+             size = 0.15) +
     # Draw a regression line
     stat_smooth(method = "lm", formula = y ~ x, color = REGRESSION_LINE_COLOR, size = 1.5) +
-    # Add the r-squared coefficient to the plot
-    ggpmisc::stat_poly_eq(formula = y ~ x,
-                          aes(label = paste(..rr.label.., sep = "~~~")),
-                          parse=TRUE,
-                          coef.digits = 2,
-                          label.x.npc = "right"
-    ) +
     # Add mean + 99% confidence intervals for each bin of data
     geom_point(data = dist_binned, aes(x = pos, y = mu, group = bin), size = 2) +
     geom_errorbar(data = dist_binned, aes(x = pos, ymin = mu - ci, ymax = mu + ci, y = NULL)) +
@@ -140,10 +136,27 @@ plot <- dist %>%
       legend.position = "right",
       axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
       axis.title.x = element_text(size = 12, face = "bold"),
+      panel.grid.minor = element_blank(),
+      axis.line = element_line(colour = "black")
     ) +
     # Add labels
     xlab(axislabel) +
     ylab(latex2exp::TeX("$\\log\\left(\\frac{F_{ij}}{P_{i}P_{j}}\\right)$"))
 
+
+if (opt$showcoef) {
+  plot <- plot +
+    # Add the r-squared coefficient to the plot
+    ggpmisc::stat_poly_eq(formula = y ~ x,
+                          aes(label = paste(..rr.label.., sep = "~~~")),
+                          parse=TRUE,
+                          coef.digits = 2,
+                          label.x = "left",
+                          # The data is shaped differently, so move the metric
+                          # accordingly based on where it falls
+                          label.y = ifelse(opt$distance == "emb", "top", "bottom"),
+                          size = 7
+    )
+}
 # Save the plot
 ggsave(opt$output, plot, width = FIG_WIDTH, height = FIG_HEIGHT)
