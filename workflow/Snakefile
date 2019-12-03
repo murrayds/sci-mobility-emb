@@ -11,6 +11,7 @@ DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
 DESCRIPTIVE_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Descriptive')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
+STAT_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Stat')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 
 ############
@@ -42,6 +43,11 @@ ORG_META = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'org_metadata.txt')
 ##############
 WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', '{period}_word2vec_d{dimensions}_ws{window}_model.bin')
 ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{dimensions}_ws{window}_sim.csv')
+
+##############
+# Stat       #
+##############
+AGGREGATE_R2 = osjoin(STAT_DATA_DIR, 'aggregate_r2.csv')
 
 
 ##################
@@ -147,7 +153,8 @@ rule all:
         PROP_MOBILE_BY_COUNTRY,
         PROP_ORG_COUNTRY_MOBILITY,
         COUNTRY_MOBILITY_ECDF,
-        COUNTRY_MOBILITY_DISTRIBUTION
+        COUNTRY_MOBILITY_DISTRIBUTION,
+        AGGREGATE_R2
 
 
 rule fix_org_coordinates:
@@ -289,6 +296,19 @@ rule build_aggregate_org_distances:
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
                  --net {input.net} --orgs {input.orgs} --out {output}"
 
+rule get_aggregate_gravity_r2:
+    input:
+        [expand(rules.build_aggregate_org_distances.output,
+                dimensions = W2V_DIMENSIONS,
+                window = W2V_WINDOW_SIZE,
+                period = PERIODS)]
+    threads: 4
+    output: AGGREGATE_R2
+    shell:
+        # using default argument parsing here
+        "Rscript scripts/GetAggregateGravityR2.R {input} {output}"
+
+
 rule plot_gravity_relationship:
     input: rules.build_aggregate_org_distances.output
     output: GRAVITY_RELATIONSHIP_PLOT
@@ -297,7 +317,7 @@ rule plot_gravity_relationship:
     shell:
         "Rscript scripts/PlotGravityLawRelationship.R --input {input} \
                  --output {output} --geo {wildcards.geo_constraint} \
-                 --distance {wildcards.distance} {params.filterflag} "
+                 --distance {wildcards.distance} {params.filterflag} --showcoef"
 
 ## Descriptive plots
 rule plot_pubs_over_time:
