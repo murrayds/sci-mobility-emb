@@ -49,10 +49,14 @@ ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{
 ##################
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 'data', '{period}_{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_data.csv')
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', '{period}_{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
-GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{period}_gravity_d{dimensions}_ws{window}_{to_filter}_{geo_constraint}.pdf')
+GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{distance}', '{period}_gravity_d{dimensions}_ws{window}_{to_filter}_{geo_constraint}.pdf')
 PUBS_OVER_TIME_PLOT = osjoin(FIGURE_DIR, 'Descriptive', 'pubs_over_time_plot.pdf')
 PUBS_DISC_OVER_TIME_PLOT = osjoin(FIGURE_DIR, 'Descriptive', 'pubs_over_time_by_discipline_plot.pdf')
-
+NUM_AFFILIATIONS_ECDF = osjoin(FIGURE_DIR, 'Descriptive', 'num_affiliations_ecdf.pdf')
+PROP_MOBILE_BY_COUNTRY = osjoin(FIGURE_DIR, 'Descriptive', 'prop_mobility_by_country.pdf')
+PROP_ORG_COUNTRY_MOBILITY = osjoin(FIGURE_DIR, 'Descriptive', 'prop_org_country_mobility.pdf')
+COUNTRY_MOBILITY_ECDF = osjoin(FIGURE_DIR, 'Descriptive', 'prop_country_mobility_ecdf.pdf')
+COUNTRY_MOBILITY_DISTRIBUTION = osjoin(FIGURE_DIR, 'Descriptive', 'prop_country_mobility_distribution.pdf')
 
 ##################
 # Metadata files #
@@ -85,6 +89,7 @@ UMAP_NEIGHBORS = [25]
 
 # Gravity law parameters
 TO_FILTER = ["filter"]
+DISTANCE_PARAMS = ['geo', 'emb']
 GEO_CONSTRAINTS = ['global',
                    'same-country', 'same-region',
                    'different-country', 'different-region', 'different-city']
@@ -132,11 +137,17 @@ rule all:
                ext = FIG_EXTS),
         expand(GRAVITY_RELATIONSHIP_PLOT,
                to_filter = TO_FILTER,
+               distance = DISTANCE_PARAMS,
                geo_constraint = GEO_CONSTRAINTS,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
                period = PERIODS),
-        PUBS_OVER_TIME_PLOT
+        PUBS_OVER_TIME_PLOT,
+        NUM_AFFILIATIONS_ECDF,
+        PROP_MOBILE_BY_COUNTRY,
+        PROP_ORG_COUNTRY_MOBILITY,
+        COUNTRY_MOBILITY_ECDF,
+        COUNTRY_MOBILITY_DISTRIBUTION
 
 
 rule fix_org_coordinates:
@@ -254,6 +265,7 @@ rule calculate_org_geographic_distance:
     shell:
         "python scripts/calculate_org_geo_distance.py --input {input} --output {output}"
 
+
 rule calculate_org_w2v_similarities:
     input: rules.train_word2vec_model.output
     output: ORG_W2V_SIMILARITIES
@@ -275,7 +287,7 @@ rule build_aggregate_org_distances:
     shell:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
-                 --orgs {input.orgs} --out {output}"
+                 --net {input.net} --orgs {input.orgs} --out {output}"
 
 rule plot_gravity_relationship:
     input: rules.build_aggregate_org_distances.output
@@ -284,7 +296,8 @@ rule plot_gravity_relationship:
         filterflag = lambda w: '--{}'.format(w.to_filter)
     shell:
         "Rscript scripts/PlotGravityLawRelationship.R --input {input} \
-                 --output {output} {params.filterflag} --geo {wildcards.geo_constraint}"
+                 --output {output} --geo {wildcards.geo_constraint} \
+                 --distance {wildcards.distance} {params.filterflag} "
 
 ## Descriptive plots
 rule plot_pubs_over_time:
@@ -302,4 +315,55 @@ rule plot_pubs_over_time_by_discipline:
     output: PUBS_DISC_OVER_TIME_PLOT
     shell:
         "Rscript scripts/PlotPubsOverTimeByDiscipline.R --input {input} \
+                 --output {output}"
+
+rule plot_num_affiliations_ecdf:
+    input: rules.get_researcher_metadata.output
+    output: NUM_AFFILIATIONS_ECDF
+    shell:
+        "Rscript scripts/PlotMobilityECDF.R --input {input} \
+                 --output {output}"
+
+rule plot_prop_mobile_by_country:
+    input:
+        flows = MOBILITY_RAW,
+        researchers = rules.get_researcher_metadata.output,
+        lookup = rules.add_state_to_lookup.output
+    output: PROP_MOBILE_BY_COUNTRY
+    shell:
+        "Rscript scripts/PlotProportionMobilityByCountry.R --flows {input.flows}\
+                 --researchers {input.researchers} --lookup {input.lookup} \
+                 --output {output}"
+
+rule plot_org_country_mobility:
+    input:
+        flows = MOBILITY_RAW,
+        researchers = rules.get_researcher_metadata.output,
+        lookup = rules.add_state_to_lookup.output
+    output: PROP_ORG_COUNTRY_MOBILITY
+    shell:
+        "Rscript scripts/PlotOrgCountryMobility.R --flows {input.flows}\
+                 --researchers {input.researchers} --lookup {input.lookup} \
+                 --output {output}"
+
+rule plot_country_mobility_ecdf:
+    input:
+        flows = MOBILITY_RAW,
+        researchers = rules.get_researcher_metadata.output,
+        lookup = rules.add_state_to_lookup.output
+    output: COUNTRY_MOBILITY_ECDF
+    shell:
+        "Rscript scripts/PlotCountryMobilityECDF.R --flows {input.flows}\
+                 --researchers {input.researchers} --lookup {input.lookup} \
+                 --output {output}"
+
+rule plot_country_mobility_distribution:
+    input:
+        flows = MOBILITY_RAW,
+        researchers = rules.get_researcher_metadata.output,
+        lookup = rules.add_state_to_lookup.output
+    output: COUNTRY_MOBILITY_DISTRIBUTION
+    shell:
+        "Rscript scripts/PlotCountryMobilityDistribution.R --flows {input.flows}\
+                 --researchers {input.researchers} --lookup {input.lookup} \
                  --output {output}"
