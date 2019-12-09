@@ -63,6 +63,8 @@ PROP_MOBILE_BY_COUNTRY = osjoin(FIGURE_DIR, 'Descriptive', 'prop_mobility_by_cou
 PROP_ORG_COUNTRY_MOBILITY = osjoin(FIGURE_DIR, 'Descriptive', 'prop_org_country_mobility.pdf')
 COUNTRY_MOBILITY_ECDF = osjoin(FIGURE_DIR, 'Descriptive', 'prop_country_mobility_ecdf.pdf')
 COUNTRY_MOBILITY_DISTRIBUTION = osjoin(FIGURE_DIR, 'Descriptive', 'prop_country_mobility_distribution.pdf')
+PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', 'd{dimensions}', '{distance}', '{distance}_{period}_predicted_vs_actual_d{dimensions}_ws{window}_{geo_constraint}.pdf')
+
 
 ##################
 # Metadata files #
@@ -154,6 +156,12 @@ rule all:
                 geo_constraint = GEO_CONSTRAINTS,
                 window = W2V_WINDOW_SIZE,
                 period = PERIODS),
+        expand(PREDICTED_VS_ACTUAL_PLOT,
+               distance = DISTANCE_PARAMS,
+               dimensions = W2V_DIMENSIONS,
+               geo_constraint = GEO_CONSTRAINTS,
+               window = W2V_WINDOW_SIZE,
+               period = PERIODS),
         PUBS_OVER_TIME_PLOT,
         NUM_AFFILIATIONS_ECDF,
         PROP_MOBILE_BY_COUNTRY,
@@ -332,6 +340,12 @@ rule plot_gravity_relationship:
         "Rscript scripts/PlotGravityLawRelationship.R --input {input} \
                  --output {output} --geo {wildcards.geo_constraint} \
                  --distance {wildcards.distance} {params.filterflag} --showcoef"
+
+rule plot_predicted_vs_actual:
+    input: rules.calculate_predicted_vs_actual.output
+    output: PREDICTED_VS_ACTUAL_PLOT
+    shell:
+        "Rscript scripts/PlotPredictedVsActual.R --input {input} --output {output}"
 
 ## Descriptive plots
 rule plot_pubs_over_time:
