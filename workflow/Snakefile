@@ -48,7 +48,7 @@ ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{
 # Stat       #
 ##############
 AGGREGATE_R2 = osjoin(STAT_DATA_DIR, 'aggregate_r2.csv')
-
+PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{distance}_{period}_predicted_vs_actual_d{dimensions}_ws{window}.csv')
 
 ##################
 # Visualizations #
@@ -148,6 +148,11 @@ rule all:
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
                period = PERIODS),
+        expand(PREDICTED_VS_ACTUAL,
+                distance = DISTANCE_PARAMS,
+                dimensions = W2V_DIMENSIONS,
+                window = W2V_WINDOW_SIZE,
+                period = PERIODS),
         PUBS_OVER_TIME_PLOT,
         NUM_AFFILIATIONS_ECDF,
         PROP_MOBILE_BY_COUNTRY,
@@ -307,6 +312,13 @@ rule get_aggregate_gravity_r2:
     shell:
         # using default argument parsing here
         "Rscript scripts/GetAggregateGravityR2.R {input} {output}"
+
+rule calculate_predicted_vs_actual:
+    input: rules.build_aggregate_org_distances.output,
+    output: PREDICTED_VS_ACTUAL,
+    shell:
+        "Rscript scripts/CalculatePredictedVsActual.R --input {input} \
+        --output {output} --distance {wildcards.distance}"
 
 
 rule plot_gravity_relationship:
