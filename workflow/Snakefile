@@ -82,7 +82,7 @@ PERIODS = ['2008-2019']
 FIG_EXTS = ['pdf', 'html']
 
 # WORD2VEC parameters
-W2V_DIMENSIONS = [100, 200]
+W2V_DIMENSIONS = [200]
 W2V_WINDOW_SIZE = [2, 5]
 W2V_MIN_WORD_FREQ = 50
 W2V_NUM_WORKERS = 4
@@ -97,8 +97,8 @@ UMAP_NEIGHBORS = [25]
 TO_FILTER = ["filter"]
 DISTANCE_PARAMS = ['geo', 'emb']
 GEO_CONSTRAINTS = ['global',
-                   'same-country', 'same-region',
-                   'different-country', 'different-region', 'different-city']
+                   'same-country',
+                   'different-country']
 
 def get_sentences_for_period(params):
     period_split = params.period.split("-")
@@ -294,7 +294,7 @@ rule build_aggregate_org_distances:
     shell:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
-                 --net {input.net} --orgs {input.orgs} --out {output}"
+                 --orgs {input.orgs} --out {output}"
 
 rule get_aggregate_gravity_r2:
     input:
