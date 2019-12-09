@@ -20,7 +20,7 @@ LEGEND_POSITION = "right" # can be "right", "bottom", "left", or None
 REGRESSION_LINE_COLOR = "#c0392b"
 
 # Plot dimensions
-FIG_WIDTH = 5
+FIG_WIDTH = 4
 FIG_HEIGHT = 4
 
 library(ggplot2)
@@ -121,7 +121,6 @@ plot <- dist %>%
   ggplot(aes(x = distance, y = gravity_logged)) +
     geom_hex(bins = NUM_HEX_BINS,
              aes(fill = stat(log10(count))),
-             #color = BIN_BORDER_COLOR,
              size = 0 # remove boundary
     ) +
     # Draw a regression line
@@ -144,6 +143,7 @@ plot <- dist %>%
                          na.value=NA
     ) +
     coord_fixed() +
+    guides(fill = F) +
     scale_y_continuous(breaks = c(-8, -6, -4, -2, 0),
                        labels = function(x) { parse(text = paste0("10^", x)) },
                        limits = c(-8, 0)
