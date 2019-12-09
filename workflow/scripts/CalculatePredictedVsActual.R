@@ -15,6 +15,8 @@ suppressPackageStartupMessages(require(optparse))
 option_list = list(
   make_option(c("-i", "--input"), action="store", default=NA, type='character',
               help="Path to file containing aggregate distance information"),
+  make_option(c("--geo"), action="store", default="none",
+              help="Geographic constraint, none, or same or different country"),
   make_option(c("--distance"), action="store", default="none",
               help="One of 'geo' or 'emb', specifying which distance metric of the dataframe to use"),
   make_option(c("-o", "--output"), action="store", default=NA, type='character',
@@ -31,6 +33,13 @@ agg <- readr::read_csv(opt$input, col_types = readr::cols()) %>%
          geo_distance, emb_similarity) %>%
   rename(actual = count)
 
+# If the geographic constraint (--geo) is set, then filter the
+# distance dataframe accordingly.
+if (opt$geo == "same-country") {
+  agg <- agg %>% filter(org1_country == org2_country)
+} else if (opt$geo == "different-country") {
+  agg <- agg %>% filter(org1_country != org2_country)
+}
 
 #
 # Calculate the expected value. We use two different equations depending on
@@ -45,10 +54,10 @@ if (opt$distance == "geo") {
   agg <- agg %>%
     mutate(
       # Calculate the expected value using the geographic distance formula
-      expected =  org1_size * org2_size * (geo_distance ^ (geo_coef)) * exp(geo_intercept)
+      expected = (org1_size * org2_size) * (geo_distance ^ (geo_coef)) * exp(geo_intercept)
     )
 
-} else if (opt$distance == "emb") {
+} else {
   fit <- summary(lm(log(gravity) ~ emb_similarity, data = agg))
 
   # Save the coefficients for use later
@@ -56,10 +65,10 @@ if (opt$distance == "geo") {
   emb_coef <- fit$coefficients["emb_similarity", "Estimate"]
 
   agg <- agg %>%
-  mutate(
-    # Calculate the expected value using the embedding similarity formula
-    expected = org1_size * org2_size * exp((emb_coef * emb_similarity) + intercept)
-  )
+    mutate(
+      # Calculate the expected value using the embedding similarity formula
+      expected = org1_size * org2_size * exp((emb_coef * emb_similarity) + intercept)
+    )
 }
 
 agg <- agg %>%

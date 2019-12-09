@@ -48,7 +48,7 @@ ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{
 # Stat       #
 ##############
 AGGREGATE_R2 = osjoin(STAT_DATA_DIR, 'aggregate_r2.csv')
-PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{distance}_{period}_predicted_vs_actual_d{dimensions}_ws{window}.csv')
+PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{distance}_{geo_constraint}_{period}_predicted_vs_actual_d{dimensions}_ws{window}.csv')
 
 ##################
 # Visualizations #
@@ -151,6 +151,7 @@ rule all:
         expand(PREDICTED_VS_ACTUAL,
                 distance = DISTANCE_PARAMS,
                 dimensions = W2V_DIMENSIONS,
+                geo_constraint = GEO_CONSTRAINTS,
                 window = W2V_WINDOW_SIZE,
                 period = PERIODS),
         PUBS_OVER_TIME_PLOT,
@@ -318,7 +319,8 @@ rule calculate_predicted_vs_actual:
     output: PREDICTED_VS_ACTUAL,
     shell:
         "Rscript scripts/CalculatePredictedVsActual.R --input {input} \
-        --output {output} --distance {wildcards.distance}"
+        --output {output} --geo {wildcards.geo_constraint} \
+        --distance {wildcards.distance}"
 
 
 rule plot_gravity_relationship:
