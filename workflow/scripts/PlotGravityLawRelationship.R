@@ -9,19 +9,19 @@
 
 # Plotting options
 NUM_HEX_BINS = 20
-NUM_DISTANCE_BINS = 40
+NUM_DISTANCE_BINS = 30
 
 FILL_GRADIENT_MIN = "white"
-FILL_GRADIENT_MAX = "blue"
-BIN_BORDER_COLOR = "lightgrey"
+FILL_GRADIENT_MAX = "#7f8c8d"
+BIN_BORDER_COLOR = "white"
 
 LEGEND_POSITION = "right" # can be "right", "bottom", "left", or None
 
 REGRESSION_LINE_COLOR = "#c0392b"
 
 # Plot dimensions
-FIG_WIDTH = 6
-FIG_HEIGHT = 5
+FIG_WIDTH = 5
+FIG_HEIGHT = 4
 
 library(ggplot2)
 library(dplyr)
@@ -84,18 +84,20 @@ if (opt$distance == "geo") {
     mutate(distance = log10(geo_distance))
 
   # Provide axis label
-  axislabel <- "log(km distance)"
+  axislabel <- "Distance (km)"
 } else if (opt$distance == "emb") {
   # Default, use embedding distance
   dist <- dist %>%
-    rename(distance = emb_similarity)
+    rename(distance = emb_similarity) %>%
+    mutate(distance = ifelse(distance > 0, distance, 0))
 
   # Provide axis label
-  axislabel <- "cosine similarity"
+  axislabel <- "Cosine similarity"
 }
 
 # Calculate the logged gravity and select only relevant columns
 dist <- dist %>%
+
   mutate(gravity_logged = log10(gravity)) %>%
   select(gravity_logged, distance)
 
@@ -118,31 +120,71 @@ dist_binned <- dist %>%
 plot <- dist %>%
   ggplot(aes(x = distance, y = gravity_logged)) +
     geom_hex(bins = NUM_HEX_BINS,
-             color = BIN_BORDER_COLOR,
-             size = 0.15) +
+             aes(fill = stat(log10(count))),
+             #color = BIN_BORDER_COLOR,
+             size = 0 # remove boundary
+    ) +
     # Draw a regression line
-    stat_smooth(method = "lm", formula = y ~ x, color = REGRESSION_LINE_COLOR, size = 1.5) +
+    stat_smooth(method = "lm",
+                formula = y ~ x,
+                color = REGRESSION_LINE_COLOR,
+                size = 1.5,
+                fullrange = T) +
     # Add mean + 99% confidence intervals for each bin of data
-    geom_point(data = dist_binned, aes(x = pos, y = mu, group = bin), size = 2) +
-    geom_errorbar(data = dist_binned, aes(x = pos, ymin = mu - ci, ymax = mu + ci, y = NULL)) +
+    geom_pointrange(data = dist_binned,
+                    aes(x = pos, y = mu, ymin = mu - ci, ymax = mu + ci),
+                    size = 0.5,
+                    fatten = 0.9) +
     # Set the color gradient
     scale_fill_gradientn(colours=c(FILL_GRADIENT_MIN, FILL_GRADIENT_MAX),
-                        name = "Frequency",
-                        na.value=NA
+                         name = "Frequency",
+                         breaks = c(0, 1, 2, 3, 4, 5),
+                         limits = c(0, 5),
+                         labels = function(x) { parse(text=paste0("10^", x)) },
+                         na.value=NA
+    ) +
+    coord_fixed() +
+    scale_y_continuous(breaks = c(-8, -6, -4, -2, 0),
+                       labels = function(x) { parse(text = paste0("10^", x)) },
+                       limits = c(-8, 0)
     ) +
     # Define the plotting theme
     theme_minimal() +
     theme(
+      aspect.ratio = 1,
       legend.position = "right",
-      axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
-      axis.title.x = element_text(size = 12, face = "bold"),
+      legend.title = element_text(size = 14),
+      legend.text = element_text(size = 12),
+      axis.title.y = element_text(size = 14, angle = 0, vjust = 0.5),
+      axis.title.x = element_text(size = 14),
+      axis.text = element_text(size = 12),
       panel.grid.minor = element_blank(),
-      axis.line = element_line(colour = "black")
+      panel.grid.major = element_blank(),
+      panel.border = element_rect(colour = "black", fill=NA, size=1)
     ) +
     # Add labels
     xlab(axislabel) +
-    ylab(latex2exp::TeX("$\\log\\left(\\frac{F_{ij}}{P_{i}P_{j}}\\right)$"))
+    ylab(latex2exp::TeX("\\textit{$\\frac{F_{ij}}{P_{i}P_{j}}$}"))
 
+
+#
+# Add an x-axis scale based on the type of distance metric being used
+#
+if (opt$distance == "geo") {
+  plot <- plot +
+    scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5),
+                       limits = c(0, 5),
+                       labels = function(x) { parse(text=paste0("10^", x)) },
+                       expand = c(0, 0)
+                     )
+} else {
+  plot <- plot +
+    scale_x_continuous(breaks = c(0, 0.5, 1),
+                       limits = c(0, 1),
+                       labels = c("0", "0.5", "1"),
+                       expand = c(0, 0)
+                     )
+}
 
 if (opt$showcoef) {
   plot <- plot +
@@ -154,9 +196,10 @@ if (opt$showcoef) {
                           label.x = "left",
                           # The data is shaped differently, so move the metric
                           # accordingly based on where it falls
-                          label.y = ifelse(opt$distance == "emb", "top", "bottom"),
+                          #label.y = ifelse(opt$distance == "emb", "top", "bottom"),
                           size = 7
     )
 }
+
 # Save the plot
 ggsave(opt$output, plot, width = FIG_WIDTH, height = FIG_HEIGHT)
