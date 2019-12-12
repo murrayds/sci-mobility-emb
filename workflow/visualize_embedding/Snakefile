@@ -1,15 +1,18 @@
 from os.path import join as osjoin
 
-FONT_DIR = '/u/yoonjis/Helvetica.ttf'
+
 PROJ_HOME = open('PROJ_HOME_DIR').read().strip()
 DATA_DIR = osjoin(PROJ_HOME, 'Data')
 FIGURE_DIR = osjoin(PROJ_HOME, 'Figures')
+ASSET_DIR = osjoin(PROJ_HOME, 'Assets')
 ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 RAW_DIR = osjoin(DATA_DIR, 'raw')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
 UMAP_COORD_DIR = osjoin(DERIVED_DATA_DIR, 'Visualzation_coordinates')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 VIZ_FIGURE_DIR = osjoin(FIGURE_DIR, 'Visualzation')
+
+FONT_DIR = osjoin(ASSET_DIR, 'Helvetica.ttf')
 
 LEVEL_LIST = ['global', 'nation', 'region']
 # you can add additional nations likes 'United_States,French'
