@@ -96,7 +96,7 @@ def draw_figure(
     plt.text(-6.5, -1, "Maryland", c=c, fontproperties=prop)
     plt.text(-4.7, -0.6, "North Carolina", c=c, fontproperties=prop)
     plt.text(-0.7, -0.6, "Florida", c=c, fontproperties=prop)
-    plt.text(-3.2, -9, "Flordia", c=c, fontproperties=prop)
+    plt.text(-3.2, -9, "Florida", c=c, fontproperties=prop)
     plt.text(-1.4, -2.95, "Georgia", c=c, fontproperties=prop)
     plt.text(1.6, 0.2, "Virginia", c=c, fontproperties=prop)
 
@@ -106,7 +106,7 @@ def draw_figure(
     plt.text(-6, 4.8, "California", c=c, fontproperties=prop)
     plt.text(-1.3, 5.9, "Arizona", c=c, fontproperties=prop)
     plt.text(-8, 1.8, "Washington", c=c, fontproperties=prop)
-    plt.text(-3.7, 1.1, "Colrado", c=c, fontproperties=prop)
+    plt.text(-3.7, 1.1, "Colorado", c=c, fontproperties=prop)
 
     # Midwest annotate
     c = awesome_c_list[0]
