@@ -59,8 +59,8 @@ UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
 PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', 'd{dimensions}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
 GRADIENT_LEGEND = osjoin(PROJ_HOME, "Assets", "gradient_legend.pdf")
-PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR 'pubs_over_time_plot.pdf')
-PUBS_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR 'pubs_over_time_by_discipline_plot.pdf')
+PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_plot.pdf')
+PUBS_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_by_discipline_plot.pdf')
 NUM_AFFILIATIONS_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, 'num_affiliations_ecdf.pdf')
 PROP_MOBILE_BY_COUNTRY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_mobility_by_country.pdf')
 PROP_ORG_COUNTRY_MOBILITY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_org_country_mobility.pdf')
@@ -85,8 +85,8 @@ ALL_YEARS = range(2008, 2019, 1)
 FIG_EXTS = ['pdf', 'html']
 
 # WORD2VEC parameters
-W2V_DIMENSIONS = [200]
-W2V_WINDOW_SIZE = [2, 5]
+W2V_DIMENSIONS = [100, 200, 300]
+W2V_WINDOW_SIZE = [1, 2, 3, 4, 5]
 W2V_MIN_WORD_FREQ = 50
 W2V_NUM_WORKERS = 4
 W2V_ITERATIONS = 5
