@@ -5,11 +5,12 @@ import numpy as np
 import umap
 import pickle
 from gensim.models import Word2Vec
+from common import get_and_save_umap_coordinate
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 
 
-def get_umap_coordinate(
+def get_umap_coordinate_by_level(
     INPUT_EMBEDDING_FILE,
     INPUT_META_INFO_FILE,
     LEVEL,
@@ -47,12 +48,11 @@ def get_umap_coordinate(
         institute_list = institute_list[np.isin(region_list, target_list)]
 
     embedding_list = np.array([model.wv[x] for x in institute_list])
-    umap_result = umap.UMAP(
-        n_neighbors=N_NEIGHBOR, min_dist=MIN_DIST, metric="cosine"
-    ).fit_transform(embedding_list)
+    get_and_save_umap_coordinate(embedding_list, institute_list, N_NEIGHBOR, MIN_DIST, OUTPUT_FILE)
+    
+    
+    
 
-    umap_result_dict = {inst: umap for inst, umap in zip(institute_list, umap_result)}
-    pickle.dump(umap_result_dict, open(OUTPUT_FILE, "wb"))
 
 
 if __name__ == "__main__":
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     MIN_DIST = float(sys.argv[6])
     OUTPUT_FILE = sys.argv[7]
 
-    get_umap_coordinate(
+    get_umap_coordinate_by_level(
         INPUT_EMBEDDING_FILE,
         INPUT_META_INFO_FILE,
         LEVEL,

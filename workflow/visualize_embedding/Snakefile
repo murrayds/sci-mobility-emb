@@ -80,5 +80,4 @@ rule get_umap_coords:
         COORDS_FILES
     run:
         for level, target, n_neighbor, min_dist, output_file in zip(LEVEL_LIST, TARGET_LIST, N_NEIGHBOR_LIST, MIN_DIST_LIST, COORDS_FILES):
-            print(output_file)
             shell('python3 script/get_umap_coordinate.py {input} {level} {target} {n_neighbor} {min_dist} {output_file}')
