@@ -8,7 +8,6 @@ from pylab import rcParams
 from common import get_awesome_c_list
 
 
-
 def draw_figure(
     INPUT_UMAP_COORD_FILE,
     INPUT_META_INFO_FILE,
@@ -34,7 +33,7 @@ def draw_figure(
             for inst in institute_list
         ]
     )
-    
+
     size_data = pd.read_csv(INPUT_SIZE_FILE, sep="\t", dtype={"cwts_org_no": str})
     size_data = size_data.drop(size_data.index[len(size_data) - 1])
     size_data.person_count = size_data.person_count.astype(int)
@@ -62,7 +61,7 @@ def draw_figure(
     }
     c_list = [awesome_c_list[color_dict[row]] for row in cont_list]
     argumented_size_list = np.array([np.log(size) / np.log(1.3) for size in size_list])
-    
+
     # draw figure
     plt.scatter(
         umap_coords[:, 1],
@@ -130,7 +129,7 @@ def draw_figure(
     c = awesome_c_list[5]
     plt.text(-1.8, -16.9, "Brazil", c=c, fontproperties=prop)
     plt.axis("off")
-    
+
     # make a lengend
     lp = lambda i: plt.plot(
         [],
@@ -153,7 +152,7 @@ def draw_figure(
         ]
     ]
     plt.legend(handles=handles, bbox_to_anchor=(0.85, 0.24), prop=prop, frameon=False)
-    
+
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
 
 

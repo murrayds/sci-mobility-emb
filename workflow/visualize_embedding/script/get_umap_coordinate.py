@@ -44,11 +44,9 @@ def get_umap_coordinate_by_level(
         institute_list = institute_list[np.isin(region_list, target_list)]
 
     embedding_list = np.array([model.wv[x] for x in institute_list])
-    get_and_save_umap_coordinate(embedding_list, institute_list, N_NEIGHBOR, MIN_DIST, OUTPUT_FILE)
-    
-    
-    
-
+    get_and_save_umap_coordinate(
+        embedding_list, institute_list, N_NEIGHBOR, MIN_DIST, OUTPUT_FILE
+    )
 
 
 if __name__ == "__main__":
