@@ -1,0 +1,86 @@
+from os.path import join as osjoin
+
+
+PROJ_HOME = open('PROJ_HOME_DIR').read().strip()
+DATA_DIR = osjoin(PROJ_HOME, 'Data')
+FIGURE_DIR = osjoin(PROJ_HOME, 'Figures')
+ASSET_DIR = osjoin(PROJ_HOME, 'Assets')
+ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
+RAW_DIR = osjoin(DATA_DIR, 'raw')
+DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
+UMAP_COORD_DIR = osjoin(DERIVED_DATA_DIR, 'Visualzation_coordinates')
+EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
+VIZ_FIGURE_DIR = osjoin(FIGURE_DIR, 'Visualzation')
+
+FONT_DIR = osjoin(ASSET_DIR, 'Helvetica.ttf')
+
+LEVEL_LIST = ['global', 'nation', 'region']
+# you can add additional nations likes 'United_States,French'
+TARGET_LIST = ["global", "United_States", "Massachusetts"]
+
+N_NEIGHBOR_LIST = [10, 10, 5]
+MIN_DIST_LIST = [0.3, 0.2, 0.1]
+
+COORDS_FILES = [osjoin(UMAP_COORD_DIR, 'umap_coordinate_{}_{}.pkl'.format(level, target)) for level, target in zip(LEVEL_LIST, TARGET_LIST)]
+VIZ_FIGURE_FILES = [osjoin(VIZ_FIGURE_DIR, 'umap_coordinate_{}_{}.png'.format(level, target)) for level, target in zip(LEVEL_LIST, TARGET_LIST)]
+
+
+rule all:
+    input:
+        VIZ_FIGURE_FILES
+        
+        
+rule draw_massachusetts_figure:
+    input:
+        osjoin(UMAP_COORD_DIR, "umap_coordinate_region_Massachusetts.pkl"),
+        osjoin(ADDITIONAL_DATA_DIR , "institution_lookup_with_states.txt"),
+        osjoin(ADDITIONAL_DATA_DIR , "org_types.csv"),
+        osjoin(RAW_DIR, "2008-2019_inst_sizes.txt"),
+        FONT_DIR
+    
+    output:
+        osjoin(VIZ_FIGURE_DIR, "umap_coordinate_region_Massachusetts.png"),
+    
+    run:
+        shell('python3 script/draw_massachusetts_figure.py {input} {output}')
+
+
+
+rule draw_usa_figure:
+    input:
+        osjoin(UMAP_COORD_DIR, "umap_coordinate_nation_United_States.pkl"),
+        osjoin(ADDITIONAL_DATA_DIR , "institution_lookup_with_states.txt"),
+        osjoin(ADDITIONAL_DATA_DIR , "usa_states_to_regions.csv"),
+        osjoin(RAW_DIR, "2008-2019_inst_sizes.txt"),
+        FONT_DIR
+    
+    output:
+        osjoin(VIZ_FIGURE_DIR, "umap_coordinate_nation_United_States.png"),
+    
+    run:
+        shell('python3 script/draw_usa_figure.py {input} {output}')
+        
+rule draw_global_figure:
+    input:
+        osjoin(UMAP_COORD_DIR, "umap_coordinate_global_global.pkl"),
+        osjoin(ADDITIONAL_DATA_DIR , "institution_lookup_with_states.txt"),
+        osjoin(ADDITIONAL_DATA_DIR , "iso_to_country.txt"),
+        osjoin(RAW_DIR, "2008-2019_inst_sizes.txt"),
+        FONT_DIR
+    
+    output:
+        osjoin(VIZ_FIGURE_DIR, "umap_coordinate_global_global.png"),
+    
+    run:
+        shell('python3 script/draw_global_figure.py {input} {output}')
+        
+
+rule get_umap_coords:
+    input:
+        osjoin(EMBEDDINGS_DIR, "2008-2019_word2vec_d200_ws2_model.bin"),
+        osjoin(ADDITIONAL_DATA_DIR , "institution_lookup_with_states.txt"),
+    output:
+        COORDS_FILES
+    run:
+        for level, target, n_neighbor, min_dist, output_file in zip(LEVEL_LIST, TARGET_LIST, N_NEIGHBOR_LIST, MIN_DIST_LIST, COORDS_FILES):
+            shell('python3 script/get_umap_coordinate.py {input} {level} {target} {n_neighbor} {min_dist} {output_file}')
