@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from pylab import rcParams
+from common import get_awesome_c_list
 
 awesome_c_list = [
     "#607D8B",
@@ -66,6 +67,7 @@ def draw_figure(
     else:
         prop = font_manager.FontProperties(size=22)
 
+    awesome_c_list = get_awesome_c_list()
     color_dict = {"Institute": 0, "Hospital": 3, "University": 5}
     c_list = [awesome_c_list[color_dict[row]] for row in orgs_list]
     argumented_size_list = np.array([np.log(size) / np.log(1.1) for size in size_list])
@@ -79,7 +81,7 @@ def draw_figure(
         edgecolor="white",
     )
     plt.text(4.7, -4.3, "Boston,\nCambridge", c="black", fontproperties=prop)
-    plt.text(7, -1.8, "Worcestor", c="black", fontproperties=prop)
+    plt.text(7, -1.8, "Worcester", c="black", fontproperties=prop)
 
     ## Univ annoate
     c = awesome_c_list[5]

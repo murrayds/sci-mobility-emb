@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from pylab import rcParams
+from common import get_awesome_c_list
 
 awesome_c_list = [
     "#607D8B",
@@ -67,6 +68,7 @@ def draw_figure(
     else:
         prop = font_manager.FontProperties(size=22)
 
+    awesome_c_list = get_awesome_c_list()
     color_dict = {"west": 5, "pacific": 8, "midwest": 0, "northeast": 2, "south": 3}
     c_list = [awesome_c_list[color_dict[row]] for row in census_division_list]
     argumented_size_list = np.array([np.log(size) / np.log(1.3) for size in size_list])

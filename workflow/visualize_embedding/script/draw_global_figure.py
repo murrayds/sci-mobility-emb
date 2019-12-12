@@ -5,28 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from pylab import rcParams
+from common import get_awesome_c_list
 
-awesome_c_list = [
-    "#607D8B",
-    "#9E9E9E",
-    "#795548",
-    "#FF5722",
-    "#FF9800",
-    "#FFC107",
-    "#FFEB3B",
-    "#CDDC39",
-    "#8BC34A",
-    "#4CAF50",
-    "#009688",
-    "#00BCD4",
-    "#03A9F4",
-    "#2196F3",
-    "#3F51B5",
-    "#673AB7",
-    "#9C27B0",
-    "#E91E63",
-    "#F44336",
-]
 
 
 def draw_figure(
@@ -71,6 +51,7 @@ def draw_figure(
         prop = font_manager.FontProperties(size=22)
 
     # color by continent
+    awesome_c_list = get_awesome_c_list()
     color_dict = {
         "South America": 5,
         "Africa": 8,
@@ -105,7 +86,7 @@ def draw_figure(
     plt.text(-3.5, 8.7, "S.Korea", c=c, fontproperties=prop)
     plt.text(-8, -1, "Singapore", c=c, fontproperties=prop)
     plt.text(-6, 7, "India", c=c, fontproperties=prop)
-    plt.text(-14.5, -3.5, "Isreal", c=c, fontproperties=prop)
+    plt.text(-14.5, -3.5, "Israel", c=c, fontproperties=prop)
     plt.text(-7, 9.2, "Taiwan", c=c, fontproperties=prop)
     plt.text(-2.7, 7.2, "Viet Nam", c=c, fontproperties=prop)
     plt.text(-3.8, 1.5, "Iran", c=c, fontproperties=prop)
