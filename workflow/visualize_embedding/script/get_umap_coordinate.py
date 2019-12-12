@@ -34,17 +34,13 @@ def get_umap_coordinate_by_level(
         country_list = np.array([code_to_country[int(inst)] for inst in institute_list])
         TARGET = TARGET.replace("_", " ")
         target_list = TARGET.split(",")
-        print(target_list)
-        print(country_list)
         institute_list = institute_list[np.isin(country_list, target_list)]
 
     elif LEVEL == "region":
         code_to_region = meta_info["region"].to_dict()
         region_list = np.array([code_to_region[int(inst)] for inst in institute_list])
         TARGET = TARGET.replace("_", " ")
-        print(TARGET)
         target_list = TARGET.split(",")
-        print(target_list)
         institute_list = institute_list[np.isin(region_list, target_list)]
 
     embedding_list = np.array([model.wv[x] for x in institute_list])
