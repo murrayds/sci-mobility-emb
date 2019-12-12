@@ -100,7 +100,7 @@ def draw_figure(
 
     ## Inst annoate
     c = awesome_c_list[0]
-    plt.text(3.95, -6.3, "New England\nResearch Institue", c=c, fontproperties=prop)
+    plt.text(3.95, -6.3, "New England\nResearch Institute", c=c, fontproperties=prop)
     plt.text(
         4.3,
         -3.8,
