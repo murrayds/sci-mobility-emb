@@ -20,8 +20,8 @@ LEGEND_POSITION = "right" # can be "right", "bottom", "left", or None
 REGRESSION_LINE_COLOR = "#c0392b"
 
 # Plot dimensions
-FIG_WIDTH = 4
-FIG_HEIGHT = 4
+FIG_WIDTH = 3
+FIG_HEIGHT = 3
 
 library(ggplot2)
 library(dplyr)
@@ -153,11 +153,11 @@ plot <- dist %>%
     theme(
       aspect.ratio = 1,
       legend.position = "right",
-      legend.title = element_text(size = 14),
-      legend.text = element_text(size = 12),
-      axis.title.y = element_text(size = 14, angle = 0, vjust = 0.5),
-      axis.title.x = element_text(size = 14),
-      axis.text = element_text(size = 12),
+      legend.title = element_text(size = 15),
+      legend.text = element_text(size = 13),
+      axis.title.y = element_text(size = 15, angle = 0, vjust = 0.5),
+      axis.title.x = element_text(size = 15),
+      axis.text = element_text(size = 13),
       panel.grid.minor = element_blank(),
       panel.grid.major = element_blank(),
       panel.border = element_rect(colour = "black", fill=NA, size=1)
@@ -201,5 +201,9 @@ if (opt$showcoef) {
     )
 }
 
+p <- egg::set_panel_size(plot,
+                         width  = unit(FIG_WIDTH, "in"),
+                         height = unit(FIG_HEIGHT, "in"))
+
 # Save the plot
-ggsave(opt$output, plot, width = FIG_WIDTH, height = FIG_HEIGHT)
+ggsave(opt$output, p, width = FIG_WIDTH + 1, height = FIG_HEIGHT + 1)

@@ -17,8 +17,8 @@ FILL_GRADIENT_MAX = "#7f8c8d"
 BIN_BORDER_COLOR = "white"
 
 # Plot dimensions
-FIG_WIDTH = 4
-FIG_HEIGHT = 4
+FIG_WIDTH = 3
+FIG_HEIGHT = 3
 
 library(ggplot2)
 library(dplyr)
@@ -40,30 +40,34 @@ data = readr::read_csv(opt$input, col_types = readr::cols())
 # aggregate information about the actual values.
 binned <- data %>%
   # Filter to within a specific range to avoid outlier issues
-  filter(log10(expected) < 6 & log10(expected) > -1) %>%
-  filter(log10(actual) < 6 & log10(actual) > -1) %>%
+  filter(log10(expected) < 6 & log10(expected) >= 0) %>%
+  filter(log10(actual) < 6 & log10(actual) >= 0) %>%
   mutate(
     expected = log10(expected),
     actual = log10(actual),
-    bin = cut(round(expected, 2), NUM_BINS),
+    bin = cut(expected, NUM_BINS)
   ) %>%
   arrange(bin) %>%
   group_by(bin) %>%
   summarize(
     # Plot the point at the midpoint in each bin
-    pos = min(expected) + ((max(expected) - min(expected)) / 2),
+    bin_char = first(gsub("(?![,.])[[:punct:]]", "", as.character(bin), perl=TRUE)),
+    bin_min = as.numeric(unlist(strsplit(bin_char, ","))[1]),
+    bin_max = as.numeric(unlist(strsplit(bin_char, ","))[2]),
+    pos = bin_min + (bin_max - bin_min),
     mu = mean(actual, na.rm = T),
-    med = median(actual),
+    med = median(actual, na.rm = T),
     # Percentile ranges of the bin
-    percentile_upper = quantile(actual, probs = c(0.75))[1],
-    percentile_max = quantile(actual, probs = c(0.91))[1],
-    percentile_lower = quantile(actual, probs = c(0.25))[1],
-    percentile_min = quantile(actual, probs = c(0.09))[1],
+    percentile_upper = quantile(actual, probs = c(0.75), na.rm = T)[1],
+    percentile_max = quantile(actual, probs = c(0.91), na.rm = T)[1],
+    percentile_lower = quantile(actual, probs = c(0.25), na.rm = T)[1],
+    percentile_min = quantile(actual, probs = c(0.09), na.rm = T)[1],
     # logical, whether or not the percentile crosses the line x = y
-    crosses_ab = (percentile_upper > pos & pos > mu) | (percentile_lower < pos & pos < mu),
+    crosses_ab_strong = (percentile_upper > pos & pos > mu) | (percentile_lower < pos & pos < mu),
+    crosses_ab_weak = (percentile_max > pos & pos > mu) | (percentile_min < pos & pos < mu),
   )
 
-
+print(binned)
 # Build the plot
 plot <- data %>%
   ggplot(aes(x = log10(expected), y = log10(actual))) +
@@ -76,8 +80,8 @@ plot <- data %>%
   geom_boxplot(data = binned,
                size = 0.3,
                stat = "identity",
-               fill = ifelse(binned$crosses_ab == T, "#1E88E5", "white"),
-               #color = ifelse(binned$crosses_ab, "#1E88E5", "white"),
+               fill = ifelse(binned$crosses_ab_strong, "#1E88E5",
+                             ifelse(binned$crosses_ab_weak, "#81ecec", "white")),
                color = "black",
                aes(x = pos,
                    y = NULL,
@@ -119,12 +123,16 @@ plot <- data %>%
     aspect.ratio = 1, # ensure a square plot
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
-    axis.title = element_text(size = 14),
-    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 15),
+    axis.text = element_text(size = 13),
     panel.border = element_rect(colour = "black", fill=NA)
   ) +
   xlab("Flux (predicted)") +
-  ylab("Flux (actual)")
+  ylab("Flux (data)")
 
+
+p <- egg::set_panel_size(plot,
+                         width  = unit(FIG_WIDTH, "in"),
+                         height = unit(FIG_HEIGHT, "in"))
 # Save the plot
-ggsave(opt$output, plot, width = FIG_WIDTH, height = FIG_HEIGHT)
+ggsave(opt$output, p, width = FIG_WIDTH + 1, height = FIG_HEIGHT + 1)
