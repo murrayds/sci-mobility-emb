@@ -32,8 +32,9 @@ legend <- cowplot::get_legend(ggplot(diamonds, aes(clarity, color = x)) +
     na.value=NA
   ) +
   theme(
-    legend.title = element_text(size = 14),
-    legend.text = element_text(size = 12)
+    legend.title = element_text(size = 16),
+    legend.text = element_text(size = 14),
+    legend.key.height = unit(1.3, "cm"),
   )
 )
 
