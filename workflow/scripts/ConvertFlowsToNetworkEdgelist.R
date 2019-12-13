@@ -25,8 +25,7 @@ flows <- readr::read_csv(opt$input, col_types = readr::cols()) %>%
   # Convert names to Source, Target, and weight, which is what igraph expects
   rename(Source = org1, Target = org2, weight = count) %>%
   filter(weight > 0) %>% # remove 0 weights, they simply take up memory
-  filter(Source != Target) %>% # Remove self flows, they are equally not informative here
-  mutate(weight = 1 / weight) # we are calculating shortest past distances, so invert the weight
+  filter(Source != Target) # Remove self flows, they are equally not informative here
 
 # write the output
 readr::write_csv(flows, path = opt$output)
