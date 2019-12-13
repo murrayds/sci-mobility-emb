@@ -12,6 +12,7 @@ DESCRIPTIVE_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Descriptive')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 STAT_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Stat')
+NETWORK_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Network')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 DESCRIPTIVE_FIG_DIR = osjoin(FIGURE_DIR, 'Descriptive')
 
@@ -38,6 +39,11 @@ ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_
 AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate_org_distances_d{dimensions}_ws{window}.csv')
 RESEARCHER_META = osjoin(DESCRIPTIVE_DATA_DIR, 'researcher', 'researcher_metadata.txt')
 ORG_META = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'org_metadata.txt')
+
+####################
+# Network Data #
+####################
+FLOWS_NETWORK = osjoin(NETWORK_DATA_DIR, 'flows_edgelist.csv')
 
 ##############
 # Embeddings #
@@ -152,6 +158,7 @@ rule all:
                window = W2V_WINDOW_SIZE),
         AGGREGATE_R2,
         GRADIENT_LEGEND,
+        FLOWS_NETWORK,
         # Descriptive Plots
         PUBS_OVER_TIME_PLOT,
         NUM_AFFILIATIONS_ECDF,
@@ -282,6 +289,12 @@ rule calculate_org_w2v_similarities:
     output: ORG_W2V_SIMILARITIES
     shell:
         "python scripts/calculate_org_w2v_similarity.py --model {input} --output {output}"
+
+rule convert_flows_to_edgelist:
+    input: rules.calculate_org_flows.output
+    output: FLOWS_NETWORK
+    shell:
+        "Rscript scripts/ConvertFlowsToNetworkEdgelist.R --input {input} --output {output}"
 
 rule build_aggregate_org_distances:
     input: flows = rules.calculate_org_flows.output,
