@@ -12,7 +12,9 @@ DESCRIPTIVE_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Descriptive')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 STAT_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Stat')
+NETWORK_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Network')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
+DESCRIPTIVE_FIG_DIR = osjoin(FIGURE_DIR, 'Descriptive')
 
 ############
 # Raw data #
@@ -34,35 +36,43 @@ MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{year}_org_sentences.csv')
 ####################
 ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_flows.csv')
 ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distance.csv')
-AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_aggregate_org_distances_d{dimensions}_ws{window}.csv')
+AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate_org_distances_d{dimensions}_ws{window}.csv')
 RESEARCHER_META = osjoin(DESCRIPTIVE_DATA_DIR, 'researcher', 'researcher_metadata.txt')
 ORG_META = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'org_metadata.txt')
+
+####################
+# Network Data #
+####################
+FLOWS_NETWORK = osjoin(NETWORK_DATA_DIR, 'flows_edgelist.csv')
 
 ##############
 # Embeddings #
 ##############
-WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', '{period}_word2vec_d{dimensions}_ws{window}_model.bin')
-ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{period}_word2vec_d{dimensions}_ws{window}_sim.csv')
+WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', 'word2vec_d{dimensions}_ws{window}_model.bin')
+ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec_d{dimensions}_ws{window}_sim.csv')
 
 ##############
 # Stat       #
 ##############
 AGGREGATE_R2 = osjoin(STAT_DATA_DIR, 'aggregate_r2.csv')
-
+PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{distance}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.csv')
 
 ##################
 # Visualizations #
 ##################
-UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 'data', '{period}_{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_data.csv')
-UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', '{period}_{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
-GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{distance}', '{period}_gravity_d{dimensions}_ws{window}_{to_filter}_{geo_constraint}.pdf')
-PUBS_OVER_TIME_PLOT = osjoin(FIGURE_DIR, 'Descriptive', 'pubs_over_time_plot.pdf')
-PUBS_DISC_OVER_TIME_PLOT = osjoin(FIGURE_DIR, 'Descriptive', 'pubs_over_time_by_discipline_plot.pdf')
-NUM_AFFILIATIONS_ECDF = osjoin(FIGURE_DIR, 'Descriptive', 'num_affiliations_ecdf.pdf')
-PROP_MOBILE_BY_COUNTRY = osjoin(FIGURE_DIR, 'Descriptive', 'prop_mobility_by_country.pdf')
-PROP_ORG_COUNTRY_MOBILITY = osjoin(FIGURE_DIR, 'Descriptive', 'prop_org_country_mobility.pdf')
-COUNTRY_MOBILITY_ECDF = osjoin(FIGURE_DIR, 'Descriptive', 'prop_country_mobility_ecdf.pdf')
-COUNTRY_MOBILITY_DISTRIBUTION = osjoin(FIGURE_DIR, 'Descriptive', 'prop_country_mobility_distribution.pdf')
+UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 'data', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_data.csv')
+UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
+GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
+PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', 'd{dimensions}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
+GRADIENT_LEGEND = osjoin(PROJ_HOME, "Assets", "gradient_legend.pdf")
+PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_plot.pdf')
+PUBS_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_by_discipline_plot.pdf')
+NUM_AFFILIATIONS_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, 'num_affiliations_ecdf.pdf')
+PROP_MOBILE_BY_COUNTRY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_mobility_by_country.pdf')
+PROP_ORG_COUNTRY_MOBILITY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_org_country_mobility.pdf')
+COUNTRY_MOBILITY_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_country_mobility_ecdf.pdf')
+COUNTRY_MOBILITY_DISTRIBUTION = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_country_mobility_distribution.pdf')
+
 
 ##################
 # Metadata files #
@@ -78,18 +88,17 @@ COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 # Parameters #
 ##############
 ALL_YEARS = range(2008, 2019, 1)
-PERIODS = ['2008-2019']
 FIG_EXTS = ['pdf', 'html']
 
 # WORD2VEC parameters
-W2V_DIMENSIONS = [100, 200]
-W2V_WINDOW_SIZE = [2, 5]
+W2V_DIMENSIONS = [100, 200, 300]
+W2V_WINDOW_SIZE = [1, 2, 3, 4, 5]
 W2V_MIN_WORD_FREQ = 50
 W2V_NUM_WORKERS = 4
 W2V_ITERATIONS = 5
 
 # UMAP parameters
-COUNTRIES = ['all', 'USA']
+COUNTRIES = ['all']
 UMAP_METRICS = ['cosine']
 UMAP_NEIGHBORS = [25]
 
@@ -97,13 +106,8 @@ UMAP_NEIGHBORS = [25]
 TO_FILTER = ["filter"]
 DISTANCE_PARAMS = ['geo', 'emb']
 GEO_CONSTRAINTS = ['global',
-                   'same-country', 'same-region',
-                   'different-country', 'different-region', 'different-city']
-
-def get_sentences_for_period(params):
-    period_split = params.period.split("-")
-    period_years = range(int(period_split[0]), int(period_split[1]) + 1, 1)
-    return(expand(MOBILITY_SENTENCES, year = period_years))
+                   'same-country',
+                   'different-country']
 
 ###############################################################################
 # TARGET RULE
@@ -115,19 +119,15 @@ rule all:
         ORG_META,
         NONMOBILE_RESEARCHERS,
         expand(WORD2VEC_EMBEDDINGS,
-               period = PERIODS,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
         expand(ORG_W2V_SIMILARITIES,
                dimensions = W2V_DIMENSIONS,
-               window = W2V_WINDOW_SIZE,
-               period = PERIODS),
+               window = W2V_WINDOW_SIZE),
         expand(AGGREGATE_ORG_DISTANCES,
                dimensions = W2V_DIMENSIONS,
-               window = W2V_WINDOW_SIZE,
-               period = PERIODS),
+               window = W2V_WINDOW_SIZE),
         expand(UMAP_DATA,
-               period = PERIODS,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
                metric = UMAP_METRICS,
@@ -135,7 +135,6 @@ rule all:
                country = COUNTRIES),
         expand(UMAP_VISUALIZATIONS_ORG,
                dimensions = W2V_DIMENSIONS,
-               period = PERIODS,
                metric = UMAP_METRICS,
                neighbors = UMAP_NEIGHBORS,
                window = W2V_WINDOW_SIZE,
@@ -146,15 +145,27 @@ rule all:
                distance = DISTANCE_PARAMS,
                geo_constraint = GEO_CONSTRAINTS,
                dimensions = W2V_DIMENSIONS,
-               window = W2V_WINDOW_SIZE,
-               period = PERIODS),
+               window = W2V_WINDOW_SIZE),
+        expand(PREDICTED_VS_ACTUAL,
+                distance = DISTANCE_PARAMS,
+                dimensions = W2V_DIMENSIONS,
+                geo_constraint = GEO_CONSTRAINTS,
+                window = W2V_WINDOW_SIZE),
+        expand(PREDICTED_VS_ACTUAL_PLOT,
+               distance = DISTANCE_PARAMS,
+               dimensions = W2V_DIMENSIONS,
+               geo_constraint = GEO_CONSTRAINTS,
+               window = W2V_WINDOW_SIZE),
+        AGGREGATE_R2,
+        GRADIENT_LEGEND,
+        FLOWS_NETWORK,
+        # Descriptive Plots
         PUBS_OVER_TIME_PLOT,
         NUM_AFFILIATIONS_ECDF,
         PROP_MOBILE_BY_COUNTRY,
         PROP_ORG_COUNTRY_MOBILITY,
         COUNTRY_MOBILITY_ECDF,
-        COUNTRY_MOBILITY_DISTRIBUTION,
-        AGGREGATE_R2
+        COUNTRY_MOBILITY_DISTRIBUTION
 
 
 rule fix_org_coordinates:
@@ -227,7 +238,7 @@ rule pubs_to_sentences:
         "Rscript scripts/FormatPubsToSentences.R {input} org {output}"
 
 rule train_word2vec_model:
-    input: get_sentences_for_period
+    input: [expand(MOBILITY_SENTENCES, year = ALL_YEARS)]
     output: WORD2VEC_EMBEDDINGS
     threads: W2V_NUM_WORKERS
     params:
@@ -279,6 +290,12 @@ rule calculate_org_w2v_similarities:
     shell:
         "python scripts/calculate_org_w2v_similarity.py --model {input} --output {output}"
 
+rule convert_flows_to_edgelist:
+    input: rules.calculate_org_flows.output
+    output: FLOWS_NETWORK
+    shell:
+        "Rscript scripts/ConvertFlowsToNetworkEdgelist.R --input {input} --output {output}"
+
 rule build_aggregate_org_distances:
     input: flows = rules.calculate_org_flows.output,
            geo = rules.calculate_org_geographic_distance.output,
@@ -294,19 +311,26 @@ rule build_aggregate_org_distances:
     shell:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
-                 --net {input.net} --orgs {input.orgs} --out {output}"
+                 --orgs {input.orgs} --out {output}"
 
 rule get_aggregate_gravity_r2:
     input:
         [expand(rules.build_aggregate_org_distances.output,
                 dimensions = W2V_DIMENSIONS,
-                window = W2V_WINDOW_SIZE,
-                period = PERIODS)]
+                window = W2V_WINDOW_SIZE)]
     threads: 4
     output: AGGREGATE_R2
     shell:
         # using default argument parsing here
         "Rscript scripts/GetAggregateGravityR2.R {input} {output}"
+
+rule calculate_predicted_vs_actual:
+    input: rules.build_aggregate_org_distances.output,
+    output: PREDICTED_VS_ACTUAL,
+    shell:
+        "Rscript scripts/CalculatePredictedVsActual.R --input {input} \
+        --output {output} --geo {wildcards.geo_constraint} \
+        --distance {wildcards.distance}"
 
 
 rule plot_gravity_relationship:
@@ -318,6 +342,17 @@ rule plot_gravity_relationship:
         "Rscript scripts/PlotGravityLawRelationship.R --input {input} \
                  --output {output} --geo {wildcards.geo_constraint} \
                  --distance {wildcards.distance} {params.filterflag} --showcoef"
+
+rule plot_predicted_vs_actual:
+    input: rules.calculate_predicted_vs_actual.output
+    output: PREDICTED_VS_ACTUAL_PLOT
+    shell:
+        "Rscript scripts/PlotPredictedVsActual.R --input {input} --output {output}"
+
+rule plot_gradient_legend:
+    output: GRADIENT_LEGEND
+    shell:
+        "Rscript scripts/PlotGradientLegend.R --output {output}"
 
 ## Descriptive plots
 rule plot_pubs_over_time:
