@@ -33,14 +33,14 @@ def get_umap_coordinate_by_level(
         code_to_country = meta_info["country_iso_name"].to_dict()
         country_list = np.array([code_to_country[int(inst)] for inst in institute_list])
         TARGET = TARGET.replace("_", " ")
-        target_list = TARGET.split(",")
+        target_list = TARGET.split("-")
         institute_list = institute_list[np.isin(country_list, target_list)]
 
     elif LEVEL == "region":
         code_to_region = meta_info["region"].to_dict()
         region_list = np.array([code_to_region[int(inst)] for inst in institute_list])
         TARGET = TARGET.replace("_", " ")
-        target_list = TARGET.split(",")
+        target_list = TARGET.split("-")
         institute_list = institute_list[np.isin(region_list, target_list)]
 
     embedding_list = np.array([model.wv[x] for x in institute_list])
@@ -50,6 +50,7 @@ def get_umap_coordinate_by_level(
 
 
 if __name__ == "__main__":
+    print(sys.argv)
     INPUT_EMBEDDING_FILE = sys.argv[1]
     INPUT_META_INFO_FILE = sys.argv[2]
     LEVEL = sys.argv[3]
