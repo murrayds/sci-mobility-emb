@@ -41,25 +41,31 @@ def draw_figure(
 
     # color by continent
     awesome_c_list = get_awesome_c_list()
-    color_by_category = [3,8,13]
-    color_dict ={'Saudi Arabia': color_by_category[0],
-                 'Egypt': color_by_category[0],
-                 'Oman': color_by_category[0],
-                 'Jordan': color_by_category[0],
-                 'Iraq': color_by_category[0],
-                 'Qatar': color_by_category[0],
-                 'Oman': color_by_category[0],
-                 'United Arab Emirates': color_by_category[0],
-                 'Palestine, State of': color_by_category[0],
-                 'Indonesia': color_by_category[1],
-                 'Thailand': color_by_category[1],
-                 'Viet Nam': color_by_category[1],
-                 'Malaysia': color_by_category[1],
-                 'Philippines': color_by_category[1],
-                 'Pakistan': color_by_category[2],
-                 'Bangladesh': color_by_category[2],
-                 'Sri Lanka':color_by_category[2]}
-    color_by_category_dict = {'Western Asia': color_by_category[0], 'Southeast Asia':color_by_category[1], "South Asia": color_by_category[2]}
+    color_by_category = [3, 8, 13]
+    color_dict = {
+        "Saudi Arabia": color_by_category[0],
+        "Egypt": color_by_category[0],
+        "Oman": color_by_category[0],
+        "Jordan": color_by_category[0],
+        "Iraq": color_by_category[0],
+        "Qatar": color_by_category[0],
+        "Oman": color_by_category[0],
+        "United Arab Emirates": color_by_category[0],
+        "Palestine, State of": color_by_category[0],
+        "Indonesia": color_by_category[1],
+        "Thailand": color_by_category[1],
+        "Viet Nam": color_by_category[1],
+        "Malaysia": color_by_category[1],
+        "Philippines": color_by_category[1],
+        "Pakistan": color_by_category[2],
+        "Bangladesh": color_by_category[2],
+        "Sri Lanka": color_by_category[2],
+    }
+    color_by_category_dict = {
+        "Western Asia": color_by_category[0],
+        "Southeast Asia": color_by_category[1],
+        "South Asia": color_by_category[2],
+    }
     c_list = [awesome_c_list[color_dict[row]] for row in country_list]
     argumented_size_list = np.array([np.log(size) / np.log(1.3) for size in size_list])
 
@@ -94,12 +100,19 @@ def draw_figure(
     plt.text(7.4, -1.2, "Sri Lanka", c=c, fontproperties=prop)
     plt.text(2.3, -0.4, "Bangladesh", c=c, fontproperties=prop)
     plt.text(2.5, 1.1, "Pakistan", c=c, fontproperties=prop)
-    
-    plt.axis('off')
-    lp = lambda i: plt.plot([],color=awesome_c_list[color_by_category_dict[i]], ms=10, mec="none",
-                        label=i, ls="", marker="o")[0]
+
+    plt.axis("off")
+    lp = lambda i: plt.plot(
+        [],
+        color=awesome_c_list[color_by_category_dict[i]],
+        ms=10,
+        mec="none",
+        label=i,
+        ls="",
+        marker="o",
+    )[0]
     handles = [lp(k) for k in list(color_by_category_dict.keys())]
-    plt.legend(handles=handles, bbox_to_anchor=(0.33,0.22), prop=prop, frameon=False)
+    plt.legend(handles=handles, bbox_to_anchor=(0.33, 0.22), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
 
 
