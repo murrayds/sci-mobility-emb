@@ -18,7 +18,7 @@ def draw_figure(
     umap_result = pickle.load(open(INPUT_UMAP_COORD_FILE, "rb"))
     institute_list = np.array(list(umap_result.keys()))
     umap_coords = np.array([umap_result[inst] for inst in institute_list])
-    
+
     meta_info = pd.read_csv(INPUT_META_INFO_FILE, sep="\t")
     meta_info = meta_info.set_index("cwts_org_no")
     code_to_country = meta_info["country_iso_name"].to_dict()
@@ -33,7 +33,7 @@ def draw_figure(
     size_list = np.array([mean_size_dict[inst] for inst in institute_list])
 
     # plot config
-    rcParams["figure.figsize"] = 10,9
+    rcParams["figure.figsize"] = 10, 9
     if FONT_PATH:
         prop = font_manager.FontProperties(fname=FONT_PATH, size=22)
     else:
@@ -41,15 +41,17 @@ def draw_figure(
 
     # color by continent
     awesome_c_list = get_awesome_c_list()
-    color_dict ={'Peru': 3,
-             'Uruguay': 3,
-             'Argentina': 3,
-             'Mexico': 3,
-             'Chile': 3,
-             'Brazil': 13,
-             'Portugal': 13,
-             'Colombia': 3,
-            'Spain': 3}
+    color_dict = {
+        "Peru": 3,
+        "Uruguay": 3,
+        "Argentina": 3,
+        "Mexico": 3,
+        "Chile": 3,
+        "Brazil": 13,
+        "Portugal": 13,
+        "Colombia": 3,
+        "Spain": 3,
+    }
     c_list = [awesome_c_list[color_dict[row]] for row in country_list]
     argumented_size_list = np.array([np.log(size) / np.log(1.3) for size in size_list])
 
@@ -63,7 +65,7 @@ def draw_figure(
         edgecolor="white",
     )
 
-     ## NA annoate
+    ## NA annoate
     c = awesome_c_list[13]
     plt.text(0.5, 10, "Brazil", c=c, fontproperties=prop)
     plt.text(8.5, 9, "Portugal", c=c, fontproperties=prop)
@@ -76,25 +78,35 @@ def draw_figure(
     plt.text(-4.5, 4.7, "Colombia", c=c, fontproperties=prop)
     plt.text(1, 4.7, "Peru", c=c, fontproperties=prop)
     plt.annotate(
-            "",
-            xy=(1, 4.7),
-            xytext=(0, 3.5),
-            arrowprops=dict(arrowstyle="-", color=c, lw=2),
-        )
+        "",
+        xy=(1, 4.7),
+        xytext=(0, 3.5),
+        arrowprops=dict(arrowstyle="-", color=c, lw=2),
+    )
     plt.text(3, -3, "Uruguay", c=c, fontproperties=prop)
     plt.annotate(
-            "",
-            xy=(3, -3),
-            xytext=(0.3, -2.9),
-            arrowprops=dict(arrowstyle="-", color=c, lw=2),
-        )
-    plt.axis('off')
+        "",
+        xy=(3, -3),
+        xytext=(0.3, -2.9),
+        arrowprops=dict(arrowstyle="-", color=c, lw=2),
+    )
+    plt.axis("off")
 
-    speaking_language_label_dict = {'Portugal': 'Portuguese speaking countries', 'Spain': 'Spanish speaking countries'}
-    lp = lambda i: plt.plot([],color=awesome_c_list[color_dict[i]], ms=10, mec="none",
-                            label=speaking_language_label_dict[i], ls="", marker="o")[0]
-    handles = [lp(k) for k in ['Portugal', 'Spain']]
-    plt.legend(handles=handles, bbox_to_anchor=(0.7,0.18), prop=prop, frameon=False)
+    speaking_language_label_dict = {
+        "Portugal": "Portuguese speaking countries",
+        "Spain": "Spanish speaking countries",
+    }
+    lp = lambda i: plt.plot(
+        [],
+        color=awesome_c_list[color_dict[i]],
+        ms=10,
+        mec="none",
+        label=speaking_language_label_dict[i],
+        ls="",
+        marker="o",
+    )[0]
+    handles = [lp(k) for k in ["Portugal", "Spain"]]
+    plt.legend(handles=handles, bbox_to_anchor=(0.7, 0.18), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
 
 
