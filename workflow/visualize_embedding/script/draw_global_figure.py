@@ -162,7 +162,7 @@ def draw_figure(
             "Africa",
         ]
     ]
-    plt.legend(handles=handles, bbox_to_anchor=(0.99, 0.24), prop=prop, frameon=False)
+    plt.legend(handles=handles, bbox_to_anchor=(0.2, 0.25), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
 
 

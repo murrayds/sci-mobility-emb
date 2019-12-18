@@ -86,9 +86,9 @@ def draw_figure(
     c = awesome_c_list[2]
     plt.text(6.5, -1.0, "New York", c=c, fontproperties=prop)
     plt.text(3.5, 0.4, "New Jersey", c=c, fontproperties=prop)
-    plt.text(3, -0.9, "Pennsylvania", c=c, fontproperties=prop)
+    plt.text(3.15, -0.8, "Pennsylvania", c=c, fontproperties=prop)
     plt.text(-7.3, -3, "Pennsylvania,\nPittsburgh", c=c, fontproperties=prop)
-    plt.text(1.5, 4.2, "Massachusetts ", c=c, fontproperties=prop)
+    plt.text(1.55, 3.9, "Massachusetts ", c=c, fontproperties=prop)
     plt.text(2.4, 3.1, "Rhode Island", c=c, fontproperties=prop)
     plt.text(1.85, 1.55, "Connecticut", c=c, fontproperties=prop)
 
@@ -100,7 +100,7 @@ def draw_figure(
     plt.text(-0.7, -0.6, "Florida", c=c, fontproperties=prop)
     plt.text(-3.2, -9, "Florida", c=c, fontproperties=prop)
     plt.text(-1.4, -2.95, "Georgia", c=c, fontproperties=prop)
-    plt.text(1.6, 0.2, "Virginia", c=c, fontproperties=prop)
+    plt.text(1.2, 0.2, "Virginia", c=c, fontproperties=prop)
 
     # West annotate
     c = awesome_c_list[5]
@@ -131,7 +131,7 @@ def draw_figure(
         marker="o",
     )[0]
     handles = [lp(k) for k in ["west", "south", "midwest", "northeast", "pacific"]]
-    plt.legend(handles=handles, bbox_to_anchor=(1, 0.22), prop=prop, frameon=False)
+    plt.legend(handles=handles, bbox_to_anchor=(0.9, 0.22), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
     plt.show()
 
