@@ -100,7 +100,7 @@ def draw_figure(
     plt.text(-0.7, -0.6, "Florida", c=c, fontproperties=prop)
     plt.text(-3.2, -9, "Florida", c=c, fontproperties=prop)
     plt.text(-1.4, -2.95, "Georgia", c=c, fontproperties=prop)
-    plt.text(1.2,0.2, "Virginia", c=c, fontproperties=prop)
+    plt.text(1.2, 0.2, "Virginia", c=c, fontproperties=prop)
 
     # West annotate
     c = awesome_c_list[5]
