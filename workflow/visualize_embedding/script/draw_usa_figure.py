@@ -78,7 +78,7 @@ def draw_figure(
     plt.text(-0.8, -0.57, "Florida", c=c, fontproperties=prop)
     plt.text(-3.2, -8.9, "Florida", c=c, fontproperties=prop)
     plt.text(-1.4, -2.95, "Georgia", c=c, fontproperties=prop)
-    plt.text(.8, 0.2, "Virginia", c=c, fontproperties=prop)
+    plt.text(0.8, 0.2, "Virginia", c=c, fontproperties=prop)
 
     # West annotate
     c = awesome_c_list[4]
@@ -98,11 +98,11 @@ def draw_figure(
     plt.text(0.6, -2.8, "Missouri", c=c, fontproperties=prop)
     plt.text(1.6, -1.6, "Wisconsin", c=c, fontproperties=prop)
     plt.annotate(
-            "",
-            xy=(1.6, -1.3),
-            xytext=(1.1, -0.55),
-            arrowprops=dict(arrowstyle="-", color=c, lw=2),
-        )
+        "",
+        xy=(1.6, -1.3),
+        xytext=(1.1, -0.55),
+        arrowprops=dict(arrowstyle="-", color=c, lw=2),
+    )
     plt.axis("off")
 
     lp = lambda i: plt.plot(

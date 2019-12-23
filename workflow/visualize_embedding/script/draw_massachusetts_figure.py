@@ -80,7 +80,6 @@ def draw_figure(
     plt.text(2.7, -4.5, "Massachusetts\nGeneral Hospital", c=c, fontproperties=prop)
     plt.text(6.85, -2.2, "UMass General\nHealth Care", c=c, fontproperties=prop)
 
-
     ## Inst annoate
     c = awesome_c_list[0]
     plt.text(4.1, -6.43, "New England\nResearch\nInstitute", c=c, fontproperties=prop)
@@ -91,7 +90,6 @@ def draw_figure(
         c=c,
         fontproperties=prop,
     )
-
 
     plt.axis("off")
 
