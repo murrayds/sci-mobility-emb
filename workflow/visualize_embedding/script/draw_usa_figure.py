@@ -7,28 +7,6 @@ import matplotlib.font_manager as font_manager
 from pylab import rcParams
 from common import get_awesome_c_list
 
-awesome_c_list = [
-    "#607D8B",
-    "#9E9E9E",
-    "#795548",
-    "#FF5722",
-    "#FF9800",
-    "#FFC107",
-    "#FFEB3B",
-    "#CDDC39",
-    "#8BC34A",
-    "#4CAF50",
-    "#009688",
-    "#00BCD4",
-    "#03A9F4",
-    "#2196F3",
-    "#3F51B5",
-    "#673AB7",
-    "#9C27B0",
-    "#E91E63",
-    "#F44336",
-]
-
 
 def draw_figure(
     INPUT_UMAP_COORD_FILE,
@@ -64,12 +42,12 @@ def draw_figure(
 
     rcParams["figure.figsize"] = 20, 18
     if FONT_PATH:
-        prop = font_manager.FontProperties(fname=FONT_PATH, size=22)
+        prop = font_manager.FontProperties(fname=FONT_PATH, size=28)
     else:
-        prop = font_manager.FontProperties(size=22)
+        prop = font_manager.FontProperties(size=28)
 
     awesome_c_list = get_awesome_c_list()
-    color_dict = {"west": 5, "pacific": 8, "midwest": 0, "northeast": 2, "south": 3}
+    color_dict = {"west": 4, "pacific": 8, "midwest": 0, "northeast": 2, "south": 3}
     c_list = [awesome_c_list[color_dict[row]] for row in census_division_list]
     argumented_size_list = np.array([np.log(size) / np.log(1.3) for size in size_list])
 
@@ -84,11 +62,11 @@ def draw_figure(
 
     ## NorthEast annotate
     c = awesome_c_list[2]
-    plt.text(6.5, -1.0, "New York", c=c, fontproperties=prop)
-    plt.text(3.5, 0.4, "New Jersey", c=c, fontproperties=prop)
+    plt.text(6.3, -0.9, "New York", c=c, fontproperties=prop)
+    plt.text(3.5, 0.6, "New Jersey", c=c, fontproperties=prop)
     plt.text(3.15, -0.8, "Pennsylvania", c=c, fontproperties=prop)
-    plt.text(-7.3, -3, "Pennsylvania,\nPittsburgh", c=c, fontproperties=prop)
-    plt.text(1.55, 3.9, "Massachusetts ", c=c, fontproperties=prop)
+    plt.text(-7.3, -3.1, "Pennsylvania,\nPittsburgh", c=c, fontproperties=prop)
+    plt.text(1.55, 3.8, "Massachusetts ", c=c, fontproperties=prop)
     plt.text(2.4, 3.1, "Rhode Island", c=c, fontproperties=prop)
     plt.text(1.85, 1.55, "Connecticut", c=c, fontproperties=prop)
 
@@ -96,19 +74,19 @@ def draw_figure(
     c = awesome_c_list[3]
     plt.text(-1, -5.3, "Texas", c=c, fontproperties=prop)
     plt.text(-6.5, -1, "Maryland", c=c, fontproperties=prop)
-    plt.text(-4.7, -0.6, "North Carolina", c=c, fontproperties=prop)
-    plt.text(-0.7, -0.6, "Florida", c=c, fontproperties=prop)
-    plt.text(-3.2, -9, "Florida", c=c, fontproperties=prop)
+    plt.text(-4.9, -0.6, "North Carolina", c=c, fontproperties=prop)
+    plt.text(-0.8, -0.57, "Florida", c=c, fontproperties=prop)
+    plt.text(-3.2, -8.9, "Florida", c=c, fontproperties=prop)
     plt.text(-1.4, -2.95, "Georgia", c=c, fontproperties=prop)
-    plt.text(1.2, 0.2, "Virginia", c=c, fontproperties=prop)
+    plt.text(0.8, 0.2, "Virginia", c=c, fontproperties=prop)
 
     # West annotate
-    c = awesome_c_list[5]
-    plt.text(0.1, 5.4, "New Mexico", c=c, fontproperties=prop)
+    c = awesome_c_list[4]
+    plt.text(0.1, 5.2, "New Mexico", c=c, fontproperties=prop)
     plt.text(-6, 4.8, "California", c=c, fontproperties=prop)
-    plt.text(-1.3, 5.9, "Arizona", c=c, fontproperties=prop)
-    plt.text(-8, 1.8, "Washington", c=c, fontproperties=prop)
-    plt.text(-3.7, 1.1, "Colorado", c=c, fontproperties=prop)
+    plt.text(-1.3, 5.8, "Arizona", c=c, fontproperties=prop)
+    plt.text(-7.9, 1.8, "Washington", c=c, fontproperties=prop)
+    plt.text(-4.1, 1.0, "Colorado", c=c, fontproperties=prop)
 
     # Midwest annotate
     c = awesome_c_list[0]
@@ -116,9 +94,15 @@ def draw_figure(
     plt.text(-2.5, -6.5, "Indiana", c=c, fontproperties=prop)
     plt.text(-4.5, -2.7, "Illinois", c=c, fontproperties=prop)
     plt.text(-5.2, -7.4, "Ohio", c=c, fontproperties=prop)
-    plt.text(1.9, -2.5, "Nebraska", c=c, fontproperties=prop)
+    plt.text(1.9, -2.4, "Nebraska", c=c, fontproperties=prop)
     plt.text(0.6, -2.8, "Missouri", c=c, fontproperties=prop)
-    plt.text(0.1, -0.11, "Wisconsin", c=c, fontproperties=prop)
+    plt.text(1.6, -1.6, "Wisconsin", c=c, fontproperties=prop)
+    plt.annotate(
+        "",
+        xy=(1.6, -1.3),
+        xytext=(1.1, -0.55),
+        arrowprops=dict(arrowstyle="-", color=c, lw=2),
+    )
     plt.axis("off")
 
     lp = lambda i: plt.plot(

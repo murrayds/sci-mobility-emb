@@ -7,28 +7,6 @@ import matplotlib.font_manager as font_manager
 from pylab import rcParams
 from common import get_awesome_c_list
 
-awesome_c_list = [
-    "#607D8B",
-    "#9E9E9E",
-    "#795548",
-    "#FF5722",
-    "#FF9800",
-    "#FFC107",
-    "#FFEB3B",
-    "#CDDC39",
-    "#8BC34A",
-    "#4CAF50",
-    "#009688",
-    "#00BCD4",
-    "#03A9F4",
-    "#2196F3",
-    "#3F51B5",
-    "#673AB7",
-    "#9C27B0",
-    "#E91E63",
-    "#F44336",
-]
-
 
 def draw_figure(
     INPUT_UMAP_COORD_FILE,
@@ -63,12 +41,14 @@ def draw_figure(
 
     rcParams["figure.figsize"] = 20, 18
     if FONT_PATH:
-        prop = font_manager.FontProperties(fname=FONT_PATH, size=22)
+        prop = font_manager.FontProperties(fname=FONT_PATH, size=28)
+        large_prop = font_manager.FontProperties(fname=FONT_PATH, size=32)
     else:
-        prop = font_manager.FontProperties(size=22)
+        prop = font_manager.FontProperties(size=28)
+        large_prop = font_manager.FontProperties(size=32)
 
     awesome_c_list = get_awesome_c_list()
-    color_dict = {"Institute": 0, "Hospital": 3, "University": 5}
+    color_dict = {"Institute": 0, "Hospital": 3, "University": 4}
     c_list = [awesome_c_list[color_dict[row]] for row in orgs_list]
     argumented_size_list = np.array([np.log(size) / np.log(1.1) for size in size_list])
 
@@ -80,12 +60,12 @@ def draw_figure(
         linewidth=0.3,
         edgecolor="white",
     )
-    plt.text(4.7, -4.3, "Boston,\nCambridge", c="black", fontproperties=prop)
-    plt.text(7, -1.8, "Worcester", c="black", fontproperties=prop)
+    plt.text(4.7, -4.3, "Boston,\nCambridge", c="black", fontproperties=large_prop)
+    plt.text(7, -1.8, "Worcester", c="black", fontproperties=large_prop)
 
     ## Univ annoate
-    c = awesome_c_list[5]
-    plt.text(8.4, -2.7, "The UMass\nSystem", c=c, fontproperties=prop)
+    c = awesome_c_list[4]
+    plt.text(8.2, -2.8, "The UMass\nSystem", c=c, fontproperties=prop)
     plt.text(4.1, -2.8, "MIT", c=c, fontproperties=prop)
     plt.text(4.0, -4.6, "Harvard", c=c, fontproperties=prop)
     plt.text(6.1, -4.1, "Boston \nUniversity", c=c, fontproperties=prop)
@@ -96,16 +76,16 @@ def draw_figure(
 
     ## Hospital annoate
     c = awesome_c_list[3]
-    plt.text(3.85, -5.5, "Brigham And \nWomen's Hospital", c=c, fontproperties=prop)
-    plt.text(2.9, -4.5, "Massachusetts\nGeneral Hospital", c=c, fontproperties=prop)
-    plt.text(6.85, -2.3, "UMass General\nHealth Care", c=c, fontproperties=prop)
+    plt.text(3.85, -5.55, "Brigham And \nWomen's Hospital", c=c, fontproperties=prop)
+    plt.text(2.7, -4.5, "Massachusetts\nGeneral Hospital", c=c, fontproperties=prop)
+    plt.text(6.85, -2.2, "UMass General\nHealth Care", c=c, fontproperties=prop)
 
     ## Inst annoate
     c = awesome_c_list[0]
-    plt.text(3.95, -6.3, "New England\nResearch Institute", c=c, fontproperties=prop)
+    plt.text(4.1, -6.43, "New England\nResearch\nInstitute", c=c, fontproperties=prop)
     plt.text(
         4.3,
-        -3.8,
+        -3.6,
         "Harvard-MIT Health \nSciences and Technology",
         c=c,
         fontproperties=prop,
