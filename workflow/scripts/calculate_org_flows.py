@@ -35,39 +35,24 @@ transitions = pd.read_csv(args.input, sep = "\t")
 transition_lists = transitions.groupby('cluster_id')['cwts_org_no'].apply(list)
 
 # Populate a dictionary of dictionaries, that will hold our co-occurence info
-logging.info('Populating empty co-occurence matrix')
-co_occur = {}
-vocab = transitions.cwts_org_no.unique()
-
-co_occur = defaultdict(lambda: defaultdict(float))
-for v1, v2 in combinations(vocab, 2):
-    co_occur[v1][v2] = 0
-    co_occur[v2][v1] = 0
-
 # Iterate through each list, incremenet co-occurence count
+co_occur = defaultdict(lambda: defaultdict(float))
 logging.info('Filling in co-occurences')
 for sublist in transition_lists:
-    for org1 in sublist:
-        for org2 in sublist:
-            co_occur[org1][org2] += 1
-            co_occur[org2][org1] += 1
+    for i, org1 in enumerate(sublist):
+        for org2 in sublist[i + 1:]:
+            if org1 != org2:
+                co_occur[org1][org2] += 1
+                co_occur[org2][org1] += 1
 
-# Convert into dataframe
-co_occur_df = pd.DataFrame(co_occur)
+# Make it as a tuple
+tuple_list = []
+for org1, v in co_occur.items():
+    for org2, value in v.items():
+        tuple_list.append((org1, org2, value))
 
-# Fill the diagonal with the row sums
-logging.info('Filling diagonal with zeroes')
-np.fill_diagonal(co_occur_df.values, 0)
-
-# Get the upper triangle of the matrix
-logging.info('Converting to long format')
-upper_tri = co_occur_df.where(np.triu(np.ones(co_occur_df.shape)).astype(np.bool))
-
-# Convert into long format
-upper_tri = upper_tri.stack().reset_index()
-
-# Set column names
-upper_tri.columns = ['org1', 'org2', 'count']
+# Make tuple as a DataFrame
+co_occur_df = pd.DataFrame(tuple_list, columns=["org1", "org2", "count"])
 
 # Write to csv
-upper_tri.to_csv(args.output, index = False)
+co_occur_df.to_csv(args.output, index = False)
