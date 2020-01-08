@@ -8,10 +8,11 @@ output: html_notebook
 ```{r}
 library(tidyverse)
 library(readr)
+library(plotly)
 
-inst_coords <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/UMAP/data/org_2014-2019_umap_data.csv")
+inst_coords <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/UMAP/USA/d200/data/2014-2019_USA_umap_d200_euclidean_neighbors20_mindist0.0_data.csv")
 
-inst_lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/20191024_institution_lookup.txt", delim = "\t") 
+inst_lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t") 
 country_lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/iso_to_country.txt", delim = "\t")
 country_lookup
 ```
@@ -29,28 +30,37 @@ inst_coords_details
 
 
 ```{r}
-org_types <- unique(inst_coords_details$org_type)
-org_types_simplified <- c("Univ", "Univ", "Institute", "Institute", "Other", 
-                          "Other", "Other", "Other","Hospital", "Other", 
-                          "Hospital", "Hospital", "Univ", "Industry")
-library(plotly)
+org_types = unique(inst_coords_details$org_type)
+org_types_simplified <- c(
+  "University" = "Univ",
+  "Research organisation" = "Institute",
+  "Hospital" = "Hospital",
+  "Teaching Organisation" = "Other",
+  "Governmental Institution" = "Gov",
+  "Funding Organisation" = "Gov",
+  "Funding Channel" = "Gov",
+  "University Component" = "Univ",
+  "Hospital Group" = "Hospital",
+  "Teaching Organisation" = "Other",
+  "Ambiguous" = "Other",
+  "Collegiate University" = "Univ"
+)
+
+
 g <- inst_coords_details %>%
   filter(!is.na(Continent_name)) %>%
-  mutate(
-    org = plyr::mapvalues(org_type, org_types, org_types_simplified),
-    org = factor(org, levels = c("Univ", "Hospital", "Industry", "Institute", "Other")),
-  ) %>%
-  ggplot(aes(x = axis1, y = axis2, color = Continent_name, shape = Continent_name, group = city, label = full_name, label2 = Country_name, label3 = org_type)) +
-  geom_point(size = 0.6, alpha = 0.8) +
+  mutate(org_type = plyr::mapvalues(org_type, from = names(org_types_simplified), to = org_types_simplified)) %>%
+  ggplot(aes(x = axis1, y = axis2, fill = org_type, group = city, label = full_name, label2 = Country_name, label3 = org_type, label4 = region)) +
+  geom_point(size = 3, alpha = 0.9, shape = 21, color = "black") +
   theme_minimal() +
   guides(color = guide_legend(override.aes = list(size=5)),
          shape = guide_legend(override.aes = list(size=5))) +
-  scale_color_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Accent") +
   theme(legend.position = "bottom")
 
 #ggsave("~/Desktop/mobility_institution_bycontinent.pdf", g, width = 10, height = 8)
-
-ggplotly(g, tooltip = c("Continent_name", "Country_name", "city", "full_name", "org_type"))
+g
+ggplotly(g, tooltip = c("Continent_name", "Country_name", "region", "city", "full_name", "org_type", "org"))
 ```
 
 ```{r}

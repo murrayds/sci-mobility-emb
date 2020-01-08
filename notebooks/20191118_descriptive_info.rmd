@@ -1,0 +1,674 @@
+---
+title: "Mobility Descriptive Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(readr)
+library(viridis)
+
+
+lookup <- read_delim('/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt', delim = "\t")
+
+
+flows <- read_delim('/Users/dakotamurray/Dropbox/SME-dropbox/Data/Raw/20191024_mobility_transitions.txt', delim = "\t")
+```
+
+
+
+
+```{r}
+data <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Raw/2008-2019_transitions.txt", delim = "\t")
+lookup <- read_delim('/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt', delim = "\t")
+```
+
+
+
+
+
+
+
+
+
+
+Get a table of each person.
+```{r}
+researchers <- data %>% 
+  left_join(lookup, by = "cwts_org_no") %>%
+  group_by(cluster_id) %>%
+  summarize(
+    num_org = length(unique(cwts_org_no)),
+    num_city = length(unique(city)),
+    num_region = length(unique(region)),
+    num_country = length(unique(region)),
+    org_mobile = num_org > 1,
+    city_mobile = num_city > 1,
+    region_mobile = num_city > 1,
+    country_mobile = num_country > 1,
+    num_fields = length(unique(LR_main_field_no)),
+    main_field = sort(table(LR_main_field_no))[1]
+  )
+
+
+head(researchers)
+```
+
+
+We need to calculate the number of mbile + nonmobile redearchers per organization
+
+```{r}
+orgs <- data %>%
+  left_join(researchers, by = "cluster_id") %>%
+  select(cwts_org_no, cluster_id, org_mobile) %>%
+  group_by(cwts_org_no, org_mobile) %>%
+  summarize(num_researchers = length(unique(cluster_id)))
+
+
+dim(orgs)
+head(orgs)
+```
+
+
+```{r}
+orgs %>%
+  spread(org_mobile, num_researchers) %>%
+  rename(nonmobile = `FALSE`, mobile = `TRUE`) %>%
+  mutate(total = nonmobile + mobile,
+         prop.mobile = mobile / total) %>%
+  arrange(desc(prop.mobile)) %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  select(cwts_org_no, mobile, nonmobile, total, prop.mobile, full_name, city, region, country_iso_alpha)
+
+```
+
+
+19001 10415 2733 2727 18695
+```{r}
+data %>%
+  group_by(cluster_id) %>%
+  filter(19001 %in% cwts_org_no) %>%
+  arrange(cluster_id, pub_year)
+```
+
+```{r}
+mobile <- flows %>%
+  group_by(cluster_id, cwts_org_no) %>%
+  slice(1) %>%
+  select(cluster_id, cwts_org_no) %>%
+  mutate(type = "mobile")
+
+nonmobile$type <- "nonmobile"
+```
+
+
+Number of mobile (between organizations)
+```{r}
+num_mobile <- length(unique(mobile$cluster_id))
+num_mobile
+```
+
+
+Number of non-mobile (between organizations)
+```{r}
+num_nonmobile <- dim(nonmobile)[1]
+
+num_nonmobile
+```
+
+```{r}
+count_by_org <- data.table::rbindlist(list(mobile, nonmobile)) %>%
+  group_by(cwts_org_no, type) %>%
+  summarize(
+    count = length(unique(cluster_id))
+  ) %>%
+  spread(type, value = count) %>%
+  mutate(
+    all = mobile + nonmobile,
+    prop_mobile = mobile / all
+  ) %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  arrange(desc(prop_mobile)) %>%
+  distinct()
+  
+  
+count_by_org
+```
+
+
+```{r}
+nonmobile %>% group_by(cwts_org_no) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count)) 
+```
+
+```{r}
+count_by_org %>%
+  arrange(desc(mobile))
+```
+
+
+Proportion of mobile researchers out of total population
+```{r}
+num_mobile / (num_mobile + num_nonmobile)
+```
+
+
+Now, aggregate at different levels
+```{r}
+all_people <- all_people %>%
+  left_join(lookup, by = c("cwts_org_no"))
+
+```
+
+
+
+
+Percentage of mobile researchers (between institutions)
+```{r}
+num_mobile <- flows %>%
+  group_by(cwts_org_no) %>%
+  summarize(mobile = length(unique(cluster_id))) # unique people affiliated with each organization
+
+all_counts <- num_mobile %>%
+  inner_join(sizes, by = "cwts_org_no") %>%
+  left_join(lookup, by = "cwts_org_no")
+
+all_counts
+sum(all_counts$mobile) / sum(all_counts$person_count)
+```
+
+Percentage of inter-city mobility
+```{r}
+num_mobile <- flows %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  group_by(city) %>%
+  summarize(mobile = length(unique(cluster_id))) # unique people affiliated with each organization
+
+
+num_total <- sizes %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  group_by(city) %>%
+  summarize(all = sum(person_count))
+
+
+sum(num_mobile$mobile, na.rm = T) / sum(num_total$all, na.rm = T)
+```
+
+Percentage of inter-region mobility
+```{r}
+num_mobile <- flows %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  group_by(region) %>%
+  summarize(mobile = length(unique(cluster_id))) # unique people affiliated with each organization
+
+
+num_total <- sizes %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  group_by(region) %>%
+  summarize(all = sum(person_count))
+
+
+all_counts <- num_mobile %>%
+  inner_join(num_total, by = "region")
+
+sum(num_mobile$mobile, na.rm = T) / sum(num_total$all, na.rm = T)
+```
+
+
+
+Percentage of inter-national mobility
+```{r}
+num_mobile <- flows %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  group_by(country_iso_alpha) %>%
+  summarize(mobile = length(unique(cluster_id))) # unique people affiliated with each organization
+
+
+num_total <- sizes %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  group_by(country_iso_alpha) %>%
+  summarize(all = sum(person_count, na.rm = T))
+
+sum(num_mobile$mobile, na.rm = T) / sum(num_total$all, na.rm = T)
+```
+
+
+
+```{r}
+all_counts %>%
+  group_by(city)
+
+```
+
+```{r}
+flows <- read_delim('/Users/dakotamurray/Dropbox/SME-dropbox/Data/Raw/2008-2019_transitions.txt', delim = "\t")
+
+
+res <- researchers %>%
+  select(cluster_id, org_mobile, city_mobile, region_mobile, country_mobile)
+
+
+flows <- flows %>%
+  left_join(res, by = c("cluster_id"))
+
+```
+
+
+### Distribution of papers over time
+```{r}
+data <- flows %>%
+  filter(pub_year < 2019) %>%
+  mutate(pub_year = factor(pub_year)) %>%
+  group_by(pub_year) %>%
+  summarize(
+    count = n(),
+    count_org_mobile = sum(org_mobile, na.rm = T),
+    count_city_mobile = sum(city_mobile, na.rm = T),
+    count_region_mobile = sum(region_mobile, na.rm = T),
+    count_country_mobile = sum(country_mobile, na.rm = T)
+  ) %>%
+  gather(key, value, count, count_org_mobile, count_city_mobile, count_region_mobile, count_country_mobile) %>%
+  mutate(
+    key = factor(key, 
+                 levels = c("count", "count_org_mobile", "count_city_mobile", "count_region_mobile", "count_country_mobile"),
+                 labels = c("All", "Org", "City", "Region", "Country"))
+  ) 
+
+
+data
+p1 <- data %>%
+  ggplot(aes(x = pub_year, y = value, group = key, fill = key)) +
+  geom_line() +
+  geom_point(size = 3, shape = 21) +
+  theme_minimal() +
+  expand_limits(y=0) + 
+  scale_y_continuous(breaks = c(0, 1000000, 2000000, 3000000, 4000000),
+                     labels = c("0", "1,000,000", "2,000,000", "3,000,000", "4,000,000")) +
+  scale_fill_viridis(discrete = T) +
+  guides(color = guide_legend(ncol = 2)) +
+  theme(
+    axis.title.x = element_blank(),
+    legend.text = element_text(size = 11),
+    legend.title = element_blank(),
+    legend.position = c(0.80, 0.15),
+    legend.background = element_rect()
+  ) +
+  ylab("count")
+
+p1
+```
+
+
+### Distribution of papers by discipline
+
+Among mobile researchers only
+```{r}
+p2 <- flows %>%
+  filter(pub_year < 2019) %>%
+  mutate(pub_year = factor(pub_year),
+         Discipline = factor(LR_main_field_no),
+         Discipline = recode(Discipline, 
+                             `1` = "SS & HUM",
+                             `2` = "BIO & HEALTH",
+                             `3` = "PHYS & ENGR",
+                             `4` = "LIFE & EARTH",
+                             `5` = "MATH & CS"),
+         Discipline = factor(Discipline, levels = c("BIO & HEALTH", "PHYS & ENGR", "LIFE & EARTH", "SS & HUM", "MATH & CS"))
+         ) %>%
+  group_by(pub_year) %>%
+  mutate(count = n()) %>%
+  group_by(pub_year, Discipline) %>%
+  summarize(
+    prop = n() / first(count)
+  ) %>%
+  ggplot(aes(x = pub_year, y = prop, group = Discipline, fill = Discipline)) +
+  geom_line() +
+  geom_point(size = 3, shape = 21) +
+  ylim(0, 1) +
+  scale_fill_viridis(discrete = T, option = "A") +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    legend.text = element_text(size = 11),
+    legend.title = element_text(size = 12, face = "bold"),
+    legend.position = c(0.20, 0.75),
+    legend.background = element_rect()
+  ) +
+  ylab("Proportion")
+
+p2
+```
+
+
+```{r}
+library(tidyverse)
+library(readr)
+researchers <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Descriptive/researcher/researcher_metadata.txt", delim = "\t")
+
+head(researchers)
+```
+
+```{r}
+data <- researchers %>%
+  filter(num_org > 1) %>%
+  select(cluster_id, num_org, num_city, num_region, num_country) %>% # reduce the footprint of the data
+  gather(key, value, num_org, num_city, num_region, num_country) %>%
+  mutate(
+    key = factor(key,
+                   levels = c("num_org", "num_city", "num_region", "num_country"),
+                   labels = c("Organization", "City", "Region", "Country"))
+  ) 
+
+
+
+labels <- data %>%
+  group_by(key) %>%
+  summarize(
+    ypos = (sum(value > 1) / n()),
+    cumulative = (sum(value > 1) / n())
+  )
+
+
+data %>% ggplot(aes(x = value, group = key)) +
+  geom_step(aes(y = 1 - ..y..), stat='ecdf') +
+  facet_wrap(~key, nrow = 2, ncol = 2) +
+  scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), limits = c(0, 10)) +
+  scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1.0), limits = c(-0.1, 1.1)) +
+  theme_minimal() +
+  geom_label(data = labels, aes(x = 2, y = ypos, label = format(round(cumulative, 2), nsmall = 2))) + 
+  theme(
+    axis.title = element_text(size = 12, face = "bold"),
+    strip.text = element_text(size = 12, face = "bold"),
+  ) +
+  xlab("#Affiliations per researcher") +
+  ylab("Fraction of data")
+```
+
+
+
+```{r}
+library(tidyverse)
+library(readr)
+orgs <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Descriptive/org/org_metadata.txt", delim = "\t") %>%
+  distinct(cwts_org_no, .keep_all = T)
+
+orgs
+orgs %>%
+  ggplot(aes(x = prop.mobile)) +
+  geom_histogram(fill = "darkgrey", color = "white") +
+  theme_minimal()
+  
+```
+
+
+```{r}
+
+orgs %>% 
+  filter(prop.mobile > 0.95) %>%
+  group_by(country_iso_alpha) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+```
+
+
+```{r}
+orgs %>%
+  filter(country_iso_alpha != "NULL" & !is.na(country_iso_alpha)) %>%
+  group_by(country_iso_alpha) %>%
+  summarize(
+    total_mobile = sum(mobile, na.rm = T),
+    total_nonmobile = sum(nonmobile, na.rm = T),
+    prop.mobile = total_mobile / (total_mobile + total_nonmobile)
+  ) %>%
+  arrange(desc(prop.mobile))
+```
+
+
+
+```{r}
+
+agg <- flows %>%
+  group_by(city, org_mobile) %>%
+  summarize(
+    count = length(unique(cluster_id))
+  )
+
+
+
+agg %>%
+  spread(org_mobile, count) %>%
+  mutate(
+    `TRUE` = ifelse(is.na(`TRUE`), 0, `TRUE`),
+    total = `TRUE` + `FALSE`,
+    prop = `TRUE` / total
+  ) %>%
+  filter(city != "NULL" & total > 100) %>%
+  arrange(desc(prop))
+```
+
+
+```{r}
+
+flows %>% 
+  filter(org_mobile) %>%
+  group_by(cluster_id) %>%
+  filter(any(city == "ANN ARBOR")) %>%
+  arrange(cluster_id)
+```
+
+```{r}
+net <- flows %>%
+  filter(org_mobile) %>%
+  distinct(cluster_id, cwts_org_no) %>%
+  arrange(cluster_id)
+
+
+net %>% arrange(cluster_id)
+
+```
+
+
+```{r}
+real_flows <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Descriptive/org/organization_flows.csv")
+renamed <- real_flows %>%
+  rename(Source = org1, Target = org2, Weight = count)
+
+write_csv(renamed, path = "~/Desktop/org_network.csv")
+```
+
+
+```{r}
+library(tidyverse)
+library(readr)
+library(ggrepel)
+lookup <- read_delim('/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt', delim = "\t") %>%
+  select(cwts_org_no, country_iso_alpha, city)
+flows <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Raw/2008-2019_transitions.txt", delim = "\t")
+researchers <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Descriptive/researcher/researcher_metadata.txt", delim = "\t")
+
+mobility_status <- researchers %>% 
+  select(cluster_id, org_mobile, country_mobile)
+
+
+remove(researchers)
+
+
+flows <- flows %>%
+  select(-LR_main_field_no, -pub_year) %>%
+  left_join(mobility_status, by = "cluster_id") %>%
+  left_join(lookup, by = "cwts_org_no")
+```
+
+
+
+```{r}
+agg <- flows %>%
+  group_by(country_iso_alpha, org_mobile) %>%
+  summarize(
+    count = length(unique(cluster_id))
+  )
+
+exp <- sum(mobility_status$org_mobile) / dim(mobility_status)[1]
+
+
+plotdata <- agg %>%
+  spread(org_mobile, count) %>%
+  rename(mobile = `TRUE`, nonmobile = `FALSE`) %>% 
+  mutate(
+    mobile = ifelse(is.na(mobile), 0, mobile),
+    total = mobile + nonmobile,
+    prop = mobile / total
+  ) %>%
+  filter(country_iso_alpha != "NULL" & total > 100) %>%
+  arrange(desc(prop)) %>%
+  ungroup() %>%
+  mutate(index = row_number())
+
+
+labels_top <- plotdata %>%
+  top_n(8, prop)
+
+labels_bot <- plotdata %>%
+  filter(!is.na(prop)) %>%
+  top_n(8, rev(prop))
+
+plotdata %>%
+  ggplot(aes(x = index, y = prop)) +
+  geom_bar(stat = "identity", alpha = 0.8) +
+  geom_hline(yintercept = exp, linetype = "dashed") +
+  geom_label_repel(data = labels_top, aes(label = country_iso_alpha), size = 3, direction = "y", nudge_x = 5) +
+  geom_label_repel(data = labels_bot, aes(label = country_iso_alpha), size = 3, direction = "y", nudge_x = -5) +
+  scale_x_continuous(expand = c(0, 0)) +
+  theme_minimal() +
+  theme(axis.title.x = element_blank()) +
+  ylab("Proportion mobility")
+```
+
+
+```{r}
+
+exp.org <- sum(mobility_status$org_mobile) / dim(mobility_status)[1]
+exp.country <- sum(mobility_status$country_mobile) / dim(mobility_status)[1]
+
+agg <- flows %>%
+  filter(!is.na(country_iso_alpha) & country_iso_alpha != "NULL") %>%
+  gather(key, value, org_mobile, country_mobile) %>%
+  group_by(country_iso_alpha, key, value) %>%
+  summarize(
+    count = length(unique(cluster_id))
+  )
+  
+plotdata <- agg %>%
+  spread(value, count) %>%
+  mutate(
+    `TRUE` = ifelse(is.na(`TRUE`), 0, `TRUE`),
+    total = `TRUE` + `FALSE`,
+    prop = `TRUE` / total
+  ) %>%
+  filter(total > 100) %>%
+  select(country_iso_alpha, key, prop) %>%
+  spread(key, prop)
+
+labels.country.top <- plotdata %>%
+  ungroup() %>%
+  top_n(4, country_mobile)
+
+labels.country.bot <- plotdata %>%
+  ungroup() %>%
+  top_n(4, desc(country_mobile))
+
+labels.org.top <- plotdata %>%
+  ungroup() %>%
+  top_n(8, org_mobile)
+
+labels.org.bot <- plotdata %>%
+  ungroup() %>%
+  top_n(5, desc(org_mobile))
+
+labels <- data.table::rbindlist(list(labels.country.top, labels.country.bot, labels.org.top, labels.org.bot)) %>%
+  distinct(country_iso_alpha, .keep_all = T)
+
+p <- plotdata %>%
+  ungroup() %>%
+  ggplot(aes(x = country_mobile, y = org_mobile, group = country_iso_alpha)) +
+  geom_point() +
+  geom_abline() +
+  geom_label_repel(data = labels, aes(label = country_iso_alpha), size = 3) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 12, face = "bold")
+  ) +
+  xlab("Proportion mobile across countries") +
+  ylab("Proportion mobile across organizations")
+
+p
+```
+
+```{r}
+agg <- flows %>%
+  group_by(country_iso_alpha, org_mobile) %>%
+  summarize(
+    count = length(unique(cluster_id))
+  )
+
+
+plotdata <- agg %>%
+  filter(org_mobile) %>%
+  ungroup() %>%
+  mutate(
+    prop = count / sum(count, na.rm = T),
+    country_iso_alpha = reorder(country_iso_alpha, desc(prop))
+  ) %>%
+  arrange(desc(prop)) %>%
+  mutate(
+    index = row_number(),
+    cumulative = cumsum(prop)
+  ) 
+
+labels = plotdata %>%
+  top_n(5, prop) %>%
+  mutate(
+    text = ifelse(country_iso_alpha == "USA", "USA", paste0("+", country_iso_alpha))
+  )
+
+plotdata
+
+plotdata %>%
+  ggplot(aes(x = index, y = cumulative)) +
+  geom_step() +
+  scale_x_continuous(breaks = c(0, 5, 10, 15, 20, 25, 30, 50, 100, 120), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.7, 0.8, 0.9, 1.0), expand = c(0, 0)) +
+  geom_segment(x = 0, xend = 10, y = 0.80, yend = 0.80, linetype = "dashed", color = "darkgrey") +
+  geom_segment(x = 10, xend = 10, y = 0, yend = 0.80, linetype = "dashed", color = "darkgrey") +
+  geom_segment(x = 0, xend = 17, y = 0.90, yend = 0.90, linetype = "dashed", color = "darkgrey") +
+  geom_segment(x = 17, xend = 17, y = 0.0, yend = 0.90, linetype = "dashed", color = "darkgrey") +
+  geom_segment(x = 0, xend = 30, y = 0.964, yend = 0.965, linetype = "dashed", color = "darkgrey") +
+  geom_segment(x = 30, xend = 30, y = 0.0, yend = 0.964, linetype = "dashed", color = "darkgrey") +
+  geom_label(data = labels, aes(x = index, y = cumulative, label = text), size = 3, nudge_x = 6) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text = element_text(size = 10),
+    axis.text.y = element_text(face = c(rep("plain", 9), "bold", "bold", "plain"))
+  ) +
+  ylab("Cumulative proportion")
+```
+
+```{r}
+labels = plotdata %>%
+  top_n(10, prop) %>%
+  mutate(
+    text = country_iso_alpha
+  )
+
+plotdata %>%
+  ggplot(aes(x = index, y = prop)) +
+  geom_bar(stat = "identity") +
+  geom_label_repel(data = labels, aes(label = country_iso_alpha), nudge_x = 5, size = 3, force = 2, direction = "y") +
+  theme_minimal() +
+  theme(axis.title.x = element_blank()) +
+  ylab("Proportion of global mobile researchers")
+
+```

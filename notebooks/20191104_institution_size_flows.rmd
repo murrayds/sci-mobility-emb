@@ -18,7 +18,6 @@ word2vec_similarities <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/
 
 ```{r}
 flows <- flows %>%
-  select(-index) %>%
   filter(org1 != org2) %>%
   mutate(
     count = ifelse(count == 0, 1, count)
@@ -26,6 +25,31 @@ flows <- flows %>%
 
 head(flows)
 ```
+
+
+
+
+```{r}
+
+lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/20191024_institution_lookup.txt",
+                     delim = "\t")
+
+coords <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/fixed_org_coordinates.txt", delim = "\t")
+
+lookup %>%
+  select(-new_lat, -new_long) %>%
+  left_join(coords, by = "cwts_org_no") %>%
+  mutate(
+    latitude = ifelse(latitude == "NULL", new_lat, latitude),
+    longitude = ifelse(longitude == "NULL", new_long, longitude),
+    ) %>%
+  select(-new_lat, -new_long)
+  
+
+
+```
+
+
 
 ```{r}
 sizes <- sizes %>%
@@ -40,51 +64,301 @@ head(sizes)
 
 
 ```{r}
+
+lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t")
+
+
+lookup_trim <- lookup %>% select(cwts_org_no, city, region, country_iso_name)
 flows_all <- flows %>%
   left_join(sizes, by = c("org1" = "cwts_org_no")) %>%
   left_join(sizes, by = c("org2" = "cwts_org_no")) %>%
   rename(org1_size = all_person_count.x, org2_size = all_person_count.y) %>%
   mutate(gravity = (org1_size * org2_size) / count) %>%
   inner_join(geographic_distance) %>%
-  inner_join(word2vec_similarities) 
+  inner_join(word2vec_similarities) %>%
+  left_join(lookup_trim, by = c("org1" = "cwts_org_no")) %>%
+  rename(org1_city = city, org1_region = region, org1_country = country_iso_name) %>%
+  left_join(lookup_trim, by = c("org2" = "cwts_org_no")) %>%
+  rename(org2_city = city, org2_region = region, org2_country = country_iso_name)
+ 
 
 head(flows_all, 100)
 ```
 
 
 ```{r}
-p1_all <- flows_all %>%
-  ggplot(aes(x = log(distance), y = log(gravity))) +
-  geom_hex(bins = 200) +
+library(tidyverse)
+library(readr)
+library(latex2exp)
+library(ggpmisc)
+
+lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t")
+lookup_trim <- lookup %>% select(cwts_org_no, city, region, country_iso_name)
+
+dist_raw = read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Descriptive/org/aggregate_org_distances.csv") %>%
+  select(-X1) %>%
+  left_join(lookup_trim, by = c("org1" = "cwts_org_no")) %>%
+  rename(org1_city = city, org1_region = region, org1_country = country_iso_name) %>%
+  left_join(lookup_trim, by = c("org2" = "cwts_org_no")) %>%
+  rename(org2_city = city, org2_region = region, org2_country = country_iso_name) %>%
+  unique()
+
+
+head(dist_raw) 
+```
+
+
+```{r}
+dist <- dist_raw %>% 
+  #filter(org1_city != org2_city) %>%
+  filter(emb_similarity >= 0) %>%
+  filter(count > 0) %>%
+  mutate(
+         geo_distance = ifelse(geo_distance < 1, 1, geo_distance),
+         geo_distance_logged = log(geo_distance),
+         gravity = imputed_count / (org1_size * org2_size),
+         gravity_logged = log(gravity)
+     ) 
+
+
+dist_binned <- dist %>%
+  gather(metric, distance, geo_distance_logged, emb_similarity) %>%
+  mutate(metric = factor(metric, 
+                         levels = c("geo_distance_logged", "emb_similarity"), 
+                         labels = c("log(km distance)", "cosine similarity"))
+  ) %>%
+  group_by(metric) %>%
+  mutate(
+    bin = cut(round(distance, 2), 40)
+  ) %>%
+  arrange(bin) %>%
+  group_by(metric, bin) %>%
+  summarize(
+    pos = min(distance) + ((max(distance) - min(distance)) / 2),
+    #pos = (as.numeric(first(bin)) * 0.05) - 0.025,
+    mu = mean(gravity_logged, na.rm = T),
+    se = sd(gravity_logged, na.rm = T) / sqrt(n()),
+    ci = 2.576 * se
+  )
+
+dist_binned
+  
+
+dist %>%
+  gather(metric, distance, geo_distance_logged, emb_similarity) %>%
+  mutate(metric = factor(metric, 
+                         levels = c("geo_distance_logged", "emb_similarity"), 
+                         labels = c("log(km distance)", "cosine similarity"))
+  ) %>%
+  ggplot(aes(x = distance, y = gravity_logged)) +
+  geom_hex(bins = 20, 
+           color = "lightgrey") +
+  stat_poly_eq(formula = y ~ x,
+               aes(label = paste(..rr.label.., sep = "~~~")), 
+               parse=TRUE,
+               coef.digits = 2,
+               label.x.npc = "right") +
+  stat_smooth(method = "lm", formula = y ~ x, color = "#c0392b", size = 1.5) + 
+  geom_point(data = dist_binned, aes(x = pos, y = mu, group = bin), size = 2) +
+  geom_errorbar(data = dist_binned, aes(x = pos, ymin = mu - ci, ymax = mu + ci, y = NULL)) +
+  facet_wrap(~metric, scale = "free_x", strip.position = "bottom") +
   theme_minimal() +
-  labs(x = "Log(Kilometers distance)",
-       y = "P1 * P2 / F12")
-
-p1_all
+  scale_fill_gradientn(colours=c("white", "blue"), 
+                       name = "Frequency",
+                       na.value=NA) +
+  theme(
+    legend.position = "right",
+    strip.text = element_text(size = 12),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
+    axis.title.x = element_blank()
+  ) +
+  ylab(TeX("$\\log\\left(\\frac{F_{ij}}{P_{i}P_{j}}\\right)$"))
 ```
 
 
+
 ```{r}
-p2_all <- flows_all %>%
-  ggplot(aes(x = (similarity), y = log(gravity))) +
-  geom_hex(bins = 100) +
+g1 <- dist %>% 
+  filter(count > 0) %>%
+  mutate(
+         geo_distance = ifelse(geo_distance < 1, 1, geo_distance),
+         geo_distance_logged = log(geo_distance),
+         gravity = imputed_count / (org1_size * org2_size),
+         gravity_logged = log(gravity)
+         ) %>%
+  gather(metric, distance, geo_distance_logged, emb_similarity) %>%
+  mutate(metric = factor(metric, 
+                         levels = c("geo_distance_logged", "emb_similarity"), 
+                         labels = c("log(km distance)", "cosine similarity"))
+  ) %>%
+  ggplot(aes(x = gravity_logged, y = distance)) +
+  geom_hex(bins = 20, 
+           color = "lightgrey") +
+  stat_poly_eq(formula = y ~ x,
+               aes(label = paste(..rr.label.., sep = "~~~")), 
+               parse=TRUE,
+               coef.digits = 2,
+               label.x.npc = "right") +
+  stat_smooth(method = "lm", formula = y ~ x, color = "#c0392b", size = 1.5) + 
+  facet_wrap(~metric, scale = "free_y", strip.position = "left") +
   theme_minimal() +
-  labs(x = "Cosine Similarity",
-       y = "Log(Kilometer Distance)")
+  scale_fill_gradientn(colours=c("white", "blue"), 
+                       name = "Frequency",
+                       na.value=NA) +
+  theme(
+    legend.position = "right",
+    strip.text = element_text(size = 12),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_blank()
+  ) +
+  xlab(TeX("$\\log\\left(\\frac{F_{ij}}{P_{i}P_{j}}\\right)$")) +
+  ylab("Metric")
 
-p2_all
+
+g1
+ggsave("~/Desktop/plot1.png", g1, width = 9, height = 5)
+```
+
+We can also look at log ratios. Note that I filter to only values of cosine similarity that are at least 0. The log function is only defined for non-negative numbers, however cosine simialrity is defined between -1 and 1 (though there are relatively few negative comparisons). 
+
+Higher values on the y-axis correpond to cases where cosine similarity is much greater than the gravity, i.e., the cosine similarity indicates stronger relationship than the flow. 
+
+The "gravity" is the flow, as a factor of the "mass" or size of the institions. Higher values suggest that the flow is greater than expected given the institution sizes. 
+```{r}
+dist %>%
+  filter(emb_similarity >= 0) %>%
+  mutate(
+    gravity = imputed_count / (org1_size * org2_size),
+    cosine_bin = cut(round(emb_similarity, 2), 20),
+    log_ratio = log(emb_similarity / gravity)
+  ) %>%
+  arrange(cosine_bin) %>%
+  group_by(cosine_bin) %>%
+  summarize(
+    mu_lr = mean(log_ratio, na.rm = T),
+    se_lr = sd(log_ratio, na.rm = T) / sqrt(n())
+  ) %>%
+  ggplot(aes(x = cosine_bin, y = mu_lr)) +
+  geom_point(size = 4, alpha = 0.8, shape = 21) +
+  geom_errorbar(aes(ymin = mu_lr - se_lr, ymax = mu_lr + se_lr), width = 0.4) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+    axis.title.y = element_text(angle = 0, vjust = 0.5)
+  ) +
+  xlab("Cosine similarity (binned)") +
+  ylab(TeX("$\\log\\left[\\frac{\\cos(\\theta)}{\\frac{F_{ij}}{P_{i}P_{j}}}\\right]"))
+```
+
+```{r}
+dist2 <- dist %>%
+  filter(emb_similarity >= 0) %>%
+  mutate(
+    sim = 1 - emb_similarity,
+    y = sim, 
+    x = imputed_count / (org1_size * org2_size),
+  ) 
+
+
+fitted <- nls(y ~ a * exp(b * x),
+    data = dist2,
+    start=list(a=0.5, b=-0.1))
+
+
+```
+
+```{r}
+dist %>%
+  filter(count > 0) %>%
+  filter(emb_similarity >= 0) %>%
+  mutate(
+    gravity = imputed_count / (org1_size * org2_size),
+    sim = 1 - emb_similarity
+  ) %>%
+  ggplot(aes(x = gravity, y = sim)) +
+  geom_hex(bins = 30) +
+  geom_smooth(method = "nls", formula = y ~ a * exp(b * x), method.args = list(start=c(a = 0.5, b= -0.01)), se = FALSE) +
+  theme_minimal() +
+  labs(x = "f12 / (p1 * p2), not transformed", y = "(1 - cosine similarity)")
 ```
 
 
 ```{r}
-p1_
+dist %>%
+  filter(emb_similarity >= 0) %>%
+  ggplot(aes(x = geo_distance_logged, y = gravity_logged)) +
+  geom_hex(bins = 20, 
+           color = "lightgrey") +
+  #geom_point(alpha = 0.1) +
+  stat_poly_eq(formula = y ~ x,
+               aes(label = paste(..rr.label.., sep = "~~~")), 
+               parse=TRUE,
+               coef.digits = 2,
+               label.x.npc = "right") +
+  stat_smooth(method = "lm", formula = y ~ x, color = "#c0392b", size = 1.5) + 
+  theme_minimal() +
+  scale_fill_gradientn(colours=c("white", "blue"), 
+                       name = "Frequency",
+                       na.value=NA) +
+  theme(
+    legend.position = "right",
+    strip.text = element_text(size = 12),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5)
+  ) +
+  xlab("Log(Geo. Distance, km)") +
+  ylab(TeX("$\\log\\left(\\frac{F_{ij}}{P_{i}P_{j}}\\right)$"))
+  
+```
 
+
+```{r}
+lookup_country <- lookup %>%
+  select(cwts_org_no, country_iso_name, city_country)
+dist_geo <- dist %>%
+  left_join(lookup_country, by = c("org1" = "cwts_org_no")) %>%
+  rename(country1 = country_iso_name, city1 = city_country) %>%
+  left_join(lookup_country, by = c("org2" = "cwts_org_no")) %>%
+  rename(country2 = country_iso_name, city2 = city_country) %>%
+  mutate(
+    same_country = country1 == country2,
+    same_city = city1 == city2
+  ) %>%
+  filter()
+
+dist_geo
+```
+
+
+```{r}
+completed <- c(10410, 1292, 18381, 3505, 18538, 18480, 15219, 846, 1742, 1868, 3047, 15229, 15202, 18503, 15929, 18178, 15980, 15939, 3962, 15852, 15865, 3961, 15966, 3961, 1247, 10384, 3022, 30218, 30219, 818, 2007, 3109, 1062, 10345, 1076, 3614, 7377, 427, 31919, 31913, 38, 2625, 10358, 2628, 1846, 1847, 2732, 2663, 3112, 2662, 2738, 31306)
+dist_geo %>%
+  filter(same_country == T) %>%
+  filter(!org1 %in% completed) %>%
+  filter(!org2 %in% completed) %>%
+  group_by(country1) %>%
+  mutate(
+    mu = mean(geo_distance),
+    #top_percentile = quantile(geo_distance, seq(0,1, by=0.01))[100],
+    #diff = abs(mu - geo_distance),
+    #is_anomoly = geo_distance > (top_percentile)
+    is_anomoly = geo_distance > ( 15 * mu)
+  ) %>%
+  filter(is_anomoly)
+  
 
 ```
 
+
 ```{r}
-library(grid)
-library(gridExtra)
+lookup %>%
+  group_by(country_iso_name) %>%
+  mutate(
+    mean_lat = mean(as.numeric(latitude), na.rm = T),
+    mean_long = mean(as.numeric(longitude), na.rm = T),
+    is_anomoly = abs(latitude - mean_lat) > 10 | abs(longitude - mean_long) > 10
+  ) %>%
+  filter(is_anomoly == T)
 
 
 ```
