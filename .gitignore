@@ -1,3 +1,27 @@
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.bcf
+*.synctex.gz
+*.toc
+*blx.bib
+*.fls
+*.fdb_latexmk
+*.out
+*.run.xml
+main.pdf
+supp.pdf
+*.log
+*.ps
+*.dvi
+
+
+# Ignore image files
+*.pdf
+*.png
+
+
 # Pesky osx files
 .DS_Store
 
