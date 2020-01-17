@@ -40,30 +40,30 @@
 
 \vspace{-6em}
 \begin{center}
-\textbf{\textit{Keywords: Science Studies; Mobility; Deep Learning; word2vec; Gravity Law }}
+\textbf{\textit{Keywords: Science Studies; Mobility; Deep Learning; word2vec; Gravity Model}}
 \newline
 \end{center}
 
 \section*{Extended Abstract}
 To compete for global talent, policy-makers and administrators at all levels of governance require an understanding of \textit{scientific mobility} — the flows or researchers between organizations. 
-Many interacting factors shape these flows, including geography, organizational prestigee, and policy~\autocite{deville_career_2014, clauset_systematic_2015}.
-However, the complexity of scientific mobility have resulted in a fragmented understanding, limited to specific regions and mobility types.
+Many interacting factors shape these flows, including geography, organizational prestigee, and policy~\autocite{deville_career_2014, clauset_systematic_2015}.However, the complexity of scientific mobility have resulted in a fragmented understanding, limited to specific regions and mobility types.
 We leverage recent advances in neural networks and representation learning in order to construct a dense, meaningful, and coherent vector-space representation of global scientific mobility, defined as researcher's co-affiliations during a time window. 
 This representation facilitates the holistic study of scientific mobility, one that captures the complex relationships between organizations the world over. 
 
 We source bibliographic data on more than 22 million papers published between 2008 and mid 2019, comprising 3.7 million disambiguated authors and 8,445 organizations from the Web of Science database hosted by Leiden University. 
-A ``sentence'' is constructed for each author by concatenating organization ids for each affiliation listed on their papers, ordered by year of publication, as shown in Fig \ref{fig:image}.a for two example authors. 
-These sentences are used as input into the standard (\textit{word2vec}) skip-gram model~\autocite{mikolov_distributed_2013}. 
+A ``sentence'' is constructed for each author by concatenating organization ids for each affiliation listed on their papers, ordered by year of publication (Fig~\ref{fig:image}.a).
+These sentences are used as input into the standard (\textit{word2vec}) skip-gram model~\autocite{mikolov_distributed_2013}, and result in a dense vector-space representation of organizations (Fig~\ref{fig:image}.b) 
 
 Similarity between vectors in the embedding space reasonably approximate actual mobility flows, and are an effective distance. 
-The cosine similarity between vectors is more strongly correlated with \textit{flux} between organizations than geographic distance (Fig~\ref{fig:image}.b). 
+The cosine similarity between vectors is more strongly correlated with \textit{flux} between organizations than geographic distance (Fig~\ref{fig:image}.c). 
 Flux, the flows of researchers between two organizations given their sizes, is derived from the gravity law of mobility ~\autocite{simini_universal_2012}.
-Moreover, defining the gravity law as a function of cosine similarity produces better predictions of flux than using geographic distance (Fig~\ref{fig:image}.c). 
+Moreover, defining the gravity law as a function of cosine similarity produces better predictions of flux than using geographic distance (Fig~\ref{fig:image}.d). 
 
-We project the embedding into a 2-dimensional space using \textit{umap} ~\autocite{mcinnes_umap_2018} and identify that organizations are largely clustered geographically (Fig ~\ref{fig:image}.d). 
+We project the embedding into a 2-dimensional space using \textit{umap} ~\autocite{mcinnes_umap_2018} and identify that organizations are largely clustered geographically (Fig ~\ref{fig:image}.e).
+This embedding reflects a mix of geographic, historical, religious, and linguistic relationships between countries. 
+For example, South American countires are near Spain and Portugal, French-speaking universities from Quebec are near France, and the Switzerland cluster is positioned between Germany, Austria, and Italy. 
 By re-projecting subsets of vectors, we reveal more granular structure.
-For example, a re-projection of U.S. universities again demonstrates state-level geographic structure (Fig~\ref{fig:image}.e), however re-projecting Massachusetts (Fig~\ref{fig:image}.d) reveals additional structure based on urban centers (Boston vs. Worcester), but also organization (hospitals tend to be near one another) and political organization (UMass system cluster separate from Harvard, MIT, etc.).
-This embedding also reflects a mix of geographic, historical, religious, and linguistic relationships between countries, demonstrated by the complex clustering of Central and South-East Asian countries (Fig~\ref{fig:image}.g) and between Spain, Portugal, and Central and South American countries (Fig~\ref{fig:image}.h). 
+For example, a re-projection of U.S. universities again demonstrates state-level geographic structure (Fig~\ref{fig:image}.f), however re-projecting Massachusetts (Fig~\ref{fig:image}.g) reveals additional structure based on urban centers (Boston vs. Worcester), but also organization (hospitals tend to be near one another) and political organization (UMass system cluster separate from Harvard, MIT, etc.).
 
 By embedding scientific mobility, we offer a new way to study scientific mobility, and mobility more generally. 
 This approach transforms complex and high-dimensional data into a dense, coherent, and meaningful vector space that is convenient for visualization, and computation, and can be incorporated into a variety of analyses. 
@@ -71,17 +71,19 @@ This approach transforms complex and high-dimensional data into a dense, coheren
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[width=0.83\textwidth]{../Figs/ic2s2-2020/ic2s2_2020_mainfig.pdf}
+	\includegraphics[width=\textwidth]{../Figs/ic2s2-2020/ic2s2_2020_mainfig.pdf}
 	\caption{ 
 	\textbf{Embedding offer robust model of co-affiliation, reveals multi-scale structure.}
-	\textbf{a:} Examples of how ``sentences'' for the skip-gram model are created from author's affiliations listed on papers.
-	\textbf{b:} Relationship between \textit{flux} and embedding similarity stronger than for geographic distance. 
+	\textbf{a.} Examples of how ``sentences'' for the skip-gram model are created from author's affiliations listed on papers.
+	\textbf{b.} Embedded organizations are represented as vectors.
+	\textbf{c.} Relationship between \textit{flux} and embedding similarity stronger than for geographic distance. 
 	Red line is line of best fit.
 	Black points are the mean flux for each binned by distance or similarity. 
-	\textbf{c:} Predicting flux using gravity law.
-	Box-plots show distribution of actual flux binned by expected, and color represents the the degree to which the distribution overlaps the line $x = y$. 
-	\textbf{d:} Umap projection of embedding space demonstrating geographic clustering or organizations.
-	Umap re-projections of subsets of organization vectors vectors for organizations in the United States (\textbf{e}), Massachusetts (\textbf{f.}), Central- and South-East Asia (\textbf{g}) and Central and South-American and Iberian countries (\textbf{h}). 
+	\textbf{d.} Predicting flux using gravity law.
+	Box-plots show distribution of actual flux binned across predicted.
+	Color represents degree to which the distribution overlaps the line $x = y$. 
+	\textbf{e.} Umap projection of embedding space demonstrating geographic clustering or organizations.
+	Re-projections of vector subsets for the \textbf{f.} United States and \textbf{g.} Massachusetts. 
 	 }
 	\label{fig:image}
 \end{figure}
@@ -94,7 +96,8 @@ This approach transforms complex and high-dimensional data into a dense, coheren
 \setstretch{0.8}
 \small
 \setlength\bibitemsep{1pt}
-\printbibliography
+{\renewcommand{\markboth}[2]{}% Remove header adjustment
+\printbibliography}
 \endgroup
 
 
