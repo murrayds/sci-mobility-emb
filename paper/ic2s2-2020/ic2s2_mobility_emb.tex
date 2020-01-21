@@ -46,46 +46,48 @@
 
 \section*{Extended Abstract}
 
-Scientific mobility is closely linked to impact~\autocite{sugimoto_scientists_2017} and is essential to understanding the scientific ecosystem.
-This mobility is shaped by many factors, including geography, prestige, and policy\autocite{deville_career_2014}.
+Scientific mobility is closely linked to impact~\autocite{sugimoto_scientists_2017} and is an essential component of the scientific ecosystem.
+This mobility is shaped by many factors, including geography, prestige, and policy\autocite{deville_career_2014,clauset_systematic_2015}.
 Such complexity has resulted in a fragmented understanding of scientific mobility, limited to specific regions and mobility types.
-We leverage recent advances in neural networks and representation learning to construct a dense, meaningful, and coherent vector-space embedding of global scientific mobility, using individual mobility documented bibliographic data. 
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{../Figs/ic2s2-2020/ic2s2_2020_mainfig.pdf}
+	\caption{ 
+	\textbf{Embedding offer robust model of co-affiliation, reveals multi-scale structure.}
+	\textbf{a.} Examples of how ``sentences'' for the skip-gram model are created from author's affiliations listed on papers.
+	\textbf{b.} Organization sentences are used as input for word embedding model. Each organization is represented as a vector.
+	\textbf{c.} Organization embedding better captures closeness (flux) than does geographic distance. 
+ $P_{i}$ and $P_{j}$ are the number of researchers in organization $i$ and $j$, and $F_{ij}$ is the symmetric flow between them.
+	Black points are the mean flux for each binned by distance or similarity. 
+	\textbf{d.} Cosine similarity better predictor of flux than geographic distance, using gravity law.
+	Box-plots show distribution of actual flux binned across predicted, colored by the degree to which it overlaps $x = y$. 
+	Cosine similarity is better predictor when considering only pairs of organizations within the same country (\textbf{e}) and only pairs in different countries (\textbf{f}). 
+	\textbf{g.} UMAP visualization of embedding demonstrates geographic structure.
+	Visualization of vector subsets reveal additional structure for the \textbf{h.} U.S. and \textbf{i.} Massachusetts. 
+	 }
+	\label{fig:image}
+\end{figure}
+
+We leverage recent advances in neural networks and representation learning to construct a dense, meaningful, and coherent vector-space embedding of global scientific mobility, using individual mobility trajectories documented in bibliographic data. 
 This representation facilitates the holistic study of scientific mobility, capturing the complex relationships between organizations around the world. 
 
-We source the Web of Science for bibliographic data on more than 22 million papers published between 2008 and mid 2019, comprising 3.7 million disambiguated authors and 8,445 organizations. 
+We source the Web of Science for bibliographic data on more than 22 million papers from mobile authors published between 2008 and mid 2019, comprising 3.7 million disambiguated authors and 8,445 organizations. 
 A ``sentence'' is constructed for each author by concatenating organization IDs for each affiliation listed on their papers, ordered by year of publication (Fig~\ref{fig:image}.a).
 These sentences are used as input into the standard word embedding~\autocite{mikolov_distributed_2013}, which learns a dense vector-space embedding of organizations (Fig~\ref{fig:image}.b) 
 
 We show that similarity between vectors in the embedding space can be considered as a reasonable measure of effective distance. 
 The cosine similarity between vectors can explain more than twice the variance in mobility between pairs of organizations than geographic distance (Fig~\ref{fig:image}.c). 
-Moreover, applying the gravity law of mobility~\cite{simini_universal_2012} with cosine similarity produces better predictions of mobility than does using geographic distance (Fig~\ref{fig:image}.
+Moreover, applying the gravity law of mobility~\autocite{simini_universal_2012} with cosine similarity produces better predictions of mobility than does using geographic distance (Fig~\ref{fig:image}.d.
+These predictions are also more robust than geographic distance when considering only same-country (Fig~\ref{fig:image}.e) and different-country (Fig~\ref{fig:image}.f) mobility. 
 
-We visualize the embedding using UMAP~\autocite{mcinnes_umap_2018} and observe strong geographic clustering (Fig~\ref{fig:image}.e), while also reflecting a mix of historical, religious, and linguistic relationships between countries. 
-For example, South American countries are near Spain and Portugal and French-speaking universities from Quebec are near France. 
+We visualize the embedding using UMAP~\autocite{mcinnes_umap_2018} and observe strong geographic clustering (Fig~\ref{fig:image}.g), while also reflecting a mix of historical, religious, and linguistic relationships between countries. 
+For example, South American countries are near Spain and Portugal and organizations in French-speaking Quebec and North Africa are nearer France. 
 By visualizing subsets of vectors, we reveal more granular structure.
-For example, the structure of U.S. universities demonstrates state-level geographic clustering (Fig~\ref{fig:image}.f), whereas Massachusetts (Fig~\ref{fig:image}.g) instead shows structure based on urban centers (Boston vs. Worcester), organization type (hospitals tend to be adjacent) and different university systems (UMass system cluster separate from Harvard, MIT, etc.).
+For example, the structure of U.S. universities demonstrates state-level geographic clustering (Fig~\ref{fig:image}.h) roughly organized by state and region, whereas Massachusetts (Fig~\ref{fig:image}.i) instead shows structure based on urban centers (Boston vs. Worcester), organization type (hospitals tend to be adjacent) and different university systems (UMass system cluster separate from Harvard, MIT, etc.).
 
-By embedding scientific mobility, we offer a new quantitative framework to study scientific mobility, and potentially mobility in general. 
-This approach transforms complex and high-dimensional data into a dense, coherent, and meaningful vector space that is convenient for visualization, computation, and can be incorporated into a variety of analyses. 
-\newpage
-
-\begin{figure}[ht!]
-	\centering
-	\includegraphics[width=0.96\textwidth]{../Figs/ic2s2-2020/ic2s2_2020_mainfig.pdf}
-	\caption{ 
-	\textbf{Embedding offer robust model of co-affiliation, reveals multi-scale structure.}
-	\textbf{a.} Examples of how ``sentences'' for the skip-gram model are created from author's affiliations listed on papers.
-	\textbf{b.} Each organization is represented as a vector.
-	\textbf{c.} Organization embedding better captures closeness (flux) than does geographic distance. 
- $P_{i}$ and $P_{j}$ are the number of researchers in organization $i$ and $j$, and $F_{ij}$ is the symmetric flow between them.
-	Black points are the mean flux for each binned by distance or similarity. 
-	\textbf{d.} Cosine similarity better predictor of flux than geographic distance, using gravity law. 
-	Box-plots show distribution of actual flux binned across predicted, colored by the degree to which it overlaps $x = y$. 
-	\textbf{e.} UMAP visualizarion of embedding demonstrates geographic structure.
-	Visualization of vector subsets reveal additional structure for the \textbf{f.} U.S. and \textbf{g.} Massachusetts. 
-	 }
-	\label{fig:image}
-\end{figure}
+By embedding scientific mobility, we offer a novel quantitative framework to study scientific mobility, and potentially mobility in general. 
+This approach transforms complex and high-dimensional data into a dense, coherent, and meaningful vector space that is convenient for visualization, computation, and can be incorporated into a variety of analyses.
 
 
 
