@@ -92,11 +92,6 @@ Organizations were also assigned continental information (e.g., North America, A
 For each organization, we also calculated a size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
 in the case that authors publish with multiple affiliations in a single year, they are counted towards each. 
 
-%% Distance calculations
-We calculate $f_{ij}$, the pairwise number of co-affiliations between organizations within our data, calculated as the number of co-occurrences of organizations within author co-affiliation trajectories. 
-Similarly, we also calculate $d_{ij}$, the pairwise geographic distance between organizations.
-Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations. 
-When less than one kilometer, a distance of one is imputed. 
 
 \subsection*{Embedding}
 %% Mobility sentences
@@ -119,7 +114,23 @@ We iterate through several values of vector size and window size, repeating anal
 To mitigate the effect of less common organizations, only organizations appearing at least 50 times in mobility sentences are included in the embedding;
 this yields 6,580, or 76 percent of all organizations.
 We iterate the SGNS training for five epochs over all mobility sentences. 
-All word embeddings are trained using the \textit{gensim} implementation of the SGNS \textit{word2vec} model. 
+All word embeddings are trained using the \textit{gensim} python implementation of the SGNS \textit{word2vec} model. 
+
+%
+% Distances subsection
+%
+\subsection{Distance}
+%% Distance calculations
+We calculate $f_{ij}$, the pairwise number of co-affiliations between organizations, calculated as the number of co-occurrences of organizations within author co-affiliation trajectories. 
+For example, $f_{ij} = 10$ indicates that ten authors were co-affiliated with both organization $i$ and $j$ between 2008 and 2019, as evidenced from their publications. 
+In contrast to traditional mobility studies, all co-affiliations are symmetric, meaning that $f_{ij} = f_{ji}$. 
+
+We also calculate two forms of proximity between organizations. 
+The geographic distance, $g_{ij}$, is the pairwise geographic distance between organizations.
+Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations. 
+When less than one kilometer, a distance of one is imputed. 
+The embedding proximity, $d_{ij}$, is calculated as the pairwise cosine similarity between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
+
 
 
 
