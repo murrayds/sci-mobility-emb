@@ -20,7 +20,11 @@
 \def\vs{vs.\ }
 
 % Refs
-\usepackage{biblatex}
+\usepackage[style=nature,
+					backend=bibtex,
+					sortcites=true,
+					autocite=superscript
+]{biblatex}
 \addbibresource{mobility.bib}
 
 \usepackage{url}
@@ -70,7 +74,7 @@ Data, analysis, and associated code have been made publicly available and can be
 % Do we need to talk about how we define mobility in relation to past papers?
 We source co-affiliation trajectories of authors from the Web of Science database hosted by the Center for Science and Technology Studies at Leiden University. 
 Trajectories are constructed from author affiliations listed on the byline of publications for a given author.
-Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations (cite) and when performance is strongest (ref to SI?). 
+Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations~\cite{caron2014disambiguation} and when performance is strongest (ref to SI?). 
 This yields 37,542,144 author-affiliation representing 12,963,792 authors. 
 Each author-affiliation combination is associated with the publication year and a unique id that maps the affiliation to a disambiguate organization. 
 Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. 
@@ -78,7 +82,7 @@ Authors are classified as mobile when they have at least two distinct organizati
 Mobile authors constitute 3,709,869 or 28.6 percent of all authors, and 22,436,637 author-affiliation combinations. 
 
 % %Organization information
-Affiliations mapped to one of 8,661 organizations, disambiguated following a mostly manual process originally designed for the Leiden Rankings of World Universities (cite). 
+Affiliations mapped to one of 8,661 organizations, disambiguated following a mostly manual process originally designed for the Leiden Rankings of World Universities~\cite{waltman2012leidenrankings}. 
 Organizational records were associated with a full name, a type indicating the sector (e.g., University, Government, Industry), and an identifier for the country and city of the organization. 
 Sixteen different sector types were included in the analysis, which we aggregated to a four high-level codes: \textit{University}, \textit{Hospital}, \textit{Government}, and \textit{Other}. 
 Each record was also associated with a latitude and longitude, however for many organizations these were missing or incorrect. We manually updated the coordinates of 2,267 organizations by searching the institution name and city on Google Maps;
@@ -104,7 +108,7 @@ duplicate organization ids appearing in the same sentence are not removed.
 
 
 %% word2vec
-These mobility sentences are used as input to the standard skip-gram negative sampling (SGNS) model for word embedding, commonly known as \textit{word2vec} (cite). 
+These mobility sentences are used as input to the standard skip-gram negative sampling (SGNS) model for word embedding, commonly known as \textit{word2vec}~\cite{mikolov2013word2vec} . 
 In natural-language processing, word embeddings are used to construct dense vector-space representations of words and phrases, in which distance relationships between words correspond to a notion of semantic distance. 
 By embedding co-affiliation trajectories, we aim to learn a dense vector for every organization where distance between vectors relates to the tendency for two organizations to co-occur in a token window around the target term in the same career trajectory. 
 Vectors are learned by training a neural network to optimize the prediction of so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory. 
