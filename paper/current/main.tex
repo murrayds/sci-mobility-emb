@@ -3,7 +3,7 @@
 % Figures
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
-\def\figdir{figs}
+\def\figdir{../Figs}
 
 % Math
 \usepackage{amsmath}
@@ -61,9 +61,11 @@
 \section{Data and Methods}
 \label{sec:datamethods} %{{{ 
 
+Data, analysis, and associated code have been made publicly available and can be found at \textit{https://github.com/murrayds/...}
 
-%% Introduce main dataset
-% Where do we 
+
+\subsection*{Data}
+%% Main dataset
 % Do we need to add the Leiden field classificaiton infomration? It doesn't seem like its relevant for the current analysis.
 % Do we need to talk about how we define mobility in relation to past papers?
 We source co-affiliation trajectories of authors from the Web of Science database hosted by the Center for Science and Technology Studies at Leiden University. 
@@ -71,10 +73,11 @@ Trajectories are constructed from author affiliations listed on the byline of pu
 Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations (cite) and when performance is strongest (ref to SI?). 
 This yields 37,542,144 author-affiliation representing 12,963,792 authors. 
 Each author-affiliation combination is associated with the publication year and a unique id that maps the affiliation to a disambiguate organization. 
-Combinations are ordered by the year of publication, and are randomized for combinations within the same year. 
+Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. 
 Authors are classified as mobile when they have at least two distinct organization ids in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
 Mobile authors constitute 3,709,869 or 28.6 percent of all authors, and 22,436,637 author-affiliation combinations. 
 
+% %Organization information
 Affiliations mapped to one of 8,661 organizations, disambiguated following a mostly manual process originally designed for the Leiden Rankings of World Universities (cite). 
 Organizational records were associated with a full name, a type indicating the sector (e.g., University, Government, Industry), and an identifier for the country and city of the organization. 
 Sixteen different sector types were included in the analysis, which we aggregated to a four high-level codes: \textit{University}, \textit{Hospital}, \textit{Government}, and \textit{Other}. 
@@ -85,11 +88,61 @@ Organizations were also assigned continental information (e.g., North America, A
 For each organization, we also calculated a size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
 in the case that authors publish with multiple affiliations in a single year, they are counted towards each. 
 
+%% Distance calculations
+We calculate $f_{ij}$, the pairwise number of co-affiliations between organizations within our data, calculated as the number of co-occurrences of organizations within author co-affiliation trajectories. 
+Similarly, we also calculate $d_{ij}$, the pairwise geographic distance between organizations.
+Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations. 
+When less than one kilometer, a distance of one is imputed. 
+
+\subsection*{Embedding}
+%% Mobility sentences
+We embed co-affiliation trajectories by treating them analogously to sentences, and organizations analogously to words. 
+The trajectories of mobile authors were converted to ''mobility sentences`` by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}.a.
+In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple affiliations in the same year, the order is randomized within that year, as shown in  Fig.~\ref{fig:methods:mobility_sentence}.b. 
+The mean length of mobility sentences is 6.0, whereas the largest is 251.
+duplicate organization ids appearing in the same sentence are not removed. 
+
+
+%% word2vec
+These mobility sentences are used as input to the standard skip-gram negative sampling (SGNS) model for word embedding, commonly known as \textit{word2vec} (cite). 
+In natural-language processing, word embeddings are used to construct dense vector-space representations of words and phrases, in which distance relationships between words correspond to a notion of semantic distance. 
+By embedding co-affiliation trajectories, we aim to learn a dense vector for every organization where distance between vectors relates to the tendency for two organizations to co-occur in a token window around the target term in the same career trajectory. 
+Vectors are learned by training a neural network to optimize the prediction of so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory. 
+
+%% Word2vec parameters and training procedure
+The SGNS model has several tunable hyper-parameters, including the size of the learned vectors, the size of the token window  considered when training, the minimum frequency threshold for including an organization, and the number of iterations.
+We iterate through several values of vector size and window size, repeating analysis for each combination. 
+To mitigate the effect of less common organizations, only organizations appearing at least 50 times in mobility sentences are included in the embedding;
+this yields 6,580, or 76 percent of all organizations.
+We iterate the SGNS training for five epochs over all mobility sentences. 
+All word embeddings are trained using the \textit{gensim} implementation of the SGNS \textit{word2vec} model. 
 
 
 
 
 
+
+
+
+
+
+
+%
+% Figure - Example of mobility sentences
+%
+\begin{figure}[ht!]
+	\centering
+	\label{fig:methods:mobility_sentence}
+	\includegraphics[width=0.7\textwidth]{\figdir/mobility_example_combined.pdf}
+	\caption{
+		\textbf{Co-affiliation trajectories represented as sentences}
+		\textbf{a.} 
+		An authors published five papers across five time periods, with only one affiliation listed in the byline of each paper. 
+		A unique identifier is assigned to each organization, and these are concatenated into a mobility sentence. 
+		\textbf{b.}
+		In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. Here, organization ids are still ordered by year, however order within a single year is random.  	
+	}
+\end{figure}
 
 
 
