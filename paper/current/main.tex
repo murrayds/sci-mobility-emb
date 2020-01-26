@@ -21,7 +21,7 @@
 
 % Refs
 \usepackage{biblatex}
-\addbibresource{main.bib}
+\addbibresource{mobility.bib}
 
 \usepackage{url}
 
@@ -55,6 +55,69 @@
 
 %}}}
 
+%
+% DATA AND METHODS
+%
+\section{Data and Methods}
+\label{sec:datamethods} %{{{ 
+
+
+%% Introduce main dataset
+% Where do we 
+% Do we need to add the Leiden field classificaiton infomration? It doesn't seem like its relevant for the current analysis.
+% Do we need to talk about how we define mobility in relation to past papers?
+We source co-affiliation trajectories of authors from the Web of Science database hosted by the Center for Science and Technology Studies at Leiden University. 
+Trajectories are constructed from author affiliations listed on the byline of publications for a given author.
+Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations (cite) and when performance is strongest (ref to SI?). 
+This yields 37,542,144 author-affiliation representing 12,963,792 authors. 
+Each author-affiliation combination is associated with the publication year and a unique id that maps the affiliation to a disambiguate organization. 
+Combinations are ordered by the year of publication, and are randomized for combinations within the same year. 
+Authors are classified as mobile when they have at least two distinct organization ids in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
+Mobile authors constitute 3,709,869 or 28.6 percent of all authors, and 22,436,637 author-affiliation combinations. 
+
+Affiliations mapped to one of 8,661 organizations, disambiguated following a mostly manual process originally designed for the Leiden Rankings of World Universities (cite). 
+Organizational records were associated with a full name, a type indicating the sector (e.g., University, Government, Industry), and an identifier for the country and city of the organization. 
+Sixteen different sector types were included in the analysis, which we aggregated to a four high-level codes: \textit{University}, \textit{Hospital}, \textit{Government}, and \textit{Other}. 
+Each record was also associated with a latitude and longitude, however for many organizations these were missing or incorrect. We manually updated the coordinates of 2,267 organizations by searching the institution name and city on Google Maps;
+in cases where a precise location of the organization could not be identified, we used the coordinates returned when searching the name of the city.
+State/province level  information were added using the reverse geocoding service LocationIQ using each organization's latitude and longitude as input. 
+Organizations were also assigned continental information (e.g., North America, Asia, Europe) manually, by country. 
+For each organization, we also calculated a size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
+in the case that authors publish with multiple affiliations in a single year, they are counted towards each. 
+
+
+
+
+
+
+
+
+
+% Leiden bibliographic data
+	% Basic details
+	% How was mobility determined?
+	% How were university sizes extracted?
+	% Organization information? (count, etc.)
+% Manually-identified geographic coordiantes
+% Leiden rankings (if using prestige)
+% 
+
+%% Introduce embedding methodology and approach
+% Introduce embedding and why we use it
+% How were sentences created (use figure)
+
+%% Gravity Law
+% Why use gravity law?
+% How were geographic distances calculated?
+% How are distnaces calculated within the embedding space
+
+
+
+
+
+
+%% Introduce gravity measurements
+
 \section{Results}\label{sec:results} %{{{ 
 
 Let $f_{ij}$ represents the total flux (the number of people who moved) between $i$ and $j$. 
@@ -72,7 +135,7 @@ The skip-gram model maximizes the average log probability
 \end{equation}
 where 
 \begin{equation}
-p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_w_I)}, 
+p(w_O|w_I) = \frac{\exp(v'_{w_{O} }\cdot v_{w_{I}})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_{)}}}, 
 \end{equation}
 where $v_w$ and $v'_w$ are `input' and `output' vector representations of $w$. 
 
@@ -87,8 +150,6 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 %\end{minipage}
 
 %}}}
-
-\section{Methods}\label{sec:methods} %{{{
 
 %}}}
 
