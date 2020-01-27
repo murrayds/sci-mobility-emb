@@ -132,6 +132,7 @@ To mitigate the effect of less common organizations, only organizations appearin
 this yields 6,580, or 76 percent of all organizations.
 We iterate the SGNS training for five epochs over all mobility sentences. 
 All word embeddings are trained using the \textit{gensim} python implementation of the SGNS \textit{word2vec} model. 
+We visualize embeddings by projecting into two dimensions using UMAP~\cite{mcinnes2018umap}.
 
 %
 % Distances subsection
@@ -191,10 +192,56 @@ Here, non-zero flows account for only 4.2 percent of all possible pairs of  the 
 This value is comparable to other common applications of the gravity law, such as to hone calls, commuting, and migration \cite{simini2012universal}.
 We follow standard practice and exclude from our analysis zero flows. 
 
-
-%% Introduce gravity measurements
-
 \section{Results}\label{sec:results} %{{{ 
+
+
+%
+% Figure - Gravity law performance
+%
+\begin{figure}[h!]
+	\centering
+	\label{fig:gravity_performance}
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
+	\caption{
+		\textbf{Embedding proximity outperform and are more robust than geographic distance.}
+		Embedding proximity (\textbf{a}) explains more of the total distance than does geographic distance (\textbf{b}). 
+		Red line is line of best fit. 
+		Black dots are mean flux across binned proximity meas.
+		Predictions  of flux between organization pairs made using embedding proximity (\textbf{c}) out-perform those made using geographic distance (\textbf{d}). 
+		Boxplots show distirbution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+		Predictions made for only pairs of organizations within the same country using embedding proximity (\textbf{e}) outperform those made for geographic distance (\textbf{f}).
+		Embedding proximity (\textbf{g}) also outperforms geographic distance (\textbf{h}) when predicting flux between only pairs of organizations in different countries. 
+	}
+\end{figure}
+
+
+
+%
+% Figure - 
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:projection}
+	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.png}
+	\caption{
+		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
+		\textbf{a.}
+		UMAP projection of the entire embedding space reveals geographic clustering.
+		Each point corresponds to an organization.
+		Color indicates the continent. 
+		We re-project subsets of organizational vectors to uncover more complex local structure.
+		\textbf{b.} Re-projection of organizational vectors roughly correponding to West-Asian, Southeast Asian, and South Asian countries. 
+		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portougese- and Spanish-speaking counriees in South and Central America. 
+		\textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
+		Color indicates Census Bureau-designated regions,
+		\textbf{e.} Re-projection of organizations in Massachusetts reveal clustering based on organizational sector, prestige. 
+		Color indicates sector designation of organization. 
+	}
+\end{figure}
+
+
+
 Let $f_{ij}$ represents the total flux (the number of people who moved) between $i$ and $j$. 
 Because we are ignoring the directions, $f_{ij} = f_{ji}$. 
 The total flux from or to $i$ can be written as $\mu_{i} = \sum_k f_{ik}$. 
@@ -228,6 +275,7 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 
 %}}}
 
+\newpage
 \printbibliography{}
     
 \end{document} %}}}
