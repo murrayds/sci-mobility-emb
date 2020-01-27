@@ -66,7 +66,9 @@ GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{dis
 PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', 'd{dimensions}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
 GRADIENT_LEGEND = osjoin(PROJ_HOME, "Assets", "gradient_legend.pdf")
 PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_plot.pdf')
+PROP_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_over_time_plot.pdf')
 PUBS_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_by_discipline_plot.pdf')
+PROP_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_over_time_by_discipline_plot.pdf')
 NUM_AFFILIATIONS_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, 'num_affiliations_ecdf.pdf')
 PROP_MOBILE_BY_COUNTRY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_mobility_by_country.pdf')
 PROP_ORG_COUNTRY_MOBILITY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_org_country_mobility.pdf')
@@ -161,6 +163,9 @@ rule all:
         FLOWS_NETWORK,
         # Descriptive Plots
         PUBS_OVER_TIME_PLOT,
+        PROP_OVER_TIME_PLOT,
+        PUBS_DISC_OVER_TIME_PLOT,
+        PROP_DISC_OVER_TIME_PLOT,
         NUM_AFFILIATIONS_ECDF,
         PROP_MOBILE_BY_COUNTRY,
         PROP_ORG_COUNTRY_MOBILITY,
@@ -365,11 +370,28 @@ rule plot_pubs_over_time:
         "Rscript scripts/PlotPubsOverTime.R --input {input.flows} \
                  --researchers {input.researchers} --output {output}"
 
+rule plot_prop_over_time:
+    input:
+        flows = MOBILITY_RAW,
+        researchers = rules.get_researcher_metadata.output
+    output:
+        PROP_OVER_TIME_PLOT
+    shell:
+        "Rscript scripts/PlotPropOverTime.R --input {input.flows} \
+                 --researchers {input.researchers} --output {output}"
+
 rule plot_pubs_over_time_by_discipline:
     input: rules.filter_to_mobile.output
     output: PUBS_DISC_OVER_TIME_PLOT
     shell:
         "Rscript scripts/PlotPubsOverTimeByDiscipline.R --input {input} \
+                 --output {output}"
+
+rule plot_prop_over_time_by_discipline:
+    input: rules.filter_to_mobile.output
+    output: PROP_DISC_OVER_TIME_PLOT
+    shell:
+        "Rscript scripts/PlotPropOverTimeByDiscipline.R --input {input} \
                  --output {output}"
 
 rule plot_num_affiliations_ecdf:

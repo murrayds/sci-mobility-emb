@@ -59,17 +59,18 @@ plotdata <- flows.withmeta %>%
     Scale = factor(Scale,
                  levels = c("count_org_mobile", "count_city_mobile", "count_region_mobile", "count_country_mobile"),
                  labels = c("Org", "City", "Region", "Country"))
+  ) %>%
+  group_by(Scale, pub_year) %>%
+  summarize(
+    prop = value / count
   )
 
 # Draw the plot
 plot <- plotdata %>%
-  ggplot(aes(x = pub_year, y = value, group = Scale, fill = Scale)) +
+  ggplot(aes(x = pub_year, y = prop, group = Scale, fill = Scale)) +
   geom_line() +
   geom_point(size = 3, shape = 21) +
-  expand_limits(y = 0) + # Make sure that y=axis stretches to 0
-  scale_y_continuous(limits = c(0, 3000000),
-                     breaks = c(0, 1000000, 2000000, 3000000),
-                     labels = c("0", "1,000,000", "2,000,000", "3,000,000")) +
+  ylim(0, 1) +
   viridis::scale_fill_viridis(discrete = T) +
   guides(fill = guide_legend(ncol = 2)) +
   theme_minimal() +
@@ -81,7 +82,7 @@ plot <- plotdata %>%
     legend.position = c(0.2, 0.85),
     legend.background = element_rect()
   ) +
-  ylab("Count")
+  ylab("Proportion")
 
 p <- egg::set_panel_size(plot,
                          width  = unit(FIG_WIDTH, "in"),

@@ -89,6 +89,8 @@ Trajectories are constructed from author affiliations listed on the byline of pu
 Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations~\cite{caron2014disambiguation} and when performance is strongest (ref to SI?). 
 This yields 37,542,144 author-affiliation representing 12,963,792 authors. 
 Each author-affiliation combination is associated with the publication year and a unique id that maps the affiliation to a disambiguate organization. 
+Combinations are also associated with a publication-level disciplinary classification, one of ``Social sciences and humanities'',
+``Biomedical and health sciences'', ``Physical sciences and engineering'', ``Life and earth sciences'', and ``Mathematics and computer science''.
 Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. 
 Authors are classified as mobile when they have at least two distinct organization ids in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
 Mobile authors constitute 3,709,869 or 28.6 percent of all authors, and 22,436,637 author-affiliation combinations. 
@@ -288,14 +290,42 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 %}}}
 
 \newpage
-\section{Supporting Information}
 \beginsupplement
+\section{Supporting Information}
 
 
+
+%
+% Figure - publications over time
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:supp:pubs_over_time}
+	\includegraphics[width=\textwidth]{\figdir/Descriptive/pubs_over_time.pdf}
+	\caption{
+		\textbf{Publications over time.}
+		\textbf{a.}
+		The number of papers published by mobile authors has been steadily increasing from 2008 to 2017, with a small decrease in 2018,  likely an artifact of the Web of Science indexing process.
+		Lines corresponds to publications by mobile authors (org, purple), by authors with affiliations in at least two cities (blue), at least two regions (green), and at least two countries (yellow).
+		There is no evidence of major changes in publication patterns of mobile authors during this time period. 
+		\textbf{b.}
+		Lines correspond to the proportion of publications classified as Biology and Health (black), Physics and Engineering (purple), Life and Earth Science (magenta), Social Science and Humanities (orange), and Math and Computer Science (yellow).
+		The rate of publication in Biology and Health has leveled since about 2013, whereas the rate of publication in other fields has steadily increased. 
+		\textbf{c.} 
+		Despite increasing absolute counts, the percentage of mobile scholars, and those with at least two city, regional, or country affiliations, as a proportion of all publications, has decreased over time. 
+		\textbf{d.} 
+		The proportion of authors publications across fields has largely remained steady.
+		Biology and Health Science has comprised the majority of publications across nearly all years, but has steadily declined in proportion. 
+		However, the proportion of Social Science and Humanities publications has been steadily increasing. 
+	}
+\end{figure}
+
+
+\newpage
 %
 % Figure - reverse CDF by scale
 %
-\begin{figure}[hp!]
+\begin{figure}[p!]
 	\centering
 	\label{fig:supp:rcdf_by_scale}
 	\includegraphics[width=0.8\textwidth]{\figdir/Descriptive/rcdf_by_scale.pdf}
@@ -315,7 +345,7 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 %
 % Figure - gravity correlation
 %
-\begin{figure}[hp!]
+\begin{figure}[p!]
 	\centering
 	\label{fig:supp:gravity_correlation}
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
@@ -332,8 +362,7 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	}
 \end{figure}
 
-
-\newpage
+\clearpage
 \printbibliography{}
     
 \end{document} %}}}
