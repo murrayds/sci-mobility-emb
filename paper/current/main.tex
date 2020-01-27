@@ -45,6 +45,7 @@
 \definecolor{light-gray}{gray}{0.8}
 \def\del#1{ {\color{light-gray}{#1}} }
 \def\yy#1{ {\color{red}\textbf{yy: #1}} }
+\def\dk#1{ {\color{red}\textbf{dk: #1}} }
 
 %}}}
 
@@ -150,43 +151,50 @@ The embedding proximity, $d_{ij}$, is calculated as the pairwise cosine similari
 
 \subsection{Gravity Law}
 
+We model flow of authors across organizations, $f_{ij}$, using the gravity law. 
+the gravity law of mobility loosely derives from the physical law of gravity, whereby the attraction between two objects is a function of their mass and the distance between them.
+Given its simplicity and flexibility, this formulation and variants have proven incredibly useful for modeling and predicting many kinds of mobility~\cite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}.
+Following the gravity law, the expected flow between two organizations is defined as follows,
 
+\begin{equation}
+	\label{eq:gravity_basic}
+	f_{ij} = C\frac{m_{i}m_{j}}{f(r_{ij})}
+\end{equation}
 
+where $m_{i}$ and $m_{j}$ are the yearly-average size of each organization during the time window, and $f(r_{ij}$ is a function of the distance between the two organizations, chosen as to fit the data, and $C$ is a constant. 
+Form this standard formulation we also define what we term the \textit{flux}, or the expected flow between organizations given their size, as a function of distance,
 
+\begin{equation}
+	\label{eq:gravity_flux}
+	F_{ij} = \frac{f_{ij}}{m_{i}m_{j}} = Cf(r_{ij})
+\end{equation}
 
+\dk{We need to mention why we choose these distance functions}
 
+We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$. 
+For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{\alpha}_{ij}$, where $\alpha$ is estimated from the data. 
+For embedding distance , we use the exponential function, with $f(d_{ij}) = e^{\beta d_{ij}}$, where $\beta$ is estimated from the data. 
+To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming each variant of \label{eq:gravity_flux}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression. 
 
+\begin{equation}
+	\label{eq:linear_flux_geo}
+	\ln(F_{ij}) = \ln(C) - \alpha \ln(g_{ij})
+\end{equation}
 
+\begin{equation}
+	\label{eq:linear_flux_emb}
+	\ln(F_{ij}) = \ln(C) + \beta d_{ij}
+\end{equation}
 
-
-
-% Leiden bibliographic data
-	% Basic details
-	% How was mobility determined?
-	% How were university sizes extracted?
-	% Organization information? (count, etc.)
-% Manually-identified geographic coordiantes
-% Leiden rankings (if using prestige)
-% 
-
-%% Introduce embedding methodology and approach
-% Introduce embedding and why we use it
-% How were sentences created (use figure)
-
-%% Gravity Law
-% Why use gravity law?
-% How were geographic distances calculated?
-% How are distnaces calculated within the embedding space
-
-
-
-
+The gravity law of mobility is known to be sensitive to the case where $f_{ij} = 0$, or zero movement between organizations. 
+Here, non-zero flows account for only 4.2 percent of all possible pairs of  the 6,580 organizations represented in the embedding.
+This value is comparable to other common applications of the gravity law, such as to hone calls, commuting, and migration \cite{simini2012universal}.
+We follow standard practice and exclude from our analysis zero flows. 
 
 
 %% Introduce gravity measurements
 
 \section{Results}\label{sec:results} %{{{ 
-
 Let $f_{ij}$ represents the total flux (the number of people who moved) between $i$ and $j$. 
 Because we are ignoring the directions, $f_{ij} = f_{ji}$. 
 The total flux from or to $i$ can be written as $\mu_{i} = \sum_k f_{ik}$. 
