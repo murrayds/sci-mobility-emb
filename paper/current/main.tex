@@ -204,14 +204,15 @@ We follow standard practice and exclude from our analysis zero flows.
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
 	\caption{
 		\textbf{Embedding proximity outperform and are more robust than geographic distance.}
-		Embedding proximity (\textbf{a}) explains more of the total distance than does geographic distance (\textbf{b}). 
+		\textbf{a.} embedding proximity (the cosine similarity between vectors) explains more of the flux between organization pairs than does geographic distance (\textbf{b}). 
 		Red line is line of best fit. 
 		Black dots are mean flux across binned proximity meas.
-		Predictions  of flux between organization pairs made using embedding proximity (\textbf{c}) out-perform those made using geographic distance (\textbf{d}). 
+		Color indicates frequency of organization pairs within each hex bin.
+		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding proximity out-perform those made using geographic distance. 
 		Boxplots show distirbution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		Predictions made for only pairs of organizations within the same country using embedding proximity (\textbf{e}) outperform those made for geographic distance (\textbf{f}).
-		Embedding proximity (\textbf{g}) also outperforms geographic distance (\textbf{h}) when predicting flux between only pairs of organizations in different countries. 
+		\textbf{e-f.} Predictions made for only pairs of organizations within the same country using embedding proximity outperform those made for geographic distance.
+		\textbf{g-h.} Embedding proximity also outperforms geographic distance when predicting flux between only pairs of organizations in different countries. 
 	}
 \end{figure}
 
@@ -276,6 +277,29 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 %}}}
 
 \newpage
+\section{Supporting Information}
+
+%
+% Figure - gravity correlation
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:projection}
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
+	\caption{
+		\textbf{Embedding proximity explains more variance for global, within, and between country flux than geographic distance.}
+		\textbf{a.}
+		Embedding proximity (cosine similarity between vectors) explains more of the total distance than does geographic distance (\textbf{b}). 
+		Red line is line of best fit. 
+		Black dots are mean flux across binned proximity meas.
+		Color indicates frequency of organization pairs within each hex bin.
+		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}a and Fig.~\ref{fig:gravity_performance}.
+		\textbf{c-d.}	embedding proximity explains more variance when considering only pairs of organizations within the same country. 
+		\textbf{e-f.} embedding proximity more robust than geographic distance for pairs of organizations in different countries. 
+	}
+\end{figure}
+
+
 \printbibliography{}
     
 \end{document} %}}}
