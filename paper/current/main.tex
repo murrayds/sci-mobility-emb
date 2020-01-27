@@ -5,6 +5,17 @@
 \usepackage{graphicx}
 \def\figdir{../Figs}
 
+% define a command to setup the format of supporting infomration figures and tables. 
+% source: http://bytesizebio.net/2013/03/11/adding-supplementary-tables-and-figures-in-latex/
+\newcommand{\beginsupplement}{%
+        \setcounter{table}{0}
+        \renewcommand{\thetable}{S\arabic{table}}%
+        \setcounter{figure}{0}
+        \renewcommand{\thefigure}{S\arabic{figure}}%
+     }
+     
+  
+
 % Math
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -278,6 +289,7 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 
 \newpage
 \section{Supporting Information}
+\beginsupplement
 
 %
 % Figure - gravity correlation
