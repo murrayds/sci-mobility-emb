@@ -101,6 +101,22 @@ In more complex cases, such as listing multiple affiliations on the same paper o
 The mean length of mobility sentences is 6.0, whereas the largest is 251.
 duplicate organization ids appearing in the same sentence are not removed. 
 
+%
+% Figure - Example of mobility sentences
+%
+\begin{figure}[ht!]
+	\centering
+	\label{fig:methods:mobility_sentence}
+	\includegraphics[width=0.7\textwidth]{\figdir/mobility_example_combined.pdf}
+	\caption{
+		\textbf{Co-affiliation trajectories represented as sentences}
+		\textbf{a.} 
+		An authors published five papers across five time periods, with only one affiliation listed in the byline of each paper. 
+		A unique identifier is assigned to each organization, and these are concatenated into a mobility sentence. 
+		\textbf{b.}
+		In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. Here, organization ids are still ordered by year, however order within a single year is random.  	
+	}
+\end{figure}
 
 %% word2vec
 These mobility sentences are used as input to the standard skip-gram negative sampling (SGNS) model for word embedding, commonly known as \textit{word2vec}~\cite{mikolov2013word2vec} . 
@@ -132,6 +148,7 @@ When less than one kilometer, a distance of one is imputed.
 The embedding proximity, $d_{ij}$, is calculated as the pairwise cosine similarity between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
 
 
+\subsection{Gravity Law}
 
 
 
@@ -140,24 +157,6 @@ The embedding proximity, $d_{ij}$, is calculated as the pairwise cosine similari
 
 
 
-
-
-%
-% Figure - Example of mobility sentences
-%
-\begin{figure}[ht!]
-	\centering
-	\label{fig:methods:mobility_sentence}
-	\includegraphics[width=0.7\textwidth]{\figdir/mobility_example_combined.pdf}
-	\caption{
-		\textbf{Co-affiliation trajectories represented as sentences}
-		\textbf{a.} 
-		An authors published five papers across five time periods, with only one affiliation listed in the byline of each paper. 
-		A unique identifier is assigned to each organization, and these are concatenated into a mobility sentence. 
-		\textbf{b.}
-		In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. Here, organization ids are still ordered by year, however order within a single year is random.  	
-	}
-\end{figure}
 
 
 
