@@ -341,6 +341,28 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	}
 \end{figure}
 
+
+
+%
+% Figure - Hyperparameter performance
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:supp:hyperparams}
+	\includegraphics[width=\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
+	\caption{
+		\textbf{Larger dimensions, smaller window size improves embedding performance.}
+		The correlation, or amount of flux explained by the embedding proximity with varying skip-gram negative sampling hyperparameters. 
+		Window size refers to the window, on either side of the target token, to use as context for training. 
+		Smaller window sizes results in an embedding that explain more of the flux. 
+		Embedding dimensions refer to the size of the organization vector.
+		Larger vectors perform better, though little difference between 200 and 300. 
+		All variants perform better on same-country pairs of organizations than on all organizations.
+		All variants perform worse on different-country pairs on organizations.
+		Larger embeddings outperform mid-size embeddings for the different-country case.
+	}
+\end{figure}
+
 \newpage
 %
 % Figure - gravity correlation

@@ -74,7 +74,7 @@ PROP_MOBILE_BY_COUNTRY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_mobility_by_country.p
 PROP_ORG_COUNTRY_MOBILITY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_org_country_mobility.pdf')
 COUNTRY_MOBILITY_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_country_mobility_ecdf.pdf')
 COUNTRY_MOBILITY_DISTRIBUTION = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_country_mobility_distribution.pdf')
-
+HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
 
 ##################
 # Metadata files #
@@ -170,7 +170,8 @@ rule all:
         PROP_MOBILE_BY_COUNTRY,
         PROP_ORG_COUNTRY_MOBILITY,
         COUNTRY_MOBILITY_ECDF,
-        COUNTRY_MOBILITY_DISTRIBUTION
+        COUNTRY_MOBILITY_DISTRIBUTION,
+        HYPERPARAMETER_PERFORMANCE
 
 
 rule fix_org_coordinates:
@@ -444,3 +445,10 @@ rule plot_country_mobility_distribution:
         "Rscript scripts/PlotCountryMobilityDistribution.R --flows {input.flows}\
                  --researchers {input.researchers} --lookup {input.lookup} \
                  --output {output}"
+
+rule plot_hyperparameter_performance:
+    input:
+        rules.get_aggregate_gravity_r2.output
+    output: HYPERPARAMETER_PERFORMANCE
+    shell:
+        "Rscript scripts/PlotHyperparameterPerformance.R --input {input} --output {output}"
