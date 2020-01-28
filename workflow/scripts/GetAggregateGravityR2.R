@@ -7,7 +7,7 @@
 # stores them all into a single file
 #
 
-NUM_REPLICATIONS = 100
+NUM_REPLICATIONS = 50
 NUM_WORKERS = 4
 
 
