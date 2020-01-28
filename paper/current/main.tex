@@ -22,6 +22,7 @@
 \DeclareMathOperator*{\argmin}{\arg\!\min}
 \DeclareMathOperator*{\argmax}{\arg\!\max}
 
+
 % abbreviations
 \def\etal{\emph{et~al}.\ }
 \def\eg{e.g.,~}
@@ -222,10 +223,12 @@ We follow standard practice and exclude from our analysis zero flows.
 		Black dots are mean flux across binned proximity meas.
 		Color indicates frequency of organization pairs within each hex bin.
 		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding proximity out-perform those made using geographic distance. 
-		Boxplots show distirbution of actual flux for binned values of predicted flux.
+		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		\textbf{e-f.} Predictions made for only pairs of organizations within the same country using embedding proximity outperform those made for geographic distance.
-		\textbf{g-h.} Embedding proximity also outperforms geographic distance when predicting flux between only pairs of organizations in different countries. 
+		\textbf{e-f.} Predictions made using model parameters learned from subset of same-country organization pairs. 
+		Embedding proximity outperform those made for geographic distance.
+		\textbf{g-h.} Embedding proximity also outperforms geographic distance when predicting flux using model parameters estimated from only pairs of organizations in different countries. 
+		Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. S\ref{fig:supp:gravity_prediction_subsets}).
 	}
 \end{figure}
 
@@ -381,6 +384,26 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}a and Fig.~\ref{fig:gravity_performance}.
 		\textbf{c-d.}	embedding proximity explains more variance when considering only pairs of organizations within the same country. 
 		\textbf{e-f.} embedding proximity more robust than geographic distance for pairs of organizations in different countries. 
+	}
+\end{figure}
+
+
+
+%
+% Figure - gravity predictions based on subset or global
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:supp:gravity_prediction_subsets}
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_different_fits.pdf}
+	\caption{
+		\textbf{Little difference between gravity predictions fit on all or subsets of data.}
+		Predictions  of flux between organization pairs made using embedding proximity out-perform those made using geographic distance. 
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+		\textbf{a-b.} Predictions are made with parameter, estimating parameters from all pairs of organizatioons, making global predictions (as in Fig.~\ref{fig:gravity_performance}c), and showing only subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
+		\textbf{c-d.} Predictions made by estimating gravity law parameters on subset of organizations in the same country (\textbf{c}) and different country \textbf{d}); 
+		this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h. 
 	}
 \end{figure}
 

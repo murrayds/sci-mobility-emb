@@ -64,6 +64,7 @@ UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 'data', '{coun
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
 PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', 'd{dimensions}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
+PREDICTED_VS_ACTUAL_PLOT_FILT = osjoin(FIGURE_DIR, 'Predicted', 'filtered', 'd{dimensions}', '{distance}', '{geo_constraint_filt}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
 GRADIENT_LEGEND = osjoin(PROJ_HOME, "Assets", "gradient_legend.pdf")
 PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_plot.pdf')
 PROP_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_over_time_plot.pdf')
@@ -111,6 +112,9 @@ GEO_CONSTRAINTS = ['global',
                    'same-country',
                    'different-country']
 
+GEO_CONSTRAINTS_FILT = ['same-country',
+                        'different-country']
+
 ###############################################################################
 # TARGET RULE
 ###############################################################################
@@ -157,6 +161,12 @@ rule all:
                distance = DISTANCE_PARAMS,
                dimensions = W2V_DIMENSIONS,
                geo_constraint = GEO_CONSTRAINTS,
+               window = W2V_WINDOW_SIZE),
+        expand(PREDICTED_VS_ACTUAL_PLOT_FILT,
+               distance = "emb",
+               dimensions = W2V_DIMENSIONS,
+               geo_constraint = "global",
+               geo_constraint_filt = GEO_CONSTRAINTS_FILT,
                window = W2V_WINDOW_SIZE),
         AGGREGATE_R2,
         GRADIENT_LEGEND,
@@ -354,6 +364,13 @@ rule plot_predicted_vs_actual:
     output: PREDICTED_VS_ACTUAL_PLOT
     shell:
         "Rscript scripts/PlotPredictedVsActual.R --input {input} --output {output}"
+
+rule plot_predicted_vs_actual_filtered:
+    input: rules.calculate_predicted_vs_actual.output,
+    output: PREDICTED_VS_ACTUAL_PLOT_FILT
+    shell:
+        "Rscript scripts/PlotPredictedVsActual.R --input {input} --output {output} \
+        --geo {wildcards.geo_constraint_filt}"
 
 rule plot_gradient_legend:
     output: GRADIENT_LEGEND
