@@ -64,15 +64,18 @@ UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 'data', '{coun
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
 PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', 'd{dimensions}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
+PREDICTED_VS_ACTUAL_PLOT_FILT = osjoin(FIGURE_DIR, 'Predicted', 'filtered', 'd{dimensions}', '{distance}', '{geo_constraint_filt}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
 GRADIENT_LEGEND = osjoin(PROJ_HOME, "Assets", "gradient_legend.pdf")
 PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_plot.pdf')
+PROP_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_over_time_plot.pdf')
 PUBS_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_by_discipline_plot.pdf')
+PROP_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_over_time_by_discipline_plot.pdf')
 NUM_AFFILIATIONS_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, 'num_affiliations_ecdf.pdf')
 PROP_MOBILE_BY_COUNTRY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_mobility_by_country.pdf')
 PROP_ORG_COUNTRY_MOBILITY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_org_country_mobility.pdf')
 COUNTRY_MOBILITY_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_country_mobility_ecdf.pdf')
 COUNTRY_MOBILITY_DISTRIBUTION = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_country_mobility_distribution.pdf')
-
+HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
 
 ##################
 # Metadata files #
@@ -108,6 +111,9 @@ DISTANCE_PARAMS = ['geo', 'emb']
 GEO_CONSTRAINTS = ['global',
                    'same-country',
                    'different-country']
+
+GEO_CONSTRAINTS_FILT = ['same-country',
+                        'different-country']
 
 ###############################################################################
 # TARGET RULE
@@ -156,16 +162,26 @@ rule all:
                dimensions = W2V_DIMENSIONS,
                geo_constraint = GEO_CONSTRAINTS,
                window = W2V_WINDOW_SIZE),
+        expand(PREDICTED_VS_ACTUAL_PLOT_FILT,
+               distance = "emb",
+               dimensions = W2V_DIMENSIONS,
+               geo_constraint = "global",
+               geo_constraint_filt = GEO_CONSTRAINTS_FILT,
+               window = W2V_WINDOW_SIZE),
         AGGREGATE_R2,
         GRADIENT_LEGEND,
         FLOWS_NETWORK,
         # Descriptive Plots
         PUBS_OVER_TIME_PLOT,
+        PROP_OVER_TIME_PLOT,
+        PUBS_DISC_OVER_TIME_PLOT,
+        PROP_DISC_OVER_TIME_PLOT,
         NUM_AFFILIATIONS_ECDF,
         PROP_MOBILE_BY_COUNTRY,
         PROP_ORG_COUNTRY_MOBILITY,
         COUNTRY_MOBILITY_ECDF,
-        COUNTRY_MOBILITY_DISTRIBUTION
+        COUNTRY_MOBILITY_DISTRIBUTION,
+        HYPERPARAMETER_PERFORMANCE
 
 
 rule fix_org_coordinates:
@@ -349,6 +365,13 @@ rule plot_predicted_vs_actual:
     shell:
         "Rscript scripts/PlotPredictedVsActual.R --input {input} --output {output}"
 
+rule plot_predicted_vs_actual_filtered:
+    input: rules.calculate_predicted_vs_actual.output,
+    output: PREDICTED_VS_ACTUAL_PLOT_FILT
+    shell:
+        "Rscript scripts/PlotPredictedVsActual.R --input {input} --output {output} \
+        --geo {wildcards.geo_constraint_filt}"
+
 rule plot_gradient_legend:
     output: GRADIENT_LEGEND
     shell:
@@ -365,11 +388,28 @@ rule plot_pubs_over_time:
         "Rscript scripts/PlotPubsOverTime.R --input {input.flows} \
                  --researchers {input.researchers} --output {output}"
 
+rule plot_prop_over_time:
+    input:
+        flows = MOBILITY_RAW,
+        researchers = rules.get_researcher_metadata.output
+    output:
+        PROP_OVER_TIME_PLOT
+    shell:
+        "Rscript scripts/PlotPropOverTime.R --input {input.flows} \
+                 --researchers {input.researchers} --output {output}"
+
 rule plot_pubs_over_time_by_discipline:
     input: rules.filter_to_mobile.output
     output: PUBS_DISC_OVER_TIME_PLOT
     shell:
         "Rscript scripts/PlotPubsOverTimeByDiscipline.R --input {input} \
+                 --output {output}"
+
+rule plot_prop_over_time_by_discipline:
+    input: rules.filter_to_mobile.output
+    output: PROP_DISC_OVER_TIME_PLOT
+    shell:
+        "Rscript scripts/PlotPropOverTimeByDiscipline.R --input {input} \
                  --output {output}"
 
 rule plot_num_affiliations_ecdf:
@@ -422,3 +462,10 @@ rule plot_country_mobility_distribution:
         "Rscript scripts/PlotCountryMobilityDistribution.R --flows {input.flows}\
                  --researchers {input.researchers} --lookup {input.lookup} \
                  --output {output}"
+
+rule plot_hyperparameter_performance:
+    input:
+        rules.get_aggregate_gravity_r2.output
+    output: HYPERPARAMETER_PERFORMANCE
+    shell:
+        "Rscript scripts/PlotHyperparameterPerformance.R --input {input} --output {output}"

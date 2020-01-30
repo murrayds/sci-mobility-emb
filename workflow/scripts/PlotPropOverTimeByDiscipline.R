@@ -41,18 +41,19 @@ plotdata <- flows %>%
                                `5` = "MATH & CS"),
            Discipline = factor(Discipline, levels = c("BIO & HEALTH", "PHYS & ENGR", "LIFE & EARTH", "SS & HUM", "MATH & CS"))
            ) %>%
-    group_by(Discipline, pub_year) %>%
-    summarize(count = n())
+    group_by(pub_year) %>%
+    mutate(count = n()) %>%
+    group_by(pub_year, Discipline) %>%
+    summarize(
+      prop = n() / first(count)
+    )
 
 # Draw the plot
 plot <- plotdata %>%
-  ggplot(aes(x = pub_year, y = count, group = Discipline, fill = Discipline)) +
+  ggplot(aes(x = pub_year, y = prop, group = Discipline, fill = Discipline)) +
     geom_line() +
     geom_point(size = 3, shape = 21) +
-    expand_limits(y = 0) + # Make sure that y=axis stretches to 0
-    scale_y_continuous(limits = c(0, 1500000),
-                       breaks = c(0, 1000000, 1500000),
-                       labels = c("0", "1,000,000", "1,500,000")) +
+    ylim(0, 1) +
     viridis::scale_fill_viridis(discrete = T, option = "A") +
     theme_minimal() +
     theme(
@@ -63,7 +64,7 @@ plot <- plotdata %>%
       legend.position = c(0.20, 0.81),
       legend.background = element_rect()
     ) +
-    ylab("Count")
+    ylab("Proportion")
 
 p <- egg::set_panel_size(plot,
                          width  = unit(FIG_WIDTH, "in"),

@@ -7,7 +7,7 @@
 # stores them all into a single file
 #
 
-NUM_REPLICATIONS = 500
+NUM_REPLICATIONS = 50
 NUM_WORKERS = 4
 
 
@@ -35,23 +35,27 @@ get_correlations <- function(distance_data) {
                       parallel = "multicore", ncpus = NUM_WORKERS
                     )
 
-  samecountry.boot <- boot(distance_data %>%
-                            filter(org1_country == org2_country) %>%
-                            select(gravity, distance),
+  same_country <- distance_data %>%
+    filter(org1_country == org2_country) %>%
+    select(gravity, distance)
+
+  samecountry.boot <- boot(same_country,
                            function(data, indices) {
                              summary(lm(gravity ~ distance,
-                                        distance_data[indices, ])
+                                        same_country[indices, ])
                              )$r.squared
                            }, R = NUM_REPLICATIONS,
                            parallel = "multicore", ncpus = NUM_WORKERS
                       )
 
-  diffcountry.boot <- boot(distance_data %>%
-                            filter(org1_country != org2_country) %>%
-                            select(gravity, distance),
+  rm(same_country)
+  diff_country <- distance_data %>%
+    filter(org1_country != org2_country) %>%
+    select(gravity, distance)
+  diffcountry.boot <- boot(diff_country,
                            function(data, indices) {
                              summary(lm(gravity ~ distance,
-                                        distance_data[indices, ])
+                                        diff_country[indices, ])
                              )$r.squared
                            }, R = NUM_REPLICATIONS,
                            parallel = "multicore", ncpus = NUM_WORKERS
@@ -75,6 +79,8 @@ get_correlations <- function(distance_data) {
 
 # Iterate through each given input file
 agg <- data.table::rbindlist(lapply(DISTANCE_FILES, function(path) {
+
+  print(paste0("Running bootstrap for file: ", path))
 
   # Load the file, perform the necessary transformations and remove
   # unecessary data

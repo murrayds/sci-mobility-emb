@@ -28,6 +28,8 @@ suppressPackageStartupMessages(require(optparse))
 option_list = list(
   make_option(c("-i", "--input"), action="store", default=NA, type='character',
               help="Path to file containing predicted vs. actual flows"),
+  make_option(c("--geo"), action="store", default="none",
+              help="Geographic constraint, none, or same or different country"),
   make_option(c("-o", "--output"), action="store", default=NA, type='character',
               help="Path to save distances")
 ) # end option_list
@@ -35,6 +37,14 @@ opt = parse_args(OptionParser(option_list=option_list))
 
 # Read the aggregated distance file
 data = readr::read_csv(opt$input, col_types = readr::cols())
+
+# If the geographic constraint (--geo) is set, then filter the
+# distance dataframe accordingly.
+if (opt$geo == "same-country") {
+  data <- data %>% filter(org1_country == org2_country)
+} else if (opt$geo == "different-country") {
+  data <- data %>% filter(org1_country != org2_country)
+}
 
 # Create bins for epected values within which we will calculate
 # aggregate information about the actual values.

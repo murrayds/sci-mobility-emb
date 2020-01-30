@@ -3,13 +3,25 @@
 % Figures
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
-\def\figdir{figs}
+\def\figdir{../Figs}
+
+% define a command to setup the format of supporting infomration figures and tables. 
+% source: http://bytesizebio.net/2013/03/11/adding-supplementary-tables-and-figures-in-latex/
+\newcommand{\beginsupplement}{%
+        \setcounter{table}{0}
+        \renewcommand{\thetable}{S\arabic{table}}%
+        \setcounter{figure}{0}
+        \renewcommand{\thefigure}{S\arabic{figure}}%
+     }
+     
+  
 
 % Math
 \usepackage{amsmath}
 \usepackage{amssymb}
 \DeclareMathOperator*{\argmin}{\arg\!\min}
 \DeclareMathOperator*{\argmax}{\arg\!\max}
+
 
 % abbreviations
 \def\etal{\emph{et~al}.\ }
@@ -20,8 +32,12 @@
 \def\vs{vs.\ }
 
 % Refs
-\usepackage{biblatex}
-\addbibresource{main.bib}
+\usepackage[style=nature,
+					backend=bibtex,
+					sortcites=true,
+					autocite=superscript
+]{biblatex}
+\addbibresource{mobility.bib}
 
 \usepackage{url}
 
@@ -41,12 +57,13 @@
 \definecolor{light-gray}{gray}{0.8}
 \def\del#1{ {\color{light-gray}{#1}} }
 \def\yy#1{ {\color{red}\textbf{yy: #1}} }
+\def\dk#1{ {\color{red}\textbf{dk: #1}} }
 
 %}}}
 
 \begin{document} %{{{
 
-\title{An awesome paper} %{{{
+\title{Word2vec learns effective distance of scientific co-affiliation} %{{{
 \date{\today}
 \maketitle %}}}
 
@@ -55,7 +72,205 @@
 
 %}}}
 
+%
+% DATA AND METHODS
+%
+\section{Data and Methods}
+\label{sec:datamethods} %{{{ 
+
+Data, analysis, and associated code have been made publicly available and can be found at \textit{https://github.com/murrayds/...}
+
+
+\subsection*{Data}
+%% Main dataset
+% Do we need to add the Leiden field classificaiton infomration? It doesn't seem like its relevant for the current analysis.
+% Do we need to talk about how we define mobility in relation to past papers?
+We source co-affiliation trajectories of authors from the Web of Science database hosted by the Center for Science and Technology Studies at Leiden University. 
+Trajectories are constructed from author affiliations listed on the byline of publications for a given author.
+Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations~\cite{caron2014disambiguation} and when performance is strongest (ref to SI?). 
+This yields 37,542,144 author-affiliation representing 12,963,792 authors. 
+Each author-affiliation combination is associated with the publication year and a unique id that maps the affiliation to a disambiguate organization. 
+Combinations are also associated with a publication-level disciplinary classification, one of ``Social sciences and humanities'',
+``Biomedical and health sciences'', ``Physical sciences and engineering'', ``Life and earth sciences'', and ``Mathematics and computer science''.
+Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. 
+Authors are classified as mobile when they have at least two distinct organization ids in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
+Mobile authors constitute 3,709,869 or 28.6 percent of all authors, and 22,436,637 author-affiliation combinations. 
+
+% %Organization information
+Affiliations mapped to one of 8,661 organizations, disambiguated following a mostly manual process originally designed for the Leiden Rankings of World Universities~\cite{waltman2012leidenrankings}. 
+Organizational records were associated with a full name, a type indicating the sector (e.g., University, Government, Industry), and an identifier for the country and city of the organization. 
+Sixteen different sector types were included in the analysis, which we aggregated to a four high-level codes: \textit{University}, \textit{Hospital}, \textit{Government}, and \textit{Other}. 
+Each record was also associated with a latitude and longitude, however for many organizations these were missing or incorrect. We manually updated the coordinates of 2,267 organizations by searching the institution name and city on Google Maps;
+in cases where a precise location of the organization could not be identified, we used the coordinates returned when searching the name of the city.
+State/province level  information were added using the reverse geocoding service LocationIQ using each organization's latitude and longitude as input. 
+Organizations were also assigned continental information (e.g., North America, Asia, Europe) manually, by country. 
+For each organization, we also calculated a size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
+in the case that authors publish with multiple affiliations in a single year, they are counted towards each. 
+
+
+\subsection*{Embedding}
+%% Mobility sentences
+We embed co-affiliation trajectories by treating them analogously to sentences, and organizations analogously to words. 
+The trajectories of mobile authors were converted to ''mobility sentences`` by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}.a.
+In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple affiliations in the same year, the order is randomized within that year, as shown in  Fig.~\ref{fig:methods:mobility_sentence}.b. 
+The mean length of mobility sentences is 6.0, whereas the largest is 251.
+duplicate organization ids appearing in the same sentence are not removed. 
+
+%
+% Figure - Example of mobility sentences
+%
+\begin{figure}[ht!]
+	\centering
+	\label{fig:methods:mobility_sentence}
+	\includegraphics[width=0.7\textwidth]{\figdir/mobility_example_combined.pdf}
+	\caption{
+		\textbf{Co-affiliation trajectories represented as sentences}
+		\textbf{a.} 
+		An authors published five papers across five time periods, with only one affiliation listed in the byline of each paper. 
+		A unique identifier is assigned to each organization, and these are concatenated into a mobility sentence. 
+		\textbf{b.}
+		In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. Here, organization ids are still ordered by year, however order within a single year is random.  	
+	}
+\end{figure}
+
+%% word2vec
+These mobility sentences are used as input to the standard skip-gram negative sampling (SGNS) model for word embedding, commonly known as \textit{word2vec}~\cite{mikolov2013word2vec} . 
+In natural-language processing, word embeddings are used to construct dense vector-space representations of words and phrases, in which distance relationships between words correspond to a notion of semantic distance. 
+By embedding co-affiliation trajectories, we aim to learn a dense vector for every organization where distance between vectors relates to the tendency for two organizations to co-occur in a token window around the target term in the same career trajectory. 
+Vectors are learned by training a neural network to optimize the prediction of so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory. 
+
+%% Word2vec parameters and training procedure
+The SGNS model has several tunable hyper-parameters, including the size of the learned vectors, the size of the token window  considered when training, the minimum frequency threshold for including an organization, and the number of iterations.
+We iterate through several values of vector size and window size, repeating analysis for each combination. 
+To mitigate the effect of less common organizations, only organizations appearing at least 50 times in mobility sentences are included in the embedding;
+this yields 6,580, or 76 percent of all organizations.
+We iterate the SGNS training for five epochs over all mobility sentences. 
+All word embeddings are trained using the \textit{gensim} python implementation of the SGNS \textit{word2vec} model. 
+We visualize embeddings by projecting into two dimensions using UMAP~\cite{mcinnes2018umap}.
+
+%
+% Distances subsection
+%
+\subsection{Distance}
+%% Distance calculations
+We calculate $f_{ij}$, the pairwise number of co-affiliations between organizations, calculated as the number of co-occurrences of organizations within author co-affiliation trajectories. 
+For example, $f_{ij} = 10$ indicates that ten authors were co-affiliated with both organization $i$ and $j$ between 2008 and 2019, as evidenced from their publications. 
+In contrast to traditional mobility studies, all co-affiliations are symmetric, meaning that $f_{ij} = f_{ji}$. 
+
+We also calculate two forms of proximity between organizations. 
+The geographic distance, $g_{ij}$, is the pairwise geographic distance between organizations.
+Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations. 
+When less than one kilometer, a distance of one is imputed. 
+The embedding proximity, $d_{ij}$, is calculated as the pairwise cosine similarity between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
+
+
+\subsection{Gravity Law}
+
+We model flow of authors across organizations, $f_{ij}$, using the gravity law. 
+the gravity law of mobility loosely derives from the physical law of gravity, whereby the attraction between two objects is a function of their mass and the distance between them.
+Given its simplicity and flexibility, this formulation and variants have proven incredibly useful for modeling and predicting many kinds of mobility~\cite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}.
+Following the gravity law, the expected flow between two organizations is defined as follows,
+
+\begin{equation}
+	\label{eq:gravity_basic}
+	f_{ij} = C\frac{m_{i}m_{j}}{f(r_{ij})}
+\end{equation}
+
+where $m_{i}$ and $m_{j}$ are the yearly-average size of each organization during the time window, and $f(r_{ij}$ is a function of the distance between the two organizations, chosen as to fit the data, and $C$ is a constant. 
+Form this standard formulation we also define what we term the \textit{flux}, or the expected flow between organizations given their size, as a function of distance,
+
+\begin{equation}
+	\label{eq:gravity_flux}
+	F_{ij} = \frac{f_{ij}}{m_{i}m_{j}} = Cf(r_{ij})
+\end{equation}
+
+\dk{We need to mention why we choose these distance functions}
+
+We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$. 
+For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{\alpha}_{ij}$, where $\alpha$ is estimated from the data. 
+For embedding distance , we use the exponential function, with $f(d_{ij}) = e^{\beta d_{ij}}$, where $\beta$ is estimated from the data. 
+To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming each variant of \label{eq:gravity_flux}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression. 
+
+\begin{equation}
+	\label{eq:linear_flux_geo}
+	\ln(F_{ij}) = \ln(C) - \alpha \ln(g_{ij})
+\end{equation}
+
+\begin{equation}
+	\label{eq:linear_flux_emb}
+	\ln(F_{ij}) = \ln(C) + \beta d_{ij}
+\end{equation}
+
+The gravity law of mobility is known to be sensitive to the case where $f_{ij} = 0$, or zero movement between organizations. 
+Here, non-zero flows account for only 4.2 percent of all possible pairs of  the 6,580 organizations represented in the embedding.
+This value is comparable to other common applications of the gravity law, such as to hone calls, commuting, and migration \cite{simini2012universal}.
+We follow standard practice and exclude from our analysis zero flows. 
+
 \section{Results}\label{sec:results} %{{{ 
+
+%
+% Subsection: Embedding performance
+%
+\subsection*{Embedding performance}
+
+%
+% Figure - Gravity law performance
+%
+\begin{figure}[h!]
+	\centering
+	\label{fig:gravity_performance}
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
+	\caption{
+		\textbf{Embedding proximity outperform and are more robust than geographic distance.}
+		\textbf{a.} embedding proximity (the cosine similarity between vectors) explains more of the flux between organization pairs than does geographic distance (\textbf{b}). 
+		Red line is line of best fit. 
+		Black dots are mean flux across binned proximity meas.
+		Color indicates frequency of organization pairs within each hex bin.
+		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding proximity out-perform those made using geographic distance. 
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+		\textbf{e-f.} Predictions made using model parameters learned from subset of same-country organization pairs. 
+		Embedding proximity outperform those made for geographic distance.
+		\textbf{g-h.} Embedding proximity also outperforms geographic distance when predicting flux using model parameters estimated from only pairs of organizations in different countries. 
+		Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. S\ref{fig:supp:gravity_prediction_subsets}).
+	}
+\end{figure}
+
+
+%
+% Subsection: Applications
+%
+\subsection*{Applications}
+% Here we will examine several applications of this effective distnace, including for clustering, visualization + descriptive analysis, and maybe something else?
+
+
+%
+% Figure - 
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:projection}
+	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.png}
+	\caption{
+		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
+		\textbf{a.}
+		UMAP projection of the entire embedding space reveals geographic clustering.
+		Each point corresponds to an organization.
+		Color indicates the continent. 
+		We re-project subsets of organizational vectors to uncover more complex local structure.
+		\textbf{b.} Re-projection of organizational vectors roughly correponding to West-Asian, Southeast Asian, and South Asian countries. 
+		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portougese- and Spanish-speaking counriees in South and Central America. 
+		\textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
+		Color indicates Census Bureau-designated regions,
+		\textbf{e.} Re-projection of organizations in Massachusetts reveal clustering based on organizational sector, prestige. 
+		Color indicates sector designation of organization. 
+	}
+\end{figure}
+
+%
+% Subsection: Mathematical Exploration
+%
+\subsection*{Mathematical Exploration}
 
 Let $f_{ij}$ represents the total flux (the number of people who moved) between $i$ and $j$. 
 Because we are ignoring the directions, $f_{ij} = f_{ji}$. 
@@ -72,7 +287,7 @@ The skip-gram model maximizes the average log probability
 \end{equation}
 where 
 \begin{equation}
-p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_w_I)}, 
+p(w_O|w_I) = \frac{\exp(v'_{w_{O} }\cdot v_{w_{I}})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_{)}}}, 
 \end{equation}
 where $v_w$ and $v'_w$ are `input' and `output' vector representations of $w$. 
 
@@ -88,10 +303,124 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 
 %}}}
 
-\section{Methods}\label{sec:methods} %{{{
-
 %}}}
 
+\newpage
+\beginsupplement
+\section{Supporting Information}
+
+
+
+%
+% Figure - publications over time
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:supp:pubs_over_time}
+	\includegraphics[width=\textwidth]{\figdir/Descriptive/pubs_over_time.pdf}
+	\caption{
+		\textbf{Publications over time.}
+		\textbf{a.}
+		The number of papers published by mobile authors has been steadily increasing from 2008 to 2017, with a small decrease in 2018,  likely an artifact of the Web of Science indexing process.
+		Lines corresponds to publications by mobile authors (org, purple), by authors with affiliations in at least two cities (blue), at least two regions (green), and at least two countries (yellow).
+		There is no evidence of major changes in publication patterns of mobile authors during this time period. 
+		\textbf{b.}
+		Lines correspond to the proportion of publications classified as Biology and Health (black), Physics and Engineering (purple), Life and Earth Science (magenta), Social Science and Humanities (orange), and Math and Computer Science (yellow).
+		The rate of publication in Biology and Health has leveled since about 2013, whereas the rate of publication in other fields has steadily increased. 
+		\textbf{c.} 
+		Despite increasing absolute counts, the percentage of mobile scholars, and those with at least two city, regional, or country affiliations, as a proportion of all publications, has decreased over time. 
+		\textbf{d.} 
+		The proportion of authors publications across fields has largely remained steady.
+		Biology and Health Science has comprised the majority of publications across nearly all years, but has steadily declined in proportion. 
+		However, the proportion of Social Science and Humanities publications has been steadily increasing. 
+	}
+\end{figure}
+
+
+\newpage
+%
+% Figure - reverse CDF by scale
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:supp:rcdf_by_scale}
+	\includegraphics[width=0.8\textwidth]{\figdir/Descriptive/rcdf_by_scale.pdf}
+	\caption{
+		\textbf{Reverse cumulative-distribution function of mobile authors by geographic scale.}
+		\textbf{a.}
+		Proportion of mobile authors by how many organizations are represented 	in their career trajectories. 
+		For example, for mobile authors, 100 percent of authors held an affiliation with at least two organizations, whereas about 35 percent were affiliated with 3 ore more organizations between 2008 and 2019.
+		Mobile authors are defined as those with at least two distinct organizational affiliations represented in our data. 
+		\textbf{b.} 68 percent of mobile authors have at least two cities represented in their career trajectories.
+		\textbf{c.} 45 percent of mobile authors have 2 or more regions represented in their career trajectories.
+		\textbf{d.} Only 14 percent of mobile authors had 2 or more countries represented in their career trajectories. 
+	}
+\end{figure}
+
+
+
+%
+% Figure - Hyperparameter performance
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:supp:hyperparams}
+	\includegraphics[width=\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
+	\caption{
+		\textbf{Larger dimensions, smaller window size improves embedding performance.}
+		The correlation, or amount of flux explained by the embedding proximity with varying skip-gram negative sampling hyperparameters. 
+		Window size refers to the window, on either side of the target token, to use as context for training. 
+		Smaller window sizes results in an embedding that explain more of the flux. 
+		Embedding dimensions refer to the size of the organization vector.
+		Larger vectors perform better, though little difference between 200 and 300. 
+		All variants perform better on same-country pairs of organizations than on all organizations.
+		All variants perform worse on different-country pairs on organizations.
+		Larger embeddings outperform mid-size embeddings for the different-country case.
+	}
+\end{figure}
+
+\newpage
+%
+% Figure - gravity correlation
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:supp:gravity_correlation}
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
+	\caption{
+		\textbf{Embedding proximity explains more variance for global, within, and between country flux than geographic distance.}
+		\textbf{a.}
+		Embedding proximity (cosine similarity between vectors) explains more of the total distance than does geographic distance (\textbf{b}). 
+		Red line is line of best fit. 
+		Black dots are mean flux across binned proximity meas.
+		Color indicates frequency of organization pairs within each hex bin.
+		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}a and Fig.~\ref{fig:gravity_performance}.
+		\textbf{c-d.}	embedding proximity explains more variance when considering only pairs of organizations within the same country. 
+		\textbf{e-f.} embedding proximity more robust than geographic distance for pairs of organizations in different countries. 
+	}
+\end{figure}
+
+
+
+%
+% Figure - gravity predictions based on subset or global
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:supp:gravity_prediction_subsets}
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_different_fits.pdf}
+	\caption{
+		\textbf{Little difference between gravity predictions fit on all or subsets of data.}
+		Predictions  of flux between organization pairs made using embedding proximity out-perform those made using geographic distance. 
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+		\textbf{a-b.} Predictions are made with parameter, estimating parameters from all pairs of organizatioons, making global predictions (as in Fig.~\ref{fig:gravity_performance}c), and showing only subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
+		\textbf{c-d.} Predictions made by estimating gravity law parameters on subset of organizations in the same country (\textbf{c}) and different country \textbf{d}); 
+		this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h. 
+	}
+\end{figure}
+
+\clearpage
 \printbibliography{}
     
 \end{document} %}}}

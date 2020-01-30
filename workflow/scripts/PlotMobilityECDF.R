@@ -63,7 +63,9 @@ plot <- researchers.meta.long %>%
   scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1.0), limits = c(-0.1, 1.1)) +
   theme_minimal() +
   theme(
+    text = element_text(family = "Helvetica"),
     axis.title = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 11),
     strip.text = element_text(size = 12, face = "bold"),
   ) +
   xlab("#Affiliations per researcher") +
