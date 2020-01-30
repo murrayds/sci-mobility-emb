@@ -46,13 +46,14 @@
 
 \section*{Extended Abstract}
 
-Scientific mobility is closely linked to impact~\autocite{sugimoto_scientists_2017} and is an essential component of the scientific ecosystem.
-This mobility is shaped by many factors, including geography, prestige, and policy\autocite{deville_career_2014,clauset_systematic_2015}.
-Such complexity has resulted in a fragmented understanding of scientific mobility, limited to specific regions and mobility types.
+Scientific mobility is closely linked to impact, innovation, and knoweldge diffusion~\autocite{sugimoto_scientists_2017, wagner_new_2008}.
+Central to mobility is the notion of proximity~\autocite{torre_proximity_2005} between places — in the case of scientific mobility, research organizations. 
+However, geography itself in insufficient to understand mobility, and other forms of proximity are too intangible to meaningfully measure~\autocite{boschma_proximity_2005}, 
+resulting in a fragmented and incomplete understanding of scientific mobility. 
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{../Figs/ic2s2-2020/ic2s2_2020_mainfig.pdf}
+	\includegraphics[width=0.97\textwidth]{../Figs/ic2s2-2020/ic2s2_2020_mainfig.pdf}
 	\caption{ 
 	\textbf{Embedding offer robust model of co-affiliation, reveals multi-scale structure.}
 	\textbf{a.} Examples of how ``sentences'' for the skip-gram model are created from author's affiliations listed on papers.
@@ -70,7 +71,7 @@ Such complexity has resulted in a fragmented understanding of scientific mobilit
 \end{figure}
 
 We leverage recent advances in neural networks and representation learning to construct a dense, meaningful, and coherent vector-space embedding of global scientific mobility, using individual mobility trajectories documented in bibliographic data. 
-This representation facilitates the holistic study of scientific mobility, capturing the complex relationships between organizations around the world. 
+This representation implicitely captures organizational and cognitive proximity between organizations~\autocite{boschma_proximity_2005}, allowing for the holistic study of scientific mobility. 
 
 We source the Web of Science for bibliographic data on more than 22 million papers from mobile authors published between 2008 and mid 2019, comprising 3.7 million disambiguated authors and 8,445 organizations. 
 A ``sentence'' is constructed for each author by concatenating organization IDs for each affiliation listed on their papers, ordered by year of publication (Fig~\ref{fig:image}.a).
@@ -81,10 +82,10 @@ The cosine similarity between vectors can explain more than twice the variance i
 Moreover, applying the gravity law of mobility~\autocite{simini_universal_2012} with cosine similarity produces better predictions of mobility than does using geographic distance (Fig~\ref{fig:image}.d.
 These predictions are also more robust than geographic distance when considering only same-country (Fig~\ref{fig:image}.e) and different-country (Fig~\ref{fig:image}.f) mobility. 
 
-We visualize the embedding using UMAP~\autocite{mcinnes_umap_2018} and observe strong geographic clustering (Fig~\ref{fig:image}.g), while also reflecting a mix of historical, religious, and linguistic relationships between countries. 
+We visualize the embedding using UMAP~\autocite{mcinnes_umap_2018} and observe strong geographic clustering (Fig~\ref{fig:image}.g), while also reflecting a mix of historic, cultural, and linguistic relationships between countries. 
 For example, South American countries are near Spain and Portugal and organizations in French-speaking Quebec and North Africa are nearer France. 
 By visualizing subsets of vectors, we reveal more granular structure.
-For example, the structure of U.S. universities demonstrates state-level geographic clustering (Fig~\ref{fig:image}.h) roughly organized by state and region, whereas Massachusetts (Fig~\ref{fig:image}.i) instead shows structure based on urban centers (Boston vs. Worcester), organization type (hospitals tend to be adjacent) and different university systems (UMass system cluster separate from Harvard, MIT, etc.).
+For example, the structure of U.S. universities demonstrates state-level geographic clustering (Fig~\ref{fig:image}.h) roughly organized by state and region, whereas states such as Massachusetts (Fig~\ref{fig:image}.i), California, and New York (not shown) instead show structure based on urban centers (Boston vs. Worcester), organization type (hospitals tend to be adjacent) and different university systems (UMass system cluster separate from Harvard, MIT, etc.).
 
 By embedding scientific mobility, we offer a novel quantitative framework to study scientific mobility, and potentially mobility in general. 
 This approach transforms complex and high-dimensional data into a dense, coherent, and meaningful vector space that is convenient for visualization, computation, and can be incorporated into a variety of analyses.
@@ -97,10 +98,12 @@ This approach transforms complex and high-dimensional data into a dense, coheren
 %\bibliographystyle{acm}
 \begingroup
 \setstretch{0.8}
-\small
 \setlength\bibitemsep{1pt}
-{\renewcommand{\markboth}[2]{}% Remove header adjustment
-\printbibliography}
+{
+\small
+\renewcommand{\markboth}[2]{}% Remove header adjustment
+\printbibliography
+}
 \endgroup
 
 
