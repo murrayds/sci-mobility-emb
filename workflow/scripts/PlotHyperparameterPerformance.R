@@ -9,7 +9,7 @@
 
 # Plot dimensions
 FIG_WIDTH = 7
-FIG_HEIGHT = 4
+FIG_HEIGHT = 5
 
 
 library(readr)
@@ -46,7 +46,15 @@ plot <- plotdata %>%
     geom_line() +
     geom_linerange(aes(ymin = ci.lower, ymax = ci.upper)) +
     facet_grid(traj~case) +
-    scale_color_manual(name = "Embedding Dimension", values = c("#b2bec3", "#636e72", "#2d3436")) +
+    scale_x_continuous(breaks = unique(plotdata$ws)) +
+    scale_y_continuous(
+      limits = c(0.2, 0.6),
+      breaks = c(0.2, 0.4, 0.6)
+    ) +
+    scale_color_manual(
+      name = "Embedding Dimension",
+      values = c("#b2bec3", "#636e72", "#2d3436")
+    ) +
     scale_shape_discrete(name = "Embedding Dimension") +
     theme_minimal() +
     theme(
@@ -55,7 +63,7 @@ plot <- plotdata %>%
       axis.title = element_text(size = 12),
       legend.title = element_text(size = 12, face = "bold"),
       legend.position = "bottom",
-      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
       panel.spacing = unit(1.5, "lines")
     ) +
     xlab("Window Size") +
