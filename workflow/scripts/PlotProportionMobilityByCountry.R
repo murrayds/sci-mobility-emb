@@ -20,6 +20,8 @@ suppressPackageStartupMessages(require(optparse))
 option_list = list(
   make_option(c("-f", "--flows"), action="store", default=NA, type='character',
               help="Path to file containing career trajectories"),
+  make_option(c("--nonmobile"), action="store", default=NA, type='character',
+              help="Path to file containing nonmobile trajectories"),
   make_option(c("l", "--lookup"),, action="store", default=NA, type='character',
               help="Path to file containing organizational metadata"),
   make_option(c("r", "--researchers"),, action="store", default=NA, type='character',
@@ -28,8 +30,6 @@ option_list = list(
               help="Path to save output image")
 ) # end option_list
 opt = parse_args(OptionParser(option_list=option_list))
-
-
 
 # Load organization meta-info
 lookup <- read_delim(opt$lookup, delim = "\t", col_types = readr::cols()) %>%
@@ -43,7 +43,14 @@ expected.mobility <- sum(researchers$org_mobile) / dim(researchers)[1]
 
 # Load the dataframe of all transitions, merge in other metainfo, and
 # aggregate across countries and organization mobility status
-flows <- read_delim(opt$flows, delim = "\t", col_types = readr::cols()) %>%
+flows <- read_delim(opt$flows, delim = "\t", col_types = readr::cols())
+
+nonmobile <- read_delim(opt$nonmobile, delim = "\t", col_types = readr::cols())
+
+# Merge with nonmobile individuals
+flows <- data.table::rbindlist(list(flows, nonmobile))
+
+flows <- flows %>%
   select(-LR_main_field_no, -pub_year) %>%
   left_join(researchers, by = "cluster_id") %>%
   left_join(lookup, by = "cwts_org_no") %>%
@@ -51,6 +58,8 @@ flows <- read_delim(opt$flows, delim = "\t", col_types = readr::cols()) %>%
   summarize(
     count = length(unique(cluster_id))
   )
+
+print(head(flows), 10)
 
 # Remove unecessary dataframes
 remove(researchers, lookup)
@@ -70,6 +79,7 @@ plotdata <- flows %>%
   ungroup() %>%
   mutate(index = row_number()) # Index used for the x-axis
 
+print(head(plotdata, 10))
 # Label the top 8 and bottom 8 bars in the chart.
 # Construct as separate dataframes
 labels_top <- plotdata %>%
@@ -82,17 +92,23 @@ labels_bot <- plotdata %>%
 # Construct the plot
 plot <- plotdata %>%
   ggplot(aes(x = index, y = prop)) +
-    geom_bar(stat = "identity", alpha = 0.8) +
+    geom_bar(stat = "identity", size = 0) +
     geom_hline(yintercept = expected.mobility, linetype = "dashed") +
     ggrepel::geom_label_repel(data = labels_top, aes(label = country_iso_alpha), size = 3, direction = "y", nudge_x = 5) +
     ggrepel::geom_label_repel(data = labels_bot, aes(label = country_iso_alpha), size = 3, direction = "y", nudge_x = -5) +
     scale_x_continuous(expand = c(0, 0)) +
     theme_minimal() +
     theme(
+      panel.grid.major = element_blank(),
+      text = element_text(family = "Helvetica"),
       axis.title = element_text(size = 12, face = "bold"),
-      axis.title.x = element_blank()
+      axis.text = element_text(size = 11),
     ) +
+    xlab("Rank") +
     ylab("Proportion mobile")
 
+p <- egg::set_panel_size(plot,
+                         width  = unit(FIG_WIDTH, "in"),
+                         height = unit(FIG_HEIGHT, "in"))
 # Save the plot
-ggsave(opt$output, plot, width = FIG_WIDTH, height = FIG_HEIGHT)
+ggsave(opt$output, p, width = FIG_WIDTH + 1, height = FIG_HEIGHT + 1)

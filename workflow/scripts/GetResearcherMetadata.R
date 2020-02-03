@@ -22,6 +22,8 @@ suppressPackageStartupMessages(require(optparse))
 option_list = list(
   make_option(c("-i", "--input"), action="store", default=NA, type='character',
               help="Path to file containing raw mobility information"),
+  make_option(c("--nonmobile"), action="store", default=NA, type='character',
+              help="Path to file containing nonmobile trajectories"),
   make_option(c("-l", "--lookup"), action="store", default=NA, type='character',
               help="Path to file containing organization lookup information"),
   make_option(c("-o", "--output"), action="store", default=NA, type='character',
@@ -30,9 +32,15 @@ option_list = list(
 opt = parse_args(OptionParser(option_list=option_list))
 
 # Read the file
-mobility.raw = readr::read_delim(opt$input,
+mobile = readr::read_delim(opt$input,
                                  delim = "\t",
                                  col_types = readr::cols())
+
+nonmobile <- readr::read_delim(opt$nonmobile,
+                                 delim = "\t",
+                                 col_types = readr::cols())
+
+mobility.raw <- data.table::rbindlist(list(mobile, nonmobile))
 
 org.lookup <- readr::read_delim(opt$lookup,
                                delim = "\t",

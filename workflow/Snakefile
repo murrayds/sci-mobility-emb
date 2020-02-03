@@ -10,6 +10,7 @@ ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
 DESCRIPTIVE_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Descriptive')
 SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
+TRAJECTORY_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Trajectories')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 STAT_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Stat')
 NETWORK_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Network')
@@ -22,23 +23,24 @@ DESCRIPTIVE_FIG_DIR = osjoin(FIGURE_DIR, 'Descriptive')
 MOBILITY_RAW = osjoin(RAW_DATA_DIR, '2008-2019_transitions.txt')
 MOBILE_RESEARCHERS = osjoin(RAW_DATA_DIR, 'mobile_researcher_trajectories.txt')
 NONMOBILE_RESEARCHERS = osjoin(RAW_DATA_DIR, 'nonmobile_researcher_trajectories.txt')
-MOBILITY_RAW_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{year}_raw_mobility.csv')
+MOBILITY_TRAJECTORIES_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{traj}', '{year}_{traj}_raw_mobility.csv')
 ORG_SIZES = osjoin(RAW_DATA_DIR, '2008-2019_inst_sizes.txt')
 ORG_STATE_NAMES = osjoin(ADDITIONAL_DATA_DIR, 'org_states.csv')
 
 ######################
 # Mobility sentences #
 ######################
-MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{year}_org_sentences.csv')
+MOBILITY_TRAJECTORIES = osjoin(TRAJECTORY_DATA_DIR, '{traj}_mobility_trajectories.txt')
+MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{traj}', '{year}_{traj}_org_sentences.csv')
 
 ####################
 # Descriptive Data #
 ####################
-ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_flows.csv')
-ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distance.csv')
-AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate_org_distances_d{dimensions}_ws{window}.csv')
-RESEARCHER_META = osjoin(DESCRIPTIVE_DATA_DIR, 'researcher', 'researcher_metadata.txt')
-ORG_META = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'org_metadata.txt')
+ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{traj}_organization_flows.csv')
+ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distancesv')
+AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate', '{traj}', 'aggregate_org_distances_{traj}_d{dimensions}_ws{window}.csv')
+RESEARCHER_META = osjoin(DESCRIPTIVE_DATA_DIR, 'researcher', '{traj}_researcher_metadata.txt')
+ORG_META = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{traj}_org_metadata.txt')
 
 ####################
 # Network Data #
@@ -48,33 +50,33 @@ FLOWS_NETWORK = osjoin(NETWORK_DATA_DIR, 'flows_edgelist.csv')
 ##############
 # Embeddings #
 ##############
-WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, 'word2vec', 'word2vec_d{dimensions}_ws{window}_model.bin')
-ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec_d{dimensions}_ws{window}_sim.csv')
+WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, '{traj}', 'word2vec_d{dimensions}_ws{window}_model.bin')
+ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', '{traj}_d{dimensions}_ws{window}_sim.csv')
 
 ##############
 # Stat       #
 ##############
 AGGREGATE_R2 = osjoin(STAT_DATA_DIR, 'aggregate_r2.csv')
-PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{distance}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.csv')
+PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{traj}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.csv')
 
 ##################
 # Visualizations #
 ##################
-UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', 'data', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_data.csv')
-UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{country}', 'd{dimensions}', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
-GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
-PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', 'd{dimensions}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
-PREDICTED_VS_ACTUAL_PLOT_FILT = osjoin(FIGURE_DIR, 'Predicted', 'filtered', 'd{dimensions}', '{distance}', '{geo_constraint_filt}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
+UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dimensions}', 'data', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_data.csv')
+UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dimensions}', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
+GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', '{traj}', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
+PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', 'd{dimensions}', '{distance}', '{traj}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
+PREDICTED_VS_ACTUAL_PLOT_FILT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', 'filtered', 'd{dimensions}', '{distance}', '{traj}_{geo_constraint_filt}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
 GRADIENT_LEGEND = osjoin(PROJ_HOME, "Assets", "gradient_legend.pdf")
-PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_plot.pdf')
-PROP_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_over_time_plot.pdf')
-PUBS_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'pubs_over_time_by_discipline_plot.pdf')
-PROP_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_over_time_by_discipline_plot.pdf')
-NUM_AFFILIATIONS_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, 'num_affiliations_ecdf.pdf')
-PROP_MOBILE_BY_COUNTRY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_mobility_by_country.pdf')
-PROP_ORG_COUNTRY_MOBILITY = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_org_country_mobility.pdf')
-COUNTRY_MOBILITY_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_country_mobility_ecdf.pdf')
-COUNTRY_MOBILITY_DISTRIBUTION = osjoin(DESCRIPTIVE_FIG_DIR, 'prop_country_mobility_distribution.pdf')
+PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'pubs_over_time_plot.pdf')
+PROP_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_over_time_plot.pdf')
+PUBS_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'pubs_over_time_by_discipline_plot.pdf')
+PROP_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_over_time_by_discipline_plot.pdf')
+NUM_AFFILIATIONS_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'num_affiliations_ecdf.pdf')
+PROP_MOBILE_BY_COUNTRY = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_mobility_by_country.pdf')
+PROP_ORG_COUNTRY_MOBILITY = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_org_country_mobility.pdf')
+COUNTRY_MOBILITY_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_country_mobility_ecdf.pdf')
+COUNTRY_MOBILITY_DISTRIBUTION = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_country_mobility_distribution.pdf')
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
 
 ##################
@@ -86,6 +88,8 @@ ORG_FIXED_COORDINATES = osjoin(ADDITIONAL_DATA_DIR, 'fixed_org_coordinates.txt')
 ORG_LOOKUP_FIXED = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_fixed.txt')
 ORG_LOOKUP_WITH_STATES = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_with_states.txt')
 COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
+TRAJ_PRECEDENCE = osjoin(ADDITIONAL_DATA_DIR, 'traj_precedence_rules.txt')
+
 
 ##############
 # Parameters #
@@ -93,10 +97,12 @@ COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 ALL_YEARS = range(2008, 2019, 1)
 FIG_EXTS = ['pdf', 'html']
 
+TRAJECTORIES = ['raw', 'precedence']
+
 # WORD2VEC parameters
 W2V_DIMENSIONS = [100, 200, 300]
-W2V_WINDOW_SIZE = [1, 2, 3, 4, 5]
-W2V_MIN_WORD_FREQ = 50
+W2V_WINDOW_SIZE = [1, 2, 3]
+W2V_MIN_WORD_FREQ = 20
 W2V_NUM_WORKERS = 4
 W2V_ITERATIONS = 5
 
@@ -120,26 +126,27 @@ GEO_CONSTRAINTS_FILT = ['same-country',
 ###############################################################################
 rule all:
     input:
-        ORG_LOOKUP_WITH_STATES,
-        RESEARCHER_META,
-        ORG_META,
-        NONMOBILE_RESEARCHERS,
         expand(WORD2VEC_EMBEDDINGS,
+               traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
         expand(ORG_W2V_SIMILARITIES,
+               traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
         expand(AGGREGATE_ORG_DISTANCES,
+               traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
         expand(UMAP_DATA,
+               traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
                metric = UMAP_METRICS,
                neighbors = UMAP_NEIGHBORS,
                country = COUNTRIES),
         expand(UMAP_VISUALIZATIONS_ORG,
+               traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                metric = UMAP_METRICS,
                neighbors = UMAP_NEIGHBORS,
@@ -147,40 +154,42 @@ rule all:
                country = 'all',
                ext = FIG_EXTS),
         expand(GRAVITY_RELATIONSHIP_PLOT,
+               traj = TRAJECTORIES,
                to_filter = TO_FILTER,
                distance = DISTANCE_PARAMS,
                geo_constraint = GEO_CONSTRAINTS,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
         expand(PREDICTED_VS_ACTUAL,
+                traj = TRAJECTORIES,
                 distance = DISTANCE_PARAMS,
                 dimensions = W2V_DIMENSIONS,
                 geo_constraint = GEO_CONSTRAINTS,
                 window = W2V_WINDOW_SIZE),
         expand(PREDICTED_VS_ACTUAL_PLOT,
+               traj = TRAJECTORIES,
                distance = DISTANCE_PARAMS,
                dimensions = W2V_DIMENSIONS,
                geo_constraint = GEO_CONSTRAINTS,
                window = W2V_WINDOW_SIZE),
         expand(PREDICTED_VS_ACTUAL_PLOT_FILT,
+               traj = TRAJECTORIES,
                distance = "emb",
                dimensions = W2V_DIMENSIONS,
                geo_constraint = "global",
                geo_constraint_filt = GEO_CONSTRAINTS_FILT,
                window = W2V_WINDOW_SIZE),
-        AGGREGATE_R2,
         GRADIENT_LEGEND,
-        FLOWS_NETWORK,
         # Descriptive Plots
-        PUBS_OVER_TIME_PLOT,
-        PROP_OVER_TIME_PLOT,
-        PUBS_DISC_OVER_TIME_PLOT,
-        PROP_DISC_OVER_TIME_PLOT,
-        NUM_AFFILIATIONS_ECDF,
-        PROP_MOBILE_BY_COUNTRY,
-        PROP_ORG_COUNTRY_MOBILITY,
-        COUNTRY_MOBILITY_ECDF,
-        COUNTRY_MOBILITY_DISTRIBUTION,
+        expand(PUBS_OVER_TIME_PLOT, traj = TRAJECTORIES),
+        expand(PROP_OVER_TIME_PLOT, traj = TRAJECTORIES),
+        expand(PUBS_DISC_OVER_TIME_PLOT, traj = TRAJECTORIES),
+        expand(PROP_DISC_OVER_TIME_PLOT, traj = TRAJECTORIES),
+        expand(NUM_AFFILIATIONS_ECDF, traj = TRAJECTORIES),
+        expand(PROP_MOBILE_BY_COUNTRY, traj = TRAJECTORIES),
+        expand(PROP_ORG_COUNTRY_MOBILITY, traj = TRAJECTORIES),
+        expand(COUNTRY_MOBILITY_ECDF, traj = TRAJECTORIES),
+        expand(COUNTRY_MOBILITY_DISTRIBUTION, traj = TRAJECTORIES),
         HYPERPARAMETER_PERFORMANCE
 
 
@@ -193,58 +202,72 @@ rule fix_org_coordinates:
         --coordinates {params.fixed} --output {output}"
 
 rule lookup_state_from_coords:
-    input: rules.fix_org_coordinates.output
+    input: ancient(rules.fix_org_coordinates.output)
     output: ORG_STATE_NAMES
     shell:
         "python scripts/lookup_state_from_coords.py --input {input} --sleep 1.1 --output {output}"
 
 rule add_state_to_lookup:
     input: coords = rules.fix_org_coordinates.output,
-           states = rules.lookup_state_from_coords.output
+           states = ancient(rules.lookup_state_from_coords.output)
     output: ORG_LOOKUP_WITH_STATES
     shell:
         "Rscript scripts/AddStatesToLookup.R --lookup {input.coords} --output {output} \
                  --states {input.states}"
 
+rule filter_to_mobile:
+    input: MOBILITY_RAW
+    output: MOBILE_RESEARCHERS
+    shell:
+        "Rscript scripts/FilterRawByMobilityStatus.R --input {input} \
+        --output {output} --mobile"
+
+rule filter_to_nonmobile:
+    input: MOBILITY_RAW
+    output: NONMOBILE_RESEARCHERS
+    shell:
+        "Rscript scripts/FilterRawByMobilityStatus.R --input {input} \
+         --output {output} --nonmobile"
+
+rule calculate_traj_precedence_rules:
+    input: rules.filter_to_mobile.output
+    output: TRAJ_PRECEDENCE
+    shell:
+        "Rscript scripts/CalculateTrajPrecedenceRules.R --input {input} \
+        --output {output}"
+
+rule format_trajectories:
+    input:
+        trajectories = rules.filter_to_mobile.output,
+        precedence = rules.calculate_traj_precedence_rules.output
+    output:
+        MOBILITY_TRAJECTORIES
+    shell:
+        "Rscript scripts/FormatMobilityTrajectories.R --input {input.trajectories} \
+        --output {output} --precedence {input.precedence} --traj {wildcards.traj}"
+
 rule get_researcher_metadata:
-    input: raw = MOBILITY_RAW,
-           lookup = rules.add_state_to_lookup.output
+    input: raw = rules.format_trajectories.output,
+           nonmobile = rules.filter_to_nonmobile.output,
+           lookup = ancient(rules.add_state_to_lookup.output)
     output: RESEARCHER_META
     shell:
         "Rscript scripts/GetResearcherMetadata.R --input {input.raw} \
-                --lookup {input.lookup} --output {output}"
+                --nonmobile {input.nonmobile} --lookup {input.lookup} --output {output}"
 
 rule get_org_metadata:
     input:
-        raw = MOBILITY_RAW,
-        researchers = rules.get_researcher_metadata.output,
-        lookup = rules.add_state_to_lookup.output
+        raw = rules.format_trajectories.output,
+        researchers = ancient(rules.get_researcher_metadata.output),
+        lookup = ancient(rules.add_state_to_lookup.output)
     output: ORG_META
     shell:
         "Rscript scripts/GetOrgMetadata.R --input {input.raw} --lookup {input.lookup} \
                 --researchers {input.researchers} --output {output}"
 
-rule filter_to_mobile:
-    input:
-        raw = MOBILITY_RAW,
-        researchers = rules.get_researcher_metadata.output
-    output: MOBILE_RESEARCHERS
-    shell:
-        "Rscript scripts/FilterRawByMobilityStatus.R --input {input.raw} \
-        --researchers {input.researchers} --output {output} --mobile"
-
-rule filter_to_nonmobile:
-    input:
-        raw = MOBILITY_RAW,
-        researchers = rules.get_researcher_metadata.output
-    output: NONMOBILE_RESEARCHERS
-    shell:
-        "Rscript scripts/FilterRawByMobilityStatus.R --input {input.raw} \
-        --researchers {input.researchers} --output {output} --nonmobile"
-
 rule dissagregate_pubs_to_yearly:
-    input: rules.filter_to_mobile.output
-    output: MOBILITY_RAW_YEARLY
+    input: rules.format_trajectories.output
+    output: MOBILITY_TRAJECTORIES_YEARLY
     shell: "Rscript scripts/FilterRawMobilityToSingleYear.R {input} {wildcards.year} {output}"
 
 rule pubs_to_sentences:
@@ -254,7 +277,7 @@ rule pubs_to_sentences:
         "Rscript scripts/FormatPubsToSentences.R {input} org {output}"
 
 rule train_word2vec_model:
-    input: [expand(MOBILITY_SENTENCES, year = ALL_YEARS)]
+    input: [expand(MOBILITY_SENTENCES, traj = TRAJECTORIES, year = ALL_YEARS)]
     output: WORD2VEC_EMBEDDINGS
     threads: W2V_NUM_WORKERS
     params:
@@ -269,7 +292,7 @@ rule train_word2vec_model:
 
 rule dimreduce_umap:
     input: model = rules.train_word2vec_model.output,
-           lookup = rules.add_state_to_lookup.output
+           lookup = ancient(rules.add_state_to_lookup.output)
     output: UMAP_DATA
     shell:
         'python scripts/dimreduce_with_umap.py --model {input.model} \
@@ -280,7 +303,7 @@ rule dimreduce_umap:
 rule plot_umap_org:
     input: rules.dimreduce_umap.output
     params:
-        orgs = rules.add_state_to_lookup.output,
+        orgs = ancient(rules.add_state_to_lookup.output),
         countries = COUNTRY_LOOKUP
     output: UMAP_VISUALIZATIONS_ORG
     shell:
@@ -288,17 +311,16 @@ rule plot_umap_org:
         {params.countries} {output}"
 
 rule calculate_org_flows:
-    input: rules.filter_to_mobile.output
+    input: rules.format_trajectories.output
     output: ORGANIZATION_FLOWS
     shell:
         "python scripts/calculate_org_flows.py --input {input} --output {output}"
 
 rule calculate_org_geographic_distance:
-    input: rules.add_state_to_lookup.output
+    input: ancient(rules.add_state_to_lookup.output)
     output: ORG_GEO_DISTANCE
     shell:
         "python scripts/calculate_org_geo_distance.py --input {input} --output {output}"
-
 
 rule calculate_org_w2v_similarities:
     input: rules.train_word2vec_model.output
@@ -306,17 +328,11 @@ rule calculate_org_w2v_similarities:
     shell:
         "python scripts/calculate_org_w2v_similarity.py --model {input} --output {output}"
 
-rule convert_flows_to_edgelist:
-    input: rules.calculate_org_flows.output
-    output: FLOWS_NETWORK
-    shell:
-        "Rscript scripts/ConvertFlowsToNetworkEdgelist.R --input {input} --output {output}"
-
 rule build_aggregate_org_distances:
-    input: flows = rules.calculate_org_flows.output,
-           geo = rules.calculate_org_geographic_distance.output,
-           emb = rules.calculate_org_w2v_similarities.output,
-           orgs = rules.add_state_to_lookup.output
+    input: flows = ancient(rules.calculate_org_flows.output),
+           geo = ancient(rules.calculate_org_geographic_distance.output),
+           emb = ancient(rules.calculate_org_w2v_similarities.output),
+           orgs = ancient(rules.add_state_to_lookup.output)
     params:
         sizes = ORG_SIZES,
     # This can eat up a lot of memory which is a problem when running paralell.
@@ -332,6 +348,7 @@ rule build_aggregate_org_distances:
 rule get_aggregate_gravity_r2:
     input:
         [expand(rules.build_aggregate_org_distances.output,
+                traj = TRAJECTORIES,
                 dimensions = W2V_DIMENSIONS,
                 window = W2V_WINDOW_SIZE)]
     threads: 4
@@ -347,7 +364,6 @@ rule calculate_predicted_vs_actual:
         "Rscript scripts/CalculatePredictedVsActual.R --input {input} \
         --output {output} --geo {wildcards.geo_constraint} \
         --distance {wildcards.distance}"
-
 
 rule plot_gravity_relationship:
     input: rules.build_aggregate_org_distances.output
@@ -380,8 +396,8 @@ rule plot_gradient_legend:
 ## Descriptive plots
 rule plot_pubs_over_time:
     input:
-        flows = MOBILITY_RAW,
-        researchers = rules.get_researcher_metadata.output
+        flows = rules.format_trajectories.output,
+        researchers = ancient(rules.get_researcher_metadata.output)
     output:
         PUBS_OVER_TIME_PLOT
     shell:
@@ -390,8 +406,8 @@ rule plot_pubs_over_time:
 
 rule plot_prop_over_time:
     input:
-        flows = MOBILITY_RAW,
-        researchers = rules.get_researcher_metadata.output
+        flows = rules.format_trajectories.output,
+        researchers = ancient(rules.get_researcher_metadata.output)
     output:
         PROP_OVER_TIME_PLOT
     shell:
@@ -399,21 +415,21 @@ rule plot_prop_over_time:
                  --researchers {input.researchers} --output {output}"
 
 rule plot_pubs_over_time_by_discipline:
-    input: rules.filter_to_mobile.output
+    input: rules.format_trajectories.output
     output: PUBS_DISC_OVER_TIME_PLOT
     shell:
         "Rscript scripts/PlotPubsOverTimeByDiscipline.R --input {input} \
                  --output {output}"
 
 rule plot_prop_over_time_by_discipline:
-    input: rules.filter_to_mobile.output
+    input: rules.format_trajectories.output
     output: PROP_DISC_OVER_TIME_PLOT
     shell:
         "Rscript scripts/PlotPropOverTimeByDiscipline.R --input {input} \
                  --output {output}"
 
 rule plot_num_affiliations_ecdf:
-    input: rules.get_researcher_metadata.output
+    input: ancient(rules.get_researcher_metadata.output)
     output: NUM_AFFILIATIONS_ECDF
     shell:
         "Rscript scripts/PlotMobilityECDF.R --input {input} \
@@ -421,46 +437,50 @@ rule plot_num_affiliations_ecdf:
 
 rule plot_prop_mobile_by_country:
     input:
-        flows = MOBILITY_RAW,
+        flows = rules.format_trajectories.output,
+        nonmobile = rules.filter_to_nonmobile.output,
         researchers = rules.get_researcher_metadata.output,
-        lookup = rules.add_state_to_lookup.output
+        lookup = ancient(rules.add_state_to_lookup.output)
     output: PROP_MOBILE_BY_COUNTRY
     shell:
         "Rscript scripts/PlotProportionMobilityByCountry.R --flows {input.flows}\
-                 --researchers {input.researchers} --lookup {input.lookup} \
+                 --nonmobile {input.nonmobile} --researchers {input.researchers} --lookup {input.lookup} \
                  --output {output}"
 
 rule plot_org_country_mobility:
     input:
-        flows = MOBILITY_RAW,
+        flows = rules.format_trajectories.output,
+        nonmobile = rules.filter_to_nonmobile.output,
         researchers = rules.get_researcher_metadata.output,
-        lookup = rules.add_state_to_lookup.output
+        lookup = ancient(rules.add_state_to_lookup.output)
     output: PROP_ORG_COUNTRY_MOBILITY
     shell:
         "Rscript scripts/PlotOrgCountryMobility.R --flows {input.flows}\
-                 --researchers {input.researchers} --lookup {input.lookup} \
+                 --nonmobile {input.nonmobile} --researchers {input.researchers} --lookup {input.lookup} \
                  --output {output}"
 
 rule plot_country_mobility_ecdf:
     input:
-        flows = MOBILITY_RAW,
+        flows = rules.format_trajectories.output,
+        nonmobile = rules.filter_to_nonmobile.output,
         researchers = rules.get_researcher_metadata.output,
-        lookup = rules.add_state_to_lookup.output
+        lookup = ancient(rules.add_state_to_lookup.output)
     output: COUNTRY_MOBILITY_ECDF
     shell:
         "Rscript scripts/PlotCountryMobilityECDF.R --flows {input.flows}\
-                 --researchers {input.researchers} --lookup {input.lookup} \
+                 --nonmobile {input.nonmobile} --researchers {input.researchers} --lookup {input.lookup} \
                  --output {output}"
 
 rule plot_country_mobility_distribution:
     input:
-        flows = MOBILITY_RAW,
-        researchers = rules.get_researcher_metadata.output,
-        lookup = rules.add_state_to_lookup.output
+        flows = ancient(rules.format_trajectories.output),
+        nonmobile = rules.filter_to_nonmobile.output,
+        researchers = ancient(rules.get_researcher_metadata.output),
+        lookup = ancient(rules.add_state_to_lookup.output)
     output: COUNTRY_MOBILITY_DISTRIBUTION
     shell:
         "Rscript scripts/PlotCountryMobilityDistribution.R --flows {input.flows}\
-                 --researchers {input.researchers} --lookup {input.lookup} \
+                 --nonmobile {input.nonmobile} --researchers {input.researchers} --lookup {input.lookup} \
                  --output {output}"
 
 rule plot_hyperparameter_performance:
