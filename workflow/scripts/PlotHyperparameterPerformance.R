@@ -45,7 +45,7 @@ plot <- plotdata %>%
     geom_point(size = 3) +
     geom_line() +
     geom_linerange(aes(ymin = ci.lower, ymax = ci.upper)) +
-    facet_wrap(~case) +
+    facet_grid(traj~case) +
     scale_color_manual(name = "Embedding Dimension", values = c("#b2bec3", "#636e72", "#2d3436")) +
     scale_shape_discrete(name = "Embedding Dimension") +
     theme_minimal() +
