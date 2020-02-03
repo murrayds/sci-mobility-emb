@@ -7,7 +7,7 @@
 #
 
 # Plotting options
-NUM_BINS = 30
+NUM_BINS = 36
 
 COLOR_BAD_FIT = "white"
 COLOR_GOOD_FIT = "#1E88E5"
@@ -77,7 +77,8 @@ binned <- data %>%
     crosses_ab_weak = (percentile_max > pos & pos > mu) | (percentile_min < pos & pos < mu),
   )
 
-print(binned)
+error <- sqrt(mean((log10(data$expected) ^ 2) - (log10(data$actual) ^ 2)))
+
 # Build the plot
 plot <- data %>%
   ggplot(aes(x = log10(expected), y = log10(actual))) +
@@ -119,6 +120,12 @@ plot <- data %>%
                      labels = function(x) { parse(text=paste0("10^", x)) },
                      expand = c(0, 0)) +
   coord_fixed() +
+  annotate(geom = "text",
+           x = 1.2,
+           y = 6.2,
+           label = paste0("Err = ", round(error, 2)),
+           size = 7
+         ) +
   # Define the gradient
   scale_fill_gradientn(colours=c(FILL_GRADIENT_MIN, FILL_GRADIENT_MAX),
                        name = "Frequency",
