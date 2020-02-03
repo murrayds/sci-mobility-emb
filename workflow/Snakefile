@@ -329,7 +329,7 @@ rule calculate_org_w2v_similarities:
         "python scripts/calculate_org_w2v_similarity.py --model {input} --output {output}"
 
 rule build_aggregate_org_distances:
-    input: flows = ancient(rules.calculate_org_flows.output),
+    input: flows = rules.calculate_org_flows.output,
            geo = ancient(rules.calculate_org_geographic_distance.output),
            emb = ancient(rules.calculate_org_w2v_similarities.output),
            orgs = ancient(rules.add_state_to_lookup.output)
