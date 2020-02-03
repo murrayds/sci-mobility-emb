@@ -113,8 +113,9 @@ agg <- data.table::rbindlist(lapply(DISTANCE_FILES, function(path) {
   # Specity the parameters of the file, including the embedding dimensions
   # and window size
   filename.split <- unlist(strsplit(path, "_"))
-  df$dim <- as.numeric(gsub("[^0-9.-]", "", filename.split[4]))
-  df$ws <- as.numeric(gsub("[^0-9.-]", "", filename.split[5]))
+  df$traj <- filename.split[4]
+  df$dim <- as.numeric(gsub("[^0-9.-]", "", filename.split[5]))
+  df$ws <- as.numeric(gsub("[^0-9.-]", "", filename.split[6]))
 
   return(df)
 }))
