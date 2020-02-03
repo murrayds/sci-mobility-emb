@@ -88,13 +88,12 @@ Data, analysis, and associated code have been made publicly available and can be
 We source co-affiliation trajectories of authors from the Web of Science database hosted by the Center for Science and Technology Studies at Leiden University. 
 Trajectories are constructed from author affiliations listed on the byline of publications for a given author.
 Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations~\cite{caron2014disambiguation} and when performance is strongest (ref to SI?). 
-This yields 37,542,144 author-affiliation representing 12,963,792 authors. 
+This yields 33,934,672 author-affiliation combinations representing 112,963,792 authors. 
 Each author-affiliation combination is associated with the publication year and a unique id that maps the affiliation to a disambiguate organization. 
 Combinations are also associated with a publication-level disciplinary classification, one of ``Social sciences and humanities'',
 ``Biomedical and health sciences'', ``Physical sciences and engineering'', ``Life and earth sciences'', and ``Mathematics and computer science''.
 Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. 
 Authors are classified as mobile when they have at least two distinct organization ids in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
-Mobile authors constitute 3,709,869 or 28.6 percent of all authors, and 22,436,637 author-affiliation combinations. 
 
 % %Organization information
 Affiliations mapped to one of 8,661 organizations, disambiguated following a mostly manual process originally designed for the Leiden Rankings of World Universities~\cite{waltman2012leidenrankings}. 
@@ -107,14 +106,30 @@ Organizations were also assigned continental information (e.g., North America, A
 For each organization, we also calculated a size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
 in the case that authors publish with multiple affiliations in a single year, they are counted towards each. 
 
+Some affiliations are mapped to two organizations, one specific, and one more general, as a result of the disambiguation procedure. 
+For example, any author affiliated with the "Indiana University Bloomington" will also be listed as being affiliated with the "Indiana University System", a more general designation for all public universities in Indiana. 
+However, a more general organization may not always occur alongside the more specific one.
+For example, a researcher affiliated with the smaller regional school "Indiana University South Bend" will be listed as affiliated with only the "Indiana University System". 
+We identify all specific organizations that always co-occur along a more general one.
+For every career trajectory that includes one of these specific organizations, we remove all occurrences of the more general organization;
+trajectories containing only a general designation are not altered. 
+
+Scientific mobility is complex and can be defined in many possible ways~\cite{robinson2019mobility}.
+Here, we consider an author as mobile when at least two distinct organizational affiliations appear in their trajectory during the 2008-2019 time window. 
+Under this definition, mobile authors constitute 3,007,192 or 23.2 percent of all authors, and 17,700,095 author-affiliation combinations. 
+Mobile authors were associated with, on average, 2.5 distinct organizational affiliations. 
+Rates of mobility tended to differ across country. 
+For example, France, Qatar, the USA, Iraq, and Luxembourg had the most mobile authors (ref figure).
+However, due to their size, the USA, accounted for nearly 40 percent of all mobile authors worldwide, with  10 countries accounting for 80 percent of all mobility (ref figure).
+In most cases, countries with a high degree inter-organization mobility also had a high degree of international mobility;
+however, the USA and France had a high degree of inter-organization mobility with the corresponding international mobility (ref figure). 
+
 
 \subsection*{Embedding}
 %% Mobility sentences
 We embed co-affiliation trajectories by treating them analogously to sentences, and organizations analogously to words. 
 The trajectories of mobile authors were converted to ''mobility sentences`` by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}.a.
 In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple affiliations in the same year, the order is randomized within that year, as shown in  Fig.~\ref{fig:methods:mobility_sentence}.b. 
-The mean length of mobility sentences is 6.0, whereas the largest is 251.
-duplicate organization ids appearing in the same sentence are not removed. 
 
 %
 % Figure - Example of mobility sentences
