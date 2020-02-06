@@ -28,10 +28,10 @@ opt = parse_args(OptionParser(option_list=option_list))
 
 
 df <- readr::read_delim(opt$input, col_types = cols(), delim = "\t") %>%
-  rename(place = opt$scale) %>%
-  filter(place %in% c(opt$place_1, opt$place2)) %>%
-  select(cwts_org_no, place)
+  rename(type = opt$scale) %>%
+  filter(type %in% c(opt$place1, opt$place2)) %>%
+  select(cwts_org_no, type)
 
 print(head(df))
 # Write the output
-readr::write_delim(df, path = opt$output, delim = "\t")
+readr::write_csv(df, path = opt$output)

@@ -17,6 +17,7 @@ NETWORK_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Network')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 DESCRIPTIVE_FIG_DIR = osjoin(FIGURE_DIR, 'Descriptive')
 AXES_DATA_DIR = osjoin(ADDITIONAL_DATA_DIR, 'OrgAxes')
+SEMAXIS_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'SemAxis')
 
 ############
 # Raw data #
@@ -64,8 +65,12 @@ PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{traj}', '{distance}', '{geo_constr
 ##############
 # Axes       #
 ##############
-COASTS_AXIS_ORGS = osjoin(AXES_DATA_DIR, 'usa_coasts.csv')
-PRESTIGE_AXIS_ORGS = osjoin(AXES_DATA_DIR, '{ranking}_prestige.csv')
+COASTS_AXIS_ORGS = osjoin(AXES_DATA_DIR, 'coasts_axis.csv')
+PRESTIGE_AXIS_ORGS = osjoin(AXES_DATA_DIR, '{ranking}_axis.csv')
+
+# Projection data
+COASTS_AXIS_PROJECTIONS = osjoin(SEMAXIS_DATA_DIR, '{traj}', 'geography', 'coasts_d{dimensions}_ws{window}_semaxis.csv')
+PRESTIGE_AXIS_PROJECTIONS = osjoin(SEMAXIS_DATA_DIR, '{traj}', 'prestige', '{ranking}_d{dimensions}_ws{window}_semaxis.csv')
 
 ##################
 # Visualizations #
@@ -204,7 +209,16 @@ rule all:
         expand(COUNTRY_MOBILITY_DISTRIBUTION, traj = TRAJECTORIES),
         HYPERPARAMETER_PERFORMANCE,
         expand(PRESTIGE_AXIS_ORGS, ranking = RANKINGS),
-        COASTS_AXIS_ORGS
+        COASTS_AXIS_ORGS,
+        expand(COASTS_AXIS_PROJECTIONS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(PRESTIGE_AXIS_PROJECTIONS,
+               ranking = RANKINGS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE)
 
 
 rule fix_org_coordinates:
@@ -430,6 +444,23 @@ rule generate_usa_coasts_axis_org_codes:
         "Rscript scripts/GenerateGeographicAxisOrgCodes.R --input {input} \
         --scale region --place1 California --place2 Massachusetts --output {output}"
 
+rule calculate_semaxis_prestige_projections:
+    input:
+        w2v = rules.train_word2vec_model.output,
+        axis = rules.generate_prestige_axis_org_codes.output
+    output: PRESTIGE_AXIS_PROJECTIONS
+    shell:
+        "python scripts/calculate_SemAxis_projections.py --input {input.w2v} \
+        --axis {input.axis} --output {output}"
+
+rule calculate_semaxis_geography_projections:
+    input:
+        w2v = rules.train_word2vec_model.output,
+        axis = rules.generate_usa_coasts_axis_org_codes.output
+    output: COASTS_AXIS_PROJECTIONS
+    shell:
+        "python scripts/calculate_SemAxis_projections.py --input {input.w2v} \
+        --axis {input.axis} --output {output}"
 
 ## Descriptive plots
 rule plot_pubs_over_time:

@@ -37,7 +37,7 @@ df <- readr::read_csv(opt$input, col_types = cols()) %>%
 
 elite <- df %>%
   top_n(20, score)  %>%
-  mutate(type = "elite")
+  mutate(type = "Elite")
 
 # Count th enumber of univeristies per region among elite univeristies
 t <- table(elite$census_division)
@@ -50,10 +50,10 @@ nonelite <- data.table::rbindlist(lapply(1:length(t), function(index) {
       sample_n(t[index]) # ensure that the right number is sampled, in case of ties
   return(sub_df)
 })) %>%
-  mutate(type = "nonelite")
+  mutate(type = "Non-elite")
 
 prestige <- data.table::rbindlist(list(elite, nonelite)) %>%
-  select(cwts_org_no, score, city, region, census_division, type)
+  select(cwts_org_no, type)
 
 # Write the output
-readr::write_delim(prestige, path = opt$output, delim = "\t")
+readr::write_csv(prestige, path = opt$output)
