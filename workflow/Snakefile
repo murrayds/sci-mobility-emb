@@ -64,7 +64,7 @@ PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{traj}', '{distance}', '{geo_constr
 ##############
 # Axes       #
 ##############
-COASTS_AXIS_ORGS = osjoin(AXES_DATA_DIR, 'coasts.csv')
+COASTS_AXIS_ORGS = osjoin(AXES_DATA_DIR, 'usa_coasts.csv')
 PRESTIGE_AXIS_ORGS = osjoin(AXES_DATA_DIR, '{ranking}_prestige.csv')
 
 ##################
@@ -203,7 +203,8 @@ rule all:
         expand(COUNTRY_MOBILITY_ECDF, traj = TRAJECTORIES),
         expand(COUNTRY_MOBILITY_DISTRIBUTION, traj = TRAJECTORIES),
         HYPERPARAMETER_PERFORMANCE,
-        expand(PRESTIGE_AXIS_ORGS, ranking = RANKINGS)
+        expand(PRESTIGE_AXIS_ORGS, ranking = RANKINGS),
+        COASTS_AXIS_ORGS
 
 
 rule fix_org_coordinates:
@@ -418,9 +419,17 @@ rule generate_prestige_axis_org_codes:
             shell("Rscript scripts/GeneratePrestigeAxisOrgCodes.R --input {input} --output {output} \
                    --variable total_score --regions {params.regions} --lookup {params.lookup}")
         else:
-            print("Using Leiden Ranking")
             shell("Rscript scripts/GeneratePrestigeAxisOrgCodes.R --input {input} --output {output} \
                    --variable impact_frac_mncs --regions {params.regions} --lookup {params.lookup}")
+
+## Misc data
+rule generate_usa_coasts_axis_org_codes:
+    input: rules.add_state_to_lookup.output,
+    output: COASTS_AXIS_ORGS
+    shell:
+        "Rscript scripts/GenerateGeographicAxisOrgCodes.R --input {input} \
+        --scale region --place1 California --place2 Massachusetts --output {output}"
+
 
 ## Descriptive plots
 rule plot_pubs_over_time:
