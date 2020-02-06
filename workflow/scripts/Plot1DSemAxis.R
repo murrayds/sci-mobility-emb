@@ -7,8 +7,8 @@
 #
 
 # Plot dimensions
-FIG_WIDTH = 3
-FIG_HEIGHT = 1
+FIG_WIDTH = 5
+FIG_HEIGHT = 2
 
 NOT_HIGHLIGHTED_ALPHA = 0.9
 
@@ -54,7 +54,25 @@ lookup <- read_delim(opt$lookup, delim = "\t", col_types = readr::cols()) %>%
 sims <- read_csv(opt$input, col_types = readr::cols()) %>%
   inner_join(lookup, by = "cwts_org_no")
 
-x_ceiling <- ceiling(max(abs(sims$sim)) * 50) / 50
+# Enforce orientation. Not sure how we can automate this, so we will
+# likely have to create separate rules for each kind of axis we choose
+# I am defining these rules here based on what we know about the data already, namely
+# which regions have more and less elite, or which are more or near the coasts. 
+if (any(c(opt$endlow, opt$endhigh) %in% c("Massachusetts", "California"))) {
+  cali_avg <- mean(subset(sims, region == "California")$sim)
+  mass_avg <- mean(subset(sims, region == "Massachusetts")$sim)
+  if (cali_avg > mass_avg) {
+    sims$sim <- -sims$sim
+  }
+} else if (any(c(opt$endlow, opt$endhigh) %in% c("Elite", "Non-elite"))) {
+  ny_avg <- mean(subset(sims, region == "New York")$sim)
+  bama_avg <- mean(subset(sims, region == "Alabama")$sim)
+  if (bama_avg > ny_avg) {
+    sims$sim <- -sims$sim
+  }
+}
+
+x_ceiling <- ceiling(max(abs(sims$sim)) * 100) / 100
 label_size <- max(nchar(c(opt$endlow, opt$endhigh)))
 
 # compute averages for each place
@@ -66,12 +84,6 @@ averages <- sims %>%
   ungroup() %>%
   filter(region %in% c(opt$place1, opt$place2))
 
-print(averages)
-print(x_ceiling)
-print(label_size)
-print(head(sims))
-print(opt$place1)
-print(opt$place2)
 plot <- sims %>%
   mutate(
     highlight = ifelse(region == opt$place1, opt$place1code,
@@ -119,10 +131,5 @@ plot <- sims %>%
     panel.grid = element_blank()
   )
 
-# Standardize the panel size
-p <- egg::set_panel_size(plot,
-                         width  = unit(FIG_WIDTH, "in"),
-                         height = unit(FIG_HEIGHT, "in"))
-
 # Save the plot
-ggsave(opt$output, p, width = FIG_WIDTH + 2, height = FIG_HEIGHT + 1)
+ggsave(opt$output, plot, width = FIG_WIDTH, height = FIG_HEIGHT)

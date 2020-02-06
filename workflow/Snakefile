@@ -94,6 +94,7 @@ COUNTRY_MOBILITY_DISTRIBUTION = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_coun
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
 SEMAXIS_1D_COASTS_PLOT = osjoin(SEMAXIS_FIG_DIR, 'coasts', '{traj}', 'd{dimensions}', 'coasts_1Dsemaxis_d{dimensions}_ws{window}.pdf')
 SEMAXIS_1D_PRESTIGE_PLOT = osjoin(SEMAXIS_FIG_DIR, 'prestige', '{traj}', 'd{dimensions}', '{ranking}_rank_1Dsemaxis_d{dimensions}_ws{window}.pdf')
+SEMAXIS_2D_COASTS_PRESTIGE_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'coasts_{ranking}_rank_1Dsemaxis_d{dimensions}_ws{window}.pdf')
 
 ##################
 # Metadata files #
@@ -106,7 +107,7 @@ ORG_LOOKUP_WITH_STATES = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_with_st
 COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 TRAJ_PRECEDENCE = osjoin(ADDITIONAL_DATA_DIR, 'traj_precedence_rules.txt')
 ORG_RANKINGS = osjoin(ADDITIONAL_DATA_DIR, '{ranking}_ranking.csv')
-
+ORG_SHORT_LABELS = osjoin(ADDITIONAL_DATA_DIR, 'org_shortlabels.csv')
 
 ##############
 # Parameters #
@@ -227,6 +228,11 @@ rule all:
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
         expand(SEMAXIS_1D_PRESTIGE_PLOT,
+               ranking = RANKINGS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(SEMAXIS_2D_COASTS_PRESTIGE_PLOT,
                ranking = RANKINGS,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
@@ -447,7 +453,6 @@ rule generate_prestige_axis_org_codes:
             shell("Rscript scripts/GeneratePrestigeAxisOrgCodes.R --input {input} --output {output} \
                    --variable impact_frac_mncs --regions {params.regions} --lookup {params.lookup}")
 
-## Misc data
 rule generate_usa_coasts_axis_org_codes:
     input: rules.add_state_to_lookup.output,
     output: COASTS_AXIS_ORGS
@@ -473,7 +478,6 @@ rule calculate_semaxis_geography_projections:
         "python scripts/calculate_SemAxis_projections.py --input {input.w2v} \
         --axis {input.axis} --output {output}"
 
-
 ## Plot semaxis
 rule plot_1d_coasts_semaxis_projection:
     input:
@@ -496,6 +500,21 @@ rule plot_1d_prestige_semaxis_projection:
         --output {output} --country USA \
         --endlow Non-elite --endhigh Elite \
         --place1 Indiana --place1code IN --place2 Maryland --place2code MD"
+
+rule plot_2d_semaxis_projection:
+    input:
+        axis1 = rules.calculate_semaxis_geography_projections.output,
+        axis2 = rules.calculate_semaxis_prestige_projections.output,
+        lookup = rules.add_state_to_lookup.output
+    params:
+        labels = ORG_SHORT_LABELS
+    output: SEMAXIS_2D_COASTS_PRESTIGE_PLOT
+    shell:
+        "Rscript scripts/Plot2DSemAxis.R --axis1 {input.axis1} --axis2 {input.axis2} \
+        --output {output} \
+        --lookup {input.lookup} --labels {params.labels} --country USA \
+        --endleft California --endright Massachusetts \
+        --endbot Non-elite --endtop Elite"
 
 ## Descriptive plots
 rule plot_pubs_over_time:
