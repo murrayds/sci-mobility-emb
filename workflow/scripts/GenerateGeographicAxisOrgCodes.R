@@ -21,17 +21,18 @@ option_list = list(
               help="Name of the place at one end of the axis"),
   make_option(c("--place2"), action="store", default=NA, type='character',
               help="Name of place at the other end of the axis"),
+  make_option(c("--norgs"), action="store", default=NA, type='integer',
+              help="Number of orgs to sample from geographic areas"),
   make_option(c("-o", "--output"), action="store", default=NA, type='character',
               help="Path to save output image")
 ) # end option_list
 opt = parse_args(OptionParser(option_list=option_list))
 
-
 df <- readr::read_delim(opt$input, col_types = cols(), delim = "\t") %>%
   rename(type = opt$scale) %>%
   filter(type %in% c(opt$place1, opt$place2)) %>%
+  sample_n(opt$norgs) %>%
   select(cwts_org_no, type)
 
-print(head(df))
 # Write the output
 readr::write_csv(df, path = opt$output)

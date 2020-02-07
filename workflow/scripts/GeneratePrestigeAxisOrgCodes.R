@@ -21,6 +21,8 @@ option_list = list(
               help="Path to file containing org information, for filtering"),
   make_option(c("--regions"), action="store", default=NA, type='character',
               help="Path to file containing region information"),
+  make_option(c("--norgs"), action="store", default=NA, type='integer',
+              help="Number of orgs to sample from prestige poles"),
   make_option(c("-o", "--output"), action="store", default=NA, type='character',
               help="Path to save output image")
 ) # end option_list
@@ -33,10 +35,11 @@ df <- readr::read_csv(opt$input, col_types = cols()) %>%
   rename(score = opt$variable) %>%
   left_join(lookup, by = "cwts_org_no") %>%
   filter(country_iso_alpha == "USA" & org_type_code == "U") %>%
-  left_join(regions)
+  left_join(regions, by = "region")
 
+print(opt$norgs)
 elite <- df %>%
-  top_n(20, score)  %>%
+  top_n(opt$norgs, score)  %>%
   mutate(type = "Elite")
 
 # Count th enumber of univeristies per region among elite univeristies
