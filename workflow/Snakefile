@@ -17,6 +17,8 @@ NETWORK_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Network')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 DESCRIPTIVE_FIG_DIR = osjoin(FIGURE_DIR, 'Descriptive')
 AXES_DATA_DIR = osjoin(ADDITIONAL_DATA_DIR, 'OrgAxes')
+SEMAXIS_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'SemAxis')
+SEMAXIS_FIG_DIR = osjoin(FIGURE_DIR, 'SemAxis')
 
 ############
 # Raw data #
@@ -64,8 +66,15 @@ PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{traj}', '{distance}', '{geo_constr
 ##############
 # Axes       #
 ##############
-COASTS_AXIS_ORGS = osjoin(AXES_DATA_DIR, 'coasts.csv')
-PRESTIGE_AXIS_ORGS = osjoin(AXES_DATA_DIR, '{ranking}_prestige.csv')
+COASTS_AXIS_ORGS = osjoin(AXES_DATA_DIR, 'coasts_axis_n{numorgs}.csv')
+PRESTIGE_AXIS_ORGS = osjoin(AXES_DATA_DIR, '{ranking}_axis_n{numorgs}.csv')
+
+# Projection data
+COASTS_AXIS_PROJECTIONS = osjoin(SEMAXIS_DATA_DIR, '{traj}', 'geography', 'coasts_d{dimensions}_ws{window}_n{numorgs}_semaxis.csv')
+PRESTIGE_AXIS_PROJECTIONS = osjoin(SEMAXIS_DATA_DIR, '{traj}', 'prestige', '{ranking}_d{dimensions}_ws{window}_n{numorgs}_{traj}_semaxis.csv')
+
+# Aggregate Ranking Tests
+PRESTIGE_AGGREGATE_RANK_COR = osjoin(SEMAXIS_DATA_DIR, 'prestige_aggregate_correlations.csv')
 
 ##################
 # Visualizations #
@@ -86,6 +95,11 @@ PROP_ORG_COUNTRY_MOBILITY = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_org_coun
 COUNTRY_MOBILITY_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_country_mobility_ecdf.pdf')
 COUNTRY_MOBILITY_DISTRIBUTION = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_country_mobility_distribution.pdf')
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
+SEMAXIS_1D_COASTS_PLOT = osjoin(SEMAXIS_FIG_DIR, 'coasts', '{traj}', 'd{dimensions}', 'coasts_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
+SEMAXIS_1D_PRESTIGE_PLOT = osjoin(SEMAXIS_FIG_DIR, 'prestige', '{traj}', 'd{dimensions}', '{ranking}_rank_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
+SEMAXIS_2D_COASTS_PRESTIGE_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'coasts_{ranking}_rank_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
+RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, 'prestige_rank_correlation.pdf')
+
 
 ##################
 # Metadata files #
@@ -98,7 +112,7 @@ ORG_LOOKUP_WITH_STATES = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_with_st
 COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 TRAJ_PRECEDENCE = osjoin(ADDITIONAL_DATA_DIR, 'traj_precedence_rules.txt')
 ORG_RANKINGS = osjoin(ADDITIONAL_DATA_DIR, '{ranking}_ranking.csv')
-
+ORG_SHORT_LABELS = osjoin(ADDITIONAL_DATA_DIR, 'org_shortlabels.csv')
 
 ##############
 # Parameters #
@@ -106,10 +120,12 @@ ORG_RANKINGS = osjoin(ADDITIONAL_DATA_DIR, '{ranking}_ranking.csv')
 ALL_YEARS = range(2008, 2019, 1)
 FIG_EXTS = ['pdf', 'html']
 
-TRAJECTORIES = ['raw', 'precedence']
+TRAJECTORIES = ['precedence']
 
 # RANKINGS
 RANKINGS = ['times', 'leiden']
+NUMORGS = list(range(5, 61, 5))
+NUMORGS.insert(0, 1)
 
 # WORD2VEC parameters
 W2V_DIMENSIONS = [100, 200, 300]
@@ -203,8 +219,44 @@ rule all:
         expand(COUNTRY_MOBILITY_ECDF, traj = TRAJECTORIES),
         expand(COUNTRY_MOBILITY_DISTRIBUTION, traj = TRAJECTORIES),
         HYPERPARAMETER_PERFORMANCE,
-        expand(PRESTIGE_AXIS_ORGS, ranking = RANKINGS)
-
+        expand(PRESTIGE_AXIS_ORGS,
+               ranking = RANKINGS,
+               numorgs = NUMORGS),
+        expand(COASTS_AXIS_ORGS, numorgs = 20),
+        expand(COASTS_AXIS_PROJECTIONS,
+               traj = TRAJECTORIES,
+               numorgs = 20,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(PRESTIGE_AXIS_PROJECTIONS,
+               ranking = RANKINGS,
+               numorgs = NUMORGS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(SEMAXIS_1D_COASTS_PLOT,
+               traj = TRAJECTORIES,
+               numorgs = 20,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(SEMAXIS_1D_PRESTIGE_PLOT,
+               ranking = RANKINGS,
+               numorgs = 20,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(SEMAXIS_2D_COASTS_PRESTIGE_PLOT,
+               ranking = RANKINGS,
+               numorgs = 20,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(PRESTIGE_AGGREGATE_RANK_COR,
+               ranking = RANKINGS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        RANK_CORRELATION_PLOT
 
 rule fix_org_coordinates:
     input: ORG_LOOKUP
@@ -416,11 +468,95 @@ rule generate_prestige_axis_org_codes:
     run:
         if "times" in {wildcards.ranking}:
             shell("Rscript scripts/GeneratePrestigeAxisOrgCodes.R --input {input} --output {output} \
-                   --variable total_score --regions {params.regions} --lookup {params.lookup}")
+                   --variable total_score --regions {params.regions} --lookup {params.lookup} \
+                   --norgs {wildcards.numorgs}")
         else:
-            print("Using Leiden Ranking")
             shell("Rscript scripts/GeneratePrestigeAxisOrgCodes.R --input {input} --output {output} \
-                   --variable impact_frac_mncs --regions {params.regions} --lookup {params.lookup}")
+                   --variable impact_frac_mncs --regions {params.regions} --lookup {params.lookup} \
+                   --norgs {wildcards.numorgs}")
+
+rule generate_usa_coasts_axis_org_codes:
+    input: rules.add_state_to_lookup.output,
+    output: COASTS_AXIS_ORGS
+    shell:
+        "Rscript scripts/GenerateGeographicAxisOrgCodes.R --input {input} \
+        --scale region --place1 California --place2 Massachusetts \
+        --norgs {wildcards.numorgs} --output {output}"
+
+rule calculate_semaxis_prestige_projections:
+    input:
+        w2v = rules.train_word2vec_model.output,
+        axis = rules.generate_prestige_axis_org_codes.output
+    output: PRESTIGE_AXIS_PROJECTIONS
+    shell:
+        "python scripts/calculate_SemAxis_projections.py --input {input.w2v} \
+        --axis {input.axis} --output {output}"
+
+rule calculate_semaxis_geography_projections:
+    input:
+        w2v = rules.train_word2vec_model.output,
+        axis = rules.generate_usa_coasts_axis_org_codes.output
+    output: COASTS_AXIS_PROJECTIONS
+    shell:
+        "python scripts/calculate_SemAxis_projections.py --input {input.w2v} \
+        --axis {input.axis} --output {output}"
+
+rule generate_aggregate_prestige_rank_correlations:
+    input:
+        axes = [expand(rules.calculate_semaxis_prestige_projections.output,
+                       traj = TRAJECTORIES,
+                       dimensions = W2V_DIMENSIONS,
+                       window = W2V_WINDOW_SIZE,
+                       ranking = RANKINGS,
+                       numorgs = NUMORGS)],
+        lookup = ancient(rules.add_state_to_lookup.output)
+    params:
+        country = "USA",
+        times = ORG_RANKINGS.format(ranking = "times"),
+        leiden = ORG_RANKINGS.format(ranking = "leiden"),
+    output: PRESTIGE_AGGREGATE_RANK_COR
+    shell:
+        "Rscript scripts/GetAggregatePrestigeAxisTests.R \
+        {input.lookup} \'{params.country}\' {params.times} {params.leiden} \
+        {input.axes} {output}"
+
+## Plot semaxis
+rule plot_1d_coasts_semaxis_projection:
+    input:
+        axis = rules.calculate_semaxis_geography_projections.output,
+        lookup = rules.add_state_to_lookup.output
+    output: SEMAXIS_1D_COASTS_PLOT
+    shell:
+        "Rscript scripts/Plot1DSemAxis.R --input {input.axis} --lookup {input.lookup} \
+        --output {output} --country USA \
+        --endlow California --endhigh Massachusetts \
+        --place1 Arizona --place1code AZ --place2 Connecticut --place2code CT"
+
+rule plot_1d_prestige_semaxis_projection:
+    input:
+        axis = rules.calculate_semaxis_prestige_projections.output,
+        lookup = rules.add_state_to_lookup.output
+    output: SEMAXIS_1D_PRESTIGE_PLOT
+    shell:
+        "Rscript scripts/Plot1DSemAxis.R --input {input.axis} --lookup {input.lookup} \
+        --output {output} --country USA \
+        --endlow Non-elite --endhigh Elite \
+        --place1 Indiana --place1code IN --place2 Maryland --place2code MD"
+
+rule plot_2d_semaxis_projection:
+    input:
+        axis1 = rules.calculate_semaxis_geography_projections.output,
+        axis2 = rules.calculate_semaxis_prestige_projections.output,
+        lookup = rules.add_state_to_lookup.output
+    params:
+        labels = ORG_SHORT_LABELS
+    output: SEMAXIS_2D_COASTS_PRESTIGE_PLOT
+    shell:
+        "Rscript scripts/Plot2DSemAxis.R --axis1 {input.axis1} --axis2 {input.axis2} \
+        --output {output} \
+        --lookup {input.lookup} --labels {params.labels} --country USA \
+        --endleft California --endright Massachusetts \
+        --endbot Non-elite --endtop Elite"
 
 ## Descriptive plots
 rule plot_pubs_over_time:
@@ -518,3 +654,11 @@ rule plot_hyperparameter_performance:
     output: HYPERPARAMETER_PERFORMANCE
     shell:
         "Rscript scripts/PlotHyperparameterPerformance.R --input {input} --output {output}"
+
+rule plot_rank_correlation:
+    input:
+        rules.generate_aggregate_prestige_rank_correlations.output
+    output: RANK_CORRELATION_PLOT
+    shell:
+        "Rscript scripts/PlotPrestigeRankCorrelation.R --input {input} \
+        --dim 300 --ws 1 --output {output}"
