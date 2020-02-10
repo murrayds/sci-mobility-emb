@@ -9,14 +9,14 @@ ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 RAW_DIR = osjoin(DATA_DIR, 'raw')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
 UMAP_COORD_DIR = osjoin(DERIVED_DATA_DIR, 'Visualzation_coordinates')
-EMBEDDINGS_DIR = osjoin(PROJ_HOME, 'Archive','Embeddings_20191209','word2vec')
+EMBEDDINGS_ARCHIVE_DIR = osjoin(PROJ_HOME, 'Archive','Embeddings_20191209','word2vec')
 VIZ_FIGURE_DIR = osjoin(FIGURE_DIR, 'Visualzation')
 
 # Assets
 FONT_DIR = osjoin(ASSET_DIR, 'Helvetica.ttf')
 
 # Meta_info_files 
-EMBEDDING_FILE_DIR = osjoin(EMBEDDINGS_DIR, "2008-2019_word2vec_d200_ws2_model.bin")
+EMBEDDINGS_ARCHIVE_FILE_DIR = osjoin(EMBEDDINGS_ARCHIVE_DIR, "2008-2019_word2vec_d200_ws2_model.bin")
 INST_LOOK_UP_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "institution_lookup_with_states.txt")
 ISO_TO_CONTI_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "iso_to_country.txt")
 SIMPLIFIED_ORG_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "org_types.csv")
@@ -114,7 +114,7 @@ rule draw_global_figure:
 
 rule get_umap_coords:
     input:
-        EMBEDDING_FILE_DIR,
+        EMBEDDINGS_ARCHIVE_FILE_DIR,
         INST_LOOK_UP_FILE_DIR,
     output:
         COORDS_FILES
