@@ -99,3 +99,11 @@ rule plot_2d_semaxis_projection:
         --lookup {input.lookup} --labels {params.labels} --country USA \
         --endleft California --endright Massachusetts \
         --endbot Non-elite --endtop Elite"
+
+rule plot_rank_correlation:
+    input:
+        rules.generate_aggregate_prestige_rank_correlations.output
+    output: RANK_CORRELATION_PLOT
+    shell:
+        "Rscript scripts/PlotPrestigeRankCorrelation.R --input {input} \
+        --dim 300 --ws 1 --output {output}"
