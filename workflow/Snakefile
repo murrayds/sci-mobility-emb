@@ -1,6 +1,20 @@
+###############################################################################
+# Snakefile
+#
+# Author: dakota.s.murray@gmail.com
+#
+# Run with the Snakemake workflow automation tool
+###############################################################################
+
+###############################################################################
+# Imports
+###############################################################################
 from os.path import join as osjoin
 import pandas as pd
 
+###############################################################################
+# Folders
+###############################################################################
 # store the local path to the dropbox folder in the 'PROJ_HOME_DIR' file.
 PROJ_HOME = open('PROJ_HOME_DIR').read().strip()
 DATA_DIR = osjoin(PROJ_HOME, 'Data')
@@ -19,6 +33,10 @@ DESCRIPTIVE_FIG_DIR = osjoin(FIGURE_DIR, 'Descriptive')
 AXES_DATA_DIR = osjoin(ADDITIONAL_DATA_DIR, 'OrgAxes')
 SEMAXIS_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'SemAxis')
 SEMAXIS_FIG_DIR = osjoin(FIGURE_DIR, 'SemAxis')
+
+###############################################################################
+# Data Files
+###############################################################################
 
 ############
 # Raw data #
@@ -64,7 +82,7 @@ AGGREGATE_R2 = osjoin(STAT_DATA_DIR, 'aggregate_r2.csv')
 PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{traj}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.csv')
 
 ##############
-# Axes       #
+# SemAxis    #
 ##############
 COASTS_AXIS_ORGS = osjoin(AXES_DATA_DIR, 'coasts_axis_n{numorgs}.csv')
 PRESTIGE_AXIS_ORGS = osjoin(AXES_DATA_DIR, '{ranking}_axis_n{numorgs}.csv')
@@ -77,8 +95,22 @@ PRESTIGE_AXIS_PROJECTIONS = osjoin(SEMAXIS_DATA_DIR, '{traj}', 'prestige', '{ran
 PRESTIGE_AGGREGATE_RANK_COR = osjoin(SEMAXIS_DATA_DIR, 'prestige_aggregate_correlations.csv')
 
 ##################
-# Visualizations #
+# Metadata files #
 ##################
+ORG_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'org_to_scales.txt')
+ORG_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, '20191024_institution_lookup.txt')
+ORG_FIXED_COORDINATES = osjoin(ADDITIONAL_DATA_DIR, 'fixed_org_coordinates.txt')
+ORG_LOOKUP_FIXED = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_fixed.txt')
+ORG_LOOKUP_WITH_STATES = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_with_states.txt')
+COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
+TRAJ_PRECEDENCE = osjoin(ADDITIONAL_DATA_DIR, 'traj_precedence_rules.txt')
+ORG_RANKINGS = osjoin(ADDITIONAL_DATA_DIR, '{ranking}_ranking.csv')
+ORG_SHORT_LABELS = osjoin(ADDITIONAL_DATA_DIR, 'org_shortlabels.csv')
+ORG_PPR_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_euclidian_distance.csv')
+
+###############################################################################
+# Visualization files
+###############################################################################
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dimensions}', 'data', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_data.csv')
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dimensions}', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', '{traj}', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
@@ -100,24 +132,9 @@ SEMAXIS_1D_PRESTIGE_PLOT = osjoin(SEMAXIS_FIG_DIR, 'prestige', '{traj}', 'd{dime
 SEMAXIS_2D_COASTS_PRESTIGE_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'coasts_{ranking}_rank_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, 'prestige_rank_correlation.pdf')
 
-
-##################
-# Metadata files #
-##################
-ORG_SCALES = osjoin(ADDITIONAL_DATA_DIR, 'org_to_scales.txt')
-ORG_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, '20191024_institution_lookup.txt')
-ORG_FIXED_COORDINATES = osjoin(ADDITIONAL_DATA_DIR, 'fixed_org_coordinates.txt')
-ORG_LOOKUP_FIXED = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_fixed.txt')
-ORG_LOOKUP_WITH_STATES = osjoin(ADDITIONAL_DATA_DIR, 'institution_lookup_with_states.txt')
-COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
-TRAJ_PRECEDENCE = osjoin(ADDITIONAL_DATA_DIR, 'traj_precedence_rules.txt')
-ORG_RANKINGS = osjoin(ADDITIONAL_DATA_DIR, '{ranking}_ranking.csv')
-ORG_SHORT_LABELS = osjoin(ADDITIONAL_DATA_DIR, 'org_shortlabels.csv')
-ORG_PPR_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_euclidian_distance.csv')
-
-##############
-# Parameters #
-##############
+###############################################################################
+# Parameters
+###############################################################################
 ALL_YEARS = range(2008, 2019, 1)
 FIG_EXTS = ['pdf', 'html']
 
