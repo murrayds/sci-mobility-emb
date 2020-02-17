@@ -1,3 +1,14 @@
+################################################################################
+# Snakefile_DataProcessing.smk
+#
+# Contains rules relating to calculation, aggregation, and general processing
+# of data relating to the science mobility project.
+#
+################################################################################
+
+###############################################################################
+# ORG LOOKUP FILE
+###############################################################################
 rule fix_org_coordinates:
     input: ORG_LOOKUP
     params: fixed = ORG_FIXED_COORDINATES
@@ -20,6 +31,9 @@ rule add_state_to_lookup:
         "Rscript scripts/AddStatesToLookup.R --lookup {input.coords} --output {output} \
                  --states {input.states}"
 
+###############################################################################
+# MOBILITY TRAJECTORY FILES
+###############################################################################
 rule filter_to_mobile:
     input: MOBILITY_RAW
     output: MOBILE_RESEARCHERS
@@ -51,25 +65,6 @@ rule format_trajectories:
         "Rscript scripts/FormatMobilityTrajectories.R --input {input.trajectories} \
         --output {output} --precedence {input.precedence} --traj {wildcards.traj}"
 
-rule get_researcher_metadata:
-    input: raw = rules.format_trajectories.output,
-           nonmobile = rules.filter_to_nonmobile.output,
-           lookup = ancient(rules.add_state_to_lookup.output)
-    output: RESEARCHER_META
-    shell:
-        "Rscript scripts/GetResearcherMetadata.R --input {input.raw} \
-                --nonmobile {input.nonmobile} --lookup {input.lookup} --output {output}"
-
-rule get_org_metadata:
-    input:
-        raw = rules.format_trajectories.output,
-        researchers = ancient(rules.get_researcher_metadata.output),
-        lookup = ancient(rules.add_state_to_lookup.output)
-    output: ORG_META
-    shell:
-        "Rscript scripts/GetOrgMetadata.R --input {input.raw} --lookup {input.lookup} \
-                --researchers {input.researchers} --output {output}"
-
 rule dissagregate_pubs_to_yearly:
     input: rules.format_trajectories.output
     output: MOBILITY_TRAJECTORIES_YEARLY
@@ -81,6 +76,9 @@ rule pubs_to_sentences:
     shell:
         "Rscript scripts/FormatPubsToSentences.R {input} org {output}"
 
+###############################################################################
+# WORD2VEC
+###############################################################################
 rule train_word2vec_model:
     input: [expand(MOBILITY_SENTENCES, traj = TRAJECTORIES, year = ALL_YEARS)]
     output: WORD2VEC_EMBEDDINGS
@@ -94,6 +92,31 @@ rule train_word2vec_model:
                 --dimensions {wildcards.dimensions} --window {wildcards.window} \
                 --minfrequency {params.wf} --numworkers {params.nw} \
                 --iterations {params.niter} --output {output}"
+
+###############################################################################
+# RESEARCHER METADATA
+###############################################################################
+rule get_researcher_metadata:
+    input: raw = rules.format_trajectories.output,
+           nonmobile = rules.filter_to_nonmobile.output,
+           lookup = ancient(rules.add_state_to_lookup.output)
+    output: RESEARCHER_META
+    shell:
+        "Rscript scripts/GetResearcherMetadata.R --input {input.raw} \
+                --nonmobile {input.nonmobile} --lookup {input.lookup} --output {output}"
+
+###############################################################################
+# ORG METADATA
+###############################################################################
+rule get_org_metadata:
+    input:
+        raw = rules.format_trajectories.output,
+        researchers = ancient(rules.get_researcher_metadata.output),
+        lookup = ancient(rules.add_state_to_lookup.output)
+    output: ORG_META
+    shell:
+        "Rscript scripts/GetOrgMetadata.R --input {input.raw} --lookup {input.lookup} \
+                --researchers {input.researchers} --output {output}"
 
 rule calculate_org_flows:
     input: rules.format_trajectories.output
@@ -113,6 +136,12 @@ rule calculate_org_w2v_similarities:
     shell:
         "python scripts/calculate_org_w2v_similarity.py --model {input} --output {output}"
 
+
+
+
+###############################################################################
+# AGGREGATE DISTANCES
+###############################################################################
 rule build_aggregate_org_distances:
     input: flows = rules.calculate_org_flows.output,
            geo = ancient(rules.calculate_org_geographic_distance.output),
@@ -130,15 +159,3 @@ rule build_aggregate_org_distances:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
                  --ppr {input.ppr} --orgs {input.orgs} --out {output}"
-
-rule get_aggregate_gravity_r2:
-    input:
-        [expand(rules.build_aggregate_org_distances.output,
-                traj = TRAJECTORIES,
-                dimensions = W2V_DIMENSIONS,
-                window = W2V_WINDOW_SIZE)]
-    threads: 4
-    output: AGGREGATE_R2
-    shell:
-        # using default argument parsing here
-        "Rscript scripts/GetAggregateGravityR2.R {input} {output}"

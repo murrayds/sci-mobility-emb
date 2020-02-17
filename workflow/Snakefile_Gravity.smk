@@ -35,6 +35,18 @@ rule plot_gradient_legend:
     shell:
         "Rscript scripts/PlotGradientLegend.R --output {output}"
 
+rule get_aggregate_gravity_r2:
+    input:
+        [expand(rules.build_aggregate_org_distances.output,
+                traj = TRAJECTORIES,
+                dimensions = W2V_DIMENSIONS,
+                window = W2V_WINDOW_SIZE)]
+    threads: 4
+    output: AGGREGATE_R2
+    shell:
+        # using default argument parsing here
+        "Rscript scripts/GetAggregateGravityR2.R {input} {output}"
+        
 rule plot_hyperparameter_performance:
     input:
         rules.get_aggregate_gravity_r2.output
