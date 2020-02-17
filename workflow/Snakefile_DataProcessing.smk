@@ -94,3 +94,51 @@ rule train_word2vec_model:
                 --dimensions {wildcards.dimensions} --window {wildcards.window} \
                 --minfrequency {params.wf} --numworkers {params.nw} \
                 --iterations {params.niter} --output {output}"
+
+rule calculate_org_flows:
+    input: rules.format_trajectories.output
+    output: ORGANIZATION_FLOWS
+    shell:
+        "python scripts/calculate_org_flows.py --input {input} --output {output}"
+
+rule calculate_org_geographic_distance:
+    input: ancient(rules.add_state_to_lookup.output)
+    output: ORG_GEO_DISTANCE
+    shell:
+        "python scripts/calculate_org_geo_distance.py --input {input} --output {output}"
+
+rule calculate_org_w2v_similarities:
+    input: rules.train_word2vec_model.output
+    output: ORG_W2V_SIMILARITIES
+    shell:
+        "python scripts/calculate_org_w2v_similarity.py --model {input} --output {output}"
+
+rule build_aggregate_org_distances:
+    input: flows = rules.calculate_org_flows.output,
+           geo = ancient(rules.calculate_org_geographic_distance.output),
+           emb = ancient(rules.calculate_org_w2v_similarities.output),
+           orgs = ancient(rules.add_state_to_lookup.output),
+           ppr = ancient(ORG_PPR_DISTANCE)
+    params:
+        sizes = ORG_SIZES,
+    # This can eat up a lot of memory which is a problem when running paralell.
+    # Set a maximum, say 2.5-gb
+    resources:
+        mem_mb = 3000
+    output: AGGREGATE_ORG_DISTANCES
+    shell:
+        "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
+                 --flows {input.flows} --geo {input.geo} --emb {input.emb} \
+                 --ppr {input.ppr} --orgs {input.orgs} --out {output}"
+
+rule get_aggregate_gravity_r2:
+    input:
+        [expand(rules.build_aggregate_org_distances.output,
+                traj = TRAJECTORIES,
+                dimensions = W2V_DIMENSIONS,
+                window = W2V_WINDOW_SIZE)]
+    threads: 4
+    output: AGGREGATE_R2
+    shell:
+        # using default argument parsing here
+        "Rscript scripts/GetAggregateGravityR2.R {input} {output}"
