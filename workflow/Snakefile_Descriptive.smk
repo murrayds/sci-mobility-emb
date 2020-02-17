@@ -1,4 +1,13 @@
-## Descriptive plots
+################################################################################
+# Snakefile_Descriptive.smk
+#
+# Contains rules relating to plotting descriptive statistics from our data
+#
+################################################################################
+
+###############################################################################
+# PUBLICATIONS OVER TIME
+###############################################################################
 rule plot_pubs_over_time:
     input:
         flows = rules.format_trajectories.output,
@@ -33,6 +42,9 @@ rule plot_prop_over_time_by_discipline:
         "Rscript scripts/PlotPropOverTimeByDiscipline.R --input {input} \
                  --output {output}"
 
+###############################################################################
+# MOBILITY AND AFFILIATIONS
+###############################################################################
 rule plot_num_affiliations_ecdf:
     input: ancient(rules.get_researcher_metadata.output)
     output: NUM_AFFILIATIONS_ECDF
