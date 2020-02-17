@@ -181,7 +181,7 @@ include: 'Snakefile_SemAxis.smk'
 include: 'Snakefile_UMAP.smk'
 
 # Rules relating to Descriptive statsitics of the data
-include: 'Snakefile_UMAP.smk'
+include: 'Snakefile_Descriptive.smk'
 
 # Rules relating to gravity law, predictions, etc.
 include: 'Snakefile_Gravity.smk'
