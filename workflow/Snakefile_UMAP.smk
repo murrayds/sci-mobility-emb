@@ -1,3 +1,14 @@
+################################################################################
+# Snakefile_UMAP.smk
+#
+# Contains rules relating to creating and visualizing UMAP projections of
+# the embedding space
+#
+################################################################################
+
+###############################################################################
+# PROJECTION
+###############################################################################
 rule dimreduce_umap:
     input: model = rules.train_word2vec_model.output,
            lookup = ancient(rules.add_state_to_lookup.output)
@@ -8,6 +19,9 @@ rule dimreduce_umap:
                 --mindistance 0.1 --country {wildcards.country} \
                 --lookup {input.lookup} --output {output}'
 
+###############################################################################
+# VISUALIZATION
+###############################################################################
 rule plot_umap_org:
     input: rules.dimreduce_umap.output
     params:
