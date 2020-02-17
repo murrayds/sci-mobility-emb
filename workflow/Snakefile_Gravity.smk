@@ -1,5 +1,5 @@
 ################################################################################
-# Snakefile_Descriptive.smk
+# Snakefile_Gravity.smk
 #
 # Contains rules relating to relating proximities to the gravity law, in terms
 # of explaining total flux or making predictions.

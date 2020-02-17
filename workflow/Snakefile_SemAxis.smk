@@ -1,4 +1,15 @@
-## Misc data
+################################################################################
+# Snakefile_SemAxis.smk
+#
+# Contains rules relating to generating data and plotting "SemAxis" results
+# from our embedding space, i.e., defining axes of meaningful poles and
+# projecting organizations onto it.
+#
+################################################################################
+
+###############################################################################
+# IDENTIFY ORGS AT POLES OF AXES
+###############################################################################
 rule generate_prestige_axis_org_codes:
     input: ORG_RANKINGS,
     output: PRESTIGE_AXIS_ORGS
@@ -23,8 +34,9 @@ rule generate_usa_coasts_axis_org_codes:
         --scale region --place1 California --place2 Massachusetts \
         --norgs {wildcards.numorgs} --output {output}"
 
-
-
+###############################################################################
+# PROJECT ONTO AXES
+###############################################################################
 rule calculate_semaxis_prestige_projections:
     input:
         w2v = rules.train_word2vec_model.output,
@@ -43,6 +55,9 @@ rule calculate_semaxis_geography_projections:
         "python scripts/calculate_SemAxis_projections.py --input {input.w2v} \
         --axis {input.axis} --output {output}"
 
+###############################################################################
+# PRESIGE CORRELATIONS WITH REAL RANKINGS
+###############################################################################
 rule generate_aggregate_prestige_rank_correlations:
     input:
         axes = [expand(rules.calculate_semaxis_prestige_projections.output,
@@ -62,7 +77,17 @@ rule generate_aggregate_prestige_rank_correlations:
         {input.lookup} \'{params.country}\' {params.times} {params.leiden} \
         {input.axes} {output}"
 
-## Plot semaxis
+rule plot_rank_correlation:
+    input:
+        rules.generate_aggregate_prestige_rank_correlations.output
+    output: RANK_CORRELATION_PLOT
+    shell:
+        "Rscript scripts/PlotPrestigeRankCorrelation.R --input {input} \
+        --dim 300 --ws 1 --output {output}"
+
+###############################################################################
+# SEMAXIS PLOTS
+###############################################################################
 rule plot_1d_coasts_semaxis_projection:
     input:
         axis = rules.calculate_semaxis_geography_projections.output,
@@ -99,11 +124,3 @@ rule plot_2d_semaxis_projection:
         --lookup {input.lookup} --labels {params.labels} --country USA \
         --endleft California --endright Massachusetts \
         --endbot Non-elite --endtop Elite"
-
-rule plot_rank_correlation:
-    input:
-        rules.generate_aggregate_prestige_rank_correlations.output
-    output: RANK_CORRELATION_PLOT
-    shell:
-        "Rscript scripts/PlotPrestigeRankCorrelation.R --input {input} \
-        --dim 300 --ws 1 --output {output}"
