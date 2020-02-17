@@ -154,11 +154,14 @@ GEO_CONSTRAINTS_FILT = ['same-country',
 # Includes
 ###############################################################################
 
-# Rules relating to producing SemAxis results
+# Rules relating to general data processing
 include: 'Snakefile_DataProcessing.smk'
 
 # Rules relating to producing SemAxis results
 include: 'Snakefile_SemAxis.smk'
+
+# Rules relating to UMAP projections
+include: 'Snakefile_UMAP.smk'
 
 ###############################################################################
 # TARGET RULE
@@ -269,25 +272,6 @@ rule all:
                window = W2V_WINDOW_SIZE),
         RANK_CORRELATION_PLOT
 
-rule dimreduce_umap:
-    input: model = rules.train_word2vec_model.output,
-           lookup = ancient(rules.add_state_to_lookup.output)
-    output: UMAP_DATA
-    shell:
-        'python scripts/dimreduce_with_umap.py --model {input.model} \
-                --metric {wildcards.metric} --neighbors {wildcards.neighbors} \
-                --mindistance 0.1 --country {wildcards.country} \
-                --lookup {input.lookup} --output {output}'
-
-rule plot_umap_org:
-    input: rules.dimreduce_umap.output
-    params:
-        orgs = ancient(rules.add_state_to_lookup.output),
-        countries = COUNTRY_LOOKUP
-    output: UMAP_VISUALIZATIONS_ORG
-    shell:
-        "Rscript scripts/PlotOrgDimReducedEmbedding.R {input} {params.orgs} \
-        {params.countries} {output}"
 
 rule calculate_org_flows:
     input: rules.format_trajectories.output
