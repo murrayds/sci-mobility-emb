@@ -166,30 +166,15 @@ include: 'Snakefile_UMAP.smk'
 # Rules relating to Descriptive statsitics of the data
 include: 'Snakefile_UMAP.smk'
 
+# Rules relating to gravity law, predictions, etc.
+include: 'Snakefile_Gravity.smk'
+
 ###############################################################################
 # TARGET RULE
 ###############################################################################
 rule all:
     input:
-        expand(WORD2VEC_EMBEDDINGS,
-               traj = TRAJECTORIES,
-               dimensions = W2V_DIMENSIONS,
-               window = W2V_WINDOW_SIZE),
-        expand(ORG_W2V_SIMILARITIES,
-               traj = TRAJECTORIES,
-               dimensions = W2V_DIMENSIONS,
-               window = W2V_WINDOW_SIZE),
-        expand(AGGREGATE_ORG_DISTANCES,
-               traj = TRAJECTORIES,
-               dimensions = W2V_DIMENSIONS,
-               window = W2V_WINDOW_SIZE),
-        expand(UMAP_DATA,
-               traj = TRAJECTORIES,
-               dimensions = W2V_DIMENSIONS,
-               window = W2V_WINDOW_SIZE,
-               metric = UMAP_METRICS,
-               neighbors = UMAP_NEIGHBORS,
-               country = COUNTRIES),
+        # UMAP projections
         expand(UMAP_VISUALIZATIONS_ORG,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
@@ -198,6 +183,8 @@ rule all:
                window = W2V_WINDOW_SIZE,
                country = 'all',
                ext = FIG_EXTS),
+
+        # Gravity Law Plots
         expand(GRAVITY_RELATIONSHIP_PLOT,
                traj = TRAJECTORIES,
                to_filter = TO_FILTER,
@@ -205,12 +192,6 @@ rule all:
                geo_constraint = GEO_CONSTRAINTS,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
-        expand(PREDICTED_VS_ACTUAL,
-                traj = TRAJECTORIES,
-                distance = DISTANCE_PARAMS,
-                dimensions = W2V_DIMENSIONS,
-                geo_constraint = GEO_CONSTRAINTS,
-                window = W2V_WINDOW_SIZE),
         expand(PREDICTED_VS_ACTUAL_PLOT,
                traj = TRAJECTORIES,
                distance = DISTANCE_PARAMS,
@@ -225,6 +206,7 @@ rule all:
                geo_constraint_filt = GEO_CONSTRAINTS_FILT,
                window = W2V_WINDOW_SIZE),
         GRADIENT_LEGEND,
+
         # Descriptive Plots
         expand(PUBS_OVER_TIME_PLOT, traj = TRAJECTORIES),
         expand(PROP_OVER_TIME_PLOT, traj = TRAJECTORIES),
@@ -236,21 +218,8 @@ rule all:
         expand(COUNTRY_MOBILITY_ECDF, traj = TRAJECTORIES),
         expand(COUNTRY_MOBILITY_DISTRIBUTION, traj = TRAJECTORIES),
         HYPERPARAMETER_PERFORMANCE,
-        expand(PRESTIGE_AXIS_ORGS,
-               ranking = RANKINGS,
-               numorgs = NUMORGS),
-        expand(COASTS_AXIS_ORGS, numorgs = 20),
-        expand(COASTS_AXIS_PROJECTIONS,
-               traj = TRAJECTORIES,
-               numorgs = 20,
-               dimensions = W2V_DIMENSIONS,
-               window = W2V_WINDOW_SIZE),
-        expand(PRESTIGE_AXIS_PROJECTIONS,
-               ranking = RANKINGS,
-               numorgs = NUMORGS,
-               traj = TRAJECTORIES,
-               dimensions = W2V_DIMENSIONS,
-               window = W2V_WINDOW_SIZE),
+
+        # SemAxis plots
         expand(SEMAXIS_1D_COASTS_PLOT,
                traj = TRAJECTORIES,
                numorgs = 20,
