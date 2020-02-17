@@ -30,7 +30,7 @@ agg <- readr::read_csv(opt$input, col_types = readr::cols()) %>%
   select(org1_size, org2_size,
          org1_country, org2_country,
          count, gravity,
-         geo_distance, ppr_distance, emb_similarity) %>%
+         geo_distance, ppr_distance, emb_distance) %>%
   rename(actual = count)
 
 # If the geographic constraint (--geo) is set, then filter the
@@ -58,16 +58,16 @@ if (opt$distance == "geo") {
     )
 
 } else if (opt$distance == "emb") {
-  fit <- summary(lm(log(gravity) ~ emb_similarity, data = agg))
+  fit <- summary(lm(log(gravity) ~ emb_distance, data = agg))
 
   # Save the coefficients for use later
   intercept <- fit$coefficients["(Intercept)", "Estimate"]
-  emb_coef <- fit$coefficients["emb_similarity", "Estimate"]
+  emb_coef <- fit$coefficients["emb_distance", "Estimate"]
 
   agg <- agg %>%
     mutate(
       # Calculate the expected value using the embedding similarity formula
-      expected = org1_size * org2_size * exp((emb_coef * emb_similarity) + intercept)
+      expected = org1_size * org2_size * exp((emb_coef * emb_distance) + intercept)
     )
 } else if (opt$distance == "ppr") {
   fit <- summary(lm(log(gravity) ~ ppr_distance, data = agg))
@@ -84,7 +84,7 @@ if (opt$distance == "geo") {
 }
 
 agg <- agg %>%
-  select(-c(org1_size, org2_size, gravity, geo_distance, emb_similarity))
+  select(-c(org1_size, org2_size, gravity, geo_distance, emb_distance))
 
 # Write the output
 readr::write_csv(agg, path = opt$output)

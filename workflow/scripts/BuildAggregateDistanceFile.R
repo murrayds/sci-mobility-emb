@@ -120,6 +120,7 @@ emb2 <- distance_all %>%
 distance_all <- data.table::rbindlist(list(emb1, emb2)) %>%
   rename(emb_similarity = similarity) %>%
   mutate(
+    emb_distance = 1 - emb_similarity,
     gravity = count / (org1_size * org2_size),
     # Threshold distances to be, at minimum, 1km
   ) %>%
@@ -167,7 +168,7 @@ distance_all <- distance_all %>%
   # Select only relevant variables
   select(org1, org2, count,
          org1_size, org2_size,
-         geo_distance, emb_similarity, ppr_distance, gravity,
+         geo_distance, emb_similarity, emb_distance, ppr_distance, gravity,
          org1_city, org1_region, org1_country,
          org2_city, org2_region, org2_country
          )

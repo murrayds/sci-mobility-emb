@@ -195,13 +195,10 @@ if (opt$showcoef) {
   plot <- plot +
     # Add the r-squared coefficient to the plot
     ggpmisc::stat_poly_eq(formula = y ~ x,
+                          geom = "text",
                           aes(label = paste(..rr.label.., sep = "~~~")),
                           parse=TRUE,
-                          coef.digits = 2,
-                          label.x = "left",
-                          # The data is shaped differently, so move the metric
-                          # accordingly based on where it falls
-                          #label.y = ifelse(opt$distance == "emb", "top", "bottom"),
+                          rr.digits = 2,
                           size = 7
     )
 }
