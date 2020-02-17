@@ -151,6 +151,16 @@ GEO_CONSTRAINTS_FILT = ['same-country',
                         'different-country']
 
 ###############################################################################
+# Includes
+###############################################################################
+
+# Rules relating to producing SemAxis results
+include: 'Snakefile_DataProcessing.smk'
+
+# Rules relating to producing SemAxis results
+include: 'Snakefile_SemAxis.smk'
+
+###############################################################################
 # TARGET RULE
 ###############################################################################
 rule all:
@@ -259,103 +269,6 @@ rule all:
                window = W2V_WINDOW_SIZE),
         RANK_CORRELATION_PLOT
 
-rule fix_org_coordinates:
-    input: ORG_LOOKUP
-    params: fixed = ORG_FIXED_COORDINATES
-    output: ORG_LOOKUP_FIXED
-    shell:
-        "Rscript scripts/FixOrgCoordinates.R --lookup {input} \
-        --coordinates {params.fixed} --output {output}"
-
-rule lookup_state_from_coords:
-    input: ancient(rules.fix_org_coordinates.output)
-    output: ORG_STATE_NAMES
-    shell:
-        "python scripts/lookup_state_from_coords.py --input {input} --sleep 1.1 --output {output}"
-
-rule add_state_to_lookup:
-    input: coords = rules.fix_org_coordinates.output,
-           states = ancient(rules.lookup_state_from_coords.output)
-    output: ORG_LOOKUP_WITH_STATES
-    shell:
-        "Rscript scripts/AddStatesToLookup.R --lookup {input.coords} --output {output} \
-                 --states {input.states}"
-
-rule filter_to_mobile:
-    input: MOBILITY_RAW
-    output: MOBILE_RESEARCHERS
-    shell:
-        "Rscript scripts/FilterRawByMobilityStatus.R --input {input} \
-        --output {output} --mobile"
-
-rule filter_to_nonmobile:
-    input: MOBILITY_RAW
-    output: NONMOBILE_RESEARCHERS
-    shell:
-        "Rscript scripts/FilterRawByMobilityStatus.R --input {input} \
-         --output {output} --nonmobile"
-
-rule calculate_traj_precedence_rules:
-    input: rules.filter_to_mobile.output
-    output: TRAJ_PRECEDENCE
-    shell:
-        "Rscript scripts/CalculateTrajPrecedenceRules.R --input {input} \
-        --output {output}"
-
-rule format_trajectories:
-    input:
-        trajectories = rules.filter_to_mobile.output,
-        precedence = rules.calculate_traj_precedence_rules.output
-    output:
-        MOBILITY_TRAJECTORIES
-    shell:
-        "Rscript scripts/FormatMobilityTrajectories.R --input {input.trajectories} \
-        --output {output} --precedence {input.precedence} --traj {wildcards.traj}"
-
-rule get_researcher_metadata:
-    input: raw = rules.format_trajectories.output,
-           nonmobile = rules.filter_to_nonmobile.output,
-           lookup = ancient(rules.add_state_to_lookup.output)
-    output: RESEARCHER_META
-    shell:
-        "Rscript scripts/GetResearcherMetadata.R --input {input.raw} \
-                --nonmobile {input.nonmobile} --lookup {input.lookup} --output {output}"
-
-rule get_org_metadata:
-    input:
-        raw = rules.format_trajectories.output,
-        researchers = ancient(rules.get_researcher_metadata.output),
-        lookup = ancient(rules.add_state_to_lookup.output)
-    output: ORG_META
-    shell:
-        "Rscript scripts/GetOrgMetadata.R --input {input.raw} --lookup {input.lookup} \
-                --researchers {input.researchers} --output {output}"
-
-rule dissagregate_pubs_to_yearly:
-    input: rules.format_trajectories.output
-    output: MOBILITY_TRAJECTORIES_YEARLY
-    shell: "Rscript scripts/FilterRawMobilityToSingleYear.R {input} {wildcards.year} {output}"
-
-rule pubs_to_sentences:
-    input: rules.dissagregate_pubs_to_yearly.output
-    output: MOBILITY_SENTENCES
-    shell:
-        "Rscript scripts/FormatPubsToSentences.R {input} org {output}"
-
-rule train_word2vec_model:
-    input: [expand(MOBILITY_SENTENCES, traj = TRAJECTORIES, year = ALL_YEARS)]
-    output: WORD2VEC_EMBEDDINGS
-    threads: W2V_NUM_WORKERS
-    params:
-        wf = W2V_MIN_WORD_FREQ,
-        nw = W2V_NUM_WORKERS,
-        niter = W2V_ITERATIONS
-    shell:
-        "python scripts/train_word2vec_embedding_from_sentences.py --files {input} \
-                --dimensions {wildcards.dimensions} --window {wildcards.window} \
-                --minfrequency {params.wf} --numworkers {params.nw} \
-                --iterations {params.niter} --output {output}"
-
 rule dimreduce_umap:
     input: model = rules.train_word2vec_model.output,
            lookup = ancient(rules.add_state_to_lookup.output)
@@ -459,106 +372,6 @@ rule plot_gradient_legend:
     output: GRADIENT_LEGEND
     shell:
         "Rscript scripts/PlotGradientLegend.R --output {output}"
-
-## Misc data
-rule generate_prestige_axis_org_codes:
-    input: ORG_RANKINGS,
-    output: PRESTIGE_AXIS_ORGS
-    params:
-        lookup = rules.add_state_to_lookup.output,
-        regions = US_CENSUS_REGIONS
-    run:
-        if "times" in {wildcards.ranking}:
-            shell("Rscript scripts/GeneratePrestigeAxisOrgCodes.R --input {input} --output {output} \
-                   --variable total_score --regions {params.regions} --lookup {params.lookup} \
-                   --norgs {wildcards.numorgs}")
-        else:
-            shell("Rscript scripts/GeneratePrestigeAxisOrgCodes.R --input {input} --output {output} \
-                   --variable impact_frac_mncs --regions {params.regions} --lookup {params.lookup} \
-                   --norgs {wildcards.numorgs}")
-
-rule generate_usa_coasts_axis_org_codes:
-    input: rules.add_state_to_lookup.output,
-    output: COASTS_AXIS_ORGS
-    shell:
-        "Rscript scripts/GenerateGeographicAxisOrgCodes.R --input {input} \
-        --scale region --place1 California --place2 Massachusetts \
-        --norgs {wildcards.numorgs} --output {output}"
-
-rule calculate_semaxis_prestige_projections:
-    input:
-        w2v = rules.train_word2vec_model.output,
-        axis = rules.generate_prestige_axis_org_codes.output
-    output: PRESTIGE_AXIS_PROJECTIONS
-    shell:
-        "python scripts/calculate_SemAxis_projections.py --input {input.w2v} \
-        --axis {input.axis} --output {output}"
-
-rule calculate_semaxis_geography_projections:
-    input:
-        w2v = rules.train_word2vec_model.output,
-        axis = rules.generate_usa_coasts_axis_org_codes.output
-    output: COASTS_AXIS_PROJECTIONS
-    shell:
-        "python scripts/calculate_SemAxis_projections.py --input {input.w2v} \
-        --axis {input.axis} --output {output}"
-
-rule generate_aggregate_prestige_rank_correlations:
-    input:
-        axes = [expand(rules.calculate_semaxis_prestige_projections.output,
-                       traj = TRAJECTORIES,
-                       dimensions = W2V_DIMENSIONS,
-                       window = W2V_WINDOW_SIZE,
-                       ranking = RANKINGS,
-                       numorgs = NUMORGS)],
-        lookup = ancient(rules.add_state_to_lookup.output)
-    params:
-        country = "USA",
-        times = ORG_RANKINGS.format(ranking = "times"),
-        leiden = ORG_RANKINGS.format(ranking = "leiden"),
-    output: PRESTIGE_AGGREGATE_RANK_COR
-    shell:
-        "Rscript scripts/GetAggregatePrestigeAxisTests.R \
-        {input.lookup} \'{params.country}\' {params.times} {params.leiden} \
-        {input.axes} {output}"
-
-## Plot semaxis
-rule plot_1d_coasts_semaxis_projection:
-    input:
-        axis = rules.calculate_semaxis_geography_projections.output,
-        lookup = rules.add_state_to_lookup.output
-    output: SEMAXIS_1D_COASTS_PLOT
-    shell:
-        "Rscript scripts/Plot1DSemAxis.R --input {input.axis} --lookup {input.lookup} \
-        --output {output} --country USA \
-        --endlow California --endhigh Massachusetts \
-        --place1 Arizona --place1code AZ --place2 Connecticut --place2code CT"
-
-rule plot_1d_prestige_semaxis_projection:
-    input:
-        axis = rules.calculate_semaxis_prestige_projections.output,
-        lookup = rules.add_state_to_lookup.output
-    output: SEMAXIS_1D_PRESTIGE_PLOT
-    shell:
-        "Rscript scripts/Plot1DSemAxis.R --input {input.axis} --lookup {input.lookup} \
-        --output {output} --country USA \
-        --endlow Non-elite --endhigh Elite \
-        --place1 Indiana --place1code IN --place2 Maryland --place2code MD"
-
-rule plot_2d_semaxis_projection:
-    input:
-        axis1 = rules.calculate_semaxis_geography_projections.output,
-        axis2 = rules.calculate_semaxis_prestige_projections.output,
-        lookup = rules.add_state_to_lookup.output
-    params:
-        labels = ORG_SHORT_LABELS
-    output: SEMAXIS_2D_COASTS_PRESTIGE_PLOT
-    shell:
-        "Rscript scripts/Plot2DSemAxis.R --axis1 {input.axis1} --axis2 {input.axis2} \
-        --output {output} \
-        --lookup {input.lookup} --labels {params.labels} --country USA \
-        --endleft California --endright Massachusetts \
-        --endbot Non-elite --endtop Elite"
 
 ## Descriptive plots
 rule plot_pubs_over_time:
