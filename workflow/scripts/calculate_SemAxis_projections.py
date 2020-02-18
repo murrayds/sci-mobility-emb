@@ -11,9 +11,8 @@ by individual.
 from gensim.models import Word2Vec
 import pandas as pd
 
-# For SemAxis
-import numpy as np
-from scipy import spatial
+import py_scimobility.SemAxis as sx
+
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -36,15 +35,6 @@ parser.add_argument(
 parser.add_argument("-o", "--output", help="Output data path", type=str, required=True)
 args = parser.parse_args()
 
-# Functions should be offloaded to a package at a later date,
-def get_avg_vec_from_list(emb, wordlist):
-    tmp = [emb.wv[word] for word in wordlist if word in model.wv.vocab]
-    return np.mean(tmp, axis=0)
-
-def project_onto_axis(emb, word, antonym):
-    axis = antonym[1] - antonym[0]
-    return(1.0 - spatial.distance.cosine(emb.wv[word], axis))
-
 # Load the word2vec model
 model = Word2Vec.load(args.input)
 vocab = model.wv.vocab
@@ -60,14 +50,14 @@ pole1, pole2 = list(set(axis['type']))
 pole1_orgs = [str(org) for org in axis[axis.type == pole1]['cwts_org_no']]
 pole2_orgs = [str(org) for org in axis[axis.type == pole2]['cwts_org_no']]
 
-pole1_avg = get_avg_vec_from_list(model, pole1_orgs)
-pole2_avg = get_avg_vec_from_list(model, pole2_orgs)
+pole1_avg = sx.get_avg_vec_from_list(model, pole1_orgs)
+pole2_avg = sx.get_avg_vec_from_list(model, pole2_orgs)
 
 orgs = []
 sims = []
 for org in vocab:
     orgs.append(org)
-    sims.append(project_onto_axis(model, org, [pole1_avg, pole2_avg]))
+    sims.append(sx.project_onto_axis(model, org, [pole1_avg, pole2_avg]))
 
 # Convert to dataframe and save
 df = pd.DataFrame({"cwts_org_no": orgs, "sim": sims})
