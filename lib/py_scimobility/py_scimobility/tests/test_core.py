@@ -44,3 +44,13 @@ class Test_ComputeGeoDistance(TestCase):
             print(distance)
 
         self.assertTrue(isinstance(context.exception, ValueError))
+
+    def test_flipped_coords(self):
+        """
+        Test that invalid coordinates returns NaN
+        """
+        distance1 = mob.compute_geo_distance([1, -1], [2, -2])
+        distance2 = mob.compute_geo_distance([2, -2], [1, -1])
+
+        # Some difference is expected, check that they are nearly the same
+        self.assertAlmostEqual(distance1, distance2)
