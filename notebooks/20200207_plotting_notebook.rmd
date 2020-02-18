@@ -1,0 +1,253 @@
+---
+title: "Model Hyperparameters"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+library(readr)
+
+sims <- read_csv("/Users/dakotamurray/Desktop/sims_coasts.csv")
+
+lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) 
+
+sims <- sims %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  distinct(cwts_org_no, .keep_all = T)
+
+coasts <- sims
+```
+
+
+```{r fig.width=3, fig.height=1}
+averages <- sims %>%
+  group_by(region) %>%
+  summarize(
+    mu = mean(sim)
+  ) %>%
+  ungroup() %>%
+  filter(region %in% c("Arizona", "Connecticut"))
+
+sims %>%
+  mutate(
+    highlight = ifelse(region == "Connecticut", "CT", 
+                       ifelse(region == "Arizona", "AZ", "other"))
+  ) %>%
+  ggplot(aes(x = sim, y = 0, color = highlight, alpha = ifelse(highlight == "other", 0.9, 1))) +
+  geom_segment(y = -1, yend = 1, aes(xend = sim)) +
+  geom_hline(yintercept = 0, size = 1) +
+  geom_segment(y = -0.2, yend = 0.2, x = 0, xend = 0, size = 1, color = "black") +
+  geom_point(data = averages, 
+             aes(x = mu, y = 0),
+             color = ifelse(averages$region == "Arizona", "#c0392b", "#2980b9"),
+             alpha = 1,
+             size = 5,
+             shape = 21,
+             stroke = 2
+  ) +
+  xlim(-0.3, 0.3) +
+  scale_y_continuous(
+    limits = c(-1.1, 1.1), 
+    name = "   California",
+    sec.axis = dup_axis(name = "Massachusetts")
+  ) +
+  scale_color_manual(values = c("#c0392b", "#2980b9", "grey")) +
+  guides(alpha = F,
+         color = guide_legend(override.aes = list(size = 2))
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(size = 11),
+    axis.title.y.left = element_text(angle = 0, vjust = 0.5),
+    axis.title.y.right = element_text(angle = 0, vjust = 0.5),
+    panel.grid = element_blank()
+  )
+```
+
+
+```{r}
+sims <- read_csv("/Users/dakotamurray/Desktop/sims_statevuc.csv")
+
+sims <- sims %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  distinct(cwts_org_no, .keep_all = T)
+```
+
+```{r fig.width=3, fig.height=1}
+elite <- c(1277, 1187, 1255, 1188, 1251, 1296, 1193, 1272, 1192, 1208)
+nonelite <- c(3501, 18086, 18530, 18486, 1471, 1468, 1558, 1287, 3538, 18373, 9856, 3482, 1268, 10379, 18514)
+averages <- sims %>%
+  mutate(
+    elite = ifelse(cwts_org_no %in% elite, "Elite", 
+                   ifelse(cwts_org_no %in% nonelite, "Not elite", "other")
+            )
+    ) %>%
+  filter(elite != "other") %>%
+  group_by(elite) %>%
+  summarize(
+    mu = mean(sim)
+  ) %>%
+  ungroup()
+
+sims %>%
+  mutate(
+    elite = ifelse(cwts_org_no %in% elite, "Elite", ifelse(cwts_org_no %in% nonelite, "Not elite", "other"))
+  ) %>%
+  ggplot(aes(x = sim, y = 0, color = elite, alpha = ifelse(elite %in% c("Elite", "Not elite"), 1, 0.9))) +
+  geom_segment(y = -1, yend = 1, aes(xend = sim)) +
+  geom_hline(yintercept = 0, size = 1) +
+  geom_segment(y = -0.2, yend = 0.2, x = 0, xend = 0, size = 1, color = "black") +
+  geom_point(data = averages, 
+             aes(x = mu, y = 0),
+             color = ifelse(averages$elite == "Elite", "#f39c12", "#27ae60"),
+             alpha = 1,
+             size = 5,
+             shape = 21,
+             stroke = 2
+  ) +
+  xlim(-0.3, 0.3) +
+  scale_y_continuous(
+    limits = c(-1.1, 1.1), 
+    name = "Cal. State",
+    sec.axis = dup_axis(name = "Univ. Cal.")
+  ) +
+  scale_color_manual(values = c("#f39c12", "#27ae60", "grey")) +
+  guides(alpha = F,
+         color = guide_legend(override.aes = list(size = 2))
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(size = 11),
+    axis.title.y.left = element_text(angle = 0, vjust = 0.5),
+    axis.title.y.right = element_text(angle = 0, vjust = 0.5),
+    panel.grid = element_blank()
+  )
+```
+
+```{r}
+sims <- read_csv("/Users/dakotamurray/Desktop/sims_prestige.csv")
+
+sims <- sims %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  distinct(cwts_org_no, .keep_all = T)
+
+prestige <- sims
+```
+
+
+```{r fig.width=3, fig.height=1}
+averages <- sims %>%
+  group_by(region) %>%
+  summarize(
+    mu = mean(sim)
+  ) %>%
+  ungroup() %>%
+  filter(region %in% c("Indiana", "Maryland"))
+
+sims %>%
+  mutate(
+    highlight = ifelse(region %in% c("Indiana", "Maryland"), region, "other")
+  ) %>%
+  ggplot(aes(x = sim, y = 0, color = highlight, alpha = ifelse(highlight == "other", 0.9, 1))) +
+  geom_segment(y = -1, yend = 1, aes(xend = sim)) +
+  geom_hline(yintercept = 0, size = 1) +
+  geom_segment(y = -0.2, yend = 0.2, x = 0, xend = 0, size = 1, color = "black") +
+  geom_point(data = averages, 
+             aes(x = mu, y = 0),
+             color = ifelse(averages$region == "Indiana", "#8e44ad", "#22a6b3"),
+             alpha = 1,
+             size = 5,
+             shape = 21,
+             stroke = 2
+  ) +
+  xlim(-0.3, 0.3) +
+  scale_y_continuous(
+    limits = c(-1.1, 1.1), 
+    name = "Non Elite",
+    sec.axis = dup_axis(name = "Elite   ")
+  ) +
+  scale_color_manual(values = c("#8e44ad", "#22a6b3", "grey")) +
+  guides(alpha = F,
+         color = guide_legend(override.aes = list(size = 2))
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(size = 11),
+    axis.title.y.left = element_text(angle = 0, vjust = 0.5),
+    axis.title.y.right = element_text(angle = 0, vjust = 0.5),
+    panel.grid = element_blank()
+  )
+```
+
+
+```{r fig.width=5, fig.height=3}
+library(plotly)
+
+
+all <- prestige %>%
+  select(cwts_org_no, sim) %>%
+  left_join(coasts, by = "cwts_org_no") %>%
+  rename(sim.prestige = sim.x, sim.coasts = sim.y)
+  
+to_color <- c("Indiana", "Ohio", "Connecticut", "New York", "Arizona", "California", "Massachusetts", "Florida")
+
+labels <- readr::read_csv("/Users/dakotamurray/Desktop/axis_unis_labels.csv") %>%
+  inner_join(all, by = c("cwts_org_no"))
+
+p <- all %>%
+  filter(org_type_code == "U") %>%
+  mutate(
+    state = ifelse(region %in% to_color, region, "Others"),
+    state = factor(state, levels = c(sort(to_color), "Others"))
+  ) %>%
+  filter(state != "Others") %>%
+  ggplot(aes(x = sim.coasts, y = sim.prestige, fill = state, label1 = full_name, label2 = region, label3 = city)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_point(size = 3.5, shape = 21) +
+  ggrepel::geom_label_repel(data = labels, 
+             inherit.aes = F,
+             aes(x = sim.coasts, y = sim.prestige, label = short_name)
+             ) +
+  scale_fill_manual(name = "Region", values = c("#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f", "#bf5b17", "#666666")) +
+  scale_x_continuous(
+    limits = c(-0.4, 0.4),
+    name = "Lower Research Impact",
+    sec.axis = dup_axis(name = "High Research Impact")
+  ) +
+  scale_y_continuous(
+    limits = c(-0.42, 0.42),
+    name = "California",
+    sec.axis = dup_axis(name = "Massachusetts")
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 11),
+    axis.title.x = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.y = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.y.right = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    legend.text = element_text(size = 12),
+    legend.title = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+p
+widget <- ggplotly(p, tooltip = c("full_name", "region", "city"))
+widget
+htmlwidgets::saveWidget(as.widget(widget), "~/Desktop/UniCoastPrestigeAxis.html")
+```

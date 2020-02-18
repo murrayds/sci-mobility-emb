@@ -1,0 +1,191 @@
+---
+title: "Mobility Aggregate R2 plot"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+
+In this notebook I will attempt to work through the calculations for estimating the parameters of the standard gravity model using OLS regression and compare the set of predicted fluxes between organizations against the actual ones. First, I will load the data and quickly format it:
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(readr)
+
+agg <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Descriptive/org/2008-2019_aggregate_org_distances_d100_ws2.csv") %>%
+  filter(count > 0) %>%
+  rename(actual = count) %>%
+  select(org1_size, org2_size, actual, geo_distance, emb_similarity, gravity)
+
+
+head(agg)
+```
+
+
+
+For the basic gravity model estimation based on geographic distance, I am following the procedure outlined in the 2011 paper by Simini et al., titled *"A universal model for mobility and migration patterns"*, which is listed in their supplamental materials, [linked here](https://arxiv.org/ftp/arxiv/papers/1111/1111.0586.pdf), on page 27-29. This procedure assumes a gravity law defined as follows:
+
+$$F_{ij} = C \frac{m_{i}^{\alpha}n_{j}^{\beta}}{r_{ij}^{\gamma}}$$
+
+where $F_{ij}$ is the flux, or in our case the degree of co-affiliation, between organizations $i$ and $j$, $m_{i}$ is the "mass" or the population of organization $i$, $n_{j}$ is similariy the "mass" or size of organization $j$. $r_{ij}$ is the geographic distance (here in kilometers) between the two organizations, which serves as our decay function. Note that we are considering only the power law decay function, whereas we might in the future extend to the exponential decay function, $e^{dr_{ij}}$. $C$, $\alpha$, $\beta$, and $\gamma$ are all contants that can be estimated from the data.
+
+Following the procedure in Simini et al., (2011), we estimate the constant parameters from the data using a simple OLS regression. The form of the regression equation, after taking the (natural) logarithm of both sides is:
+
+$$
+\ln(F_{ij}) = \ln(C) + \alpha\ln(m_{i}) + \beta\ln(n_{j}) - \gamma\ln(r_{ij})
+$$
+
+The original Simini et al., paper used a more complex, 9-parameter equation, as they fit short and long distances separately. I do not currently use this approach, as "short" distnaces make less sense in the case of our data. However, extending to this more complex case appears mostly straightforward. 
+
+```{r}
+# Perform the regression
+fit <- lm(log(actual) ~ log(org1_size) + log(org2_size) + log(geo_distance), data = agg)
+summ <- summary(fit)
+
+# Save the coefficients for use later
+intercept <- summ$coefficients["(Intercept)", "Estimate"]
+org1_coef <- summ$coefficients["log(org1_size)", "Estimate"]
+org2_coef <- summ$coefficients["log(org2_size)", "Estimate"]
+geo_coef <- summ$coefficients["log(geo_distance)", "Estimate"]
+
+# Display a summary of the regression
+summary(fit)
+```
+
+Using these coefficients, we will calculated the expected flux, $F_{ij}^{\text{e}}$, for every pair of organizations in our dataset. To do so, we simply plug the constants back into the original gravity equation
+```{r}
+agg <- agg %>%
+  # add a variable
+  mutate(
+    expected = intercept * (org1_size ^ org1_coef) * (org2_size ^ org2_coef) / (geo_distance ^ abs(geo_coef))
+  )
+
+
+head(agg %>% select(expected, actual))
+```
+
+
+
+We can build a figrue from the expected and actual counts as follows. Here, the expercted fluxes between pairs of organizations are all displayed on the x-axis, whereas the actual fluxes are displayed on the y-axis. Each point represents a pair of organizations. The red points represent the mean and 99th percentile confidence intervals of the actual flux within a window/bin of the expected flux. The blue line is the line of $y = x$; points are near to the line when the expected flux matches the actual flux. 
+```{r message=FALSE, warning=FALSE}
+# Create binned values that will be plotted over top
+binned <- agg %>%
+  mutate(
+    expected = log10(expected),
+    bin = cut(round(expected, 2), 30)
+  ) %>%
+  arrange(bin) %>%
+  group_by(bin) %>%
+  summarize(
+    # Plot the point at the midpoint in each bin
+    pos = min(expected) + ((max(expected) - min(expected)) / 2),
+    #pos = (as.numeric(first(bin)) * 0.05) - 0.025,
+    mu = mean(log10(actual), na.rm = T),
+    ci = 2.576 * (sd(log10(actual), na.rm = T) / sqrt(n())) # using the 99th percentile CI
+  )
+
+
+agg %>%
+  sample_n(50000) %>% # take only a sample of the data, in order to keep the time drawing points low
+  ggplot(aes(x = log10(expected), y = log10(actual))) +
+  geom_point(alpha = 0.01) +
+  #geom_hex(bins = 30, color = "white", aes(alpha = ..count..)) +
+  scale_fill_gradient(low = "white", high = "black") +
+  geom_pointrange(data = binned, aes(x = pos, y = mu, ymin = mu - ci, ymax = mu + ci), color = "red", size = 1, shape = 21, stroke = 2) +
+  xlim(0, 4) +
+  ylim(0, 4) +
+  geom_abline(color = "blue") +
+  guides(alpha = F) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor = element_blank(),
+    axis.title = element_text(size = 14)
+  ) +
+  xlab("Log10(expected flux)") +
+  ylab("Log10(actual flux)")
+```
+
+Now, we can repeat this entire process, but instead of calculating a decay function based on geographic distnace, as was the case for the traditional gravity model, we will instead consider the cosine similarity from our embeddings as the decay function—as cosine similarity goes down, the relationship between two organization fades. 
+
+Unlike geogrpahic distnace, for which the logarithm makes sense, cosine similarity sits on a scale between 0 and 1, and so we should approach it in a different way. Here, our gravity law equation looks like the following:
+
+$$F_{ij} = C \frac{m_{i}^{\alpha}n_{j}^{\beta}}{\cos (i, j)^{\gamma}}$$
+
+As before, we will attempt to estimate each of the parameters using OLS regression, but we will treat the embedding similarity as having already been logarythmically transformed:
+$$
+\ln(F_{ij}) = \ln(C) + \alpha\ln(m_{i}) + \beta\ln(n_{j}) + \gamma\cos (ij)
+$$
+
+Here, we run the regression and extract the relevant coefficients
+
+```{r}
+# Perform the regression
+fit <- lm(log(actual) ~ log(org1_size) + log(org2_size) + emb_similarity, data = agg)
+summ <- summary(fit)
+
+# Save the coefficients for use later
+intercept <- summ$coefficients["(Intercept)", "Estimate"]
+org1_coef <- summ$coefficients["log(org1_size)", "Estimate"]
+org2_coef <- summ$coefficients["log(org2_size)", "Estimate"]
+emb_coef <- summ$coefficients["emb_similarity", "Estimate"]
+
+# Display a summary of the regression
+summary(fit)
+```
+
+And now that we have the coefficients, our calculation of the flux will be slightly different as we must transform the embedding similarity by its exponential:
+
+$$
+F_{ij}^{e} = m_{i}^{\alpha}n_{j}^{\beta} * \exp^{\cos(ij) * \gamma * C}
+$$
+
+```{r}
+agg <- agg %>%
+  mutate(
+    expected = ((org1_size ^ org1_coef * org2_size ^ org2_coef) * exp((emb_coef * emb_similarity) + intercept))
+  )
+
+
+head(agg %>% select(actual, expected))
+```
+
+
+As before, we can build a graph from the expected vs. actual counts. Assuming everything was done correctly, the fit between expected and actual appears to be much better. 
+```{r message=FALSE, warning=FALSE}
+# Create binned values that will be plotted over top
+binned <- agg %>%
+  mutate(
+    expected = log10(expected),
+    bin = cut(round(expected, 2), 30)
+  ) %>%
+  arrange(bin) %>%
+  group_by(bin) %>%
+  summarize(
+    # Plot the point at the midpoint in each bin
+    pos = min(expected) + ((max(expected) - min(expected)) / 2),
+    #pos = (as.numeric(first(bin)) * 0.05) - 0.025,
+    mu = mean(log10(actual), na.rm = T),
+    ci = 2.576 * (sd(log10(actual), na.rm = T) / sqrt(n())) # using the 99th percentile CI
+  )
+
+
+agg %>%
+  sample_n(50000) %>% # take only a sample of the data, in order to keep the time drawing points low
+  ggplot(aes(x = log10(expected), y = log10(actual))) +
+  geom_point(alpha = 0.01) +
+  #geom_hex(bins = 30, color = "white", aes(alpha = ..count..)) +
+  scale_fill_gradient(low = "white", high = "black") +
+  geom_pointrange(data = binned, aes(x = pos, y = mu, ymin = mu - ci, ymax = mu + ci), color = "red", size = 1, shape = 21, stroke = 2) +
+  xlim(0, 4) +
+  ylim(0, 4) +
+  geom_abline(color = "blue") +
+  guides(alpha = F) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor = element_blank(),
+    axis.title = element_text(size = 14)
+  ) +
+  xlab("Log10(expected flux)") +
+  ylab("Log10(actual flux)")
+```
