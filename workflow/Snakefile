@@ -59,7 +59,7 @@ MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{traj}', '{year}_{traj}_org_sen
 # Descriptive Data #
 ####################
 ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{traj}_organization_flows.csv')
-ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distancesv')
+ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distane.csv')
 AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate', '{traj}', 'aggregate_org_distances_{traj}_d{dimensions}_ws{window}.csv')
 RESEARCHER_META = osjoin(DESCRIPTIVE_DATA_DIR, 'researcher', '{traj}_researcher_metadata.txt')
 ORG_META = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{traj}_org_metadata.txt')
