@@ -12,6 +12,8 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from geopy.distance import great_circle
 
+import py_scimobility.core as mob
+
 import logging
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
@@ -30,20 +32,12 @@ args = parser.parse_args()
 logging.info('Loading organization transitions')
 organizations = pd.read_csv(args.input, sep = "\t", encoding = "ISO-8859-1")
 
-# Small helper function to help us compute distnace. basically, just output
-# a NaN when the distances are NaN. Otherwise, compute the distance.
-def compute_distance_helper(u, v):
-    if np.isnan([u[0], u[1], v[0], v[1]]).any():
-        return(np.nan)
-    else:
-        return(great_circle(u, v).kilometers)
-
 
 coordinates = [[row.latitude, row.longitude] for index, row in organizations.iterrows()]
 
 # Using the vincenty distance function.
 logging.info('Computing geographic distances')
-dist = pdist(coordinates, lambda u, v: compute_distance_helper(u, v))
+dist = pdist(coordinates, lambda u, v: mob.compute_geo_distance(u, v))
 
 # Convert distance matrix to a dataframe
 distance_df = pd.DataFrame(squareform(dist))
