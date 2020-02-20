@@ -74,7 +74,7 @@ if (opt$geo == "same-country") {
 
 # Reduce the size to save on memory
 dist <- dist %>%
-  select(geo_distance, emb_similarity, gravity)
+  select(geo_distance, emb_similarity, ppr_distance, gravity)
 
 axislabel <- "DEFAULT"
 # Select the appropriate metric using the --distance command line argument
@@ -93,11 +93,16 @@ if (opt$distance == "geo") {
 
   # Provide axis label
   axislabel <- "Cosine similarity"
+} else if (opt$distance == "ppr") {
+  dist <- dist %>%
+    rename(distance = ppr_distance)
+
+  # Provide axis label
+  axislabel <- "PPR Distance"
 }
 
 # Calculate the logged gravity and select only relevant columns
 dist <- dist %>%
-
   mutate(gravity_logged = log10(gravity)) %>%
   select(gravity_logged, distance)
 
@@ -177,7 +182,7 @@ if (opt$distance == "geo") {
                        labels = function(x) { parse(text=paste0("10^", x)) },
                        expand = c(0, 0)
                      )
-} else {
+} else if (opt$distance == "emb" | opt$distance == "ppr") {
   plot <- plot +
     scale_x_continuous(breaks = c(0, 0.5, 1),
                        limits = c(0, 1),
@@ -190,13 +195,10 @@ if (opt$showcoef) {
   plot <- plot +
     # Add the r-squared coefficient to the plot
     ggpmisc::stat_poly_eq(formula = y ~ x,
+                          geom = "text",
                           aes(label = paste(..rr.label.., sep = "~~~")),
                           parse=TRUE,
-                          coef.digits = 2,
-                          label.x = "left",
-                          # The data is shaped differently, so move the metric
-                          # accordingly based on where it falls
-                          #label.y = ifelse(opt$distance == "emb", "top", "bottom"),
+                          rr.digits = 2,
                           size = 7
     )
 }

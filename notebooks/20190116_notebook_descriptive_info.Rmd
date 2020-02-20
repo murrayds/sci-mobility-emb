@@ -1,0 +1,100 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(readr)
+
+mobile <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/data/Derived/Trajectories/precedence_mobility_trajectories.txt", delim = "\t") 
+nonmobile <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/data/raw/nonmobile_researcher_trajectories.txt", delim = "\t")
+
+
+dist <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/data/Derived/Descriptive/org/aggregate/precedence/aggregate_org_distances_precedence_d300_ws1.csv")
+
+flows <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/data/Derived/Descriptive/org/precedence_organization_flows.csv")
+```
+
+The total number of co-affiliations (mobile and nonmobile)
+```{r}
+dim(mobile)[1] + dim(nonmobile)[1]
+```
+
+The total number of authors
+```{r}
+length(unique(mobile$cluster_id)) + length(unique(nonmobile$cluster_id))
+```
+
+```{r}
+mobile_real <- mobile %>%
+  group_by(cluster_id) %>%
+  filter(length(unique(cwts_org_no)) > 1) %>%
+  ungroup()
+```
+
+Total number of mobile authors
+```{r}
+length(unique(mobile_real$cluster_id))
+```
+
+Percentage of mobile authors of all authors
+```{r}
+length(unique(mobile_real$cluster_id)) / (length(unique(mobile$cluster_id)) + length(unique(nonmobile$cluster_id)))
+```
+
+Total number of co-affiliation links
+```{r}
+dim(mobile_real)[1]
+```
+
+Number of unique organizations
+```{r}
+length(unique(c(nonmobile$cwts_org_no, mobile$cwts_org_no)))
+```
+
+Number of unique organizations among nonmobile researchers
+```{r}
+length(unique(nonmobile$cwts_org_no))
+```
+
+
+The longest trajectory among mobile scholars
+```{r}
+counted <- mobile_real %>%
+  group_by(cluster_id) %>%
+  summarize(
+    count = length(unique(cwts_org_no))
+  )
+
+# Mean
+mean(counted$count)
+
+# Median 
+median(counted$count)
+
+# Max
+max(counted$count)
+
+
+```
+
+
+Total number of organizations in the final, embedded dataset
+```{r}
+length(unique(c(dist$org1, unique(dist$org2))))
+```
+
+Percentage of total unique organizations covered by the embeddingc
+```{r}
+length(unique(c(dist$org1, unique(dist$org2)))) / length(unique(c(nonmobile$cwts_org_no, mobile$cwts_org_no)))
+
+```
+
+
+
+```{r}
+
+
+
+```

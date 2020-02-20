@@ -69,9 +69,9 @@ binned <- data %>%
     med = median(actual, na.rm = T),
     # Percentile ranges of the bin
     percentile_upper = quantile(actual, probs = c(0.75), na.rm = T)[1],
-    percentile_max = quantile(actual, probs = c(0.91), na.rm = T)[1],
+    percentile_max = quantile(actual, probs = c(0.85), na.rm = T)[1],
     percentile_lower = quantile(actual, probs = c(0.25), na.rm = T)[1],
-    percentile_min = quantile(actual, probs = c(0.09), na.rm = T)[1],
+    percentile_min = quantile(actual, probs = c(0.15), na.rm = T)[1],
     # logical, whether or not the percentile crosses the line x = y
     crosses_ab_strong = (percentile_upper > pos & pos > mu) | (percentile_lower < pos & pos < mu),
     crosses_ab_weak = (percentile_max > pos & pos > mu) | (percentile_min < pos & pos < mu),
