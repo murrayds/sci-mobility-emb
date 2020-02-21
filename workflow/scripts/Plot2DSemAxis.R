@@ -8,7 +8,7 @@
 #
 
 # Plot dimensions
-FIG_WIDTH = 8
+FIG_WIDTH = 6
 FIG_HEIGHT = 6
 
 NOT_HIGHLIGHTED_ALPHA = 0.9
@@ -191,31 +191,35 @@ plot <- plotdata %>%
            ) +
   ggrepel::geom_label_repel(
     data = labels,
-    size = 5,
+    size = 4,
+    min.segment.length = 0.1,
     inherit.aes = F,
     aes(x = sim.x, y = sim.y, label = short_name)
   ) +
   scale_x_continuous(
     limits = c(x_floor, x_ceiling),
-    name = opt$BOT_LABEL,
-    sec.axis = dup_axis(name = opt$TOP_LABEL)
+    name = BOT_LABEL,
+    sec.axis = dup_axis(name = TOP_LABEL)
   ) +
   scale_y_continuous(
     limits = c(y_floor, y_ceiling),
-    name = opt$CALI_LABEL,
+    name = CALI_LABEL,
     sec.axis = dup_axis(name = MASS_LABEL)
   ) +
   theme_minimal() +
   theme(
-    text = element_text(family = "Helvetica", size = 11),
-    axis.title.x = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
-    axis.title.x.top = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
-    axis.title.y = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
-    axis.title.y.right = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    text = element_text(family = "Helvetica", size = 12),
+    axis.title.x = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
+    axis.text.x.top = element_blank(),
+    axis.title.y = element_text(angle = 90, size = 14, face = "bold"),
+    axis.title.y.right = element_text(angle = 90, size = 14, face = "bold"),
+    axis.text.y.right = element_blank(),
     legend.text = element_text(size = 12),
     legend.title = element_blank(),
     panel.grid.minor = element_blank(),
-    legend.position = "bottom"
+    legend.position = c(0.82, 0.2),
+    legend.box.background = element_rect(color="black", size=0.5, fill = "white")
   )
 
 
