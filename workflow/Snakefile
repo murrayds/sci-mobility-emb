@@ -133,7 +133,8 @@ SEMAXIS_1D_PRESTIGE_PLOT = osjoin(SEMAXIS_FIG_DIR, 'prestige', '{traj}', 'd{dime
 SEMAXIS_2D_COASTS_PRESTIGE_OVERALL_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'overall_coasts_{ranking}_rank_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_2D_COASTS_PRESTIGE_STATE_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'states', '{state}_coasts_{ranking}_rank_2Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_2D_COASTS_PRESTIGE_SECTOR_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'sectors', '{sector}_coasts_{ranking}_rank_2Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
-RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, 'prestige_rank_correlation.pdf')
+SEMAXIS_RANK_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'n{numorgs}_{ranking}_semcompare_d{dimensions}_ws{window}.pdf')
+RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correlation.pdf')
 
 ###############################################################################
 # Parameters
@@ -146,7 +147,7 @@ TRAJECTORIES = ['precedence']
 # RANKINGS
 RANKINGS = ['times', 'leiden']
 NUMORGS = list(range(5, 61, 5))
-NUMORGS.insert(0, 1)
+NUMORGS.extend([1, 2, 3, 4])
 
 # WORD2VEC parameters
 W2V_DIMENSIONS = [100, 200, 300]
@@ -278,9 +279,15 @@ rule all:
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
+        expand(SEMAXIS_RANK_COMPARISON_PLOT,
+               ranking = RANKINGS,
+               numorgs = NUMORGS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
         expand(PRESTIGE_AGGREGATE_RANK_COR,
                ranking = RANKINGS,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
-        RANK_CORRELATION_PLOT
+        expand(RANK_CORRELATION_PLOT, ranking = RANKINGS)

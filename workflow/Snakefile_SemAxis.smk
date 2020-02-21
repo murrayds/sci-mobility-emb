@@ -83,7 +83,7 @@ rule plot_rank_correlation:
     output: RANK_CORRELATION_PLOT
     shell:
         "Rscript scripts/PlotPrestigeRankCorrelation.R --input {input} \
-        --dim 300 --ws 1 --output {output}"
+        --dim 300 --ws 1 --ranking {wildcards.ranking} --output {output}"
 
 ###############################################################################
 # SEMAXIS PLOTS
@@ -151,3 +151,14 @@ rule plot_2d_semaxis_overall_projection:
         "Rscript scripts/Plot2DSemAxis.R --axis1 {input.axis1} --axis2 {input.axis2} \
         --output {output} --overall \
         --lookup {input.lookup} --labels {params.labels}"
+
+rule plot_semaxis_rank_comparison:
+    input:
+        axis = rules.calculate_semaxis_prestige_projections.output,
+        lookup = rules.add_state_to_lookup.output
+    params:
+        ranks = ORG_RANKINGS
+    output: SEMAXIS_RANK_COMPARISON_PLOT
+    shell:
+        "Rscript scripts/PlotPrestigeSimVsRank.R --input {input.axis} --output {output} \
+        --ranks {params.ranks} --lookup {input.lookup} --norgs {wildcards.numorgs}"
