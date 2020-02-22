@@ -83,7 +83,7 @@ rule plot_rank_correlation:
     output: RANK_CORRELATION_PLOT
     shell:
         "Rscript scripts/PlotPrestigeRankCorrelation.R --input {input} \
-        --dim 300 --ws 1 --output {output}"
+        --dim 300 --ws 1 --ranking {wildcards.ranking} --output {output}"
 
 ###############################################################################
 # SEMAXIS PLOTS
@@ -110,17 +110,55 @@ rule plot_1d_prestige_semaxis_projection:
         --endlow Non-elite --endhigh Elite \
         --place1 Indiana --place1code IN --place2 Maryland --place2code MD"
 
-rule plot_2d_semaxis_projection:
+rule plot_2d_semaxis_state_projection:
     input:
         axis1 = rules.calculate_semaxis_geography_projections.output,
         axis2 = rules.calculate_semaxis_prestige_projections.output,
         lookup = rules.add_state_to_lookup.output
     params:
         labels = ORG_SHORT_LABELS
-    output: SEMAXIS_2D_COASTS_PRESTIGE_PLOT
+    output: SEMAXIS_2D_COASTS_PRESTIGE_STATE_PLOT
     shell:
         "Rscript scripts/Plot2DSemAxis.R --axis1 {input.axis1} --axis2 {input.axis2} \
         --output {output} \
-        --lookup {input.lookup} --labels {params.labels} --country USA \
-        --endleft California --endright Massachusetts \
-        --endbot Non-elite --endtop Elite"
+        --state {wildcards.state} \
+        --lookup {input.lookup} --labels {params.labels}"
+
+rule plot_2d_semaxis_projection_by_sector:
+    input:
+        axis1 = rules.calculate_semaxis_geography_projections.output,
+        axis2 = rules.calculate_semaxis_prestige_projections.output,
+        lookup = rules.add_state_to_lookup.output
+    params:
+        types = ORG_TYPES,
+        labels = ORG_SHORT_LABELS
+    output: SEMAXIS_2D_COASTS_PRESTIGE_SECTOR_PLOT
+    shell:
+        "Rscript scripts/Plot2DSemAxis.R --axis1 {input.axis1} --axis2 {input.axis2} \
+        --output {output} \
+        --lookup {input.lookup} --labels {params.labels} --types {params.types} \
+        --sector {wildcards.sector}"
+
+rule plot_2d_semaxis_overall_projection:
+    input:
+        axis1 = rules.calculate_semaxis_geography_projections.output,
+        axis2 = rules.calculate_semaxis_prestige_projections.output,
+        lookup = rules.add_state_to_lookup.output
+    params:
+        labels = ORG_SHORT_LABELS
+    output: SEMAXIS_2D_COASTS_PRESTIGE_OVERALL_PLOT
+    shell:
+        "Rscript scripts/Plot2DSemAxis.R --axis1 {input.axis1} --axis2 {input.axis2} \
+        --output {output} --overall \
+        --lookup {input.lookup} --labels {params.labels}"
+
+rule plot_semaxis_rank_comparison:
+    input:
+        axis = rules.calculate_semaxis_prestige_projections.output,
+        lookup = rules.add_state_to_lookup.output
+    params:
+        ranks = ORG_RANKINGS
+    output: SEMAXIS_RANK_COMPARISON_PLOT
+    shell:
+        "Rscript scripts/PlotPrestigeSimVsRank.R --input {input.axis} --output {output} \
+        --ranks {params.ranks} --lookup {input.lookup} --norgs {wildcards.numorgs}"
