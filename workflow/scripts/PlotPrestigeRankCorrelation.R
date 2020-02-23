@@ -45,19 +45,14 @@ plot <- corr %>%
   geom_line() +
   theme_minimal() +
   theme(
-    text = element_text(size = 11, family = "Helvetica"),
+    text = element_text(size = 12, family = "Helvetica"),
     strip.text = element_text(size = 12, face = "bold"),
-    axis.title = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 14, face = "bold"),
     panel.grid.minor = element_blank(),
     panel.spacing = unit(2, 'lines')
   ) +
   xlab("Num orgs in axis") +
   ylab("Spearman's Rho")
 
-
-
-p <- egg::set_panel_size(plot,
-                         width  = unit(FIG_WIDTH, "in"),
-                         height = unit(FIG_HEIGHT, "in"))
 # Save the plot
-ggsave(opt$output, p, width = FIG_WIDTH + 1, height = FIG_HEIGHT + 1)
+ggsave(opt$output, plot, width = FIG_WIDTH, height = FIG_HEIGHT)

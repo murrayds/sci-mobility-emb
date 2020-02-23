@@ -123,7 +123,7 @@ plot <- data %>%
   annotate(geom = "text",
            x = 1.2,
            y = 6.2,
-           label = paste0("Err = ", round(error, 2)),
+           label = paste0("Err = ", sprintf("%.2f", round(error,3))),
            size = 7
          ) +
   # Define the gradient
