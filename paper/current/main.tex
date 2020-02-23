@@ -282,6 +282,26 @@ We follow standard practice and exclude from our analysis zero flows.
 	}
 \end{figure}
 
+
+%
+% Figure - SemAxis results
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:projection}
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
+	\caption{
+		\textbf{Embedding captures latent prestige hierarchy.}
+		\textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
+		Points correspond to organizations, and a sample of individual states are highlighted. 
+		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the "Elite" end of the axis prestige axis \textit{a}.
+		White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
+		The grey box corresponds to the top 20 and bottom 20 ranks. 
+	  	The estimate of the spearman rank correlation between the SimAxis and Times ranking is 0.81 (n = 145).
+	}
+\end{figure}
+
+
 %
 % Subsection: Mathematical Exploration
 %
@@ -318,6 +338,7 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 %}}}
 
 \newpage
+\clearpage
 \beginsupplement
 \section{Supporting Information}
 
