@@ -176,7 +176,7 @@ We also calculate two forms of proximity between organizations.
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between organizations.
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations. 
 When less than one kilometer, a distance of one is imputed. 
-The embedding proximity, $d_{ij}$, is calculated as the pairwise cosine similarity between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
+The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
 
 
 \subsection{Gravity Law}
@@ -236,17 +236,17 @@ We follow standard practice and exclude from our analysis zero flows.
 	\label{fig:gravity_performance}
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
 	\caption{
-		\textbf{Embedding proximity outperform and are more robust than geographic distance.}
-		\textbf{a.} embedding proximity (the cosine similarity between vectors) explains more of the flux between organization pairs than does geographic distance (\textbf{b}). 
+		\textbf{Embedding distance outperforms and is more robust than geographic distance.}
+		\textbf{a.} embedding distance (cosine distnace between vectors) explains more of the flux between organization pairs than does geographic distance (\textbf{b}). 
 		Red line is line of best fit. 
 		Black dots are mean flux across binned proximity meas.
 		Color indicates frequency of organization pairs within each hex bin.
-		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding proximity out-perform those made using geographic distance. 
+		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding distance out-perform those made using geographic distance. 
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
 		\textbf{e-f.} Predictions made using model parameters learned from subset of same-country organization pairs. 
-		Embedding proximity outperform those made for geographic distance.
-		\textbf{g-h.} Embedding proximity also outperforms geographic distance when predicting flux using model parameters estimated from only pairs of organizations in different countries. 
+		Embedding distance outperforms those made for geographic distance.
+		\textbf{g-h.} Embedding distance also outperforms geographic distance when predicting flux using model parameters estimated from only pairs of organizations in different countries. 
 		Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. S\ref{fig:supp:gravity_prediction_subsets}).
 	}
 \end{figure}
@@ -357,13 +357,16 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	\label{fig:supp:pubs_over_time}
 	\includegraphics[width=\textwidth]{\figdir/Descriptive/mobility_by_country.pdf}
 	\caption{
-		\textbf{Extend and nature of mobility by country.}
+		\textbf{Extent and nature of mobility by country.}
 		\textbf{a.}
 		Proportion of researchers in each country classified as mobile, meaning that they have at least two organization affiliations within the period of study. 
-		The countires with the most mobile researchers are the United States, China, France, Great Britain, and Germany. 
+		The countries with the most mobile researchers are the United States, China, France, Great Britain, and Germany. 
 		\textbf{b.}
 		The same information, arranged into a cumulative distribution.
-		The five countires with the highest mobility account for a total of 
+		The five countires with the highest mobility account for approximately 70 percent of all mobility. 
+		\textbf{c.} The proportion of researchers labeled as mobile by country.
+		\textbf{d.} First two principal components of four variables: proportion in each country mobile across organizations, proportion mobile across cities, proportion mobile across regions, and proportion mobile across countries. 
+		First component captures overall degree of mobile, whereas the second compares within-country against across-country mobility. 		
 	}
 \end{figure}
 
@@ -399,7 +402,7 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	\includegraphics[width=\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
 	\caption{
 		\textbf{Larger dimensions, smaller window size improves embedding performance.}
-		The correlation, or amount of flux explained by the embedding proximity with varying skip-gram negative sampling hyperparameters. 
+		The correlation, or amount of flux explained by the embedding distance with varying skip-gram negative sampling hyperparameters. 
 		Window size refers to the window, on either side of the target token, to use as context for training. 
 		Smaller window sizes results in an embedding that explain more of the flux. 
 		Embedding dimensions refer to the size of the organization vector.
@@ -419,15 +422,15 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	\label{fig:supp:gravity_correlation}
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
 	\caption{
-		\textbf{Embedding proximity explains more variance for global, within, and between country flux than geographic distance.}
+		\textbf{Embedding distance explains more variance for global, within, and between country flux than geographic distance.}
 		\textbf{a.}
-		Embedding proximity (cosine similarity between vectors) explains more of the total distance than does geographic distance (\textbf{b}). 
+		Embedding distance (cosine distance between vectors) explains more of the total distance than does geographic distance (\textbf{b}). 
 		Red line is line of best fit. 
 		Black dots are mean flux across binned proximity meas.
 		Color indicates frequency of organization pairs within each hex bin.
 		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}a and Fig.~\ref{fig:gravity_performance}.
-		\textbf{c-d.}	embedding proximity explains more variance when considering only pairs of organizations within the same country. 
-		\textbf{e-f.} embedding proximity more robust than geographic distance for pairs of organizations in different countries. 
+		\textbf{c-d.}	embedding distance explains more variance when considering only pairs of organizations within the same country. 
+		\textbf{e-f.} embedding distance is more robust than geographic distance for pairs of organizations in different countries. 
 	}
 \end{figure}
 
@@ -442,14 +445,40 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_different_fits.pdf}
 	\caption{
 		\textbf{Little difference between gravity predictions fit on all or subsets of data.}
-		Predictions  of flux between organization pairs made using embedding proximity out-perform those made using geographic distance. 
+		Predictions of flux between organization pairs made using embedding distance out-performs those made using geographic distance. 
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		\textbf{a-b.} Predictions are made with parameter, estimating parameters from all pairs of organizatioons, making global predictions (as in Fig.~\ref{fig:gravity_performance}c), and showing only subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
+		\textbf{a-b.} Predictions are made with parameter, estimating parameters from all pairs of organizations, making global predictions (as in Fig.~\ref{fig:gravity_performance}c), and showing only subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
 		\textbf{c-d.} Predictions made by estimating gravity law parameters on subset of organizations in the same country (\textbf{c}) and different country \textbf{d}); 
 		this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h. 
 	}
 \end{figure}
+
+
+
+%
+% Figure - PPR gravity model and predictions
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:supp:gravity_prediction_subsets}
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_ppr.pdf}
+	\caption{
+		\textbf{Personalized page rank does not capture mobility.}
+		Performance of personalized page rank scores in explaining and predicting mobility.
+		Personalized page rank is calculated for the underlying mobility network, and similarity between resulting vectors used as the PPR distance.
+		PPR distance does not explain global mobility (\textbf{a}), or same (\textbf{b}) or different (\textbf{c}) country mobility, performing worse than geographic distance (Fig.~\ref{fig:supp:gravity_correlation}). 
+		Red line is line of best fit. 
+		Black dots are mean flux across binned proximity meas.
+		Color indicates frequency of organization pairs within each hex bin.
+		Similarly, PPR distance performs poorly as a distance metric for gravity model predictions globally (\textbf{d}), and across pairs of organizations in the same (\textit{e}) and in different (\textbf{f}) countries. 
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+	}
+\end{figure}
+
+
+
 
 \clearpage
 \printbibliography{}
