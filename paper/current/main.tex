@@ -267,12 +267,10 @@ We follow standard practice and exclude from our analysis zero flows.
 %
 % Subsection: Applications
 %
-\subsection*{Applications}
-% Here we will examine several applications of this effective distnace, including for clustering, visualization + descriptive analysis, and maybe something else?
-
+\subsection*{Embeddings capture complex structure}
 
 %
-% Figure - 
+% Figure - UMAP Projections
 %
 \begin{figure}[hp!]
 	\centering
@@ -285,8 +283,8 @@ We follow standard practice and exclude from our analysis zero flows.
 		Each point corresponds to an organization.
 		Color indicates the continent. 
 		We re-project subsets of organizational vectors to uncover more complex local structure.
-		\textbf{b.} Re-projection of organizational vectors roughly correponding to West-Asian, Southeast Asian, and South Asian countries. 
-		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portougese- and Spanish-speaking counriees in South and Central America. 
+		\textbf{b.} Re-projection of organizational vectors roughly corresponding to West-Asian, Southeast Asian, and South Asian countries. 
+		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portuguese- and Spanish-speaking counriees in South and Central America. 
 		\textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
 		Color indicates Census Bureau-designated regions,
 		\textbf{e.} Re-projection of organizations in Massachusetts reveal clustering based on organizational sector, prestige. 
@@ -295,6 +293,32 @@ We follow standard practice and exclude from our analysis zero flows.
 \end{figure}
 
 
+\subsection*{Embeddings capture international relationships}
+
+
+%
+% Figure - CLUSTERING
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:clustering}
+	\includegraphics[width=\textwidth]{\figdir/Clustering/cluster_country.pdf}
+	\caption{
+		\textbf{Geography, then language, dictate international mobility.}
+		\textbf{a.} Hierarchically clsutered similarity matrix of country vectors, aggregated as the mean of all organization vectors within the country, excluding the United States. 
+		Color of matrix cells corresponds to similarity between country vectors.
+		Color of country names corresponds to their cluster.
+		Color of three cell rows separated from the matrix correspond to, from left to right, the continent of the country, the language family, and the individual language. 
+		\textbf{b.}	\textit{CluSim} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$. 
+		Continent better explains the grouping of country vectors at higher levels of the clustering processes.
+		Language family, and then majority spoken language, better explain the grouping of countries at more granular 
+	}
+\end{figure}
+
+
+
+
+\subsection*{Embeddings capture latent geography and hierarchy}
 %
 % Figure - SemAxis results
 %
@@ -509,7 +533,6 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
 	}
 \end{figure}
-
 
 
 
