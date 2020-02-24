@@ -98,6 +98,7 @@ Combinations are also associated with a publication-level disciplinary classific
 ``Biomedical and health sciences'', ``Physical sciences and engineering'', ``Life and earth sciences'', and ``Mathematics and computer science''.
 Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. 
 Authors are classified as mobile when they have at least two distinct organization ids in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
+While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (see Fig.~\ref{fig:supp:pubs_over_time}).
 
 % %Organization information
 Affiliations mapped to one of 8,661 organizations, disambiguated following a mostly manual process originally designed for the Leiden Rankings of World Universities~\cite{waltman2012leidenrankings}. 
@@ -229,19 +230,20 @@ This value is comparable to other common applications of the gravity law, such a
 We follow standard practice and exclude from our analysis zero flows. 
 
 
-%
-% SUBSECTION: SEMAXIS
-%
-\subsection{SemAxis}
-
-
-
 \section{Results}\label{sec:results} %{{{ 
 
 %
 % Subsection: Embedding performance
 %
 \subsection*{Embedding performance}
+
+We find that embedding distance, the distance between vectors in the embedding space, produces an effective measure of distance.
+Embedding distance explains more of the total flux between pairs of organizations, with correlation ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) over double that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
+Similarly, embedding distance outperforms personalized-page rank distance ($R^{2} = 0.001$, Fig. SI~\ref{fig:supp:gravity_ppr}a), a measure produced from the factorized nodes in the underlying mobility network. 
+When controlling for only mobility between pairs of organizations within the same country, embedding distance ($R^{2} = 0.48$, Fig. SI~\ref{fig:supp:gravity_correlation}c) than does geographic distance ($R^{2} = 0.19$, Fig. SI~\ref{fig:supp:gravity_correlation}d). 
+Embedding distnace is also far more robust in explaining international flux, with a correlation nearly seven times higher ($R^{2} = 0.28$, Fig. SI~\ref{fig:supp:gravity_correlation}e) than that of geographic distance ($R^{2} = 0.041$, Fig. SI~\ref{fig:supp:gravity_correlation}f). 
+ 
+ 
 
 %
 % Figure - Gravity law performance
