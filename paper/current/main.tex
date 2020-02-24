@@ -273,86 +273,14 @@ This performance is also much better than that using personalized page rank dist
 
 
 %
-% Subsection: Applications
-%
-\subsection*{Embeddings capture complex structure}
-
-We visualize whole organization vectors in  Fig. \ref{fig:projection}a.
-The coordinates of each organization come from a 2-D projection of the  embedding vectors with UMAP \cite{mcinnes2018umap} and the colors indicates the continent that organization belongs. Overall structure is almost similar to geographical map seen from the north pole while coherent structures of the communities are detected. For instance, french-spoken region of the Canada (Quebec, Montreal) is more close to French cluster rather than mainland of Canada.
-%
-% Figure - UMAP Projections
-%
-\begin{figure}[hp!]
-	\centering
-	\label{fig:projection}
-	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.png}
-	\caption{
-		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
-		\textbf{a.}
-		UMAP projection \cite{mcinnes2018umap} of the entire embedding space reveals geographic clustering.
-		Each point corresponds to an organization. 
-		Size indicates the size of the organization.
-		Color indicates the continent. 
-		We re-project subsets of organizational vectors to uncover more complex local structure.
-		\textbf{b.} Re-projection of organizational vectors roughly corresponding to West-Asian, Southeast Asian, and South Asian countries. 
-		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portuguese- and Spanish-speaking countries South and Central America. 
-		\textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
-		Color indicates Census Bureau-designated regions,
-		\textbf{e.} Re-projection of organizations in Massachusetts reveal clustering based on organizational sector, prestige. 
-		Color indicates sector designation of organization. 
-	}
-\end{figure}
-
-
-\subsection*{Embeddings capture international relationships}
-
-
-%
-% Figure - CLUSTERING
-%
-\begin{figure}[p!]
-	\centering
-	\label{fig:clustering}
-	\includegraphics[width=\textwidth]{\figdir/Clustering/cluster_country.pdf}
-	\caption{
-		\textbf{Geography, then language, dictate international mobility.}
-		\textbf{a.} Hierarchically clustered similarity matrix of country vectors, aggregated as the mean of all organization vectors within the country that has a more than 25 organizations, excluding the United States. 
-		Color of matrix cells corresponds to similarity between country vectors.
-		Color of country names corresponds to their cluster.
-		Color of three cell rows separated from the matrix correspond to, from left to right, the continent of the country, the language family, and the individual language. 
-		\textbf{b.}	\textit{CluSim} \cite{gates2019element} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$. 
-		Continent better explains the grouping of country vectors at higher levels of the clustering processes.
-		Language family, and then majority spoken language, better explain the grouping of countries at more granular. 
-	}
-\end{figure}
-
-
-
-
-\subsection*{Embeddings capture latent geography and hierarchy}
-%
-% Figure - SemAxis results
-%
-\begin{figure}[hp!]
-	\centering
-	\label{fig:semaxis}
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
-	\caption{
-		\textbf{Embedding captures latent geography and prestige hierarchy.}
-		\textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
-		Points correspond to organizations, and a sample of individual states are highlighted. 
-		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the "Elite" end of the axis prestige axis \textit{a}.
-		White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
-		The grey box corresponds to the top 20 and bottom 20 ranks. 
-	  	The estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.81 (n = 145).
-	}
-\end{figure}
-
-
-%
 % Subsection: Mathematical Exploration
 %
-\subsection*{Mathematical Exploration}
+\subsection*{Mathematical explanation}
+
+We observed that word embedding models trained on scientific mobility trajectories offers a reasonable measure of effective distance, one that explains flux between organizations far better than geographic distance. 
+Why is this true?
+Why does the skip-gram model learn vectors which approximate gravity law relationships?
+We find evidence of a latent mathematical connection between the two models, one that makes the skip-gram model applicable to many other forms of mobility trajectory. 
 
 Let $f_{ij}$ represents the total \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
 
@@ -453,6 +381,99 @@ where the conditional probability of observing one word, $w_{0}$, given another,
 where $v_w$ and $v'_w$ are `input' and `output' vector representations of each word in the vocabulary. In the negative sampling strategies, the denominator is not calculated directly. In general, the cosine similarity of in-vectors is used as a measure of affinity. Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form (or Eq.~\ref{eq:real_embedding_relationship} is a special case of Eq. ~\ref{eq:skipgram_conditional_expanded}).
 
 The \textit{word2vec} skip-gram model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility. 
+
+
+%
+% Subsection: Applications
+%
+\subsection*{Embeddings capture complex structure}
+
+We visualize whole organization vectors in  Fig. \ref{fig:projection}a.
+The coordinates of each organization come from a 2-D projection of the  embedding vectors with UMAP \cite{mcinnes2018umap} and the colors indicates the continent that organization belongs. Overall structure is almost similar to geographical map seen from the north pole while coherent structures of the communities are detected. For instance, french-spoken region of the Canada (Quebec, Montreal) is more close to French cluster rather than mainland of Canada.
+%
+% Figure - UMAP Projections
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:projection}
+	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.png}
+	\caption{
+		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
+		\textbf{a.}
+		UMAP projection \cite{mcinnes2018umap} of the entire embedding space reveals geographic clustering.
+		Each point corresponds to an organization. 
+		Size indicates the size of the organization.
+		Color indicates the continent. 
+		We re-project subsets of organizational vectors to uncover more complex local structure.
+		\textbf{b.} Re-projection of organizational vectors roughly corresponding to West-Asian, Southeast Asian, and South Asian countries. 
+		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portuguese- and Spanish-speaking countries South and Central America. 
+		\textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
+		Color indicates Census Bureau-designated regions,
+		\textbf{e.} Re-projection of organizations in Massachusetts reveal clustering based on organizational sector, prestige. 
+		Color indicates sector designation of organization. 
+	}
+\end{figure}
+
+
+\subsection*{Embeddings capture international relationships}
+
+
+%
+% Figure - CLUSTERING
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:clustering}
+	\includegraphics[width=\textwidth]{\figdir/Clustering/cluster_country.pdf}
+	\caption{
+		\textbf{Geography, then language, dictate international mobility.}
+		\textbf{a.} Hierarchically clustered similarity matrix of country vectors, aggregated as the mean of all organization vectors within the country that has a more than 25 organizations, excluding the United States. 
+		Color of matrix cells corresponds to similarity between country vectors.
+		Color of country names corresponds to their cluster.
+		Color of three cell rows separated from the matrix correspond to, from left to right, the continent of the country, the language family, and the individual language. 
+		\textbf{b.}	\textit{CluSim} \cite{gates2019element} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$. 
+		Continent better explains the grouping of country vectors at higher levels of the clustering processes.
+		Language family, and then majority spoken language, better explain the grouping of countries at more granular. 
+	}
+\end{figure}
+
+
+%
+% Subsection - hierarchy
+% 
+\subsection*{Embeddings capture latent geography and hierarchy}
+%
+% Figure - SemAxis results
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:semaxis}
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
+	\caption{
+		\textbf{Embedding captures latent geography and prestige hierarchy.}
+		\textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
+		Points correspond to organizations, and a sample of individual states are highlighted. 
+		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the "Elite" end of the axis prestige axis \textit{a}.
+		White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
+		The grey box corresponds to the top 20 and bottom 20 ranks. 
+	  	The estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.81 (n = 145).
+	}
+\end{figure}
+
+
+%
+% SECTION: DISCUSSION
+% 
+\section*{Discussion}
+
+
+
+%
+% SECTION: CONCLUSION
+% 
+\section*{Conclusion}
+
+
 
 \newpage
 \clearpage
