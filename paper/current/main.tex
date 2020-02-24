@@ -14,11 +14,13 @@
         \renewcommand{\thefigure}{S\arabic{figure}}%
      }
      
-  
+
 
 % Math
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{newtxmath}
+\DeclareMathAlphabet{\mathpzc}{T1}{pzc}{m}{it}
 \DeclareMathOperator*{\argmin}{\arg\!\min}
 \DeclareMathOperator*{\argmax}{\arg\!\max}
 
@@ -58,6 +60,8 @@
 \def\del#1{ {\color{light-gray}{#1}} }
 \def\yy#1{ {\color{red}\textbf{yy: #1}} }
 \def\dk#1{ {\color{red}\textbf{dk: #1}} }
+\def\js#1{ {\color{red}\textbf{js: #1}} }
+
 
 %}}}
 
@@ -113,7 +117,7 @@ However, a more general organization may not always occur alongside the more spe
 For example, a researcher affiliated with the smaller regional school "Indiana University South Bend" will be listed as affiliated with only the "Indiana University System". 
 We identify all specific organizations that always co-occur along a more general one.
 For every career trajectory that includes one of these specific organizations, we remove all occurrences of the more general organization;
-trajectories containing only a general designation are not altered. 
+trajectories containing only a general designation are not alted. 
 
 Scientific mobility is complex and can be defined in many possible ways~\cite{robinson2019mobility}.
 Here, we consider an author as mobile when at least two distinct organizational affiliations appear in their trajectory during the 2008-2019 time window. 
@@ -177,8 +181,8 @@ We also calculate two forms of proximity between organizations.
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between organizations.
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations. 
 When less than one kilometer, a distance of one is imputed. 
-The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
-
+The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = 1 - \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
+\js{cosine similarity itself is not the distance}
 
 %
 % SUBSECTION: GRAVITY LAW
@@ -192,32 +196,31 @@ Following the gravity law, the expected flow between two organizations is define
 
 \begin{equation}
 	\label{eq:gravity_basic}
-	f_{ij} = C\frac{m_{i}m_{j}}{f(r_{ij})}
+	f_{ij} = C*m_{i}m_{j}*f(r_{ij})
 \end{equation}
 
-where $m_{i}$ and $m_{j}$ are the yearly-average size of each organization during the time window, and $f(r_{ij}$ is a function of the distance between the two organizations, chosen as to fit the data, and $C$ is a constant. 
+where $m_{i}$ and $m_{j}$ are the yearly-average size of each organization during the time window, and $f(r_{ij})$ is a distance-decaying function  between the two organizations. There are two popular forms of the $f(r_{ij})$. The first one is power-law function with $f(r_{ij})= r^{-\alpha}_{ij}  (\alpha > 0)$, and the another one is exponential function with $f(r_{ij}) = e^{-\beta r_{ij}} (\beta > 0)$ \cite{chen2015distance}.  $f(r_{ij})$, $C$ can be chosen as to fit the data with the simple regression.
 Form this standard formulation we also define what we term the \textit{flux}, or the expected flow between organizations given their size, as a function of distance,
 
 \begin{equation}
 	\label{eq:gravity_flux}
-	F_{ij} = \frac{f_{ij}}{m_{i}m_{j}} = Cf(r_{ij})
+	\widetilde{f_{ij}} = C*m_{i}m_{j}*f(r_{ij})
 \end{equation}
 
-\dk{We need to mention why we choose these distance functions}
-
-We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$. 
-For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{\alpha}_{ij}$, where $\alpha$ is estimated from the data. 
-For embedding distance , we use the exponential function, with $f(d_{ij}) = e^{\beta d_{ij}}$, where $\beta$ is estimated from the data. 
+\js{I think we need a results, geographical distance with exponential function, emb distance with power-law function. And It will goes to supplement for sure}
+We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
+For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{-\alpha}_{ij}$, where $\alpha$ is estimated from the data. 
+For embedding distance , we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$, where $\beta$ is estimated from the data. 
 To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming each variant of \label{eq:gravity_flux}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression. 
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
-	\ln(F_{ij}) = \ln(C) - \alpha \ln(g_{ij})
+	\ln(\frac{f_{ij}}{m_im_j}) = \ln(C)  - \alpha \ln(g_{ij})
 \end{equation}
 
 \begin{equation}
 	\label{eq:linear_flux_emb}
-	\ln(F_{ij}) = \ln(C) + \beta d_{ij}
+	\ln(\frac{f_{ij}}{m_im_j}) = \ln(C) - \beta d_{ij}
 \end{equation}
 
 The gravity law of mobility is known to be sensitive to the case where $f_{ij} = 0$, or zero movement between organizations. 
@@ -343,35 +346,133 @@ We follow standard practice and exclude from our analysis zero flows.
 %
 \subsection*{Mathematical Exploration}
 
-Let $f_{ij}$ represents the total flux (the number of people who moved) between $i$ and $j$. 
-Because we are ignoring the directions, $f_{ij} = f_{ji}$. 
-The total flux from or to $i$ can be written as $\mu_{i} = \sum_k f_{ik}$. 
-Then the conditional probability $p(j|i)$ is simply
-\begin{equation}\label{fig:flux_conditional_prob}
-p(j|i) = \frac{f_{ij}}{\mu_i}. 
-\end{equation}
-
-Let us assume that we have identified the best embedding vector $v_i$ for every institution. 
-The skip-gram model maximizes the average log probability
-\begin{equation}
-\frac{1}{T}\sum_{t=1}^{T} \sum_{-c \le j \le c, j \neq 0} \log p(w_{t+j}|w_t),  
-\end{equation}
-where 
-\begin{equation}
-p(w_O|w_I) = \frac{\exp(v'_{w_{O} }\cdot v_{w_{I}})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_{)}}}, 
-\end{equation}
-where $v_w$ and $v'_w$ are `input' and `output' vector representations of $w$. 
-
-The best embedding should be able to closely approximate the true conditional probability Eq.~\ref{fig:flux_conditional_prob}.  \yy{why? can we prove this?} 
+Let $f_{ij}$ represents the total \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
 
 \begin{equation}
-p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} \exp(v'_w \cdot v_i)}
+    \label{eq:gravity_model}
+    \frac{f_{ij}}{M_{i} * M_{j}} \propto \exp(\cos(v_i,v_j))
 \end{equation}
 
+where the cosine similarity between two vectors, $\cos(v_{i}, v_{j})$, is defined as,
 
-%}}}
+\begin{equation}
+    \cos(v_j, v_i) = \frac{v_j \cdot v_i}{|v_j||v_i|} 
+\end{equation}
 
-%}}}
+In the case of scientific co-affiliation, all movements are without direction (symmetric), meaning that  $f_{ij} = f_{ji}$.
+Let's denote $\mathpzc{N}_i$ as the neighborhood set of organization i, which are organizations with non-zero co-affiliation to organization i.
+Then, the total flux to or from $i$ can be written as 
+
+\begin{equation}
+    \mu_{i} = \sum_{k\in\mathpzc{N}_i} f_{ik} \propto M_i
+\end{equation} 
+
+with the hypothesis that a similar fraction of the scholars are mobile in each organization. Then, our gravity model can be written with only terms from mobility data, 
+
+\begin{equation}
+    \label{eq:gravity_model_approx}
+    \frac{f_{ij}}{\mu_i * \mu_j} \propto \exp(\cos(v_i,v_j))
+\end{equation}
+
+The embedding that best represents the data should closely approximate the true conditional probability defined in
+Eq.~\ref{eq:flux_conditional_prob},
+
+\begin{equation}
+    \label{eq:flux_conditional_prob}
+    p(j|i) = \frac{f_{ij}}{\mu_i} 
+\end{equation}
+
+We can then rewrite Eq.~\ref{eq:gravity_model_approx} as, 
+
+\begin{equation}
+    \label{eq:gravity_relationship}
+    \frac{f_{ij}}{\mu_i * \mu_j} = \frac{\mu_i * p(j|i)}{\mu_i * \mu_j} =  \frac{p(j|i)}{\mu_j} \propto \exp(\cos(v_i,v_j))
+\end{equation}
+
+Then, the word embedding model will learns vectors under the condition,
+
+\begin{equation}
+    \label{eq:gravity_relationship}
+      p(j|i) \propto {\mu_j}* \exp(\cos(v_i,v_j))
+\end{equation}
+
+which is restricted to, sum of the conditional probability must be one,
+
+\begin{equation}
+    \label{eq:gravity_relationship}
+    \sum_{j\in\mathpzc{N}_i} p(j|i) = 1
+\end{equation}
+
+Then, we can write $p(j|i)$ with $\mu_{j}$
+
+\begin{equation}
+    \label{eq:gravity_relationship}
+    p(j|i) \propto \frac{{\mu_j}* \exp(\cos(v_i,v_j)}{\sum_{k\in\mathpzc{N}_i} {\mu_k}* \exp(\cos(v_i,v_k))}
+\end{equation}
+
+And, if we remove ${\mu_*}$ for simplicity (or for our special case with $\mu_{i} = \mu_{j} = \mu_*$), then $p(j|i)$ can be written as,
+
+\begin{equation}
+    \label{eq:real_embedding_relationship}
+    p(j|i) \propto \frac{\exp(\cos(v_j, v_i))}{\sum_{k\in\mathpzc{N}_i} \exp(\cos(v_k,v_i))}
+\end{equation}
+
+% $p(j|i)$ and ${\mu_j}$ is given from data, and the our model trains $\exp(\cos(v_i,v_j))$ with the data. Then, can we infer the functional form of the $p(j|i)$ which is written with the results of the model?
+
+% Cosine similarity capture the relative importance of neighborhood, because, with same $p(j|i)$, if $\mu_j$ is large, $\exp(\cos(v_i,v_j)$ should small and if $\mu_j$ is small, $\exp(\cos(v_i,v_j)$ should be large. Based on this relationship, cosine similarity capture the relative importance. Simply, we can use $p(j|i)$ as just normalized importance with
+
+% Also, we can validate this proxy with checking inverse relationship, \ref{eq:inverse_relationship}.
+
+% \begin{equation}
+%     \frac{f_{ij}}{\mu_i * \mu_j} \propto \frac{\exp(\cos(v_i, v_j))}{\mu_i * \sum_{w\in\mathpzc{N}_j} \exp(\cos(v_w,v_j))} \propto \exp(\cos(v_i,v_j))
+% \end{equation}
+% \begin{equation}
+% \label{eq:inverse_relationship}
+%      \mu_i * \sum_{w\in\mathpzc{N}_j} \exp(\cos(v_w,v_j)) \propto C
+% \end{equation}
+
+
+% According to Fig. \ref{fig:inverse_relationship}, $\mu_{i}$ and $\sum_{w \in \mathcal{N}_{j}} \exp(\cos(v_w \cdot v_j))$ have either a negative power-law relationship, or a weak inverse relationship. 
+% This relationship may result form hub nodes, or major organizations central to the global network of co-affiliations. 
+% A node with large $\mu_{i}$ would be considered a hub node in the network, and following the friendship paradox, neighboring nodes will likely have fewer neighbors than the hub. 
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.8\columnwidth]{test.png}
+%     \caption{Relationship between the conditional probability and the cosine similarity}
+%     \label{fig:inverse_relationship}
+% \end{figure}
+
+
+We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good approximation functional form of is $p(i|j)$ in Fig. \ref{fig:real_embedding_relationship}, as high values of flow correspond to high Eq.\ref{eq:real_embedding_relationship} values.
+
+%
+% Figure - Conditional Probability
+%
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\columnwidth]{\figdir/Math/approxi_proof.png}
+    \caption{Relationship between the conditional probability and the cosine similarity}
+    \label{fig:real_embedding_relationship}
+\end{figure}
+
+This finding relates to the objective function of \textit{word2vec} (skip-gram) model. The skip-gram model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
+
+\begin{equation}
+    \label{eq:skipgram_log_prob_condensed}
+    \frac{1}{T}\sum_{t=1}^{T} \sum_{-c \le j \le c, j \neq 0} \log p(w_{t+j}|w_t),  
+\end{equation}
+
+where the conditional probability of observing one word, $w_{0}$, given another, $w_{1}$, is defined as,
+
+\begin{equation}
+    \label{eq:skipgram_conditional_expanded}
+    p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_I})}, 
+\end{equation}
+
+where $v_w$ and $v'_w$ are `input' and `output' vector representations of each word in the vocabulary. In the negative sampling strategies, the denominator is not calculated directly. In general, the cosine similarity of in-vectors is used as a measure of affinity. Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form (or Eq.~\ref{eq:real_embedding_relationship} is a special case of Eq. ~\ref{eq:skipgram_conditional_expanded}).
+
+The \textit{word2vec} skip-gram model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility. 
 
 \newpage
 \clearpage
