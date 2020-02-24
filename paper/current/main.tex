@@ -211,7 +211,7 @@ Form this standard formulation we also define what we term the \textit{flux}, or
 We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
 For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{-\alpha}_{ij}$, where $\alpha$ is estimated from the data. 
 For embedding distance , we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$, where $\beta$ is estimated from the data. 
-To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming each variant of \label{eq:gravity_flux}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression. 
+To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming each variant of \ref{eq:gravity_flux}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression. 
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
@@ -392,21 +392,20 @@ We can then rewrite Eq.~\ref{eq:gravity_model_approx} as,
 Then, the word embedding model will learns vectors under the condition,
 
 \begin{equation}
-    \label{eq:gravity_relationship}
+    \label{eq:conditional probability}
       p(j|i) \propto {\mu_j}* \exp(\cos(v_i,v_j))
 \end{equation}
 
 which is restricted to, sum of the conditional probability must be one,
 
 \begin{equation}
-    \label{eq:gravity_relationship}
+    \label{eq:sum of the conditional probabiitliy}
     \sum_{j\in\mathpzc{N}_i} p(j|i) = 1
 \end{equation}
 
 Then, we can write $p(j|i)$ with $\mu_{j}$
 
 \begin{equation}
-    \label{eq:gravity_relationship}
     p(j|i) \propto \frac{{\mu_j}* \exp(\cos(v_i,v_j)}{\sum_{k\in\mathpzc{N}_i} {\mu_k}* \exp(\cos(v_i,v_k))}
 \end{equation}
 
