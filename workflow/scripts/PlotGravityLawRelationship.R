@@ -74,7 +74,7 @@ if (opt$geo == "same-country") {
 
 # Reduce the size to save on memory
 dist <- dist %>%
-  select(geo_distance, emb_similarity, ppr_distance, gravity)
+  select(geo_distance, emb_distance, ppr_distance, gravity)
 
 axislabel <- "DEFAULT"
 # Select the appropriate metric using the --distance command line argument
@@ -88,11 +88,11 @@ if (opt$distance == "geo") {
 } else if (opt$distance == "emb") {
   # Default, use embedding distance
   dist <- dist %>%
-    rename(distance = emb_similarity) %>%
+    rename(distance = emb_distance) %>%
     mutate(distance = ifelse(distance > 0, distance, 0))
 
   # Provide axis label
-  axislabel <- "Cosine similarity"
+  axislabel <- "Cosine distance"
 } else if (opt$distance == "ppr") {
   dist <- dist %>%
     rename(distance = ppr_distance)
@@ -198,6 +198,7 @@ if (opt$showcoef) {
                           geom = "text",
                           aes(label = paste(..rr.label.., sep = "~~~")),
                           parse=TRUE,
+                          label.x.npc = 0.75,
                           rr.digits = 2,
                           size = 7
     )

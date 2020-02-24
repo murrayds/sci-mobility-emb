@@ -137,8 +137,10 @@ if (opt$overall == TRUE) {
     if (is.na(opt$sector)) {
       if (opt$state %in% c("California", "Arizona", "Washington")) {
         pointcolor <- "#FF9800"
-      } else if (opt$state %in% c("Massachusetts", "Connecticut", "New_York")) {
+      } else if (opt$state %in% c("Massachusetts", "Connecticut", "New_York", "Pennsylvania")) {
         pointcolor <- "#795548"
+      } else if (opt$state %in% c("Texas", "Florida")) {
+        pointcolor <- "#FF5722"
       } else {
         pointcolor <- "#f39c12"
       } # end color selection
@@ -228,7 +230,23 @@ if (opt$overall) {
     scale_fill_manual(name = "Region", values = STATE_COLORS)
 } else {
   plot <- plot +
+    guides(fill = F) + # remove the fill, only 1 value
     scale_fill_manual(name = "Region", values = pointcolor)
+
+  if (is.na(opt$sector) & !is.na(opt$state)) {
+    plotlabel <- target_state
+  } else if (!is.na(opt$sector) & is.na(opt$state)) {
+    plotlabel <- opt$sector
+  }
+
+  plot <- plot +
+    annotate(geom = "text",
+             x = 0.28,
+             y = -0.4,
+             label = plotlabel,
+             size = 7,
+             fontface = 2
+           )
 }
 
 # Save the plot

@@ -14,11 +14,13 @@
         \renewcommand{\thefigure}{S\arabic{figure}}%
      }
      
-  
+
 
 % Math
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{newtxmath}
+\DeclareMathAlphabet{\mathpzc}{T1}{pzc}{m}{it}
 \DeclareMathOperator*{\argmin}{\arg\!\min}
 \DeclareMathOperator*{\argmax}{\arg\!\max}
 
@@ -58,12 +60,14 @@
 \def\del#1{ {\color{light-gray}{#1}} }
 \def\yy#1{ {\color{red}\textbf{yy: #1}} }
 \def\dk#1{ {\color{red}\textbf{dk: #1}} }
+\def\js#1{ {\color{red}\textbf{js: #1}} }
+
 
 %}}}
 
 \begin{document} %{{{
 
-\title{Word2vec learns effective distance of scientific co-affiliation} %{{{
+\title{Unsupervised embeddings capture latent structure of scientific mobility} %{{{
 \date{\today}
 \maketitle %}}}
 
@@ -94,6 +98,7 @@ Combinations are also associated with a publication-level disciplinary classific
 ``Biomedical and health sciences'', ``Physical sciences and engineering'', ``Life and earth sciences'', and ``Mathematics and computer science''.
 Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. 
 Authors are classified as mobile when they have at least two distinct organization ids in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
+While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (see Fig.~\ref{fig:supp:pubs_over_time}).
 
 % %Organization information
 Affiliations mapped to one of 8,661 organizations, disambiguated following a mostly manual process originally designed for the Leiden Rankings of World Universities~\cite{waltman2012leidenrankings}. 
@@ -101,18 +106,19 @@ Organizational records were associated with a full name, a type indicating the s
 Sixteen different sector types were included in the analysis, which we aggregated to a four high-level codes: \textit{University}, \textit{Hospital}, \textit{Government}, and \textit{Other}. 
 Each record was also associated with a latitude and longitude, however for many organizations these were missing or incorrect. We manually updated the coordinates of 2,267 organizations by searching the institution name and city on Google Maps;
 in cases where a precise location of the organization could not be identified, we used the coordinates returned when searching the name of the city.
+The data was further enriched with country-level information, including continent, majority language spoken, and language family of the majority language (e.g., the language family of \textit{Spanish} is \textit{Italic}).  
 State/province level  information were added using the reverse geocoding service LocationIQ using each organization's latitude and longitude as input. 
-Organizations were also assigned continental information (e.g., North America, Asia, Europe) manually, by country. 
+Regional census classifications were also added for states in the United States.
 For each organization, we also calculated a size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
 in the case that authors publish with multiple affiliations in a single year, they are counted towards each. 
 
-Some affiliations are mapped to two organizations, one specific, and one more general, as a result of the disambiguation procedure. 
+As a result of our disambiguation procedure, some affiliations are mapped to two organizations, one specific, and one more general.
 For example, any author affiliated with the "Indiana University Bloomington" will also be listed as being affiliated with the "Indiana University System", a more general designation for all public universities in Indiana. 
 However, a more general organization may not always occur alongside the more specific one.
 For example, a researcher affiliated with the smaller regional school "Indiana University South Bend" will be listed as affiliated with only the "Indiana University System". 
 We identify all specific organizations that always co-occur along a more general one.
 For every career trajectory that includes one of these specific organizations, we remove all occurrences of the more general organization;
-trajectories containing only a general designation are not altered. 
+trajectories containing only a general designation are not alted. 
 
 Scientific mobility is complex and can be defined in many possible ways~\cite{robinson2019mobility}.
 Here, we consider an author as mobile when at least two distinct organizational affiliations appear in their trajectory during the 2008-2019 time window. 
@@ -164,7 +170,7 @@ All word embeddings are trained using the \textit{gensim} python implementation 
 We visualize embeddings by projecting into two dimensions using UMAP~\cite{mcinnes2018umap}.
 
 %
-% Distances subsection
+% SUBSECTION: DISTANCE
 %
 \subsection{Distance}
 %% Distance calculations
@@ -172,13 +178,15 @@ We calculate $f_{ij}$, the pairwise number of co-affiliations between organizati
 For example, $f_{ij} = 10$ indicates that ten authors were co-affiliated with both organization $i$ and $j$ between 2008 and 2019, as evidenced from their publications. 
 In contrast to traditional mobility studies, all co-affiliations are symmetric, meaning that $f_{ij} = f_{ji}$. 
 
-We also calculate two forms of proximity between organizations. 
+We also calculate two forms of distance between organizations. 
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between organizations.
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations. 
 When less than one kilometer, a distance of one is imputed. 
-The embedding proximity, $d_{ij}$, is calculated as the pairwise cosine similarity between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
+The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = 1 - \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
 
-
+%
+% SUBSECTION: GRAVITY LAW
+%
 \subsection{Gravity Law}
 
 We model flow of authors across organizations, $f_{ij}$, using the gravity law. 
@@ -188,32 +196,31 @@ Following the gravity law, the expected flow between two organizations is define
 
 \begin{equation}
 	\label{eq:gravity_basic}
-	f_{ij} = C\frac{m_{i}m_{j}}{f(r_{ij})}
+	f_{ij} = C*m_{i}m_{j}*f(r_{ij})
 \end{equation}
 
-where $m_{i}$ and $m_{j}$ are the yearly-average size of each organization during the time window, and $f(r_{ij}$ is a function of the distance between the two organizations, chosen as to fit the data, and $C$ is a constant. 
+where $m_{i}$ and $m_{j}$ are the yearly-average size of each organization during the time window, and $f(r_{ij})$ is a distance-decaying function  between the two organizations. There are two popular forms of the $f(r_{ij})$. The first one is power-law function with $f(r_{ij})= r^{-\alpha}_{ij}  (\alpha > 0)$, and the another one is exponential function with $f(r_{ij}) = e^{-\beta r_{ij}} (\beta > 0)$ \cite{chen2015distance}.  $f(r_{ij})$, $C$ can be chosen as to fit the data with the simple regression.
 Form this standard formulation we also define what we term the \textit{flux}, or the expected flow between organizations given their size, as a function of distance,
 
 \begin{equation}
 	\label{eq:gravity_flux}
-	F_{ij} = \frac{f_{ij}}{m_{i}m_{j}} = Cf(r_{ij})
+	\widetilde{f_{ij}} = C*m_{i}m_{j}*f(r_{ij})
 \end{equation}
 
-\dk{We need to mention why we choose these distance functions}
-
-We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$. 
-For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{\alpha}_{ij}$, where $\alpha$ is estimated from the data. 
-For embedding distance , we use the exponential function, with $f(d_{ij}) = e^{\beta d_{ij}}$, where $\beta$ is estimated from the data. 
-To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming each variant of \label{eq:gravity_flux}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression. 
+\js{I think we need a results, geographical distance with exponential function, emb distance with power-law function. And It will goes to supplement for sure}
+We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
+For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{-\alpha}_{ij}$, where $\alpha$ is estimated from the data. 
+For embedding distance , we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$, where $\beta$ is estimated from the data. 
+To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming each variant of \ref{eq:gravity_flux}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression. 
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
-	\ln(F_{ij}) = \ln(C) - \alpha \ln(g_{ij})
+	\ln(\frac{f_{ij}}{m_im_j}) = \ln(C)  - \alpha \ln(g_{ij})
 \end{equation}
 
 \begin{equation}
 	\label{eq:linear_flux_emb}
-	\ln(F_{ij}) = \ln(C) + \beta d_{ij}
+	\ln(\frac{f_{ij}}{m_im_j}) = \ln(C) - \beta d_{ij}
 \end{equation}
 
 The gravity law of mobility is known to be sensitive to the case where $f_{ij} = 0$, or zero movement between organizations. 
@@ -221,12 +228,19 @@ Here, non-zero flows account for only 4.2 percent of all possible pairs of  the 
 This value is comparable to other common applications of the gravity law, such as to hone calls, commuting, and migration \cite{simini2012universal}.
 We follow standard practice and exclude from our analysis zero flows. 
 
+
 \section{Results}\label{sec:results} %{{{ 
 
 %
 % Subsection: Embedding performance
 %
 \subsection*{Embedding performance}
+
+We find that embedding distance, the distance between vectors in the embedding space, produces an effective measure of distance.
+Embedding distance explains more of the total flux between pairs of organizations, with correlation ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) over double that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
+Similarly, embedding distance outperforms personalized-page rank distance ($R^{2} = 0.001$, Fig. SI~\ref{fig:supp:gravity_ppr}a), a measure produced from the factorized nodes in the underlying mobility network. 
+When controlling for only mobility between pairs of organizations within the same country, embedding distance ($R^{2} = 0.48$, Fig. SI~\ref{fig:supp:gravity_correlation}c) than does geographic distance ($R^{2} = 0.19$, Fig. SI~\ref{fig:supp:gravity_correlation}d). 
+Embedding distnace is also far more robust in explaining international flux, with a correlation nearly seven times higher ($R^{2} = 0.28$, Fig. SI~\ref{fig:supp:gravity_correlation}e) than that of geographic distance ($R^{2} = 0.041$, Fig. SI~\ref{fig:supp:gravity_correlation}f). 
 
 %
 % Figure - Gravity law performance
@@ -236,31 +250,148 @@ We follow standard practice and exclude from our analysis zero flows.
 	\label{fig:gravity_performance}
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
 	\caption{
-		\textbf{Embedding proximity outperform and are more robust than geographic distance.}
-		\textbf{a.} embedding proximity (the cosine similarity between vectors) explains more of the flux between organization pairs than does geographic distance (\textbf{b}). 
+		\textbf{Embedding distance outperforms and is more robust than geographic distance.}
+		\textbf{a.} embedding distance (cosine distance between vectors) explains more of the flux between organization pairs than does geographic distance (\textbf{b}). 
 		Red line is line of best fit. 
-		Black dots are mean flux across binned proximity meas.
+		Black dots are mean flux across binned distances.
 		Color indicates frequency of organization pairs within each hex bin.
-		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding proximity out-perform those made using geographic distance. 
+		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding distance out-perform those made using geographic distance. 
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
 		\textbf{e-f.} Predictions made using model parameters learned from subset of same-country organization pairs. 
-		Embedding proximity outperform those made for geographic distance.
-		\textbf{g-h.} Embedding proximity also outperforms geographic distance when predicting flux using model parameters estimated from only pairs of organizations in different countries. 
+		Embedding distance outperforms those made for geographic distance.
+		\textbf{g-h.} Embedding distance also outperforms geographic distance when predicting flux using model parameters estimated from only pairs of organizations in different countries. 
 		Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. S\ref{fig:supp:gravity_prediction_subsets}).
 	}
 \end{figure}
+
+We also find that defining the gravity model as a function of embedding distance produces better predictions than does geographic distance.
+Comparing predicted against actual flux, we find that using the embedding distance in the gravity function has lower error, and are closer than are predictions made using geographic distance (Fig.~\ref{fig:gravity_performance}c-d). 
+Embedding distance also produces better predictions for pairs of organizations within the same country (Fig.~\ref{fig:supp:gravity_correlation}e-f) and for pairs of organizations in different countries (Fig.~\ref{fig:supp:gravity_correlation}g-h). 
+We find that these predictions are robust whether we make predictions using a model fit on the subsets themselves (Fig.~\ref{fig:gravity_performance}e-h) or fit on the global data and then applied to the subsets (Fig. SI~\ref{fig:supp:gravity_prediction_subsets}). 
+This performance is also much better than that using personalized page rank distance (Fig. SI~\ref{fig:supp:gravity_ppr}). 
+
+
+%
+% Subsection: Mathematical Exploration
+%
+\subsection*{Mathematical explanation}
+
+We observed that word embedding models trained on scientific mobility trajectories offers a reasonable measure of effective distance, one that explains flux between organizations far better than geographic distance. 
+Why is this true?
+Why does the skip-gram model learn vectors which approximate gravity law relationships?
+We find evidence of a latent mathematical connection between the two models, one that makes the skip-gram model applicable to many other forms of mobility trajectory. 
+
+Let $f_{ij}$ represents the total \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
+
+\begin{equation}
+    \label{eq:gravity_model}
+    \frac{f_{ij}}{M_{i} * M_{j}} \propto \exp(\cos(v_i,v_j))
+\end{equation}
+
+where the cosine similarity between two vectors, $\cos(v_{i}, v_{j})$, is defined as,
+
+\begin{equation}
+    \cos(v_j, v_i) = \frac{v_j \cdot v_i}{|v_j||v_i|} 
+\end{equation}
+
+In the case of scientific co-affiliation, all movements are without direction (symmetric), meaning that  $f_{ij} = f_{ji}$.
+Let's denote $\mathpzc{N}_i$ as the neighborhood set of organization i, which are organizations with non-zero co-affiliation to organization i.
+Then, the total flux to or from $i$ can be written as 
+
+\begin{equation}
+    \mu_{i} = \sum_{k\in\mathpzc{N}_i} f_{ik} \propto M_i
+\end{equation} 
+
+with the hypothesis that a similar fraction of the scholars are mobile in each organization. Then, our gravity model can be written with only terms from mobility data, 
+
+\begin{equation}
+    \label{eq:gravity_model_approx}
+    \frac{f_{ij}}{\mu_i * \mu_j} \propto \exp(\cos(v_i,v_j))
+\end{equation}
+
+The embedding that best represents the data should closely approximate the true conditional probability defined in
+Eq.~\ref{eq:flux_conditional_prob},
+
+\begin{equation}
+    \label{eq:flux_conditional_prob}
+    p(j|i) = \frac{f_{ij}}{\mu_i} 
+\end{equation}
+
+We can then rewrite Eq.~\ref{eq:gravity_model_approx} as, 
+
+\begin{equation}
+    \label{eq:gravity_relationship}
+    \frac{f_{ij}}{\mu_i * \mu_j} = \frac{\mu_i * p(j|i)}{\mu_i * \mu_j} =  \frac{p(j|i)}{\mu_j} \propto \exp(\cos(v_i,v_j))
+\end{equation}
+
+Then, the word embedding model will learns vectors under the condition,
+
+\begin{equation}
+    \label{eq:conditional probability}
+      p(j|i) \propto {\mu_j}* \exp(\cos(v_i,v_j))
+\end{equation}
+
+which is restricted to, sum of the conditional probability must be one,
+
+\begin{equation}
+    \label{eq:sum of the conditional probabiitliy}
+    \sum_{j\in\mathpzc{N}_i} p(j|i) = 1
+\end{equation}
+
+Then, we can write $p(j|i)$ with $\mu_{j}$
+
+\begin{equation}
+    p(j|i) \propto \frac{{\mu_j}* \exp(\cos(v_i,v_j)}{\sum_{k\in\mathpzc{N}_i} {\mu_k}* \exp(\cos(v_i,v_k))}
+\end{equation}
+
+And, if we remove ${\mu_*}$ for simplicity (or for our special case with $\mu_{i} = \mu_{j} = \mu_*$), then $p(j|i)$ can be written as,
+
+\begin{equation}
+    \label{eq:real_embedding_relationship}
+    p(j|i) \propto \frac{\exp(\cos(v_j, v_i))}{\sum_{k\in\mathpzc{N}_i} \exp(\cos(v_k,v_i))}
+\end{equation}
+
+We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good approximation functional form of is $p(i|j)$ in Fig. \ref{fig:real_embedding_relationship}, as high values of flow correspond to high Eq.\ref{eq:real_embedding_relationship} values.
+
+%
+% Figure - Conditional Probability
+%
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\columnwidth]{\figdir/Math/approxi_proof.png}
+    \caption{Relationship between the conditional probability and the cosine similarity}
+    \label{fig:real_embedding_relationship}
+\end{figure}
+
+This finding relates to the objective function of \textit{word2vec} (skip-gram) model. The skip-gram model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
+
+\begin{equation}
+    \label{eq:skipgram_log_prob_condensed}
+    \frac{1}{T}\sum_{t=1}^{T} \sum_{-c \le j \le c, j \neq 0} \log p(w_{t+j}|w_t),  
+\end{equation}
+
+where the conditional probability of observing one word, $w_{0}$, given another, $w_{1}$, is defined as,
+
+\begin{equation}
+    \label{eq:skipgram_conditional_expanded}
+    p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_I})}, 
+\end{equation}
+
+where $v_w$ and $v'_w$ are `input' and `output' vector representations of each word in the vocabulary. In the negative sampling strategies, the denominator is not calculated directly. In general, the cosine similarity of in-vectors is used as a measure of affinity. Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form (or Eq.~\ref{eq:real_embedding_relationship} is a special case of Eq. ~\ref{eq:skipgram_conditional_expanded}).
+
+The \textit{word2vec} skip-gram model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility. 
 
 
 %
 % Subsection: Applications
 %
-\subsection*{Applications}
-% Here we will examine several applications of this effective distnace, including for clustering, visualization + descriptive analysis, and maybe something else?
+\subsection*{Embeddings capture complex structure}
 
-
+We visualize whole organization vectors in  Fig. \ref{fig:projection}a.
+The coordinates of each organization come from a 2-D projection of the  embedding vectors with UMAP \cite{mcinnes2018umap} and the colors indicates the continent that organization belongs. Overall structure is almost similar to geographical map seen from the north pole while coherent structures of the communities are detected. For instance, french-spoken region of the Canada (Quebec, Montreal) is more close to French cluster rather than mainland of Canada.
 %
-% Figure - 
+% Figure - UMAP Projections
 %
 \begin{figure}[hp!]
 	\centering
@@ -269,12 +400,13 @@ We follow standard practice and exclude from our analysis zero flows.
 	\caption{
 		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
 		\textbf{a.}
-		UMAP projection of the entire embedding space reveals geographic clustering.
-		Each point corresponds to an organization.
+		UMAP projection \cite{mcinnes2018umap} of the entire embedding space reveals geographic clustering.
+		Each point corresponds to an organization. 
+		Size indicates the size of the organization.
 		Color indicates the continent. 
 		We re-project subsets of organizational vectors to uncover more complex local structure.
-		\textbf{b.} Re-projection of organizational vectors roughly correponding to West-Asian, Southeast Asian, and South Asian countries. 
-		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portougese- and Spanish-speaking counriees in South and Central America. 
+		\textbf{b.} Re-projection of organizational vectors roughly corresponding to West-Asian, Southeast Asian, and South Asian countries. 
+		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portuguese- and Spanish-speaking countries South and Central America. 
 		\textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
 		Color indicates Census Bureau-designated regions,
 		\textbf{e.} Re-projection of organizations in Massachusetts reveal clustering based on organizational sector, prestige. 
@@ -282,42 +414,69 @@ We follow standard practice and exclude from our analysis zero flows.
 	}
 \end{figure}
 
+
+\subsection*{Embeddings capture international relationships}
+
+
 %
-% Subsection: Mathematical Exploration
+% Figure - CLUSTERING
 %
-\subsection*{Mathematical Exploration}
-
-Let $f_{ij}$ represents the total flux (the number of people who moved) between $i$ and $j$. 
-Because we are ignoring the directions, $f_{ij} = f_{ji}$. 
-The total flux from or to $i$ can be written as $\mu_{i} = \sum_k f_{ik}$. 
-Then the conditional probability $p(j|i)$ is simply
-\begin{equation}\label{fig:flux_conditional_prob}
-p(j|i) = \frac{f_{ij}}{\mu_i}. 
-\end{equation}
-
-Let us assume that we have identified the best embedding vector $v_i$ for every institution. 
-The skip-gram model maximizes the average log probability
-\begin{equation}
-\frac{1}{T}\sum_{t=1}^{T} \sum_{-c \le j \le c, j \neq 0} \log p(w_{t+j}|w_t),  
-\end{equation}
-where 
-\begin{equation}
-p(w_O|w_I) = \frac{\exp(v'_{w_{O} }\cdot v_{w_{I}})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_{)}}}, 
-\end{equation}
-where $v_w$ and $v'_w$ are `input' and `output' vector representations of $w$. 
-
-The best embedding should be able to closely approximate the true conditional probability Eq.~\ref{fig:flux_conditional_prob}.  \yy{why? can we prove this?} 
-
-\begin{equation}
-p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} \exp(v'_w \cdot v_i)}
-\end{equation}
+\begin{figure}[p!]
+	\centering
+	\label{fig:clustering}
+	\includegraphics[width=\textwidth]{\figdir/Clustering/cluster_country.pdf}
+	\caption{
+		\textbf{Geography, then language, dictate international mobility.}
+		\textbf{a.} Hierarchically clustered similarity matrix of country vectors, aggregated as the mean of all organization vectors within the country that has a more than 25 organizations, excluding the United States. 
+		Color of matrix cells corresponds to similarity between country vectors.
+		Color of country names corresponds to their cluster.
+		Color of three cell rows separated from the matrix correspond to, from left to right, the continent of the country, the language family, and the individual language. 
+		\textbf{b.}	\textit{CluSim} \cite{gates2019element} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$. 
+		Continent better explains the grouping of country vectors at higher levels of the clustering processes.
+		Language family, and then majority spoken language, better explain the grouping of countries at more granular. 
+	}
+\end{figure}
 
 
-%}}}
+%
+% Subsection - hierarchy
+% 
+\subsection*{Embeddings capture latent geography and hierarchy}
+%
+% Figure - SemAxis results
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:semaxis}
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
+	\caption{
+		\textbf{Embedding captures latent geography and prestige hierarchy.}
+		\textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
+		Points correspond to organizations, and a sample of individual states are highlighted. 
+		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the "Elite" end of the axis prestige axis \textit{a}.
+		White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
+		The grey box corresponds to the top 20 and bottom 20 ranks. 
+	  	The estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.81 (n = 145).
+	}
+\end{figure}
 
-%}}}
+
+%
+% SECTION: DISCUSSION
+% 
+\section*{Discussion}
+
+
+
+%
+% SECTION: CONCLUSION
+% 
+\section*{Conclusion}
+
+
 
 \newpage
+\clearpage
 \beginsupplement
 \section{Supporting Information}
 
@@ -357,13 +516,16 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	\label{fig:supp:pubs_over_time}
 	\includegraphics[width=\textwidth]{\figdir/Descriptive/mobility_by_country.pdf}
 	\caption{
-		\textbf{Extend and nature of mobility by country.}
+		\textbf{Extent and nature of mobility by country.}
 		\textbf{a.}
 		Proportion of researchers in each country classified as mobile, meaning that they have at least two organization affiliations within the period of study. 
-		The countires with the most mobile researchers are the United States, China, France, Great Britain, and Germany. 
+		The countries with the most mobile researchers are the United States, China, France, Great Britain, and Germany. 
 		\textbf{b.}
 		The same information, arranged into a cumulative distribution.
-		The five countires with the highest mobility account for a total of 
+		The five countires with the highest mobility account for approximately 70 percent of all mobility. 
+		\textbf{c.} The proportion of researchers labeled as mobile by country.
+		\textbf{d.} First two principal components of four variables: proportion in each country mobile across organizations, proportion mobile across cities, proportion mobile across regions, and proportion mobile across countries. 
+		First component captures overall degree of mobile, whereas the second compares within-country against across-country mobility. 		
 	}
 \end{figure}
 
@@ -399,7 +561,7 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	\includegraphics[width=\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
 	\caption{
 		\textbf{Larger dimensions, smaller window size improves embedding performance.}
-		The correlation, or amount of flux explained by the embedding proximity with varying skip-gram negative sampling hyperparameters. 
+		The correlation, or amount of flux explained by the embedding distance with varying skip-gram negative sampling hyperparameters. 
 		Window size refers to the window, on either side of the target token, to use as context for training. 
 		Smaller window sizes results in an embedding that explain more of the flux. 
 		Embedding dimensions refer to the size of the organization vector.
@@ -419,15 +581,15 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	\label{fig:supp:gravity_correlation}
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
 	\caption{
-		\textbf{Embedding proximity explains more variance for global, within, and between country flux than geographic distance.}
+		\textbf{Embedding distance explains more variance for global, within, and between country flux than geographic distance.}
 		\textbf{a.}
-		Embedding proximity (cosine similarity between vectors) explains more of the total distance than does geographic distance (\textbf{b}). 
+		Embedding distance (cosine distance between vectors) explains more of the total distance than does geographic distance (\textbf{b}). 
 		Red line is line of best fit. 
-		Black dots are mean flux across binned proximity meas.
+		Black dots are mean flux across binned distances.
 		Color indicates frequency of organization pairs within each hex bin.
 		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}a and Fig.~\ref{fig:gravity_performance}.
-		\textbf{c-d.}	embedding proximity explains more variance when considering only pairs of organizations within the same country. 
-		\textbf{e-f.} embedding proximity more robust than geographic distance for pairs of organizations in different countries. 
+		\textbf{c-d.}	embedding distance explains more variance when considering only pairs of organizations within the same country. 
+		\textbf{e-f.} embedding distance is more robust than geographic distance for pairs of organizations in different countries. 
 	}
 \end{figure}
 
@@ -442,14 +604,92 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_different_fits.pdf}
 	\caption{
 		\textbf{Little difference between gravity predictions fit on all or subsets of data.}
-		Predictions  of flux between organization pairs made using embedding proximity out-perform those made using geographic distance. 
+		Predictions of flux between organization pairs made using embedding distance out-performs those made using geographic distance. 
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		\textbf{a-b.} Predictions are made with parameter, estimating parameters from all pairs of organizatioons, making global predictions (as in Fig.~\ref{fig:gravity_performance}c), and showing only subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
+		\textbf{a-b.} Predictions are made with parameter, estimating parameters from all pairs of organizations, making global predictions (as in Fig.~\ref{fig:gravity_performance}c), and showing only subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
 		\textbf{c-d.} Predictions made by estimating gravity law parameters on subset of organizations in the same country (\textbf{c}) and different country \textbf{d}); 
 		this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h. 
 	}
 \end{figure}
+
+
+
+%
+% Figure - PPR gravity model and predictions
+%
+\begin{figure}[p!]
+	\centering
+	\label{fig:supp:gravity_ppr}
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_ppr.pdf}
+	\caption{
+		\textbf{Personalized page rank does not capture mobility.}
+		Performance of personalized page rank scores in explaining and predicting mobility.
+		Personalized page rank is calculated for the underlying mobility network, and similarity between resulting vectors used as the PPR distance.
+		PPR distance does not explain global mobility (\textbf{a}), or same (\textbf{b}) or different (\textbf{c}) country mobility, performing worse than geographic distance (Fig.~\ref{fig:supp:gravity_correlation}). 
+		Red line is line of best fit. 
+		Black dots are mean flux across binned distances.
+		Color indicates frequency of organization pairs within each hex bin.
+		Similarly, PPR distance performs poorly as a distance metric for gravity model predictions globally (\textbf{d}), and across pairs of organizations in the same (\textit{e}) and in different (\textbf{f}) countries. 
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+	}
+\end{figure}
+
+
+
+%
+% Figure - SemAxis results
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:supp:semaxis_compare}
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_compare_fig.pdf}
+	\caption{
+		\textbf{SemRank hierarchy is robust.}
+		\textbf{a.} Spearman correlation (n = 143) between Times prestige rank and SemAxis rank, by the number of high and bottom-ranked (geographically matched) universities aggregated to form the poles. 
+		More universities improves performance, but quickly saturates after around five universities. 
+		\textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by number of universities used to define the poles (n). 
+		White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
+		The grey box corresponds to the top 20 and bottom 20 ranks. 
+	  	PCC details the estimate from Spearman correlation between the two rankings. 
+	}
+\end{figure}
+
+
+%
+% Figure - SemAxis By State
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:supp:semaxis_states}
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_states_fig.pdf}
+	\caption{
+		\textbf{Geography and prestige SemAxis by U.S. state.}
+		SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
+		Points correspond to universities shown for California (\textbf{a}), Arizona (\textbf{b}), Washington (\textbf{c}), Massachusetts (\textbf{d}), Connecticut (\textbf{e}), New York (\textbf{f}), Texas (\textbf{g}), Pennsylvania (\textbf{h}), and Florida (\textbf{i}).
+		Grey points correspond to all other U.S. universities. 
+	}
+\end{figure}
+
+
+%
+% Figure - SemAxis By Sector
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:supp:semaxis_sectors}
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_sectors_fig.pdf}
+	\caption{
+		\textbf{Geography and prestige SemAxis in U.S. by Sector.}
+		SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
+		Points correspond to organizations labeled as Government (\textbf{a}), Institute (\textbf{b}), and Teaching (\textbf{c}), corresponding to government organizations, research institutes, and teaching organizations, respectively.
+		Grey points correspond to all U.S. universities.  
+	}
+\end{figure}
+
+
+
 
 \clearpage
 \printbibliography{}
