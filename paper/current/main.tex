@@ -303,7 +303,7 @@ We follow standard practice and exclude from our analysis zero flows.
 	\label{fig:semaxis}
 	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
 	\caption{
-		\textbf{Embedding captures latent prestige hierarchy.}
+		\textbf{Embedding captures latent geography and prestige hierarchy.}
 		\textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
 		Points correspond to organizations, and a sample of individual states are highlighted. 
 		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the "Elite" end of the axis prestige axis \textit{a}.
@@ -531,6 +531,37 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 	}
 \end{figure}
 
+
+%
+% Figure - SemAxis By State
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:supp:semaxis_states}
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_states_fig.pdf}
+	\caption{
+		\textbf{Geography and prestige SemAxis by U.S. state.}
+		SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
+		Points correspond to universities shown for California (\textbf{a}), Arizona (\textbf{b}), Washington (\textbf{c}), Massachusetts (\textbf{d}), Connecticut (\textbf{e}), New York (\textbf{f}), Texas (\textbf{g}), Pennsylvania (\textbf{h}), and Florida (\textbf{i}).
+		Grey points correspond to all other U.S. universities. 
+	}
+\end{figure}
+
+
+%
+% Figure - SemAxis By Sector
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:supp:semaxis_sectors}
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_sectors_fig.pdf}
+	\caption{
+		\textbf{Geography and prestige SemAxis in U.S. by Sector.}
+		SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
+		Points correspond to organizations labeled as Government (\textbf{a}), Institute (\textbf{b}), and Teaching (\textbf{c}), corresponding to government organizations, research institutes, and teaching organizations, respectively.
+		Grey points correspond to all U.S. universities.  
+	}
+\end{figure}
 
 
 
