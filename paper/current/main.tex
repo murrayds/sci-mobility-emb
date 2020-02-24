@@ -272,6 +272,8 @@ We follow standard practice and exclude from our analysis zero flows.
 %
 \subsection*{Embeddings capture complex structure}
 
+We visualize whole organization vectors in  Fig. \ref{fig:projection}a.
+The coordinates of each organization come from a 2-D projection of the  embedding vectors with UMAP \cite{mcinnes2018umap} and the colors indicates the continent that organization belongs. Overall structure is almost similar to geographical map seen from the north pole while coherent structures of the communities are detected. For instance, french-spoken region of the Canada (Quebec, Montreal) is more close to French cluster rather than mainland of Canada.
 %
 % Figure - UMAP Projections
 %
@@ -416,33 +418,6 @@ And, if we remove ${\mu_*}$ for simplicity (or for our special case with $\mu_{i
     \label{eq:real_embedding_relationship}
     p(j|i) \propto \frac{\exp(\cos(v_j, v_i))}{\sum_{k\in\mathpzc{N}_i} \exp(\cos(v_k,v_i))}
 \end{equation}
-
-% $p(j|i)$ and ${\mu_j}$ is given from data, and the our model trains $\exp(\cos(v_i,v_j))$ with the data. Then, can we infer the functional form of the $p(j|i)$ which is written with the results of the model?
-
-% Cosine similarity capture the relative importance of neighborhood, because, with same $p(j|i)$, if $\mu_j$ is large, $\exp(\cos(v_i,v_j)$ should small and if $\mu_j$ is small, $\exp(\cos(v_i,v_j)$ should be large. Based on this relationship, cosine similarity capture the relative importance. Simply, we can use $p(j|i)$ as just normalized importance with
-
-% Also, we can validate this proxy with checking inverse relationship, \ref{eq:inverse_relationship}.
-
-% \begin{equation}
-%     \frac{f_{ij}}{\mu_i * \mu_j} \propto \frac{\exp(\cos(v_i, v_j))}{\mu_i * \sum_{w\in\mathpzc{N}_j} \exp(\cos(v_w,v_j))} \propto \exp(\cos(v_i,v_j))
-% \end{equation}
-% \begin{equation}
-% \label{eq:inverse_relationship}
-%      \mu_i * \sum_{w\in\mathpzc{N}_j} \exp(\cos(v_w,v_j)) \propto C
-% \end{equation}
-
-
-% According to Fig. \ref{fig:inverse_relationship}, $\mu_{i}$ and $\sum_{w \in \mathcal{N}_{j}} \exp(\cos(v_w \cdot v_j))$ have either a negative power-law relationship, or a weak inverse relationship. 
-% This relationship may result form hub nodes, or major organizations central to the global network of co-affiliations. 
-% A node with large $\mu_{i}$ would be considered a hub node in the network, and following the friendship paradox, neighboring nodes will likely have fewer neighbors than the hub. 
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.8\columnwidth]{test.png}
-%     \caption{Relationship between the conditional probability and the cosine similarity}
-%     \label{fig:inverse_relationship}
-% \end{figure}
-
 
 We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good approximation functional form of is $p(i|j)$ in Fig. \ref{fig:real_embedding_relationship}, as high values of flow correspond to high Eq.\ref{eq:real_embedding_relationship} values.
 
