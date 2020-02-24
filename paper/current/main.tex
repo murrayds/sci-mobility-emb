@@ -159,6 +159,7 @@ These mobility sentences are used as input to the standard skip-gram negative sa
 In natural-language processing, word embeddings are used to construct dense vector-space representations of words and phrases, in which distance relationships between words correspond to a notion of semantic distance. 
 By embedding co-affiliation trajectories, we aim to learn a dense vector for every organization where distance between vectors relates to the tendency for two organizations to co-occur in a token window around the target term in the same career trajectory. 
 Vectors are learned by training a neural network to optimize the prediction of so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory. 
+The hidden layer of the trained neural network is used as the 
 
 %% Word2vec parameters and training procedure
 The SGNS model has several tunable hyper-parameters, including the size of the learned vectors, the size of the token window  considered when training, the minimum frequency threshold for including an organization, and the number of iterations.
@@ -227,6 +228,19 @@ The gravity law of mobility is known to be sensitive to the case where $f_{ij} =
 Here, non-zero flows account for only 4.2 percent of all possible pairs of  the 6,580 organizations represented in the embedding.
 This value is comparable to other common applications of the gravity law, such as to hone calls, commuting, and migration \cite{simini2012universal}.
 We follow standard practice and exclude from our analysis zero flows. 
+
+
+%
+% SUBSECTION: SEMAXIS
+%
+\subsection*{SemAxis}
+By constructing semantic embeddings from mobility trajectories, we allow for unique methodology for understading the embedding space, such as SemAxis.
+SemAxis is a technique that leverages the latent semantic characteristics of word embeddings to represent the position of terms along a conceptual axis, reflecting the relationship of these term to the concept. 
+The precise axis is an antonym pair defined \textit{ad-hoc} for the specific use case.
+In the case of language, the ends of the axis could be "good" and "bad", "surprising" and "unsurprising", or "masculine" and "feminine". 
+In the case of scientific mobility, SemAxis offers a means of operationalizing abstract relationships between organizations.
+
+
 
 
 \section{Results}\label{sec:results} %{{{ 
@@ -388,6 +402,7 @@ The \textit{word2vec} skip-gram model can be an effective model for investigatin
 %
 \subsection*{Embeddings capture complex structure}
 
+The skip-gram model learns an effective distance from trajectories, one that 
 We visualize whole organization vectors in  Fig. \ref{fig:projection}a.
 The coordinates of each organization come from a 2-D projection of the  embedding vectors with UMAP \cite{mcinnes2018umap} and the colors indicates the continent that organization belongs. Overall structure is almost similar to geographical map seen from the north pole while coherent structures of the communities are detected. For instance, french-spoken region of the Canada (Quebec, Montreal) is more close to French cluster rather than mainland of Canada.
 %
