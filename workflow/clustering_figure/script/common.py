@@ -19,6 +19,6 @@ def get_awesome_c_list():
         "#9C27B0",
         "#E91E63",
         "#F44336",
-        "#d3d3d3"
+        "#d3d3d3",
     ]
     return c_list
