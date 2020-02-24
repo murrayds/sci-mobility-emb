@@ -63,7 +63,7 @@
 
 \begin{document} %{{{
 
-\title{Word2vec learns effective distance of scientific co-affiliation} %{{{
+\title{Unsupervised embeddings capture latent structure of scientific mobility} %{{{
 \date{\today}
 \maketitle %}}}
 
@@ -101,12 +101,13 @@ Organizational records were associated with a full name, a type indicating the s
 Sixteen different sector types were included in the analysis, which we aggregated to a four high-level codes: \textit{University}, \textit{Hospital}, \textit{Government}, and \textit{Other}. 
 Each record was also associated with a latitude and longitude, however for many organizations these were missing or incorrect. We manually updated the coordinates of 2,267 organizations by searching the institution name and city on Google Maps;
 in cases where a precise location of the organization could not be identified, we used the coordinates returned when searching the name of the city.
+The data was further enriched with country-level information, including continent, majority language spoken, and language family of the majority language (e.g., the language family of \textit{Spanish} is \textit{Italic}).  
 State/province level  information were added using the reverse geocoding service LocationIQ using each organization's latitude and longitude as input. 
-Organizations were also assigned continental information (e.g., North America, Asia, Europe) manually, by country. 
+Regional census classifications were also added for states in the United States.
 For each organization, we also calculated a size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
 in the case that authors publish with multiple affiliations in a single year, they are counted towards each. 
 
-Some affiliations are mapped to two organizations, one specific, and one more general, as a result of the disambiguation procedure. 
+As a result of our disambiguation procedure, some affiliations are mapped to two organizations, one specific, and one more general.
 For example, any author affiliated with the "Indiana University Bloomington" will also be listed as being affiliated with the "Indiana University System", a more general designation for all public universities in Indiana. 
 However, a more general organization may not always occur alongside the more specific one.
 For example, a researcher affiliated with the smaller regional school "Indiana University South Bend" will be listed as affiliated with only the "Indiana University System". 
@@ -164,7 +165,7 @@ All word embeddings are trained using the \textit{gensim} python implementation 
 We visualize embeddings by projecting into two dimensions using UMAP~\cite{mcinnes2018umap}.
 
 %
-% Distances subsection
+% SUBSECTION: DISTANCE
 %
 \subsection{Distance}
 %% Distance calculations
@@ -179,6 +180,9 @@ When less than one kilometer, a distance of one is imputed.
 The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
 
 
+%
+% SUBSECTION: GRAVITY LAW
+%
 \subsection{Gravity Law}
 
 We model flow of authors across organizations, $f_{ij}$, using the gravity law. 
@@ -220,6 +224,14 @@ The gravity law of mobility is known to be sensitive to the case where $f_{ij} =
 Here, non-zero flows account for only 4.2 percent of all possible pairs of  the 6,580 organizations represented in the embedding.
 This value is comparable to other common applications of the gravity law, such as to hone calls, commuting, and migration \cite{simini2012universal}.
 We follow standard practice and exclude from our analysis zero flows. 
+
+
+%
+% SUBSECTION: SEMAXIS
+%
+\subsection{SemAxis}
+
+
 
 \section{Results}\label{sec:results} %{{{ 
 
@@ -288,7 +300,7 @@ We follow standard practice and exclude from our analysis zero flows.
 %
 \begin{figure}[hp!]
 	\centering
-	\label{fig:projection}
+	\label{fig:semaxis}
 	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
 	\caption{
 		\textbf{Embedding captures latent prestige hierarchy.}
@@ -297,7 +309,7 @@ We follow standard practice and exclude from our analysis zero flows.
 		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the "Elite" end of the axis prestige axis \textit{a}.
 		White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
 		The grey box corresponds to the top 20 and bottom 20 ranks. 
-	  	The estimate of the spearman rank correlation between the SimAxis and Times ranking is 0.81 (n = 145).
+	  	The estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.81 (n = 145).
 	}
 \end{figure}
 
@@ -482,7 +494,7 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 %
 \begin{figure}[p!]
 	\centering
-	\label{fig:supp:gravity_prediction_subsets}
+	\label{fig:supp:gravity_ppr}
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_ppr.pdf}
 	\caption{
 		\textbf{Personalized page rank does not capture mobility.}
@@ -497,6 +509,28 @@ p(j|i) = \frac{f_{ij}}{\mu_i} \simeq \frac{\exp(v'_j \cdot v_i)}{\sum_{w=1}^{W} 
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
 	}
 \end{figure}
+
+
+
+
+%
+% Figure - SemAxis results
+%
+\begin{figure}[hp!]
+	\centering
+	\label{fig:supp:semaxis_compare}
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_compare_fig.pdf}
+	\caption{
+		\textbf{SemRank hierarchy is robust.}
+		\textbf{a.} Spearman correlation (n = 143) between Times prestige rank and SemAxis rank, by the number of high and bottom-ranked (geographically matched) universities aggregated to form the poles. 
+		More universities improves performance, but quickly saturates after around five universities. 
+		\textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by number of universities used to define the poles (n). 
+		White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
+		The grey box corresponds to the top 20 and bottom 20 ranks. 
+	  	PCC details the estimate from Spearman correlation between the two rankings. 
+	}
+\end{figure}
+
 
 
 
