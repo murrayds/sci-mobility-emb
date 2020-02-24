@@ -235,10 +235,18 @@ We follow standard practice and exclude from our analysis zero flows.
 %
 \subsection*{SemAxis}
 By constructing semantic embeddings from mobility trajectories, we allow for unique methodology for understading the embedding space, such as SemAxis.
-SemAxis is a technique that leverages the latent semantic characteristics of word embeddings to represent the position of terms along a conceptual axis, reflecting the relationship of these term to the concept. 
+SemAxis~\autocite{an2018semaxis} is a technique that leverages the latent semantic characteristics of word embeddings to represent the position of terms along a conceptual axis, reflecting the relationship of these term to the concept. 
 The precise axis is an antonym pair defined \textit{ad-hoc} for the specific use case.
 In the case of language, the ends of the axis could be "good" and "bad", "surprising" and "unsurprising", or "masculine" and "feminine". 
 In the case of scientific mobility, SemAxis offers a means of operationalizing abstract relationships between organizations.
+
+Here, we apply SemAxis to U.S. universities by defining two axes, one of geography and one of academic prestige. 
+The poles of the geographic axis are defined as the mean vector of all vectors corresponding to organizations in California, and then the mean of all vectors of organizations in Massachusetts. 
+For the prestige axis, we define a subset of top-ranked universities according to either the Times World University Rankings or based on the mean normalized research impact sourced from the Leiden Rankings. 
+The other end of the prestige axis is the geographically-matched (according to census region) set of universities ranked at the bottom of these rankings.
+For example, if 20 universities top-ranked universities are selected and six of them are in the Northeastern United States, then the bottom six universities according to the same ranking will be included in the low-ranked subset. 
+From the prestige axis we also derive what we call \textit{SemRank}, a university ranking based on the nearness of universities to the \textit{Elite} end of the axis. 
+We compare the SemAxis ranking to the traditional university rankings using Spearman rank correlations. 
 
 
 
