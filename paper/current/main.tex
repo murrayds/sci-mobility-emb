@@ -468,6 +468,21 @@ The coordinates of each organization come from a 2-D projection of the  embeddin
 % Subsection - hierarchy
 % 
 \subsection*{Embeddings capture latent geography and hierarchy}
+
+Using SemAxis, a technique unique to semantic embedding, we reconstruct geographic relationships and prestige hierarchies based defined axis between California and Massachusetts, and between lowly and highly ranked universities according to the Times Ranking of World Universities and the Leiden Ranking field-normalized citation impact (Fig.~\ref{fig:semaxis}). 
+We find that, with a few exceptions, all universities in California are nearer the appropriate end of the axis than are Massachusetts universities, and \textit{vice versa}.
+Universities in bordering states, such as Arizona and Connecticut, are closer to the ends of the axis (Fig. SI~\ref{fig:supp:semaxis_states}b and Fig. SI~\ref{fig:supp:semaxis_states}e). 
+Universities in new York are nearer to the Massachusetts end of the axis (Fig. SI~\ref{fig:supp:semaxis_states}f), whereas universities in Florida are less aligned to either (Fig. SI~\ref{fig:supp:semaxis_states}i). 
+
+In terms of prestige, we find prestigious universities towards the top of the axis, such as Stanford, Colombia, MIT, Harvard, and NYU. 
+Universities at the bottom of this axis tend to be regional universities with lower national profiles, such as California State University Long Beach, University of West Florida, and Barry University. 
+There are strong differences by state in terms of prestige—overall, universities in Massachusetts are nearer the \textit{Elite} end of the axis than are universities in Arizona, Connecticut, Pennsylvania, and Florida (see Fig. SI~\ref{fig:supp:semaxis_states}). 
+
+Once these axes are constructed using university rankings, we can even relate other types of organizations that wouldn't typically be fit onto university rankings.
+For example, among Government institutions, we see that the U.S. Department of Energy is more aligned with Californian universities, whereas the Mayo Clinic is more aligned with Massachusetts and organizations like the National Institute of Arthritis, Musculoskeletal, and Skin Disease and more aligned with elite universities than is the U.S. Department of Agriculture (Fig SI~\ref{fig:supp:semaxis_sectors}a).
+Among research institutes, the most aligned with elite universities are typically those prestigious university-adjacent institutes such as the Whitehead Institute, the Broad Institute, and the Dana Faber institute (Fig SI~\ref{fig:supp:semaxis_sectors}b); those institutes aligned with lowly-ranked universities tend to be ecological or agricultural institutes such as the Joseph W. Jones Ecological Research Center and the Louisiana Agriculture Center. 
+Among teaching organizations, the top-ranked tend to be notable private liberal arts colleges such as Wellesley College and Carleton College, whereas community colleges and military colleges tend to be more aligned with lowly-ranked universities (Fig. SI~\ref{fig:supp:semaxis_sectors}c). 
+
 %
 % Figure - SemAxis results
 %
@@ -486,11 +501,14 @@ The coordinates of each organization come from a 2-D projection of the  embeddin
 	}
 \end{figure}
 
+To what extent are semantic embeddings of mobility actually learning the latent hierarchy of academic mobility?
+To test this, we derive a ranking using the prestige axis that we call \textit{SemRank}, and compare them to traditional university rankings. 
+SemRank is defined from the position of organizations along the prestige axis, with the top ranked being the furthest towards the \textit{Elite} end of the axis.
+We find that SemRank derived is highly correlated with the Times ranking ($\rho = 0.81$, Fig.~\ref{fig:semaxis}b). 
+This correlation is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities is strongly correlated with the Times Ranking ($\rho = 0.46$). 
+For reference, SemRank achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking mean-normalized citation score ($\rho = 0.87$). 
+This suggests that word embeddings, in addition to learning the latent geography of mobility, also capture more nuanced characteristics such as latent hierarchy. 
 
-%
-% SECTION: DISCUSSION
-% 
-\section*{Discussion}
 
 
 
