@@ -405,15 +405,23 @@ Hence, the \textit{word2vec} skip-gram model can be an effective model for inves
 %
 % Subsection: Applications
 %
-\subsection*{Embeddings capture complex structure}
+\subsection*{Embeddings capture global structure of mobility}
 
-The SGNS model learns an effective distance from trajectories, one that we visualize whole organization vectors in  Fig. \ref{fig:projection}a, revealing organizational clusters that reflect a mix of geographic, historic, cultural, and linguistic relationships between countries.
-The coordinates of each organization come from a 2-D projection of the embedding vectors with UMAP \cite{mcinnes2018umap} and the colors indicate the continent that the organization belongs to. The overall structure is almost similar to the geographical map seen from the north pole while coherent structures of the communities are detected. For instance, french-spoken regions of Canada (Quebec, Montreal) are more close to the French cluster rather than the mainland of Canada, which is the result of the linguistic relationship. Also, the cluster of Algeria and Morocco is closed to the French cluster, which is far from the mainland of Africa cluster, which reflects colonial historical facts.
+The SGNS model learns an effective distance from trajectories, one which we can visualize by projecting organizational vectors into two dimensions using UMAP \cite{mcinnes2018umap} (Fig.~\ref{fig:projection}a).
+Overall, organizations are clustered by geography, according to the nations in which they are location;
+however, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions at multiple scales.
 
-To look at the multi-scale structure of the embedding closely, we re-project organization vectors using a subset of embedding vectors, which is another advantage of our proposed method. In Fig. \ref{fig:projection}b, we find the cultural, religious, and regional spectrum of the country clusters across the Western, South, Southeast Asia. Also, we observe the clear linguistic separation of the country cluster, which are Portuguese speaking countries (Brazil, Portugal) and Spanish speaking countries (Spain, Mexico, Chile, etc.)  in Fig. \ref{fig:projection}c.
+Re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries related to geography and religion moving from majority-Muslim nations in the Middle East towards similarity-religious nations of Pakistan, Bangladesh, and Indonesia, and finally towards East-Asian nations with different religious majorities such as Vietnam, the Philippines, and Thailand. 
+Linguistic and historical ties are also important. 
+For example, we observe that Spanish-speaking and colonized Latin American nations (Mexico, Chile, Peru, etc.) are positioned near Spain, whereas Brazil is instead positioned nearer to Portugal (Fig.~\ref{fig:projection}c). 
+Similarly, Algeria and Morocco, nations in close proximity to and with historic ties to France, and positioned near the French cluster of organizations (Fig.~\ref{fig:projection}a). 
+These dynamics can manifest even within the same country. 
+For example, organizations located within the french-speaking region of Quebec in Canada are positioned near the French cluster rather than Canada.
 
-By visualizing subsets of vectors within a specific country, we reveal a more granular structure. We re-project the embedding vectors within the United States in Fig. \ref{fig:projection}d, find state-level geographical clustering the structure of organizations roughly organized by state and region with spectrum from the East-coast to the West-coast. The more interesting part is re-projection results on state levels. In Fig. \ref{fig:projection}e, we re-project the embedding vectors with only organization in Massachusetts, finding structure based on urban centers (Boston vs. Worcester), organization type (hospitals tend to be adjacent)
-and different university systems (UMass system cluster separate from Harvard, MIT, etc.). Even though UMass Boston is located in Boston, it clusters with other universities in the UMass System and it observed throughout many states (New York, California, etc.) with state university system (See SI~?).
+A unique characteristic of semantic mobility embeddings is the ability to capture structure at multiple scales of granularity.
+For example, just as the global embedding captures geographic structure between nations, so too does a projection or organizations in the United States reflect organizational structure based on states and oriented along an East-West axis (Fig.~\ref{fig:projection}d). 
+My re-projecting at the state-level for Massachusetts (Fig.~\ref{fig:projection}e), we observe structure between urban Centers (Boston vs. Worcester), but also based on organization type (hospitals tend to be adjacent) and different university systems. Even though UMass Boston is located in Boston, it clusters near other universities in the UMass System, reflecting a relative lack of mobility between the two systems, even within the same state. 
+Similar dynamics can be observed in many states (New York, California, etc.), such that prestigious university systems are separate from more regional ones (See SI~?).
 
 \begin{figure}[hp!]
 	\centering
@@ -422,7 +430,7 @@ and different university systems (UMass system cluster separate from Harvard, MI
 	\caption{
 		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
 		\textbf{a.}
-		UMAP projection \cite{mcinnes2018umap} of the entire embedding space reveals geographic clustering.
+		UMAP projection \autocite{mcinnes2018umap} of the entire embedding space reveals geographic clustering.
 		Each point corresponds to an organization. 
 		Size indicates the size of the organization.
 		Color indicates the continent. 
@@ -439,18 +447,21 @@ and different university systems (UMass system cluster separate from Harvard, MI
 
 \subsection*{Embeddings capture international relationships}
 
-Based on findings on visualizing results, we try to capture the international relationship of the cluster in a more quantitative manner. We calculate the representative vector of each country with averaging organization vectors within the given country, calculate pairwise cosine similarity and do the hierarchical clustering (see Fig. \ref{fig:clustering}a).
-Countries that have more than 25 organizations are collected for the clustering analysis, excluding the United States because all countries are closed to the United States.
-We report the similarity matrix, deprogram and meta-data of each country.
-Color of the country name is colored by the cluster and the color of the three cell rows represents the continent, language, and language family respectively. We assign a single language to country with the largest used language based on language demographic data \cite{ethnologue}.
+Based on descriptive findings, we more rigorously assess the extent to which embeddings capture the structure of international mobility. 
+We calculate the representative vector of each country with averaging organization vectors within the given country, calculate pairwise cosine similarity, and perform hierarchical clustering (see Fig. \ref{fig:clustering}a).
+Countries that have more than 25 organizations are collected for the clustering analysis, though we exclude the United States due to its high similarity with all other countries.
 
-We found 6 clusters, which is a mixture of the regional, linguistic, historical clusters. For instance, the purple cluster is well-known commonwealth countries and the lower part of the sky-blue clusters is post-soviet countries, reflecting historical relationships among countries. Also, the upper part of the sky-blue clusters is the linguistic cluster.  By looking closely at the deprogram and meta-data, there is a tendency that countries are merged as a group if they share the language in the early stage of the deprogram and geographical aspect plays a more major role in the later stage of the dendrogram.
+Six country clusters were identified, reflecting a mixture of the regional, linguistic, historical clusters. 
+From top-to-bottom, we identify a primarily East-Asian cluster (orange), a Scandinavian cluster (dark purple), a cluster of British Commonwealth countries (light purple), a central and eastern European cluster (sky blue), a diverse cluster of European and South American clusters (dark green), and finally another diverse cluster consisting of countries bordering the Mediterranean or the Black Sea.
+When not defined by geography, clusters appear to be defined by linguistic and historical ties, as is the case for the commonwealth countries. 
+By looking closely at the deprogram and meta-data, there is a tendency that countries are merged as a group if they share the language in the early stage of the deprogram and geographical aspect plays a more major role in the later stage of the dendrogram.
 
-We measure this phenomena quantitatively with \textit{CluSim} method \cite{gates2019element}. \textit{CluSim} is a method that calculates the similarity between the cluster results and, for the hierarchical cluster, it can adjust the relative importance of membership at different levels of the hierarchy with scaling parameter r, acting likes ``zooming lens''.  If r is high, the similarity is based on the lower part of the deprogram and the similarity is based on higher part of the deprogram with low r. 
-We identify the dominant factor that determines the hierarchy by comparing hierarchical results and each meta-data membership in each level, leveraging characteristic of \textit{CluSim}.
-
+We investigate the extent to which geography and language dictate the formation of clusters using \textit{CluSim}~\autocite{gates2019element}.
+\textit{CluSim} is a method that calculates the similarity between the cluster results and, for hierarchical clustering, can adjust the relative importance of membership at different levels of the hierarchy with scaling parameter $r$, acting likes ``zooming lens''.  
+If $r$ is high, the similarity is based on the lower levels of the deprogram , and when $r$ is low, similarity is based on higher levels dendrogram. 
 In fig. \ref{fig:clustering}a, we report three cluster similarity curves (continent, language, language family) with varying scaling parameter r.
-As expected, the continent plays a major role at higher levels of clustering process (low r), language and language family explain the clustering process more at the lower levels (high r). It suggests that language is quite an important factor for scientific mobility, researchers tend to moves to the country that uses the same language or belongs to the same language family at least.
+As expected, continent plays a major role at higher levels of clustering process (low $r$), language and language family explain the clustering process more at the lower levels (high $r$). 
+This suggests that geography, then language, are important factors contributing to the structure of international scientific mobility.
 
 %
 % Figure - CLUSTERING
@@ -464,8 +475,8 @@ As expected, the continent plays a major role at higher levels of clustering pro
 		\textbf{a.} Hierarchically clustered similarity matrix of country vectors, aggregated as the mean of all organization vectors within the country that has a more than 25 organizations, excluding the United States. 
 		Color of matrix cells corresponds to similarity between country vectors.
 		Color of country names corresponds to their cluster.
-		Color of three cell rows separated from the matrix correspond to, from left to right, the continent of the country, the language family, and the individual language. 
-		\textbf{b.}	\textit{CluSim} \cite{gates2019element} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$. 
+		Color of three cell rows separated from the matrix correspond to, from left to right, the continent of the country, the language family~\autocite{ethnologue}, and the individual language. 
+		\textbf{b.}	\textit{CluSim} \autocite{gates2019element} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$. 
 		Continent better explains the grouping of country vectors at higher levels of the clustering processes.
 		Language family, and then majority spoken language, better explain the grouping of countries at more granular. 
 	}
