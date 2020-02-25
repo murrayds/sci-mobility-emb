@@ -113,12 +113,12 @@ For each organization, we also calculated a size as the average number of unique
 in the case that authors publish with multiple affiliations in a single year, they are counted towards each. 
 
 As a result of our disambiguation procedure, some affiliations are mapped to two organizations, one specific, and one more general.
-For example, any author affiliated with the "Indiana University Bloomington" will also be listed as being affiliated with the "Indiana University System", a more general designation for all public universities in Indiana. 
+For example, any author affiliated with ``Indiana University Bloomington'' will also be listed as being affiliated with the ``Indiana University System'', a more general designation for all public universities in Indiana. 
 However, a more general organization may not always occur alongside the more specific one.
-For example, a researcher affiliated with the smaller regional school "Indiana University South Bend" will be listed as affiliated with only the "Indiana University System". 
+For example, a researcher affiliated with the smaller regional school ``Indiana University South Bend'' will be listed as affiliated with only the ``Indiana University System''. 
 We identify all specific organizations that always co-occur along a more general one.
 For every career trajectory that includes one of these specific organizations, we remove all occurrences of the more general organization;
-trajectories containing only a general designation are not alted. 
+trajectories containing only a general designation are not altered. 
 
 Scientific mobility is complex and can be defined in many possible ways~\cite{robinson2019mobility}.
 Here, we consider an author as mobile when at least two distinct organizational affiliations appear in their trajectory during the 2008-2019 time window. 
@@ -231,7 +231,7 @@ We follow standard practice and exclude from our analysis zero flows.
 By constructing semantic embeddings from mobility trajectories, we allow for unique methodology for understading the embedding space, such as SemAxis.
 SemAxis~\cite{an2018semaxis} is a technique that leverages the latent semantic characteristics of word embeddings to represent the position of terms along a conceptual axis, reflecting the relationship of these term to the concept. 
 The precise axis is an antonym pair defined \textit{ad-hoc} for the specific use case.
-In the case of language, the ends of the axis could be "good" and "bad", "surprising" and "unsurprising", or "masculine" and "feminine". 
+In the case of language, the ends of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''. 
 In the case of scientific mobility, SemAxis offers a means of operationalizing abstract relationships between organizations.
 
 Here, we apply SemAxis to U.S. universities by defining two axes, one of geography and one of academic prestige. 
@@ -513,7 +513,7 @@ Among teaching organizations, the top-ranked tend to be notable private liberal 
 		\textbf{Embedding captures latent geography and prestige hierarchy.}
 		\textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
 		Points correspond to organizations, and a sample of individual states are highlighted. 
-		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the "Elite" end of the axis prestige axis \textit{a}.
+		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the \textit{Elite} end of the axis prestige axis \textit{a}.
 		White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
 		The grey box corresponds to the top 20 and bottom 20 ranks. 
 	  	The estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.81 (n = 145).
