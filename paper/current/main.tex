@@ -454,12 +454,12 @@ Countries that have more than 25 organizations are collected for the clustering 
 Six country clusters were identified, reflecting a mixture of the regional, linguistic, historical clusters. 
 From top-to-bottom, we identify a primarily East-Asian cluster (orange), a Scandinavian cluster (dark purple), a cluster of British Commonwealth countries (light purple), a central and eastern European cluster (sky blue), a diverse cluster of European and South American clusters (dark green), and finally another diverse cluster consisting of countries bordering the Mediterranean or the Black Sea.
 When not defined by geography, clusters appear to be defined by linguistic and historical ties, as is the case for the commonwealth countries. 
-By looking closely at the deprogram and meta-data, there is a tendency that countries are merged as a group if they share the language in the early stage of the deprogram and geographical aspect plays a more major role in the later stage of the dendrogram.
+By looking closely at the dendrogram and meta-data, there is a tendency that countries are merged as a group if they share the language in the early stage of the deprogram and geographical aspect plays a more major role in the later stage of the dendrogram.
 
 We investigate the extent to which geography and language dictate the formation of clusters using \textit{CluSim}~\autocite{gates2019element}.
 \textit{CluSim} is a method that calculates the similarity between the cluster results and, for hierarchical clustering, can adjust the relative importance of membership at different levels of the hierarchy with scaling parameter $r$, acting likes ``zooming lens''.  
-If $r$ is high, the similarity is based on the lower levels of the deprogram , and when $r$ is low, similarity is based on higher levels dendrogram. 
-In fig. \ref{fig:clustering}a, we report three cluster similarity curves (continent, language, language family) with varying scaling parameter r.
+If $r$ is high, the similarity is based on the lower levels of the dendrogram , and when $r$ is low, the similarity is based on higher levels of the dendrogram. 
+In fig. \ref{fig:clustering}a, we report three cluster similarity curves (continent, language, language family) with varying scaling parameter $r$.
 As expected, continent plays a major role at higher levels of clustering process (low $r$), language and language family explain the clustering process more at the lower levels (high $r$). 
 This suggests that geography, then language, are important factors contributing to the structure of international scientific mobility.
 
