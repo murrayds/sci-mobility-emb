@@ -198,7 +198,7 @@ def draw_figure(
             label._y + 0.22,
             label.get_text(),
             c=leaves_color_dict[label.get_text()],
-            fontproperties=small_prop
+            fontproperties=small_prop,
         )
     ax.set_yticks([])
 
@@ -235,25 +235,68 @@ def draw_figure(
             (-4.6, 31), 4.6, 5, fill=False, clip_on=False, edgecolor="black", lw=3
         )
     )
-    lp = lambda i: plt.plot([],color=c_list[continent_color_mapper[i]], ms=10, mec="none",
-                        label=i[0].upper() + i[1:], ls="", marker="o")[0]
-    handles = [lp(k) for k in ["Asia", "Europe", "North America", "Africa", "Oceania", "South America"]]
-    continent_legend = plt.legend(handles=handles, bbox_to_anchor=(8,1.1), prop=prop,frameon=False)
-    plt.text(1.8,0.838,'Continent', fontproperties=prop)
-    
-    lp = lambda i: plt.plot([],color=languae_family_color_mapper[i], ms=10, mec="none",
-                        label=i[0].upper() + i[1:], ls="", marker="o")[0]
+    lp = lambda i: plt.plot(
+        [],
+        color=c_list[continent_color_mapper[i]],
+        ms=10,
+        mec="none",
+        label=i[0].upper() + i[1:],
+        ls="",
+        marker="o",
+    )[0]
+    handles = [
+        lp(k)
+        for k in [
+            "Asia",
+            "Europe",
+            "North America",
+            "Africa",
+            "Oceania",
+            "South America",
+        ]
+    ]
+    continent_legend = plt.legend(
+        handles=handles, bbox_to_anchor=(8, 1.1), prop=prop, frameon=False
+    )
+    plt.text(1.8, 0.838, "Continent", fontproperties=prop)
+
+    lp = lambda i: plt.plot(
+        [],
+        color=languae_family_color_mapper[i],
+        ms=10,
+        mec="none",
+        label=i[0].upper() + i[1:],
+        ls="",
+        marker="o",
+    )[0]
     handles = [lp(k) for k in ["Sintic", "Germanic", "Slavic", "Italic", "Semitic"]]
-    language_family_legend = plt.legend(handles=handles, bbox_to_anchor=(12,1.1), prop=prop,frameon=False)
-    plt.text(4.35, 0.838,'Language Family', fontproperties=prop)
-    
-    language_name_convert_dict = {"en": "English", "zh": "Chinese", "de": "German", "pt": "Portuguese", "nl": "Dutch"}
-    lp = lambda i: plt.plot([],color=languae_color_mapper[i], ms=10, mec="none",
-                        label=language_name_convert_dict[i], ls="", marker="o")[0]
+    language_family_legend = plt.legend(
+        handles=handles, bbox_to_anchor=(12, 1.1), prop=prop, frameon=False
+    )
+    plt.text(4.35, 0.838, "Language Family", fontproperties=prop)
+
+    language_name_convert_dict = {
+        "en": "English",
+        "zh": "Chinese",
+        "de": "German",
+        "pt": "Portuguese",
+        "nl": "Dutch",
+    }
+    lp = lambda i: plt.plot(
+        [],
+        color=languae_color_mapper[i],
+        ms=10,
+        mec="none",
+        label=language_name_convert_dict[i],
+        ls="",
+        marker="o",
+    )[0]
     handles = [lp(k) for k in ["zh", "en", "de", "pt", "nl"]]
-    language_legend = plt.legend(handles=handles, bbox_to_anchor=(17,1.1), prop=prop,frameon=False)
-    plt.text(6.6, 0.838,'Language', fontproperties=prop)
-    
+    language_legend = plt.legend(
+        handles=handles, bbox_to_anchor=(17, 1.1), prop=prop, frameon=False
+    )
+    plt.text(6.6, 0.838, "Language", fontproperties=prop)
+
     plt.gca().add_artist(continent_legend)
     plt.gca().add_artist(language_family_legend)
     plt.savefig(HEATMAP_PART_PATH, bbox_inches="tight")
