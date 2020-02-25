@@ -439,6 +439,18 @@ and different university systems (UMass system cluster separate from Harvard, MI
 
 \subsection*{Embeddings capture international relationships}
 
+Based on findings on visualizing results, we try to capture the international relationship of the cluster in a more quantitative manner. We calculate the representative vector of each country with averaging organization vectors within the given country, calculate pairwise cosine similarity and do the hierarchical clustering (see Fig. \ref{fig:clustering}a).
+Countries that have more than 25 organizations are collected for the clustering analysis, excluding the United States because all countries are closed to the United States.
+We report the similarity matrix, deprogram and meta-data of each country.
+Color of the country name is colored by the cluster and the color of the three cell rows represents the continent, language, and language family respectively. We assign a single language to country with the largest used language based on language demographic data \cite{ethnologue}.
+
+We found 6 clusters, which is a mixture of the regional, linguistic, historical clusters. For instance, the purple cluster is well-known commonwealth countries and the lower part of the sky-blue clusters is post-soviet countries, reflecting historical relationships among countries. Also, the upper part of the sky-blue clusters is the linguistic cluster.  By looking closely at the deprogram and meta-data, there is a tendency that countries are merged as a group if they share the language in the early stage of the deprogram and geographical aspect plays a more major role in the later stage of the dendrogram.
+
+We measure this phenomena quantitatively with \textit{CluSim} method \cite{gates2019element}. \textit{CluSim} is a method that calculates the similarity between the cluster results and, for the hierarchical cluster, it can adjust the relative importance of membership at different levels of the hierarchy with scaling parameter r, acting likes ``zooming lens''.  If r is high, the similarity is based on the lower part of the deprogram and the similarity is based on higher part of the deprogram with low r. 
+We identify the dominant factor that determines the hierarchy by comparing hierarchical results and each meta-data membership in each level, leveraging characteristic of \textit{CluSim}.
+
+In fig. \ref{fig:clustering}a, we report three cluster similarity curves (continent, language, language family) with varying scaling parameter r.
+As expected, the continent plays a major role at higher levels of clustering process (low r), language and language family explain the clustering process more at the lower levels (high r). It suggests that language is quite an important factor for scientific mobility, researchers tend to moves to the country that uses the same language or belongs to the same language family at least.
 
 %
 % Figure - CLUSTERING
