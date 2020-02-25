@@ -12,6 +12,7 @@ CLUSTERING_FIGURE_DIR = osjoin(FIGURE_DIR, 'Clustering')
 
 # Assets
 FONT_PATH = osjoin(ASSET_DIR, 'Helvetica.ttf')
+BOLD_FONT_PATH = osjoin(ASSET_DIR, 'helvetica-bold.ttf')
 
 # Meta_info_files 
 EMBEDDING_FILE_DIR = osjoin(EMBEDDINGS_DIR, "2008-2019_word2vec_d200_ws2_model_test.bin")
@@ -38,7 +39,8 @@ rule draw_cluster_result_country:
         EMBEDDING_FILE_DIR,
         INST_LOOK_UP_FILE_DIR,
         COUNTRY_META_FILE_DIR,
-        FONT_PATH
+        FONT_PATH,
+        BOLD_FONT_PATH
     output:
         osjoin(CLUSTERING_FIGURE_DIR, 'clustering_country_dendrogram_part.pdf'),
         osjoin(CLUSTERING_FIGURE_DIR, 'clustering_country_heatmap_part.pdf'),
