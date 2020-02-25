@@ -169,10 +169,10 @@ def draw_figure(
     plt.savefig(DENDROGRAM_PART_PATH, bbox_inches="tight")
 
     prop = font_manager.FontProperties(fname=FONT_PATH, size=22)
-    bold_prop = font_manager.FontProperties(fname=BOLD_FONT_PATH,size=22)
+    bold_prop = font_manager.FontProperties(fname=BOLD_FONT_PATH, size=22)
     small_prop = font_manager.FontProperties(fname=FONT_PATH, size=20)
     tick_prop = font_manager.FontProperties(fname=FONT_PATH, size=16)
-    
+
     # Draw heatmap part
     g = sns.clustermap(
         sim_mtx,
@@ -258,7 +258,13 @@ def draw_figure(
         ]
     ]
     continent_legend = plt.legend(
-        handles=handles, bbox_to_anchor=(0.5, 1.74), prop=prop, frameon=False, ncol=6, handlelength=0, handletextpad=1
+        handles=handles,
+        bbox_to_anchor=(0.5, 1.74),
+        prop=prop,
+        frameon=False,
+        ncol=6,
+        handlelength=0,
+        handletextpad=1,
     )
     plt.text(-11.2, 1.07, "Continent", fontproperties=bold_prop)
 
@@ -273,7 +279,13 @@ def draw_figure(
     )[0]
     handles = [lp(k) for k in ["Sintic", "Germanic", "Slavic", "Italic", "Semitic"]]
     language_family_legend = plt.legend(
-        handles=handles, bbox_to_anchor=(-4.2, 1.59), prop=prop, frameon=False, ncol=5, handlelength=0, handletextpad=1
+        handles=handles,
+        bbox_to_anchor=(-4.2, 1.59),
+        prop=prop,
+        frameon=False,
+        ncol=5,
+        handlelength=0,
+        handletextpad=1,
     )
     plt.text(-11.2, 1, "Language Family", fontproperties=bold_prop)
 
@@ -295,14 +307,19 @@ def draw_figure(
     )[0]
     handles = [lp(k) for k in ["zh", "en", "de", "pt", "nl"]]
     language_legend = plt.legend(
-        handles=handles, bbox_to_anchor=(-4.2, 1.45), prop=prop, frameon=False, ncol=5,handlelength=0, handletextpad=1
+        handles=handles,
+        bbox_to_anchor=(-4.2, 1.45),
+        prop=prop,
+        frameon=False,
+        ncol=5,
+        handlelength=0,
+        handletextpad=1,
     )
     plt.text(-11.2, 0.93, "Language", fontproperties=bold_prop)
 
     plt.gca().add_artist(continent_legend)
     plt.gca().add_artist(language_family_legend)
     plt.savefig(HEATMAP_PART_PATH, bbox_inches="tight")
-    
 
     # Calculate clusim part
     hierarchical_clu = Clustering()
