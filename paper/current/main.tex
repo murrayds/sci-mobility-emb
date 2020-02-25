@@ -35,9 +35,9 @@
 
 % Refs
 \usepackage[style=nature,
-					backend=bibtex,
-					sortcites=true,
-					autocite=superscript
+                    backend=bibtex,
+                    sortcites=true,
+                    autocite=superscript
 ]{biblatex}
 \addbibresource{mobility.bib}
 
@@ -141,17 +141,17 @@ In more complex cases, such as listing multiple affiliations on the same paper o
 % Figure - Example of mobility sentences
 %
 \begin{figure}[ht!]
-	\centering
-	\label{fig:methods:mobility_sentence}
-	\includegraphics[width=0.7\textwidth]{\figdir/mobility_example_combined.pdf}
-	\caption{
-		\textbf{Co-affiliation trajectories represented as sentences}
-		\textbf{a.} 
-		An authors published five papers across five time periods, with only one affiliation listed in the byline of each paper. 
-		A unique identifier is assigned to each organization, and these are concatenated into a mobility sentence. 
-		\textbf{b.}
-		In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. Here, organization ids are still ordered by year, however order within a single year is random.  	
-	}
+    \centering
+    \label{fig:methods:mobility_sentence}
+    \includegraphics[width=0.7\textwidth]{\figdir/mobility_example_combined.pdf}
+    \caption{
+        \textbf{Co-affiliation trajectories represented as sentences}
+        \textbf{a.} 
+        An author published five papers across five time periods, with only one affiliation listed in the byline of each paper. 
+        A unique identifier is assigned to each organization, and these are concatenated into a mobility sentence. 
+        \textbf{b.}
+        In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. Here, organization ids are still ordered by year, however order within a single year is random.      
+    }
 \end{figure}
 
 %% word2vec
@@ -195,8 +195,8 @@ Given its simplicity and flexibility, this formulation and variants have proven 
 Following the gravity law, the expected flow between two organizations is defined as follows,
 
 \begin{equation}
-	\label{eq:gravity_basic}
-	f_{ij} = C*m_{i}m_{j}*f(r_{ij})
+    \label{eq:gravity_basic}
+    f_{ij} = C*m_{i}m_{j}*f(r_{ij})
 \end{equation}
 
 where $m_{i}$ and $m_{j}$ are the yearly-average size of each organization during the time window, and $f(r_{ij})$ is a distance-decaying function  between the two organizations. There are two popular forms of the $f(r_{ij})$. The first one is power-law function with $f(r_{ij})= r^{-\alpha}_{ij}  (\alpha > 0)$, and the another one is exponential function with $f(r_{ij}) = e^{-\beta r_{ij}} (\beta > 0)$ \cite{chen2015distance}.  $f(r_{ij})$, $C$ can be chosen as to fit the data with the simple regression.
@@ -208,13 +208,13 @@ To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming ea
 
 
 \begin{equation}
-	\label{eq:linear_flux_geo}
-	\ln(\frac{f_{ij}}{m_im_j}) = \ln(C)  - \alpha \ln(g_{ij})
+    \label{eq:linear_flux_geo}
+    \ln(\frac{f_{ij}}{m_im_j}) = \ln(C)  - \alpha \ln(g_{ij})
 \end{equation}
 
 \begin{equation}
-	\label{eq:linear_flux_emb}
-	\ln(\frac{f_{ij}}{m_im_j}) = \ln(C) - \beta d_{ij}
+    \label{eq:linear_flux_emb}
+    \ln(\frac{f_{ij}}{m_im_j}) = \ln(C) - \beta d_{ij}
 \end{equation}
 
 The gravity law of mobility is known to be sensitive to the case where $f_{ij} = 0$, or zero movement between organizations. 
@@ -247,7 +247,7 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 \section{Results}\label{sec:results} %{{{ 
 
 Results are reported for embeddings with a dimensionality of 300 and a window size of one, which was the parameters that produced that best explained the flux between organizations (see Fig. SI~\ref{fig:supp:hyperparams}). 
-We note that this performance and the outcomes of analysis were robust to hyperparameters settings. 
+We note that this performance and the outcomes of the analysis were robust to hyperparameters settings. 
 
 %
 % Subsection: Embedding performance
@@ -264,23 +264,23 @@ Embedding distnace is also far more robust in explaining international flux, wit
 % Figure - Gravity law performance
 %
 \begin{figure}[h!]
-	\centering
-	\label{fig:gravity_performance}
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
-	\caption{
-		\textbf{Embedding distance outperforms and is more robust than geographic distance.}
-		\textbf{a.} embedding distance (cosine distance between vectors) explains more of the flux between organization pairs than does geographic distance (\textbf{b}). 
-		Red line is the line of best fit. 
-		Black dots are mean flux across binned distances.
-		The color indicates the frequency of organization pairs within each hex bin.
-		\textbf{c-d.} Predictions of flux between organization pairs made using embedding distance out-perform those made using geographic distance. 
-		Boxplots show the distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		\textbf{e-f.} Predictions made using model parameters learned from the subset of same-country organization pairs. 
-		Embedding distance outperforms those made for geographic distance.
-		\textbf{g-h.} Embedding distance also outperforms geographic distance when predicting flux using model parameters estimated from only pairs of organizations in different countries. 
-		Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. S\ref{fig:supp:gravity_prediction_subsets}).
-	}
+    \centering
+    \label{fig:gravity_performance}
+    \includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
+    \caption{
+        \textbf{Embedding distance outperforms and is more robust than geographic distance.}
+        \textbf{a.} embedding distance (cosine distance between vectors) explains more of the flux between organization pairs than does geographic distance (\textbf{b}). 
+        Red line is the line of best fit. 
+        Black dots are mean flux across binned distances.
+        The color indicates the frequency of organization pairs within each hex bin.
+        \textbf{c-d.} Predictions of flux between organization pairs made using embedding distance out-perform those made using geographic distance. 
+        Boxplots show the distribution of actual flux for binned values of predicted flux.
+        Box color corresponds to the degree to which the distribution overlaps $x = y$.
+        \textbf{e-f.} Predictions made using model parameters learned from the subset of same-country organization pairs. 
+        Embedding distance outperforms those made for geographic distance.
+        \textbf{g-h.} Embedding distance also outperforms geographic distance when predicting flux using model parameters estimated from only pairs of organizations in different countries. 
+        Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. S\ref{fig:supp:gravity_prediction_subsets}).
+    }
 \end{figure}
 
 We also find that defining the gravity model as a function of embedding distance produces better predictions than does geographic distance.
@@ -423,24 +423,24 @@ My re-projecting at the state-level for Massachusetts (Fig.~\ref{fig:projection}
 Similar dynamics can be observed in many states (New York, California, etc.), such that prestigious university systems are separate from more regional ones (See SI~?).
 
 \begin{figure}[hp!]
-	\centering
-	\label{fig:projection}
-	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.png}
-	\caption{
-		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
-		\textbf{a.}
-		UMAP projection \autocite{mcinnes2018umap} of the entire embedding space reveals geographic clustering.
-		Each point corresponds to an organization. 
-		Size indicates the size of the organization.
-		The color indicates the continent. 
-		We re-project subsets of organizational vectors to uncover more complex local structures.
-		\textbf{b.} Re-projection of organizational vectors roughly corresponding to West-Asian, Southeast Asian, and South Asian countries. 
-		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portuguese- and Spanish-speaking countries South and Central America. 
-		\textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
-		The color indicates Census Bureau-designated regions,
-		\textbf{e.} Re-projection of organizations in Massachusetts reveal clustering based on the organizational sector, prestige. 
-		Color indicates sector designation of organization. 
-	}
+    \centering
+    \label{fig:projection}
+    \includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.png}
+    \caption{
+        \textbf{Projection of embedding demonstrates complex multi-scale structure.}
+        \textbf{a.}
+        UMAP projection \autocite{mcinnes2018umap} of the entire embedding space reveals geographic clustering.
+        Each point corresponds to an organization. 
+        Size indicates the size of the organization.
+        The color indicates the continent. 
+        We re-project subsets of organizational vectors to uncover more complex local structures.
+        \textbf{b.} Re-projection of organizational vectors roughly corresponding to West-Asian, Southeast Asian, and South Asian countries. 
+        \textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portuguese- and Spanish-speaking countries South and Central America. 
+        \textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
+        The color indicates Census Bureau-designated regions,
+        \textbf{e.} Re-projection of organizations in Massachusetts reveal clustering based on the organizational sector, prestige. 
+        Color indicates sector designation of organization. 
+    }
 \end{figure}
 
 
@@ -466,19 +466,19 @@ This suggests that geography, then language, are important factors contributing 
 % Figure - CLUSTERING
 %
 \begin{figure}[p!]
-	\centering
-	\label{fig:clustering}
-	\includegraphics[width=\textwidth]{\figdir/Clustering/cluster_country.pdf}
-	\caption{
-		\textbf{Geography, then language, dictate international mobility.}
-		\textbf{a.} Hierarchically clustered similarity matrix of country vectors, aggregated as the mean of all organization vectors within the country that has more than 25 organizations, excluding the United States. 
-		The color of matrix cells corresponds to the similarity between country vectors.
-		Color of country names corresponds to their cluster.
-		Color of three cell rows separated from the matrix correspond to, from left to right, the continent of the country, the language family~\autocite{ethnologue}, and the individual language. 
-		\textbf{b.}	\textit{CluSim} \autocite{gates2019element} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$. 
-		Continent better explains the grouping of country vectors at higher levels of the clustering processes.
-		Language family, and then majority spoken language, better explain the grouping of countries at more granular. 
-	}
+    \centering
+    \label{fig:clustering}
+    \includegraphics[width=\textwidth]{\figdir/Clustering/cluster_country.pdf}
+    \caption{
+        \textbf{Geography, then language, dictate international mobility.}
+        \textbf{a.} Hierarchically clustered similarity matrix of country vectors, aggregated as the mean of all organization vectors within the country that has more than 25 organizations, excluding the United States. 
+        The color of matrix cells corresponds to the similarity between country vectors.
+        Color of country names corresponds to their cluster.
+        Color of three cell rows separated from the matrix correspond to, from left to right, the continent of the country, the language family~\autocite{ethnologue}, and the individual language. 
+        \textbf{b.}    \textit{CluSim} \autocite{gates2019element} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$. 
+        Continent better explains the grouping of country vectors at higher levels of the clustering processes.
+        Language family, and then majority spoken language, better explain the grouping of countries at more granular. 
+    }
 \end{figure}
 
 
@@ -505,18 +505,18 @@ Among teaching organizations, the top-ranked tend to be notable private liberal 
 % Figure - SemAxis results
 %
 \begin{figure}[hp!]
-	\centering
-	\label{fig:semaxis}
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
-	\caption{
-		\textbf{Embedding captures latent geography and prestige hierarchy.}
-		\textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and the geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
-		Points correspond to organizations, and a sample of individual states are highlighted. 
-		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the \textit{Elite} end of the axis prestige axis \textit{a}.
-		White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
-		The gray box corresponds to the top 20 and bottom 20 ranks. 
-	  	The estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.81 (n = 145).
-	}
+    \centering
+    \label{fig:semaxis}
+    \includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
+    \caption{
+        \textbf{Embedding captures latent geography and prestige hierarchy.}
+        \textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and the geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
+        Points correspond to organizations, and a sample of individual states are highlighted. 
+        \textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the \textit{Elite} end of the axis prestige axis \textit{a}.
+        White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
+        The gray box corresponds to the top 20 and bottom 20 ranks. 
+          The estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.81 (n = 145).
+    }
 \end{figure}
 
 To what extent are semantic embeddings of mobility actually learning the latent hierarchy of academic mobility?
@@ -548,25 +548,25 @@ This suggests that word embeddings, in addition to learning the latent geography
 % Figure - publications over time
 %
 \begin{figure}[p!]
-	\centering
-	\label{fig:supp:pubs_over_time}
-	\includegraphics[width=\textwidth]{\figdir/Descriptive/pubs_over_time.pdf}
-	\caption{
-		\textbf{Publications over time.}
-		\textbf{a.}
-		The number of papers published by mobile authors has been steadily increasing from 2008 to 2017, with a small decrease in 2018,  likely an artifact of the Web of Science indexing process.
-		Lines corresponds to publications by mobile authors (org, purple), by authors with affiliations in at least two cities (blue), at least two regions (green), and at least two countries (yellow).
-		There is no evidence of major changes in publication patterns of mobile authors during this time period. 
-		\textbf{b.}
-		Lines correspond to the proportion of publications classified as Biology and Health (black), Physics and Engineering (purple), Life and Earth Science (magenta), Social Science and Humanities (orange), and Math and Computer Science (yellow).
-		The rate of publication in Biology and Health has leveled since about 2013, whereas the rate of publication in other fields has steadily increased. 
-		\textbf{c.} 
-		Despite increasing absolute counts, the percentage of mobile scholars, and those with at least two city, regional, or country affiliations, as a proportion of all publications, has decreased over time. 
-		\textbf{d.} 
-		The proportion of authors publications across fields has largely remained steady.
-		Biology and Health Science has comprised the majority of publications across nearly all years, but has steadily declined in proportion. 
-		However, the proportion of Social Science and Humanities publications has been steadily increasing. 
-	}
+    \centering
+    \label{fig:supp:pubs_over_time}
+    \includegraphics[width=\textwidth]{\figdir/Descriptive/pubs_over_time.pdf}
+    \caption{
+        \textbf{Publications over time.}
+        \textbf{a.}
+        The number of papers published by mobile authors has been steadily increasing from 2008 to 2017, with a small decrease in 2018,  likely an artifact of the Web of Science indexing process.
+        Lines correspond to publications by mobile authors (org, purple), by authors with affiliations in at least two cities (blue), at least two regions (green), and at least two countries (yellow).
+        There is no evidence of major changes in the publication patterns of mobile authors during this period. 
+        \textbf{b.}
+        Lines correspond to the proportion of publications classified as Biology and Health (black), Physics and Engineering (purple), Life and Earth Science (magenta), Social Science and Humanities (orange), and Math and Computer Science (yellow).
+        The rate of publication in Biology and Health has leveled since about 2013, whereas the rate of publication in other fields has steadily increased. 
+        \textbf{c.} 
+        Despite increasing absolute counts, the percentage of mobile scholars, and those with at least two city, regional, or country affiliations, as a proportion of all publications, has decreased over time. 
+        \textbf{d.} 
+        The proportion of authors' publications across fields has largely remained steady.
+        Biology and Health Science has comprised the majority of publications across nearly all years but has steadily declined in proportion. 
+        However, the proportion of Social Science and Humanities publications has been steadily increasing. 
+    }
 \end{figure}
 
 
@@ -574,21 +574,21 @@ This suggests that word embeddings, in addition to learning the latent geography
 % Figure - publications over time
 %
 \begin{figure}[p!]
-	\centering
-	\label{fig:supp:pubs_over_time}
-	\includegraphics[width=\textwidth]{\figdir/Descriptive/mobility_by_country.pdf}
-	\caption{
-		\textbf{Extent and nature of mobility by country.}
-		\textbf{a.}
-		Proportion of researchers in each country classified as mobile, meaning that they have at least two organization affiliations within the period of study. 
-		The countries with the most mobile researchers are the United States, China, France, Great Britain, and Germany. 
-		\textbf{b.}
-		The same information, arranged into a cumulative distribution.
-		The five countires with the highest mobility account for approximately 70 percent of all mobility. 
-		\textbf{c.} The proportion of researchers labeled as mobile by country.
-		\textbf{d.} First two principal components of four variables: proportion in each country mobile across organizations, proportion mobile across cities, proportion mobile across regions, and proportion mobile across countries. 
-		First component captures overall degree of mobile, whereas the second compares within-country against across-country mobility. 		
-	}
+    \centering
+    \label{fig:supp:pubs_over_time}
+    \includegraphics[width=\textwidth]{\figdir/Descriptive/mobility_by_country.pdf}
+    \caption{
+        \textbf{Extent and nature of mobility by country.}
+        \textbf{a.}
+        The proportion of researchers in each country classified as mobile, meaning that they have at least two organization affiliations within the period of study. 
+        The countries with the most mobile researchers are the United States, China, France, Great Britain, and Germany. 
+        \textbf{b.}
+        The same information, arranged into a cumulative distribution.
+        The five countries with the highest mobility account for approximately 70 percent of all mobility. 
+        \textbf{c.} The proportion of researchers labeled as mobile by country.
+        \textbf{d.} The first two principal components of four variables: proportion in each country mobile across organizations, proportion mobile across cities, proportion mobile across regions, and proportion mobile across countries. 
+        The first component captures the overall degree of mobile, whereas the second compares within-country against across-country mobility.         
+    }
 \end{figure}
 
 
@@ -597,19 +597,19 @@ This suggests that word embeddings, in addition to learning the latent geography
 % Figure - reverse CDF by scale
 %
 \begin{figure}[p!]
-	\centering
-	\label{fig:supp:rcdf_by_scale}
-	\includegraphics[width=0.8\textwidth]{\figdir/Descriptive/rcdf_by_scale.pdf}
-	\caption{
-		\textbf{Reverse cumulative-distribution function of mobile authors by geographic scale.}
-		\textbf{a.}
-		Proportion of mobile authors by how many organizations are represented 	in their career trajectories. 
-		For example, for mobile authors, 100 percent of authors held an affiliation with at least two organizations, whereas about 35 percent were affiliated with 3 ore more organizations between 2008 and 2019.
-		Mobile authors are defined as those with at least two distinct organizational affiliations represented in our data. 
-		\textbf{b.} 68 percent of mobile authors have at least two cities represented in their career trajectories.
-		\textbf{c.} 45 percent of mobile authors have 2 or more regions represented in their career trajectories.
-		\textbf{d.} Only 14 percent of mobile authors had 2 or more countries represented in their career trajectories. 
-	}
+    \centering
+    \label{fig:supp:rcdf_by_scale}
+    \includegraphics[width=0.8\textwidth]{\figdir/Descriptive/rcdf_by_scale.pdf}
+    \caption{
+        \textbf{Reverse cumulative-distribution function of mobile authors by geographic scale.}
+        \textbf{a.}
+        The proportion of mobile authors by how many organizations are represented in their career trajectories. 
+        For example, for mobile authors, 100 percent of authors held an affiliation with at least two organizations, whereas about 35 percent were affiliated with 3 ore more organizations between 2008 and 2019.
+        Mobile authors are defined as those with at least two distinct organizational affiliations represented in our data. 
+        \textbf{b.} 68 percent of mobile authors have at least two cities represented in their career trajectories.
+        \textbf{c.} 45 percent of mobile authors have 2 or more regions represented in their career trajectories.
+        \textbf{d.} Only 14 percent of mobile authors had 2 or more countries represented in their career trajectories. 
+    }
 \end{figure}
 
 
@@ -618,20 +618,20 @@ This suggests that word embeddings, in addition to learning the latent geography
 % Figure - Hyperparameter performance
 %
 \begin{figure}[p!]
-	\centering
-	\label{fig:supp:hyperparams}
-	\includegraphics[width=\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
-	\caption{
-		\textbf{Larger dimensions, smaller window size improves embedding performance.}
-		The correlation, or amount of flux explained by the embedding distance with varying skip-gram negative sampling hyperparameters. 
-		Window size refers to the window, on either side of the target token, to use as context for training. 
-		Smaller window sizes results in an embedding that explain more of the flux. 
-		Embedding dimensions refer to the size of the organization vector.
-		Larger vectors perform better, though little difference between 200 and 300. 
-		All variants perform better on same-country pairs of organizations than on all organizations.
-		All variants perform worse on different-country pairs on organizations.
-		Larger embeddings outperform mid-size embeddings for the different-country case.
-	}
+    \centering
+    \label{fig:supp:hyperparams}
+    \includegraphics[width=\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
+    \caption{
+        \textbf{Larger dimensions, smaller window size improves embedding performance.}
+        The correlation or amount of flux explained by the embedding distance with varying skip-gram negative sampling hyperparameters. 
+        Window size refers to the window, on either side of the target token, to use as context for training. 
+        Smaller window sizes result in an embedding that explains more of the flux. 
+        Embedding dimensions refer to the size of the organization vector.
+        Larger vectors perform better, though little difference between 200 and 300. 
+        All variants perform better on same-country pairs of organizations than on all organizations.
+        All variants perform worse on different-country pairs on organizations.
+        Larger embeddings outperform mid-size embeddings for the different-country case.
+    }
 \end{figure}
 
 \newpage
@@ -639,20 +639,20 @@ This suggests that word embeddings, in addition to learning the latent geography
 % Figure - gravity correlation
 %
 \begin{figure}[p!]
-	\centering
-	\label{fig:supp:gravity_correlation}
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
-	\caption{
-		\textbf{Embedding distance explains more variance for global, within, and between country flux than geographic distance.}
-		\textbf{a.}
-		Embedding distance (cosine distance between vectors) explains more of the total distance than does geographic distance (\textbf{b}). 
-		Red line is line of best fit. 
-		Black dots are mean flux across binned distances.
-		Color indicates frequency of organization pairs within each hex bin.
-		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}a and Fig.~\ref{fig:gravity_performance}.
-		\textbf{c-d.}	embedding distance explains more variance when considering only pairs of organizations within the same country. 
-		\textbf{e-f.} embedding distance is more robust than geographic distance for pairs of organizations in different countries. 
-	}
+    \centering
+    \label{fig:supp:gravity_correlation}
+    \includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
+    \caption{
+        \textbf{Embedding distance explains more variance for global, within, and between-country flux than geographic distance.}
+        \textbf{a.}
+        Embedding distance (cosine distance between vectors) explains more of the total distance than does geographic distance (\textbf{b}). 
+        Red line is a line of best fit. 
+        Black dots are mean flux across binned distances.
+        The color indicates the frequency of organization pairs within each hex bin.
+        Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}a and Fig.~\ref{fig:gravity_performance}.
+        \textbf{c-d.}    embedding distance explains more variance when considering only pairs of organizations within the same country. 
+        \textbf{e-f.} embedding distance is more robust than geographic distance for pairs of organizations in different countries. 
+    }
 \end{figure}
 
 
@@ -661,18 +661,18 @@ This suggests that word embeddings, in addition to learning the latent geography
 % Figure - gravity predictions based on subset or global
 %
 \begin{figure}[p!]
-	\centering
-	\label{fig:supp:gravity_prediction_subsets}
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_different_fits.pdf}
-	\caption{
-		\textbf{Little difference between gravity predictions fit on all or subsets of data.}
-		Predictions of flux between organization pairs made using embedding distance out-performs those made using geographic distance. 
-		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		\textbf{a-b.} Predictions are made with parameter, estimating parameters from all pairs of organizations, making global predictions (as in Fig.~\ref{fig:gravity_performance}c), and showing only subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
-		\textbf{c-d.} Predictions made by estimating gravity law parameters on subset of organizations in the same country (\textbf{c}) and different country \textbf{d}); 
-		this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h. 
-	}
+    \centering
+    \label{fig:supp:gravity_prediction_subsets}
+    \includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_different_fits.pdf}
+    \caption{
+        \textbf{Little difference between gravity predictions fit on all or subsets of data.}
+        Predictions of flux between organization pairs made using embedding distance out-performs those made using geographic distance. 
+        Boxplots show the distribution of actual flux for binned values of predicted flux.
+        Box color corresponds to the degree to which the distribution overlaps $x = y$.
+        \textbf{a-b.} Predictions are made with parameter, estimating parameters from all pairs of organizations, making global predictions (as in Fig.~\ref{fig:gravity_performance}c), and showing only subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
+        \textbf{c-d.} Predictions made by estimating gravity law parameters on subset of organizations in the same country (\textbf{c}) and different country \textbf{d}); 
+        this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h. 
+    }
 \end{figure}
 
 
@@ -681,21 +681,21 @@ This suggests that word embeddings, in addition to learning the latent geography
 % Figure - PPR gravity model and predictions
 %
 \begin{figure}[p!]
-	\centering
-	\label{fig:supp:gravity_ppr}
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_ppr.pdf}
-	\caption{
-		\textbf{Personalized page rank does not capture mobility.}
-		Performance of personalized page rank scores in explaining and predicting mobility.
-		Personalized page rank is calculated for the underlying mobility network, and similarity between resulting vectors used as the PPR distance.
-		PPR distance does not explain global mobility (\textbf{a}), or same (\textbf{b}) or different (\textbf{c}) country mobility, performing worse than geographic distance (Fig.~\ref{fig:supp:gravity_correlation}). 
-		Red line is line of best fit. 
-		Black dots are mean flux across binned distances.
-		Color indicates frequency of organization pairs within each hex bin.
-		Similarly, PPR distance performs poorly as a distance metric for gravity model predictions globally (\textbf{d}), and across pairs of organizations in the same (\textit{e}) and in different (\textbf{f}) countries. 
-		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-	}
+    \centering
+    \label{fig:supp:gravity_ppr}
+    \includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_ppr.pdf}
+    \caption{
+        \textbf{Personalized page rank does not capture mobility.}
+        Performance of personalized page rank scores in explaining and predicting mobility.
+        Personalized page rank is calculated for the underlying mobility network and similarity between resulting vectors used as the PPR distance.
+        PPR distance does not explain global mobility (\textbf{a}), or same (\textbf{b}) or different (\textbf{c}) country mobility, performing worse than geographic distance (Fig.~\ref{fig:supp:gravity_correlation}). 
+        Red line is the line of best fit. 
+        Black dots are mean flux across binned distances.
+        The color indicates the frequency of organization pairs within each hex bin.
+        Similarly, PPR distance performs poorly as a distance metric for gravity model predictions globally (\textbf{d}), and across pairs of organizations in the same (\textit{e}) and in different (\textbf{f}) countries. 
+        Boxplots show the distribution of actual flux for binned values of predicted flux.
+        Box color corresponds to the degree to which the distribution overlaps $x = y$.
+    }
 \end{figure}
 
 
@@ -704,18 +704,18 @@ This suggests that word embeddings, in addition to learning the latent geography
 % Figure - SemAxis results
 %
 \begin{figure}[hp!]
-	\centering
-	\label{fig:supp:semaxis_compare}
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_compare_fig.pdf}
-	\caption{
-		\textbf{SemRank hierarchy is robust.}
-		\textbf{a.} Spearman correlation (n = 143) between Times prestige rank and SemAxis rank, by the number of high and bottom-ranked (geographically matched) universities aggregated to form the poles. 
-		More universities improves performance, but quickly saturates after around five universities. 
-		\textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by number of universities used to define the poles (n). 
-		White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
-		The grey box corresponds to the top 20 and bottom 20 ranks. 
-	  	PCC details the estimate from Spearman correlation between the two rankings. 
-	}
+    \centering
+    \label{fig:supp:semaxis_compare}
+    \includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_compare_fig.pdf}
+    \caption{
+        \textbf{SemRank hierarchy is robust.}
+        \textbf{a.} Spearman correlation (n = 143) between Times prestige rank and SemAxis rank, by the number of high and bottom-ranked (geographically matched) universities aggregated to form the poles. 
+        More universities improve performance but quickly saturates after around five universities. 
+        \textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by the number of universities used to define the poles (n). 
+        White points are those top and bottom 20 universities aggregated to define the ends of the axis. 
+        The gray box corresponds to the top 20 and bottom 20 ranks. 
+          PCC details the estimate from Spearman correlation between the two rankings. 
+    }
 \end{figure}
 
 
@@ -723,15 +723,15 @@ This suggests that word embeddings, in addition to learning the latent geography
 % Figure - SemAxis By State
 %
 \begin{figure}[hp!]
-	\centering
-	\label{fig:supp:semaxis_states}
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_states_fig.pdf}
-	\caption{
-		\textbf{Geography and prestige SemAxis by U.S. state.}
-		SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
-		Points correspond to universities shown for California (\textbf{a}), Arizona (\textbf{b}), Washington (\textbf{c}), Massachusetts (\textbf{d}), Connecticut (\textbf{e}), New York (\textbf{f}), Texas (\textbf{g}), Pennsylvania (\textbf{h}), and Florida (\textbf{i}).
-		Grey points correspond to all other U.S. universities. 
-	}
+    \centering
+    \label{fig:supp:semaxis_states}
+    \includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_states_fig.pdf}
+    \caption{
+        \textbf{Geography and prestige SemAxis by U.S. state.}
+        SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and the geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
+        Points correspond to universities shown for California (\textbf{a}), Arizona (\textbf{b}), Washington (\textbf{c}), Massachusetts (\textbf{d}), Connecticut (\textbf{e}), New York (\textbf{f}), Texas (\textbf{g}), Pennsylvania (\textbf{h}), and Florida (\textbf{i}).
+        Grey points correspond to all other U.S. universities. 
+    }
 \end{figure}
 
 
@@ -739,15 +739,15 @@ This suggests that word embeddings, in addition to learning the latent geography
 % Figure - SemAxis By Sector
 %
 \begin{figure}[hp!]
-	\centering
-	\label{fig:supp:semaxis_sectors}
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_sectors_fig.pdf}
-	\caption{
-		\textbf{Geography and prestige SemAxis in U.S. by Sector.}
-		SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
-		Points correspond to organizations labeled as Government (\textbf{a}), Institute (\textbf{b}), and Teaching (\textbf{c}), corresponding to government organizations, research institutes, and teaching organizations, respectively.
-		Grey points correspond to all U.S. universities.  
-	}
+    \centering
+    \label{fig:supp:semaxis_sectors}
+    \includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_sectors_fig.pdf}
+    \caption{
+        \textbf{Geography and prestige SemAxis in the U.S. by Sector.}
+        SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and the geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top). 
+        Points correspond to organizations labeled as Government (\textbf{a}), Institute (\textbf{b}), and Teaching (\textbf{c}), corresponding to government organizations, research institutes, and teaching organizations, respectively.
+        Grey points correspond to all U.S. universities.  
+    }
 \end{figure}
 
 
