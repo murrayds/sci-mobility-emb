@@ -181,12 +181,12 @@ def draw_figure(
         col_linkage=linked,
         row_colors=[
             continent_color_list,
-            languae_color_list,
             languae_family_color_list,
+            languae_color_list,
         ],
         linewidths=0.01,
         figsize=(20, 16),
-        cbar_pos=(0.98, 0.4, 0.03, 0.2),
+        cbar_pos=(0.98, 0.55, 0.03, 0.2),
     )
     g.ax_col_dendrogram.set_visible(False)
     g.ax_row_dendrogram.set_visible(False)
@@ -235,6 +235,70 @@ def draw_figure(
             (-4.6, 31), 4.6, 5, fill=False, clip_on=False, edgecolor="black", lw=3
         )
     )
+    lp = lambda i: plt.plot(
+        [],
+        color=c_list[continent_color_mapper[i]],
+        ms=10,
+        mec="none",
+        label=i[0].upper() + i[1:],
+        ls="",
+        marker="o",
+    )[0]
+    handles = [
+        lp(k)
+        for k in [
+            "Asia",
+            "Europe",
+            "North America",
+            "Africa",
+            "Oceania",
+            "South America",
+        ]
+    ]
+    continent_legend = plt.legend(
+        handles=handles, bbox_to_anchor=(8, 1.1), prop=prop, frameon=False
+    )
+    plt.text(1.8, 0.838, "Continent", fontproperties=prop)
+
+    lp = lambda i: plt.plot(
+        [],
+        color=languae_family_color_mapper[i],
+        ms=10,
+        mec="none",
+        label=i[0].upper() + i[1:],
+        ls="",
+        marker="o",
+    )[0]
+    handles = [lp(k) for k in ["Sintic", "Germanic", "Slavic", "Italic", "Semitic"]]
+    language_family_legend = plt.legend(
+        handles=handles, bbox_to_anchor=(12, 1.1), prop=prop, frameon=False
+    )
+    plt.text(4.35, 0.838, "Language Family", fontproperties=prop)
+
+    language_name_convert_dict = {
+        "en": "English",
+        "zh": "Chinese",
+        "de": "German",
+        "pt": "Portuguese",
+        "nl": "Dutch",
+    }
+    lp = lambda i: plt.plot(
+        [],
+        color=languae_color_mapper[i],
+        ms=10,
+        mec="none",
+        label=language_name_convert_dict[i],
+        ls="",
+        marker="o",
+    )[0]
+    handles = [lp(k) for k in ["zh", "en", "de", "pt", "nl"]]
+    language_legend = plt.legend(
+        handles=handles, bbox_to_anchor=(17, 1.1), prop=prop, frameon=False
+    )
+    plt.text(6.6, 0.838, "Language", fontproperties=prop)
+
+    plt.gca().add_artist(continent_legend)
+    plt.gca().add_artist(language_family_legend)
     plt.savefig(HEATMAP_PART_PATH, bbox_inches="tight")
 
     # Calculate clusim part
@@ -262,8 +326,8 @@ def draw_figure(
     sns.set_style("white")
     fig, ax = plt.subplots(1, figsize=(10, 6))
     ax.plot(r_list, similiarties_continent, "-", label="Continent")
-    ax.plot(r_list, similiarties_language, "-", label="Language")
     ax.plot(r_list, similiarties_language_family, "-", label="Language Family")
+    ax.plot(r_list, similiarties_language, "-", label="Language")
     ax.set_xlabel("r, Scaling parameter", fontproperties=prop)
     ax.set_ylabel("Similarity", fontproperties=prop)
     ax.legend(bbox_to_anchor=(0.43, 0.68), prop=small_prop, frameon=False)
