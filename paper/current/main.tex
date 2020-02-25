@@ -190,7 +190,7 @@ The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance 
 %
 \subsection{Gravity Law}
 
-We model flow of authors across organizations, $f_{ij}$, using the gravity law. 
+We model the flow of authors across organizations, $f_{ij}$, using the gravity law. 
 the gravity law of mobility loosely derives from the physical law of gravity, whereby the attraction between two objects is a function of their mass and the distance between them.
 Given its simplicity and flexibility, this formulation and variants have proven incredibly useful for modeling and predicting many kinds of mobility~\cite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}.
 Following the gravity law, the expected flow between two organizations is defined as follows,
@@ -201,18 +201,12 @@ Following the gravity law, the expected flow between two organizations is define
 \end{equation}
 
 where $m_{i}$ and $m_{j}$ are the yearly-average size of each organization during the time window, and $f(r_{ij})$ is a distance-decaying function  between the two organizations. There are two popular forms of the $f(r_{ij})$. The first one is power-law function with $f(r_{ij})= r^{-\alpha}_{ij}  (\alpha > 0)$, and the another one is exponential function with $f(r_{ij}) = e^{-\beta r_{ij}} (\beta > 0)$ \cite{chen2015distance}.  $f(r_{ij})$, $C$ can be chosen as to fit the data with the simple regression.
-Form this standard formulation we also define what we term the \textit{flux}, or the expected flow between organizations given their size, as a function of distance,
 
-\begin{equation}
-	\label{eq:gravity_flux}
-	\widetilde{f_{ij}} = C*m_{i}m_{j}*f(r_{ij})
-\end{equation}
-
-\js{I think we need a results, geographical distance with exponential function, emb distance with power-law function. And It will goes to supplement for sure}
 We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
 For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{-\alpha}_{ij}$, where $\alpha$ is estimated from the data. 
 For embedding distance , we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$, where $\beta$ is estimated from the data. 
 To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming each variant of \ref{eq:gravity_flux}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression. 
+
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
@@ -235,7 +229,7 @@ We follow standard practice and exclude from our analysis zero flows.
 %
 \subsection*{SemAxis}
 By constructing semantic embeddings from mobility trajectories, we allow for unique methodology for understading the embedding space, such as SemAxis.
-SemAxis~\autocite{an2018semaxis} is a technique that leverages the latent semantic characteristics of word embeddings to represent the position of terms along a conceptual axis, reflecting the relationship of these term to the concept. 
+SemAxis~\cite{an2018semaxis} is a technique that leverages the latent semantic characteristics of word embeddings to represent the position of terms along a conceptual axis, reflecting the relationship of these term to the concept. 
 The precise axis is an antonym pair defined \textit{ad-hoc} for the specific use case.
 In the case of language, the ends of the axis could be "good" and "bad", "surprising" and "unsurprising", or "masculine" and "feminine". 
 In the case of scientific mobility, SemAxis offers a means of operationalizing abstract relationships between organizations.
@@ -357,7 +351,7 @@ Then, the word embedding model will learns vectors under the condition,
       p(j|i) \propto {\mu_j}* \exp(\cos(v_i,v_j))
 \end{equation}
 
-which is restricted to, sum of the conditional probability must be one,
+which is restricted to, sum of the conditional probability should be one,
 
 \begin{equation}
     \label{eq:sum of the conditional probabiitliy}
@@ -385,7 +379,7 @@ We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good
 \begin{figure}
     \centering
     \includegraphics[width=0.8\columnwidth]{\figdir/Math/approxi_proof.png}
-    \caption{Relationship between the conditional probability and the cosine similarity}
+    \caption{Relationship between the conditional probability $p(j|i)$ and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
     \label{fig:real_embedding_relationship}
 \end{figure}
 
@@ -403,9 +397,9 @@ where the conditional probability of observing one word, $w_{0}$, given another,
     p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_I})}, 
 \end{equation}
 
-where $v_w$ and $v'_w$ are `input' and `output' vector representations of each word in the vocabulary. In the negative sampling strategies, the denominator is not calculated directly. In general, the cosine similarity of in-vectors is used as a measure of affinity. Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form (or Eq.~\ref{eq:real_embedding_relationship} is a special case of Eq. ~\ref{eq:skipgram_conditional_expanded}).
+where $v_w$ and $v'_w$ are `input' and `output' vector representations of each word in the vocabulary. With facts that the denominator is not calculated entirely in the negative sampling strategies and the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form (or Eq.~\ref{eq:real_embedding_relationship} is a special case of Eq. ~\ref{eq:skipgram_conditional_expanded}).
 
-The \textit{word2vec} skip-gram model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility. 
+Hence, the \textit{word2vec} skip-gram model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility. 
 
 
 %
@@ -413,12 +407,14 @@ The \textit{word2vec} skip-gram model can be an effective model for investigatin
 %
 \subsection*{Embeddings capture complex structure}
 
-The skip-gram model learns an effective distance from trajectories, one that 
-We visualize whole organization vectors in  Fig. \ref{fig:projection}a.
-The coordinates of each organization come from a 2-D projection of the  embedding vectors with UMAP \cite{mcinnes2018umap} and the colors indicates the continent that organization belongs. Overall structure is almost similar to geographical map seen from the north pole while coherent structures of the communities are detected. For instance, french-spoken region of the Canada (Quebec, Montreal) is more close to French cluster rather than mainland of Canada.
-%
-% Figure - UMAP Projections
-%
+The SGNS model learns an effective distance from trajectories, one that we visualize whole organization vectors in  Fig. \ref{fig:projection}a, revealing organizational clusters that reflect a mix of geographic, historic, cultural, and linguistic relationships between countries.
+The coordinates of each organization come from a 2-D projection of the embedding vectors with UMAP \cite{mcinnes2018umap} and the colors indicate the continent that the organization belongs to. The overall structure is almost similar to the geographical map seen from the north pole while coherent structures of the communities are detected. For instance, french-spoken regions of Canada (Quebec, Montreal) are more close to the French cluster rather than the mainland of Canada, which is the result of the linguistic relationship. Also, the cluster of Algeria and Morocco is closed to the French cluster, which is far from the mainland of Africa cluster, which reflects colonial historical facts.
+
+To look at the multi-scale structure of the embedding closely, we re-project organization vectors using a subset of embedding vectors, which is another advantage of our proposed method. In Fig. \ref{fig:projection}b, we find the cultural, religious, and regional spectrum of the country clusters across the Western, South, Southeast Asia. Also, we observe the clear linguistic separation of the country cluster, which are Portuguese speaking countries (Brazil, Portugal) and Spanish speaking countries (Spain, Mexico, Chile, etc.)  in Fig. \ref{fig:projection}c.
+
+By visualizing subsets of vectors within a specific country, we reveal a more granular structure. We re-project the embedding vectors within the United States in Fig. \ref{fig:projection}d, find state-level geographical clustering the structure of organizations roughly organized by state and region with spectrum from the East-coast to the West-coast. The more interesting part is re-projection results on state levels. In Fig. \ref{fig:projection}e, we re-project the embedding vectors with only organization in Massachusetts, finding structure based on urban centers (Boston vs. Worcester), organization type (hospitals tend to be adjacent)
+and different university systems (UMass system cluster separate from Harvard, MIT, etc.). Even though UMass Boston is located in Boston, it clusters with other universities in the UMass System and it observed throughout many states (New York, California, etc.) with state university system (See SI~?).
+
 \begin{figure}[hp!]
 	\centering
 	\label{fig:projection}
