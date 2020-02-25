@@ -168,7 +168,6 @@ To mitigate the effect of less common organizations, only organizations appearin
 this yields 6,580, or 76 percent of all organizations.
 We iterate the SGNS training for five epochs over all mobility sentences. 
 All word embeddings are trained using the \textit{gensim} python implementation of the SGNS \textit{word2vec} model. 
-We visualize embeddings by projecting into two dimensions using UMAP~\cite{mcinnes2018umap}.
 
 %
 % SUBSECTION: DISTANCE
@@ -205,7 +204,7 @@ where $m_{i}$ and $m_{j}$ are the yearly-average size of each organization durin
 We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
 For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{-\alpha}_{ij}$, where $\alpha$ is estimated from the data. 
 For embedding distance , we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$, where $\beta$ is estimated from the data. 
-To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming each variant of \ref{eq:gravity_flux}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression. 
+To estimate parameters $\alpha$ and $\beta$ are estimated by log-transforming each variant of \ref{eq:gravity_basic}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression. 
 
 
 \begin{equation}
@@ -378,8 +377,8 @@ We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good
 %
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\columnwidth]{\figdir/Math/approxi_proof.png}
-    \caption{Relationship between the conditional probability $p(j|i)$ and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
+    \includegraphics[width=0.8\columnwidth]{\figdir/Math/approxi_proof.pdf}
+    \caption{Relationship between the conditional probability $p(j|i)$ from data and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
     \label{fig:real_embedding_relationship}
 \end{figure}
 
@@ -407,7 +406,7 @@ Hence, the \textit{word2vec} skip-gram model can be an effective model for inves
 %
 \subsection*{Embeddings capture global structure of mobility}
 
-The SGNS model learns an effective distance from trajectories, one which we can visualize by projecting organizational vectors into two dimensions using UMAP \cite{mcinnes2018umap} (Fig.~\ref{fig:projection}a).
+The SGNS model learns an effective distance from trajectories, one which we can visualize the results into two dimensional space by projecting high dimensional organizational vectors into two dimensions vectors using UMAP \cite{mcinnes2018umap} (Fig.~\ref{fig:projection}a).
 Overall, organizations are clustered by geography, according to the nations in which they are location;
 however, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions at multiple scales.
 
