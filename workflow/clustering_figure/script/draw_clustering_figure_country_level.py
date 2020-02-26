@@ -21,12 +21,13 @@ def draw_figure(
     INPUT_META_INFO_FILE,
     COUNTRY_META_INFO_FILE,
     FONT_PATH,
+    BOLD_FONT_PATH,
     DENDROGRAM_PART_PATH,
     HEATMAP_PART_PATH,
     CLUSIM_PART_PATH,
 ):
     model = Word2Vec.load(INPUT_EMBEDDING_FILE)
-
+    print(BOLD_FONT_PATH)
     # Get institution meta data
     meta_info = pd.read_csv(INPUT_META_INFO_FILE, sep="\t")
     meta_info = meta_info.set_index("cwts_org_no")
@@ -168,6 +169,7 @@ def draw_figure(
     plt.savefig(DENDROGRAM_PART_PATH, bbox_inches="tight")
 
     prop = font_manager.FontProperties(fname=FONT_PATH, size=22)
+    bold_prop = font_manager.FontProperties(fname=BOLD_FONT_PATH, size=22)
     small_prop = font_manager.FontProperties(fname=FONT_PATH, size=20)
     tick_prop = font_manager.FontProperties(fname=FONT_PATH, size=16)
 
@@ -186,7 +188,7 @@ def draw_figure(
         ],
         linewidths=0.01,
         figsize=(20, 16),
-        cbar_pos=(0.98, 0.55, 0.03, 0.2),
+        cbar_pos=(0.99, 0.53, 0.03, 0.220),
     )
     g.ax_col_dendrogram.set_visible(False)
     g.ax_row_dendrogram.set_visible(False)
@@ -202,7 +204,7 @@ def draw_figure(
         )
     ax.set_yticks([])
 
-    ax.collections[0].colorbar.ax.set_title("Similarity\n", fontproperties=prop)
+    ax.collections[0].colorbar.ax.set_title("Similarity\n", fontproperties=bold_prop)
     ax.collections[0].colorbar.set_ticks([0.3, 0.5, 0.7])
     for label in ax.collections[0].colorbar.ax.get_yticklabels():
         label.set_fontproperties(prop)
@@ -238,7 +240,7 @@ def draw_figure(
     lp = lambda i: plt.plot(
         [],
         color=c_list[continent_color_mapper[i]],
-        ms=10,
+        ms=15,
         mec="none",
         label=i[0].upper() + i[1:],
         ls="",
@@ -256,14 +258,20 @@ def draw_figure(
         ]
     ]
     continent_legend = plt.legend(
-        handles=handles, bbox_to_anchor=(8, 1.1), prop=prop, frameon=False
+        handles=handles,
+        bbox_to_anchor=(0.5, 1.74),
+        prop=prop,
+        frameon=False,
+        ncol=6,
+        handlelength=0,
+        handletextpad=1,
     )
-    plt.text(1.8, 0.838, "Continent", fontproperties=prop)
+    plt.text(-11.2, 1.07, "Continent", fontproperties=bold_prop)
 
     lp = lambda i: plt.plot(
         [],
         color=languae_family_color_mapper[i],
-        ms=10,
+        ms=15,
         mec="none",
         label=i[0].upper() + i[1:],
         ls="",
@@ -271,9 +279,15 @@ def draw_figure(
     )[0]
     handles = [lp(k) for k in ["Sintic", "Germanic", "Slavic", "Italic", "Semitic"]]
     language_family_legend = plt.legend(
-        handles=handles, bbox_to_anchor=(12, 1.1), prop=prop, frameon=False
+        handles=handles,
+        bbox_to_anchor=(-4.2, 1.59),
+        prop=prop,
+        frameon=False,
+        ncol=5,
+        handlelength=0,
+        handletextpad=1,
     )
-    plt.text(4.35, 0.838, "Language Family", fontproperties=prop)
+    plt.text(-11.2, 1, "Language Family", fontproperties=bold_prop)
 
     language_name_convert_dict = {
         "en": "English",
@@ -285,7 +299,7 @@ def draw_figure(
     lp = lambda i: plt.plot(
         [],
         color=languae_color_mapper[i],
-        ms=10,
+        ms=15,
         mec="none",
         label=language_name_convert_dict[i],
         ls="",
@@ -293,9 +307,15 @@ def draw_figure(
     )[0]
     handles = [lp(k) for k in ["zh", "en", "de", "pt", "nl"]]
     language_legend = plt.legend(
-        handles=handles, bbox_to_anchor=(17, 1.1), prop=prop, frameon=False
+        handles=handles,
+        bbox_to_anchor=(-4.2, 1.45),
+        prop=prop,
+        frameon=False,
+        ncol=5,
+        handlelength=0,
+        handletextpad=1,
     )
-    plt.text(6.6, 0.838, "Language", fontproperties=prop)
+    plt.text(-11.2, 0.93, "Language", fontproperties=bold_prop)
 
     plt.gca().add_artist(continent_legend)
     plt.gca().add_artist(language_family_legend)
@@ -345,15 +365,17 @@ if __name__ == "__main__":
     INPUT_META_INFO_FILE = sys.argv[2]
     COUNTRY_META_INFO_FILE = sys.argv[3]
     FONT_PATH = sys.argv[4] if sys.argv[4] != "None" else None
-    DENDROGRAM_PART_PATH = sys.argv[5]
-    HEATMAP_PART_PATH = sys.argv[6]
-    CLUSIM_PART_PATH = sys.argv[7]
+    BOLD_FONT_PATH = sys.argv[5] if sys.argv[5] != "None" else None
+    DENDROGRAM_PART_PATH = sys.argv[6]
+    HEATMAP_PART_PATH = sys.argv[7]
+    CLUSIM_PART_PATH = sys.argv[8]
 
     draw_figure(
         INPUT_EMBEDDING_FILE,
         INPUT_META_INFO_FILE,
         COUNTRY_META_INFO_FILE,
         FONT_PATH,
+        BOLD_FONT_PATH,
         DENDROGRAM_PART_PATH,
         HEATMAP_PART_PATH,
         CLUSIM_PART_PATH,
