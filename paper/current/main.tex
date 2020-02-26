@@ -77,23 +77,22 @@
 
 \begin{abstract}
 
-Scientific mobility, the movement of scientists between organizations, drives innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige} however the complexity of factors driving global scientific mobility~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career} necessitates simplified models for reasoning about and crafting policy around mobility. 
+Scientific mobility, the movement of scientists between organizations, drives innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige} however the complexity of factors driving global scientific mobility~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics} necessitates simplified models for reasoning about and crafting policy around mobility. 
 Common models of mobility, such as the Gravity Model~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity, simini2012universal}, are a function on the \textit{distance} between places.
-However, amid a globalizing scientific enterprise~\autocite{czaika2018globalisation}, geographic distance is only becoming less useful for understanding mobility, and other abstract notions of distance~\autocite{boschma2005proximity} cannot be measured.
-Here, we learn an effective distance directly from mobility data using the skip-gram word embedding model~\autocite{mikolov2013word2vec}, treating organizations analogously to words and career trajectories to sentences.
-We source publications of disaambiguated authors from the Web of Science database to construct mobility embeddings for authors career trajectories between 2008 and 2019. 
-We demonstrate distance between vectors in the learned embedding better explains and predicts mobility between organizations than does geographic distance, a result of an underlying connection between word embeddings and the gravity model of mobility.
-In additional to capturing geographic relationships, these embeddings capture latent religious, cultural, social, and linguistic relationships between organizations at multiple scales of granularity. 
-Without explicit inclusion of prestige, embeddings also capture complex organizational hierarchies and can be used to re-construct university rankings. 
+However, amid a globalizing scientific enterprise~\autocite{czaika2018globalisation}, geographic distance is only becoming less useful for understanding mobility, and other abstract notions of distance~\autocite{boschma2005proximity} cannot be meaningfully measured.
+Here, we demonstrate a data-driven approach of learning an effective distance that encodes the latent structure of mobility using the skip-gram word embedding model~\autocite{mikolov2013word2vec}, treating organizations analogously to words and career trajectories to sentences.
+We source publications of disambiguated authors from the Web of Science database to construct mobility embeddings for authors career trajectories between 2008 and 2019. 
+Distance between vectors in the learned embedding space better explain and predict mobility between organizations than does geographic distance, which we speculate emerges from an underlying connection between embeddings and the gravity model.
+In additional to geography, these embeddings capture latent religious, cultural, social, and linguistic, and implicit hierarchical relationships between organizations at multiple levels of granularity.
 Our findings demonstrate the potential of learning efficient, dense, and meaningful vector-space representations of scientific mobility directly from the data, one that models a complex notion of inter-organization distance and which points towards a generalized methodology of reasoning about all kinds of mobility. 
 
 \end{abstract}
-
 
 %
 % INTRODUCTION
 %
 \section{Introduction}\label{sec:introduction} %{{{
+
 
 
 %}}}
