@@ -71,6 +71,9 @@
 \def\js#1{ {\color{red}\textbf{js: #1}} }
 
 
+% CUSTOM MACROS
+\def\SGNS{\textit{SGNS}}
+
 %}}}
 
 \begin{document} %{{{
@@ -88,7 +91,7 @@
 Mobility is essential to science---it drives innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige} however the complexity of factors driving global scientific mobility~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics} necessitates simplified models for reasoning about and crafting effective policy. 
 Common models of mobility, such as the Gravity Model~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity, simini2012universal}, are a function on the \textit{distance} between places.
 However, amid a globalizing scientific enterprise~\autocite{czaika2018globalisation}, geographic distance is only becoming less useful for understanding mobility, whereas other abstract notions of distance~\autocite{boschma2005proximity} cannot be meaningfully measured.
-Here, we demonstrate a data-driven approach of learning an effective distance that encodes the latent structure of mobility using the skip-gram word embedding model~\autocite{mikolov2013word2vec}, treating organizations analogously to words and career trajectories to sentences.
+Here, we demonstrate a data-driven approach of learning an effective distance that encodes the latent structure of mobility using the skip-gram  negative sampling word embedding model~\autocite{mikolov2013word2vec}, treating organizations analogously to words and career trajectories to sentences.
 We source publications of disambiguated authors from the Web of Science database to construct mobility embeddings for authors career trajectories between 2008 and 2019. 
 Distance between vectors in the learned embedding space better explain and predict mobility between organizations than does geographic distance, which we speculate emerges from an underlying connection between embeddings and the gravity model.
 In additional to geography, these embeddings capture latent religious, cultural, social, and linguistic, and implicit hierarchical relationships between organizations at multiple levels of granularity.
@@ -110,9 +113,9 @@ There are many ways to think about the distance~\autocite{boschma2005proximity},
 In turn, models of human mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation models ~\autocite{simini2012universal}, rely almost exclusively on geographic distance, rather than other less measurable though important forms. 
 Encoding distance in a way that considers not just geography, but also historical, linguistic, cultural, and cognitive proximity would improve our models and thus ability to reason about science and immigration policies. 
 
-The skip-gram embedding model preserves semantic relationships between words in a dense and meaningful low-dimensional vector-space representation~\cite{mikolov2013word2vec}, and just as its has been applied to and revealed insights implicit in text~\cite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}, so too might this model encode the latent structures of global scientific mobility. 
+The skip-gram negative-sampling embedding (\SGNS) model preserves semantic relationships between words in a dense and meaningful low-dimensional vector-space representation~\cite{mikolov2013word2vec}, and just as its has been applied to and revealed insights implicit in text~\cite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}, so too might this model encode the latent structures of global scientific mobility. 
 As scientist's careers progress, they move institutions or pick up additional affiliations, forming co-affiliation or \textit{mobility trajectories} that can be derived from their publication histories~\autocite{robinson2019mobility, sugimoto2017mostimpact}. 
-We embed mobility trajectories by treating organizations analogously to words and trajectories analogously to sentences, and feed the resulting "sentence" into the standard skip-gram model (Fig.~\ref{fig:methods:mobility_sentence}).
+We embed mobility trajectories by treating organizations analogously to words and trajectories analogously to sentences, and feed the resulting "sentence" into the standard \SGNS{} model (Fig.~\ref{fig:methods:mobility_sentence}).
 The result is a vector-space representation of organizations in which the \textit{cosine distance} between vectors represents the tendency for pairs of organizations to occur near one another in the same career path. 
 In addition to encoding latent structure, these  are computationally and space efficient, robust to noise, and allow for a range of unique analyses that leverage their semantic properties using simple vector arithmetic. 
 
@@ -136,16 +139,16 @@ In addition to encoding latent structure, these  are computationally and space e
 
 We embed the trajectories of the three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019 as evidenced by their publications indexed in the Web of Science. 
 We adopt the Gravity Model of mobility~\autocite{zipf1946gravity}, one of the most common and broadly applied mobility models~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity} to assess how well the embedding captures mobility. 
-We derive the \textit{expected flow} from the base gravity model, defined as,
+We derive the \textit{expected flux} from the base gravity model, defined as,
 
 \begin{equation}
 	\label{eq:gravity_basic}
 	f_{ij} = C*m_{i}m_{j}*f(r_{ij})
 \end{equation}
 
-Where the flow, or number of authors co-affiliated with two organizations during the time period $f_{ij}$, increases with the organization's sizes, $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
+Where the flux, or number of authors co-affiliated with two organizations during the time period $f_{ij}$, increases with the organization's sizes, $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
 We consider two distances, $f_{ij}$, the geographic distance between the organizations, and the \textit{embedding distance} defined as the cosine distance between the organization's vector in the trained embedding space. 
-We argue that the performance of a distance measure can be observed from their ability to explain expected mobility between organizations, as well as to predict flows using the gravity model. 
+We argue that the performance of a distance measure can be observed from their ability to explain expected mobility between organizations, as well as to predict flux using the gravity model. 
 For geographic distance, we define $f(r_{ij})$ as the standard power-decay function, and for the embedding distance, we use the exponential form, selected as the best performing for each case. 
 
 
@@ -154,12 +157,12 @@ For geographic distance, we define $f(r_{ij})$ as the standard power-decay funct
 %
 \subsection*{Embedding performance}
 
-The skip-gram model learns an effective distance that explains and predicts scientific mobility better than alternatives. 
+The \SGNS{} model learns an effective distance that explains and predicts scientific mobility better than alternatives. 
 Embedding distance explains more of the expected flow between pairs of organizations, with correlation ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) over double that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
 Similarly, embedding distance outperforms personalized-page rank distance ($R^{2} = XYZ$, Fig. SI~\ref{fig:supp:gravity_ppr}a), a network-based measure. 
 Embedding distance also explains more of the variance of domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig. ~\ref{fig:supp:gravity_correlation}d) than does geographic distance. 
-After fitting model parameters from the data, the embedding distance produces better predictions of expected flow than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c-d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e-f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g-h).
-Geographic distance alone is a poor tool for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flows between organizations. 
+After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c-d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e-f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g-h).
+Geographic distance alone is a poor tool for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flux between organizations. 
 
 %
 % Figure - Gravity law performance
@@ -169,7 +172,7 @@ Geographic distance alone is a poor tool for understanding international scienti
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
 	\caption{
 		\textbf{Embedding distance outperforms and is more robust than geographic distance.}
-		\textbf{a.} embedding distance (cosine distance between organization vectors) explains more of the flow between organization pairs than does geographic distance (\textbf{b}). 
+		\textbf{a.} embedding distance (cosine distance between organization vectors) explains more of the expected flux between organization pairs than does geographic distance (\textbf{b}). 
 		Red line is line of best fit. 
 		Black dots are mean flux across binned distances.
 		Color indicates frequency of organization pairs within each hex bin.
@@ -191,7 +194,7 @@ Geographic distance alone is a poor tool for understanding international scienti
 %
 \subsection*{Mathematical explanation}
 
-Why does the skip-gram model, a tool designed for natural language processing, produce such a reasonable distance that models gravity relationships between organizations?
+Why does the SNGS model, a tool designed for natural language processing, produce such a reasonable distance that models gravity relationships between organizations?
 We find evidence of a theoretical connection between the two models, one that makes the skip-gram model applicable to many other forms of mobility trajectory. 
 
 Let $f_{ij}$ represents the total \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
@@ -276,7 +279,7 @@ We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good
     \label{fig:real_embedding_relationship}
 \end{figure}
 
-This finding relates to the objective function of \textit{word2vec} (skip-gram) model. The skip-gram model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
+This finding relates to the objective function of the \SGNS{} model. The model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
 
 \begin{equation}
     \label{eq:skipgram_log_prob_condensed}
@@ -292,7 +295,7 @@ where the conditional probability of observing one word, $w_{0}$, given another,
 
 where $v_w$ and $v'_w$ are `input' and `output' vector representations of each word in the vocabulary. With facts that the denominator is not calculated entirely in the negative sampling strategies and the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form (or Eq.~\ref{eq:real_embedding_relationship} is a special case of Eq. ~\ref{eq:skipgram_conditional_expanded}).
 
-Hence, the \textit{word2vec} skip-gram model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility. 
+Hence, the \SGNS{} model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility. 
 
 
 %
@@ -300,7 +303,7 @@ Hence, the \textit{word2vec} skip-gram model can be an effective model for inves
 %
 \subsection*{Embeddings capture global structure of mobility}
 
-The skip-gram model produces an effective distnace from mobility which can be visualized by projecting the embedding space into two dimensions using UMAP~\autocite{mcinnes2018umap} (Fig.~\ref{fig:projection}a).
+The \SGNS{} model produces an effective distnace from mobility which can be visualized by projecting the embedding space into two dimensions using UMAP~\autocite{mcinnes2018umap} (Fig.~\ref{fig:projection}a).
 Overall, organizations are clustered by geography, according to the nations in which they are location;
 however, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions at multiple scales.
 
@@ -416,7 +419,7 @@ Among teaching organizations, the top-ranked tend to be notable private liberal 
 	\label{fig:semaxis}
 \end{figure}
 
-In addition to learning geography, its clear that the skip-gram model is also encoding the latent prestige hierarchies of academic mobility. 
+In addition to learning geography, its clear that the \SGNS{} model is also encoding the latent prestige hierarchies of academic mobility. 
 To test this, we derive a ranking using the prestige axis that we call \textit{SemRank}, and compare them to traditional university rankings. 
 SemRank is defined from the position of organizations along the prestige axis, with the top ranked being the furthest towards the \textit{Elite} end of the axis.
 We find that SemRank derived is highly correlated with the Times ranking ($\rho = 0.81$, Fig.~\ref{fig:semaxis}b). 
@@ -430,7 +433,7 @@ This suggests that word embeddings, in addition to learning the latent geography
 % 
 \section*{Conclusion}
 
-By learning a distance directly from the data, the skip-gram model effectively and efficiently captures a robust measure of semantic distance between entities, all with existing tools and minor data processing. 
+By learning a distance directly from the data, the \SGNS{} model effectively and efficiently captures a robust measure of semantic distance between entities, all with existing tools and minor data processing. 
 This methodology is broadly applicable to studies of mobility.
 Its success also points to the broad applicability of ideas from language and graph embedding techniques such as GLoVE~\autocite{pennington2014glove}, BERT~\autocite{devlin2018bert}, hyperbolic embeddings~\autocite{nickel2017poincare, linzhuo2020hyperbolic}, and persona2vec () to other problem domains, such as the social sciences. 
 In addition to their technical advantages and the unique suite of methodologies they allow, they are also  readily transferable and can be trivially fit into a diverse array of analyses. 
@@ -504,19 +507,19 @@ The trajectories of mobile authors were converted to ''mobility sentences`` by c
 In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple affiliations in the same year, the order is randomized within that year, as shown in  Fig.~\ref{fig:methods:mobility_sentence}.b. 
 
 %% word2vec
-These mobility sentences are used as input to the standard skip-gram negative sampling (SGNS) model for word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec} . 
+These mobility sentences are used as input to the standard skip-gram negative sampling (\SGNS) model, for word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec} . 
 In natural-language processing, word embeddings are used to construct dense vector-space representations of words and phrases, in which distance relationships between words correspond to a notion of semantic distance. 
 By embedding co-affiliation trajectories, we aim to learn a dense vector for every organization where distance between vectors relates to the tendency for two organizations to co-occur in a token window around the target term in the same career trajectory. 
 Vectors are learned by training a neural network to optimize the prediction of so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory. 
 The hidden layer of the trained neural network is used as the 
 
 %% Word2vec parameters and training procedure
-The SGNS model has several tunable hyper-parameters, including the size of the learned vectors, the size of the token window  considered when training, the minimum frequency threshold for including an organization, and the number of iterations.
+The \SGNS{} model has several tunable hyper-parameters, including the size of the learned vectors, the size of the token window  considered when training, the minimum frequency threshold for including an organization, and the number of iterations.
 We iterate through several values of vector size and window size, repeating analysis for each combination. 
 To mitigate the effect of less common organizations, only organizations appearing at least 50 times in mobility sentences are included in the embedding;
 this yields 6,580, or 76 percent of all organizations.
-We iterate the SGNS training for five epochs over all mobility sentences. 
-All word embeddings are trained using the \textit{gensim} python implementation of the SGNS \textit{word2vec} model. 
+We iterate the \SGNS{} training for five epochs over all mobility sentences. 
+All word embeddings are trained using the \textit{gensim} python implementation of the \SGNS{} \textit{word2vec} model. 
 We visualize embeddings by projecting into two dimensions using UMAP~\autocite{mcinnes2018umap}.
 
 
@@ -544,10 +547,10 @@ The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance 
 %
 \subsection{Gravity Law}
 
-We model the flow of authors across organizations, $f_{ij}$, using the gravity law. 
+We model the flux of authors between organizations, $f_{ij}$, using the gravity law. 
 the gravity law of mobility loosely derives from the physical law of gravity, whereby the attraction between two objects is a function of their mass and the distance between them.
 Given its simplicity and flexibility, this formulation and variants have proven incredibly useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}.
-Following the gravity law, the expected flow between two organizations is defined as follows,
+Following the gravity law, the expected flux between two organizations is defined as follows,
 
 \begin{equation}
 	\label{eq:gravity_basic}
