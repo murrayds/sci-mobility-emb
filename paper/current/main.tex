@@ -114,10 +114,21 @@ The skip-gram embedding model preserves semantic relationships between words in 
 As scientist's careers progress, they move institutions or pick up additional affiliations, forming co-affiliation or \textit{mobility trajectories} that can be derived from their publication histories~\autocite{robinson2019mobility, sugimoto2017mostimpact}. 
 We embed mobility trajectories by treating organizations analogously to words and trajectories analogously to sentences, and feed the resulting "sentence" into the standard skip-gram model (Fig.~\ref{fig:methods:mobility_sentence}).
 The result is a vector-space representation of organizations in which the \textit{cosine distance} between vectors represents the tendency for pairs of organizations to occur near one another in the same career path. 
-In addition to encoding latent structure, these embeddings are computationally and space efficient, robust to noise, and allow for a range of unique analyses that leverage their semantic properties using simple vector arithmetic. 
+In addition to encoding latent structure, these  are computationally and space efficient, robust to noise, and allow for a range of unique analyses that leverage their semantic properties using simple vector arithmetic. 
 
 We embed the trajectories of the three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019 as evidenced by their publications indexed in the Web of Science. 
-We adopt the Gravity Model of mobility~\autocite{zipf1946gravity}, one of the most common and broadly applied mobility models () to assess how well the embedding captures mobility. 
+We adopt the Gravity Model of mobility~\autocite{zipf1946gravity}, one of the most common and broadly applied mobility models~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity} to assess how well the embedding captures mobility. 
+We derive the \textit{expected flow} from the base gravity model, defined as,
+
+\begin{equation}
+	\label{eq:gravity_basic}
+	f_{ij} = C*m_{i}m_{j}*f(r_{ij})
+\end{equation}
+
+Where the flow, or number of authors co-affiliated with two organizations during the time period $f_{ij}$, increases with the organization's sizes, $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
+We consider two distances, $f_{ij}$, the geographic distance between the organizations, and the \textit{embedding distance} defined as the cosine distance between the organization's vector in the trained embedding space. 
+We argue that the performance of a distance measure can be observed from their ability to explain expected mobility between organizations, as well as to predict flows using the gravity model. 
+For geographic distance, we define $f(r_{ij})$ as the standard power-decay function, and for the embedding distance, we use the exponential form, selected as the best performing for each case. 
 
 %}}}
 
