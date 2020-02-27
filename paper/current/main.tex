@@ -95,10 +95,20 @@ Our findings demonstrate the potential of learning efficient, dense, and meaning
 
 % Introduce the question, why is it important?
 
+When scientists move, so does their knowledge, and for scientific mobility, like all human movement, distance matters. 
+However, how exactly do we measure the distance between two places?
+Australia may be physically close to Indonesia, but in terms of language, history, and shared culture, they are essentially neighbors to geographically distant countries like the United Kingdom or United States. 
+There are many ways to think about the distance~\autocite{boschma2005proximity}, but only geographic distance can be meaningfully quantified. 
+In turn, models of human mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation models ~\autocite{simini2012universal}, rely almost exclusively on geographic distance, rather than other less measurable though important forms. 
+Encoding distance in a way that considers not just geography, but also historical, linguistic, cultural, and cognitive proximity would improve our models and thus ability to reason about science and immigration policies. 
 
-%
+The skip-gram embedding model preserves semantic relationships between words in a dense and meaningful low-dimensional vector-space representation~\cite{mikolov2013word2vec}, and just as its has been applied to and revealed insights implicit in text~\cite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}, so too might this model encode the latent structures of global scientific mobility. 
+As scientist's careers progress, they move institutions or pick up additional affiliations, forming co-affiliation or \textit{mobility trajectories} that can be derived from their publication histories~\autocite{robinson2019mobility, sugimoto2017mostimpact}. 
+We embed mobility trajectories by treating organizations analogously to words and trajectories analogously to sentences, and feed the resulting "sentence" into the standard skip-gram model (Fig.~\ref{fig:methods:mobility_sentence}).
+The result is a vector-space representation of organizations in which the \textit{cosine distance} between vectors represents the tendency for pairs of organizations to occur near one another in the same career path. 
+In addition to encoding latent structure, these embeddings are computationally and space efficient, robust to noise, and allow for a range of unique analyses that leverage their semantic properties using simple vector arithmetic. 
 
-
+We embed the trajectories of the three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019 as evidenced by their publications indexed in the Web of Science. 
 
 
 %}}}
