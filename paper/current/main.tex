@@ -116,6 +116,24 @@ We embed mobility trajectories by treating organizations analogously to words an
 The result is a vector-space representation of organizations in which the \textit{cosine distance} between vectors represents the tendency for pairs of organizations to occur near one another in the same career path. 
 In addition to encoding latent structure, these  are computationally and space efficient, robust to noise, and allow for a range of unique analyses that leverage their semantic properties using simple vector arithmetic. 
 
+%
+% Figure - Example of mobility sentences
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{\figdir/mobility_example_combined.pdf}
+    \caption{
+        \textbf{Co-affiliation trajectories represented as sentences}
+        \textbf{a.} 
+        An author published five papers across five time periods, with only one affiliation listed in the byline of each paper. 
+        A unique identifier is assigned to each organization, and these are concatenated into a mobility sentence. 
+        \textbf{b.}
+        In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. Here, organization ids are still ordered by year, however order within a single year is random.      
+    }
+    \label{fig:methods:mobility_sentence}
+\end{figure}
+
+
 We embed the trajectories of the three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019 as evidenced by their publications indexed in the Web of Science. 
 We adopt the Gravity Model of mobility~\autocite{zipf1946gravity}, one of the most common and broadly applied mobility models~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity} to assess how well the embedding captures mobility. 
 We derive the \textit{expected flow} from the base gravity model, defined as,
@@ -282,7 +300,7 @@ Hence, the \textit{word2vec} skip-gram model can be an effective model for inves
 %
 \subsection*{Embeddings capture global structure of mobility}
 
-The SGNS model learns an effective distance from trajectories, one which we can visualize by projecting organizational vectors into two dimensions using UMAP \autocite{mcinnes2018umap} (Fig.~\ref{fig:projection}a).
+The skip-gram model produces an effective distnace from mobility which can be visualized by projecting the embedding space into two dimensions using UMAP~\autocite{mcinnes2018umap} (Fig.~\ref{fig:projection}a).
 Overall, organizations are clustered by geography, according to the nations in which they are location;
 however, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions at multiple scales.
 
@@ -300,7 +318,6 @@ Similar dynamics can be observed in many states (New York, California, etc.), su
 
 \begin{figure}[hp!]
 	\centering
-	\label{fig:projection}
 	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.png}
 	\caption{
 		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
@@ -317,6 +334,7 @@ Similar dynamics can be observed in many states (New York, California, etc.), su
 		\textbf{e.} Re-projection of organizations in Massachusetts reveal clustering based on organizational sector, prestige. 
 		Color indicates sector designation of organization. 
 	}
+	\label{fig:projection}
 \end{figure}
 
 
@@ -343,7 +361,6 @@ This suggests that geography, then language, are important factors contributing 
 %
 \begin{figure}[p!]
 	\centering
-	\label{fig:clustering}
 	\includegraphics[width=\textwidth]{\figdir/Clustering/cluster_country.pdf}
 	\caption{
 		\textbf{Geography, then language, dictate international mobility.}
@@ -355,6 +372,7 @@ This suggests that geography, then language, are important factors contributing 
 		Continent better explains the grouping of country vectors at higher levels of the clustering processes.
 		Language family, and then majority spoken language, better explain the grouping of countries at more granular. 
 	}
+	\label{fig:clustering}
 \end{figure}
 
 
