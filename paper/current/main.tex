@@ -136,22 +136,22 @@ For geographic distance, we define $f(r_{ij})$ as the standard power-decay funct
 %
 \subsection*{Embedding performance}
 
-We find that embedding distance, the distance between vectors in the embedding space, produces an effective measure of distance.
-Embedding distance explains more of the total flux between pairs of organizations, with correlation ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) over double that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
-Similarly, embedding distance outperforms personalized-page rank distance ($R^{2} = 0.001$, Fig. SI~\ref{fig:supp:gravity_ppr}a), a measure produced from the factorized nodes in the underlying mobility network. 
-When controlling for only mobility between pairs of organizations within the same country, embedding distance ($R^{2} = 0.48$, Fig. SI~\ref{fig:supp:gravity_correlation}c) than does geographic distance ($R^{2} = 0.19$, Fig. SI~\ref{fig:supp:gravity_correlation}d). 
-Embedding distnace is also far more robust in explaining international flux, with a correlation nearly seven times higher ($R^{2} = 0.28$, Fig. SI~\ref{fig:supp:gravity_correlation}e) than that of geographic distance ($R^{2} = 0.041$, Fig. SI~\ref{fig:supp:gravity_correlation}f). 
+The skip-gram model learns an effective distance that explains and predicts scientific mobility better than alternatives. 
+Embedding distance explains more of the expected flow between pairs of organizations, with correlation ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) over double that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
+Similarly, embedding distance outperforms personalized-page rank distance ($R^{2} = XYZ$, Fig. SI~\ref{fig:supp:gravity_ppr}a), a network-based measure. 
+Embedding distance also explains more of the variance of domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig. ~\ref{fig:supp:gravity_correlation}d) than does geographic distance. 
+After fitting model parameters from the data, the embedding distance produces better predictions of expected flow than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c-d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e-f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g-h).
+Geographic distance alone is a poor tool for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flows between organizations. 
 
 %
 % Figure - Gravity law performance
 %
 \begin{figure}[h!]
 	\centering
-	\label{fig:gravity_performance}
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
 	\caption{
 		\textbf{Embedding distance outperforms and is more robust than geographic distance.}
-		\textbf{a.} embedding distance (cosine distance between vectors) explains more of the flux between organization pairs than does geographic distance (\textbf{b}). 
+		\textbf{a.} embedding distance (cosine distance between organization vectors) explains more of the flow between organization pairs than does geographic distance (\textbf{b}). 
 		Red line is line of best fit. 
 		Black dots are mean flux across binned distances.
 		Color indicates frequency of organization pairs within each hex bin.
@@ -162,14 +162,10 @@ Embedding distnace is also far more robust in explaining international flux, wit
 		Embedding distance outperforms those made for geographic distance.
 		\textbf{g-h.} Embedding distance also outperforms geographic distance when predicting flux using model parameters estimated from only pairs of organizations in different countries. 
 		Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. S\ref{fig:supp:gravity_prediction_subsets}).
+		These predictions are robust whether the model is fit on the global data, or on the domestic (Fig.~\ref{fig:gravity_performance}e-h) or international Fig.~\ref{fig:supp:gravity_prediction_subsets}) subsets .
 	}
+	\label{fig:gravity_performance}
 \end{figure}
-
-We also find that defining the gravity model as a function of embedding distance produces better predictions than does geographic distance.
-Comparing predicted against actual flux, we find that using the embedding distance in the gravity function has lower error, and are closer than are predictions made using geographic distance (Fig.~\ref{fig:gravity_performance}c-d). 
-Embedding distance also produces better predictions for pairs of organizations within the same country (Fig.~\ref{fig:supp:gravity_correlation}e-f) and for pairs of organizations in different countries (Fig.~\ref{fig:supp:gravity_correlation}g-h). 
-We find that these predictions are robust whether we make predictions using a model fit on the subsets themselves (Fig.~\ref{fig:gravity_performance}e-h) or fit on the global data and then applied to the subsets (Fig. SI~\ref{fig:supp:gravity_prediction_subsets}). 
-This performance is also much better than that using personalized page rank distance (Fig. SI~\ref{fig:supp:gravity_ppr}). 
 
 
 %
@@ -177,10 +173,8 @@ This performance is also much better than that using personalized page rank dist
 %
 \subsection*{Mathematical explanation}
 
-We observed that word embedding models trained on scientific mobility trajectories offers a reasonable measure of effective distance, one that explains flux between organizations far better than geographic distance. 
-Why is this true?
-Why does the skip-gram model learn vectors which approximate gravity law relationships?
-We find evidence of a latent mathematical connection between the two models, one that makes the skip-gram model applicable to many other forms of mobility trajectory. 
+Why does the skip-gram model, a tool designed for natural language processing, produce such a reasonable distance that models gravity relationships between organizations?
+We find evidence of a theoretical connection between the two models, one that makes the skip-gram model applicable to many other forms of mobility trajectory. 
 
 Let $f_{ij}$ represents the total \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
 
@@ -696,7 +690,6 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 %
 \begin{figure}[p!]
 	\centering
-	\label{fig:supp:gravity_correlation}
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
 	\caption{
 		\textbf{Embedding distance explains more variance for global, within, and between country flux than geographic distance.}
@@ -709,6 +702,7 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 		\textbf{c-d.}	embedding distance explains more variance when considering only pairs of organizations within the same country. 
 		\textbf{e-f.} embedding distance is more robust than geographic distance for pairs of organizations in different countries. 
 	}
+	\label{fig:supp:gravity_correlation}
 \end{figure}
 
 
@@ -718,7 +712,6 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 %
 \begin{figure}[p!]
 	\centering
-	\label{fig:supp:gravity_prediction_subsets}
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_different_fits.pdf}
 	\caption{
 		\textbf{Little difference between gravity predictions fit on all or subsets of data.}
@@ -729,6 +722,7 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 		\textbf{c-d.} Predictions made by estimating gravity law parameters on subset of organizations in the same country (\textbf{c}) and different country \textbf{d}); 
 		this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h. 
 	}
+	\label{fig:supp:gravity_prediction_subsets}
 \end{figure}
 
 
@@ -738,7 +732,6 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 %
 \begin{figure}[p!]
 	\centering
-	\label{fig:supp:gravity_ppr}
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_ppr.pdf}
 	\caption{
 		\textbf{Personalized page rank does not capture mobility.}
@@ -752,6 +745,7 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
 	}
+	\label{fig:supp:gravity_ppr}
 \end{figure}
 
 
