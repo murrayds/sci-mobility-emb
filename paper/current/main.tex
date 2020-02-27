@@ -130,12 +130,6 @@ We consider two distances, $f_{ij}$, the geographic distance between the organiz
 We argue that the performance of a distance measure can be observed from their ability to explain expected mobility between organizations, as well as to predict flows using the gravity model. 
 For geographic distance, we define $f(r_{ij})$ as the standard power-decay function, and for the embedding distance, we use the exponential form, selected as the best performing for each case. 
 
-%}}}
-
-\section{Results}\label{sec:results} %{{{ 
-
-Results are reported for embeddings with a dimensionality of 300 and a window size of one, which were the parameters that produced  that best explained the flux between organizations (see Fig. SI~\ref{fig:supp:hyperparams}). 
-We note that this performance and the outcomes of analysis was robust to hyperparemeters settings. 
 
 %
 % Subsection: Embedding performance
@@ -519,6 +513,11 @@ this yields 6,580, or 76 percent of all organizations.
 We iterate the SGNS training for five epochs over all mobility sentences. 
 All word embeddings are trained using the \textit{gensim} python implementation of the SGNS \textit{word2vec} model. 
 We visualize embeddings by projecting into two dimensions using UMAP~\autocite{mcinnes2018umap}.
+
+
+Results are reported for embeddings with a dimensionality of 300 and a window size of one, which were the parameters that produced  that best explained the flux between organizations (see Fig. SI~\ref{fig:supp:hyperparams}). 
+We note that this performance and the outcomes of analysis was robust to hyperparemeters settings. 
+
 
 %
 % SUBSECTION: DISTANCE
