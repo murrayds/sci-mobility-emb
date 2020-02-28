@@ -159,9 +159,9 @@ For geographic distance, we define $f(r_{ij})$ as the standard power-decay funct
 
 The \SGNS{} model learns an effective distance that explains and predicts scientific mobility better than alternatives. 
 Embedding distance explains more of the expected flow between pairs of organizations, with correlation ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) over double that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
-Similarly, embedding distance outperforms personalized-page rank distance ($R^{2} = XYZ$, Fig. SI~\ref{fig:supp:gravity_ppr}a), a network-based measure. 
 Embedding distance also explains more of the variance of domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig. ~\ref{fig:supp:gravity_correlation}d) than does geographic distance. 
 After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c-d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e-f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g-h).
+Similarly, embedding distance outperforms distances derived from calculating personalized-page rank scores on the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}). 
 Geographic distance alone is a poor tool for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flux between organizations. 
 
 %
@@ -741,27 +741,50 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 \end{figure}
 
 
-
 %
-% Figure - PPR gravity model and predictions
+% Figure - PPR with COSINE DISTANCE gravity model and predictions
 %
 \begin{figure}[p!]
 	\centering
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_ppr.pdf}
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_pprcos.pdf}
 	\caption{
-		\textbf{Personalized page rank does not capture mobility.}
+		\textbf{Personalized page rank with cosine distance.}
 		Performance of personalized page rank scores in explaining and predicting mobility.
-		Personalized page rank is calculated for the underlying mobility network, and similarity between resulting vectors used as the PPR distance.
-		PPR distance does not explain global mobility (\textbf{a}), or same (\textbf{b}) or different (\textbf{c}) country mobility, performing worse than geographic distance (Fig.~\ref{fig:supp:gravity_correlation}). 
+		Personalized page rank is calculated for the underlying mobility network, and distance measured as the cosine distnace between PPR probability distribution vectors.
+		PPR cosine distance performs roughly similar to geographic distance in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
 		Red line is line of best fit. 
 		Black dots are mean flux across binned distances.
 		Color indicates frequency of organization pairs within each hex bin.
-		Similarly, PPR distance performs poorly as a distance metric for gravity model predictions globally (\textbf{d}), and across pairs of organizations in the same (\textit{e}) and in different (\textbf{f}) countries. 
+		Similarly, PPR distance performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility. 
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
 	}
-	\label{fig:supp:gravity_ppr}
+	\label{fig:supp:gravity_pprcos}
 \end{figure}
+
+
+%
+% Figure - PPR with JSD gravity model and predictions
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_pprjsd.pdf}
+	\caption{
+		\textbf{Personalized page rank with cosine distance.}
+		Performance of personalized page rank scores in explaining and predicting mobility.
+		Personalized page rank is calculated for the underlying mobility network, and distance measured as the Jensen-Shannon Divergence (JSD) between PPR probability distribution vectors.
+		PPR JSD performs roughly similar to geographic distance in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
+		Overall, PPR JSD explains more vairance in mobility than using cosine distance (Fig.~\ref{fig:supp:gravity_pprcos}), except for international mobility, for which cosine similarity out-performs JSD. 
+		Red line is line of best fit. 
+		Black dots are mean flux across binned distances.
+		Color indicates frequency of organization pairs within each hex bin.
+		Similarly, PPR JSD performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility. 
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+	}
+	\label{fig:supp:gravity_pprjsd}
+\end{figure}
+
 
 
 
