@@ -181,7 +181,7 @@ Geographic distance alone is a poor tool for understanding international scienti
 		\textbf{e-f.} Predictions made using model parameters learned from subset of same-country organization pairs. 
 		Embedding distance outperforms those made for geographic distance.
 		\textbf{g-h.} Embedding distance also outperforms geographic distance when predicting flux using model parameters estimated from only pairs of organizations in different countries. 
-		Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. S\ref{fig:supp:gravity_prediction_subsets}).
+		Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. \ref{fig:supp:gravity_prediction_subsets}).
 		These predictions are robust whether the model is fit on the global data, or on the domestic (Fig.~\ref{fig:gravity_performance}e-h) or international Fig.~\ref{fig:supp:gravity_prediction_subsets}) subsets .
 	}
 	\label{fig:gravity_performance}
@@ -259,7 +259,7 @@ Then, we can write $p(j|i)$ with $\mu_{j}$
     p(j|i) \propto \frac{{\mu_j}* \exp(\cos(v_i,v_j)}{\sum_{k\in\mathpzc{N}_i} {\mu_k}* \exp(\cos(v_i,v_k))}
 \end{equation}
 
-And, if we remove ${\mu_*}$ for simplicity (or for our special case with $\mu_{i} = \mu_{j} = \mu_*$), then $p(j|i)$ can be written as,
+And, if we remove ${\mu_*}$ for simplicity (or for the special case with $\mu_{i} = \mu_{j} = \mu_*$), then $p(j|i)$ can be written as,
 
 \begin{equation}
     \label{eq:real_embedding_relationship}
@@ -274,7 +274,7 @@ We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good
 \begin{figure}
     \centering
     \includegraphics[width=0.8\columnwidth]{\figdir/Math/approxi_proof.png}
-    \caption{Relationship between the conditional probability $p(j|i)$ and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
+    \caption{Relationship between the conditional probability $p(j|i)$ from Eq.\ref{eq:flux_conditional_prob} which is measured in the data and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
     \label{fig:real_embedding_relationship}
 \end{figure}
 
@@ -292,7 +292,7 @@ where the conditional probability of observing one word, $w_{0}$, given another,
     p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_I})}, 
 \end{equation}
 
-where $v_w$ and $v'_w$ are `input' and `output' vector representations of each word in the vocabulary. With facts that the denominator is not calculated entirely in the negative sampling strategies and the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form (or Eq.~\ref{eq:real_embedding_relationship} is a special case of Eq. ~\ref{eq:skipgram_conditional_expanded}).
+where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary. With facts that the denominator is not calculated entirely in the negative sampling strategies and the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form (or Eq.~\ref{eq:real_embedding_relationship} is a special case of Eq. ~\ref{eq:skipgram_conditional_expanded}).
 
 Hence, the \SGNS{} model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility. 
 
