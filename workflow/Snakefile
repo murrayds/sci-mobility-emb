@@ -80,6 +80,7 @@ ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', '{traj}_d
 ##############
 AGGREGATE_R2 = osjoin(STAT_DATA_DIR, 'aggregate_r2.csv')
 PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{traj}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.csv')
+AGGREGATE_SLOPES = osjoin(STAT_DATA_DIR, 'aggregate_slopes.csv')
 
 ##############
 # SemAxis    #
@@ -234,6 +235,7 @@ rule all:
                geo_constraint_filt = GEO_CONSTRAINTS_FILT,
                window = W2V_WINDOW_SIZE),
         GRADIENT_LEGEND,
+        AGGREGATE_SLOPES,
 
         # Descriptive Plots
         expand(PUBS_OVER_TIME_PLOT, traj = TRAJECTORIES),

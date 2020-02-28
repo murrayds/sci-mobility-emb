@@ -46,6 +46,18 @@ rule plot_predicted_vs_actual_filtered:
 ###############################################################################
 # HYPERPARAMETER PERFORMANCE
 ###############################################################################
+rule get_aggregate_gravity_slopes:
+    input:
+        [expand(rules.build_aggregate_org_distances.output,
+                traj = TRAJECTORIES,
+                dimensions = W2V_DIMENSIONS,
+                window = W2V_WINDOW_SIZE)]
+    output: AGGREGATE_SLOPES
+    shell:
+        # using default argument parsing here
+        "Rscript scripts/GetAggregateSlopes.R {input} {output}"
+
+
 rule get_aggregate_gravity_r2:
     input:
         [expand(rules.build_aggregate_org_distances.output,
