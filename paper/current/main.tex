@@ -600,12 +600,38 @@ From the prestige axis we also derive what we call \textit{SemRank}, a universit
 We compare the SemAxis ranking to the traditional university rankings using Spearman rank correlations. 
 
 
-
-\newpage
 \clearpage
 \beginsupplement
 \section{Supporting Information}
 
+%
+% S1 TEXT
+\newpage
+\paragraph*{S1 Text}
+\label{si:text:ppr_dist}
+{\bf Network-based personalized page rank distances.}
+
+
+We also examine the gravity model on the Personalized Page Rank (PPR)\autocite{jeh2003scaling} as a benchmark on the network. We construct the co-occurrence network whose nodes are organization and edges are co-occurrence between two organizations. We use 0.9 in here.
+
+\begin{equation}
+	\label{eq:ppr}
+	p_i = (1.0 - \alpha) * v_i + \alpha p_i W,
+\end{equation}
+
+where $v_i$ is a vector with 1 in the ith entry, whose length is the N, the number of nodes in the network, W is the weighted adjacency matrix, and $\alpha$ is the hyper-parameter is called the teleportation parameter that controls the probability that random walker revisits the original node i. We can think of this PPR vector as a representation of a node, which is N-length embedding. For examining the gravity law, we use two distance measures for PPR. The first one is cosine distance which is used for our embedding method, and the second one is the Jensen–Shannon divergence (JSD).
+
+\begin{equation}
+	\label{eq:JSD}
+	JSD(P||Q) = \frac{1}{2}D_{KL}(P||M) + \frac{1}{2}D_{KL}(Q||M),
+\end{equation}
+
+\begin{equation}
+	\label{eq:KL}
+	D_{KL} = \sum p(x)\log(\frac{p(x)}{q(x)})
+\end{equation}
+
+where $M=\frac{1}{2}(P+Q)$. We report the both results, PPR with cosine distance (Fig. \ref{fig:supp:gravity_pprcos}) and (Fig. \ref{fig:supp:gravity_pprjsd}). In both cases, the performance is under the performance of the model with geographical distance. Even though the length of the PPR vectors is extremely larger than the length of our embedding vectors, our result on the embedding outperforms than network approach. Moreover, it is also computationally efficient and salable for large dataset.
 
 
 %
@@ -740,26 +766,6 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 \end{figure}
 
 
-We also examine the gravity model on the Personalized Page Rank (PPR)\autocite{jeh2003scaling} as a benchmark on the network. We construct the co-occurrence network whose nodes are organization and edges are co-occurrence between two organizations. We use 0.9 in here.
-
-\begin{equation}
-	\label{eq:ppr}
-	p_i = (1.0 - \alpha) * v_i + \alpha p_i W,
-\end{equation}
-
-where $v_i$ is a vector with 1 in the ith entry, whose length is the N, the number of nodes in the network, W is the weighted adjacency matrix, and $\alpha$ is the hyper-parameter is called the teleportation parameter that controls the probability that random walker revisits the original node i. We can think of this PPR vector as a representation of a node, which is N-length embedding. For examining the gravity law, we use two distance measures for PPR. The first one is cosine distance which is used for our embedding method, and the second one is the Jensen–Shannon divergence (JSD).
-
-\begin{equation}
-	\label{eq:JSD}
-	JSD(P||Q) = \frac{1}{2}D_{KL}(P||M) + \frac{1}{2}D_{KL}(Q||M),
-\end{equation}
-
-\begin{equation}
-	\label{eq:KL}
-	D_{KL} = \sum p(x)\log(\frac{p(x)}{q(x)})
-\end{equation}
-
-where $M=\frac{1}{2}(P+Q)$. We report the both results, PPR with cosine distance (Fig. \ref{fig:supp:gravity_pprcos}) and (Fig. \ref{fig:supp:gravity_pprjsd}). In both cases, the performance is under the performance of the model with geographical distance. Even though the length of the PPR vectors is extremely larger than the length of our embedding vectors, our result on the embedding outperforms than network approach. Moreover, it is also computationally efficient and salable for large dataset.
 %
 % Figure - PPR with COSINE DISTANCE gravity model and predictions
 %
