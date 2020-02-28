@@ -95,7 +95,7 @@ Here, we demonstrate a data-driven approach of learning an effective distance th
 We source publications of disambiguated authors from the Web of Science database to construct mobility embeddings for authors career trajectories between 2008 and 2019. 
 Distance between vectors in the learned embedding space better explain and predict mobility between organizations than does geographic distance, which we speculate emerges from an underlying connection between embeddings and the gravity model.
 In additional to geography, these embeddings capture latent religious, cultural, social, and linguistic, and implicit hierarchical relationships between organizations at multiple levels of granularity.
-With this approach, we can learn efficient, dense, and meaningful vector-space representations of scientific mobility directly from the data, one that models a complex notion of inter-organization distance and which points towards a generalized methodology of reasoning about all kinds of mobility. 
+With this approach, we can learn scalable, dense, and meaningful vector representations of scientific mobility directly from the data, one that models a complex notion of inter-organization distance and which points towards a generalized methodology of reasoning about all kinds of mobility. 
 
 \end{abstract}
 
@@ -117,7 +117,7 @@ The skip-gram negative-sampling embedding (\SGNS) model preserves semantic relat
 As scientist's careers progress, they move institutions or pick up additional affiliations, forming co-affiliation or \textit{mobility trajectories} that can be derived from their publication histories~\autocite{robinson2019mobility, sugimoto2017mostimpact}. 
 We embed mobility trajectories by treating organizations analogously to words and trajectories analogously to sentences, and feed the resulting "sentence" into the standard \SGNS{} model (Fig.~\ref{fig:methods:mobility_sentence}).
 The result is a vector-space representation of organizations in which the \textit{cosine distance} between vectors represents the tendency for pairs of organizations to occur near one another in the same career path. 
-In addition to encoding latent structure, these  are computationally and space efficient, robust to noise, and allow for a range of unique analyses that leverage their semantic properties using simple vector arithmetic. 
+In addition to encoding latent structure, these  are computationally efficient and scalable, robust to noise, and allow for a range of unique analyses that leverage their semantic properties using simple vector arithmetic. 
 
 %
 % Figure - Example of mobility sentences
@@ -585,10 +585,11 @@ We follow standard practice and exclude from our analysis zero flows.
 % SUBSECTION: SEMAXIS
 %
 \subsection*{SemAxis}
-By constructing semantic embeddings from mobility trajectories, we allow for unique methodology for understading the embedding space, such as SemAxis.
+By constructing semantic embeddings from mobility trajectories, we allow for unique methodology for understanding the embedding space, such as SemAxis.
 SemAxis~\autocite{an2018semaxis} is a technique that leverages the latent semantic characteristics of word embeddings to represent the position of terms along a conceptual axis, reflecting the relationship of these term to the concept. 
 The precise axis is an antonym pair defined \textit{ad-hoc} for the specific use case.
-In the case of language, the ends of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''. 
+In the case of language, the ends of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''. It is shown that projection of words to given specific axis fit well with widely shared cultural connotation from surveyed
+responses and labeled historical data \autocite{kozlowski2018geometry}.
 In the case of scientific mobility, SemAxis offers a means of operationalizing abstract relationships between organizations.
 
 Here, we apply SemAxis to U.S. universities by defining two axes, one of geography and one of academic prestige. 
