@@ -115,7 +115,7 @@ Encoding distance in a way that considers not just geography, but also historica
 
 The skip-gram negative-sampling embedding (\SGNS) model preserves semantic relationships between words in a dense, continuous and meaningful low-dimensional vector representation~\autocite{mikolov2013word2vec}, and just as its has been applied to and revealed insights implicit in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}, so too might this model encode the latent structures of global scientific mobility. 
 As scientist's careers progress, they move institutions or pick up additional affiliations, forming co-affiliation or \textit{mobility trajectories} that can be derived from their publication histories~\autocite{robinson2019mobility, sugimoto2017mostimpact}. 
-We embed mobility trajectories by treating organizations analogously to words and trajectories analogously to sentences, and feed the resulting "sentence" into the standard \SGNS{} model (See Fig.~\ref{fig:methods:mobility_sentence}).
+We embed mobility trajectories by treating organizations analogously to words and trajectories analogously to sentences, and feed the resulting "sentence" into the standard \SGNS{} model (Fig.~\ref{fig:methods:mobility_sentence}).
 The result is a vector representation of organizations in which the \textit{cosine distance} between vectors represents the tendency for pairs of organizations to occur near one another in the same career path. 
 In addition to encoding latent structure, this approach is computationally efficient, scalable for large dataset, robust to noise, and allow for a range of unique analyses that leverage their semantic properties using simple vector arithmetic. 
 
@@ -274,7 +274,7 @@ We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good
 \begin{figure}
     \centering
     \includegraphics[width=0.8\columnwidth]{\figdir/Math/approxi_proof.png}
-    \caption{Relationship between the conditional probability $p(j|i)$ from Eq.\ref{eq:flux_conditional_prob} which is measured in the data and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
+    \caption{Relationship between the conditional probability $p(j|i)$ \ref{eq:flux_conditional_prob} which is measured in the data and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
     \label{fig:real_embedding_relationship}
 \end{figure}
 
@@ -316,7 +316,7 @@ For example, organizations located within the french-speaking region of Quebec i
 A unique characteristic of semantic mobility embeddings is the ability to capture structure at multiple scales of granularity.
 For example, just as the global embedding captures geographic structure between nations, so too does a projection or organizations in the United States reflect organizational structure based on states (Fig.~\ref{fig:projection}d). 
 By re-projecting at the state-level for Massachusetts (Fig.~\ref{fig:projection}e), we observe structure between urban Centers (Boston vs. Worcester), but also based on organization type (hospitals tend to be adjacent) and different university systems. Even though UMass Boston is located in Boston, it clusters near other universities in the UMass System, reflecting a relative lack of mobility between the two systems, even within the same state. 
-Similar dynamics can be observed in many states (New York, California, etc.), such that prestigious university systems are separate from more regional ones (See SI~?).
+Similar dynamics can be observed in many states (New York, California, etc.), such that prestigious university systems are separate from more regional ones (SI~?).
 
 \begin{figure}[hp!]
 	\centering
@@ -344,7 +344,7 @@ Similar dynamics can be observed in many states (New York, California, etc.), su
 
 What latent information do embeddings of scientific mobility capture, beyond geography? 
 We build on descriptive results to quantitatively assess the national factors captured in the learned vector-space.
-We calculate the representative vector of each country with averaging organization vectors within the given country, calculate pairwise cosine similarity, and perform hierarchical clustering (see Fig. \ref{fig:clustering}a) of nations that have at least 25 organizations, excluding the United States which has high similarity with most other countries. 
+We calculate the representative vector of each country with averaging organization vectors within the given country, calculate pairwise cosine similarity, and perform hierarchical clustering (Fig. \ref{fig:clustering}a) of nations that have at least 25 organizations, excluding the United States which has high similarity with most other countries. 
 
 Six country clusters were identified, reflecting a mixture of the regional, linguistic, historical clusters, with clusters consisting of East-Asian (orange), Scandinavian (dark purple), British Commonwealth (light purple), Central and Eastern European countries (light blue), and then two cluster diverse clusters with a mix of European, Latin American, and Mediterranean countries.
 When not defined by geography, clusters appear to be defined by linguistic and historical ties, as is the case for the commonwealth countries. 
@@ -393,7 +393,7 @@ Universities in new York are nearer to the Massachusetts end of the axis (Fig.~\
 
 Prestigious universities, such as Stanford, Colombia, MIT, Harvard, and NYU, group towards the top of the axis.
 Universities at the bottom of this axis tend to be regional universities with lower national profiles, such as California State University Long Beach, University of West Florida, and Barry University. 
-There are strong differences by state in terms of prestige---overall, universities in Massachusetts are nearer the \textit{Elite} end of the axis than are universities in Arizona, Connecticut, Pennsylvania, and Florida (see Fig.~\ref{fig:supp:semaxis_states}). 
+There are strong differences by state in terms of prestige---overall, universities in Massachusetts are nearer the \textit{Elite} end of the axis than are universities in Arizona, Connecticut, Pennsylvania, and Florida (Fig.~\ref{fig:supp:semaxis_states}). 
 
 Once these axes are constructed using university rankings, we can even relate other types of organizations that wouldn't typically be fit onto university rankings.
 For example, among Government institutions, we see that the U.S. Department of Energy is more aligned with Californian universities, whereas the Mayo Clinic is more aligned with Massachusetts and organizations like the National Institute of Arthritis, Musculoskeletal, and Skin Disease and more aligned with elite universities than is the U.S. Department of Agriculture (Fig.~\ref{fig:supp:semaxis_sectors}a).
@@ -466,7 +466,7 @@ Combinations are also associated with a publication-level disciplinary classific
 ``Biomedical and health sciences'', ``Physical sciences and engineering'', ``Life and earth sciences'', and ``Mathematics and computer science''.
 Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. 
 Authors are classified as mobile when they have at least two distinct organization ids in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
-While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (see Fig.~\ref{fig:supp:pubs_over_time}).
+While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (Fig.~\ref{fig:supp:pubs_over_time}).
 
 % %Organization information
 Affiliations mapped to one of 8,661 organizations, disambiguated following a mostly manual process originally designed for the Leiden Rankings of World Universities~\autocite{waltman2012leidenrankings}. 
@@ -522,7 +522,7 @@ All word embeddings are trained using the \textit{gensim} python implementation 
 We visualize embeddings by projecting into two dimensions using UMAP~\autocite{mcinnes2018umap}.
 
 
-Results are reported for embeddings with a dimensionality of 300 and a window size of one, which were the parameters that produced  that best explained the flux between organizations (see Fig. SI~\ref{fig:supp:hyperparams}). 
+Results are reported for embeddings with a dimensionality of 300 and a window size of one, which were the parameters that produced  that best explained the flux between organizations (Fig. SI~\ref{fig:supp:hyperparams}). 
 We note that this performance and the outcomes of analysis was robust to hyperparemeters settings. 
 
 
