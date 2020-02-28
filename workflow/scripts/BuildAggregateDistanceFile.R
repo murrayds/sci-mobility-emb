@@ -22,7 +22,9 @@ option_list = list(
               help="Path to file containing organization geographic distances"),
   make_option(c("-e", "--emb"), action="store", default=NA, type='character',
               help="Path to file containing organization embedding distances"),
-  make_option(c("--ppr"), action="store", default=NA, type='character',
+  make_option(c("--pprcos"), action="store", default=NA, type='character',
+              help="Path to file containing organization PPR distances"),
+  make_option(c("--pprjsd"), action="store", default=NA, type='character',
               help="Path to file containing organization PPR distances"),
   make_option(c("-o", "--out"), action="store", default=NA, type='character',
               help="Path to save aggregated distance file")
@@ -130,10 +132,11 @@ distance_all <- data.table::rbindlist(list(emb1, emb2)) %>%
 remove("emb1", "emb2", "embedding_similarities")
 
 
-# PPR distnaces
-ppr <- read_csv(opt$ppr, col_types = cols()) %>%
+# PPR Cosine distnaces
+ppr <- read_csv(opt$pprcos, col_types = cols()) %>%
   select(org1, org2, distance) %>%
-  rename(ppr_distance = distance)
+  rename(pprcos_distance = distance) %>%
+  mutate(pprcos_distance = 1 - pprcos_distance)
 
 ppr1 <- distance_all %>%
   inner_join(ppr, by = c("org1" = "org1", "org2" = "org2"))
@@ -145,6 +148,24 @@ distance_all <- data.table::rbindlist(list(ppr1, ppr2)) %>%
   distinct(org1, org2, .keep_all = TRUE)
 
 remove("ppr", "ppr1", "ppr2")
+
+
+# PPR JSD
+ppr <- read_csv(opt$pprjsd, col_types = cols()) %>%
+  select(org1, org2, distance) %>%
+  rename(pprjsd_distance = distance)
+
+ppr1 <- distance_all %>%
+  inner_join(ppr, by = c("org1" = "org1", "org2" = "org2"))
+
+ppr2 <- distance_all %>%
+  inner_join(ppr, by = c("org2" = "org1", "org1" = "org2"))
+
+distance_all <- data.table::rbindlist(list(ppr1, ppr2)) %>%
+  distinct(org1, org2, .keep_all = TRUE)
+
+remove("ppr", "ppr1", "ppr2")
+
 
 #
 # ORG LOOKUP TABLES
@@ -168,7 +189,8 @@ distance_all <- distance_all %>%
   # Select only relevant variables
   select(org1, org2, count,
          org1_size, org2_size,
-         geo_distance, emb_similarity, emb_distance, ppr_distance, gravity,
+         geo_distance, emb_similarity, emb_distance,
+         pprcos_distance, pprjsd_distance, gravity,
          org1_city, org1_region, org1_country,
          org2_city, org2_region, org2_country
          )

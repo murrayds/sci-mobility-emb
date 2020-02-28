@@ -77,7 +77,8 @@ binned <- data %>%
     crosses_ab_weak = (percentile_max > pos & pos > mu) | (percentile_min < pos & pos < mu),
   )
 
-error <- sqrt(mean((log10(data$expected) ^ 2) - (log10(data$actual) ^ 2)))
+error <- sqrt(mean((log10(data$expected) - log10(data$actual)) ^ 2, na.rm = T))
+print(error)
 
 # Build the plot
 plot <- data %>%

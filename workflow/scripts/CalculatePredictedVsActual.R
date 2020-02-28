@@ -30,7 +30,7 @@ agg <- readr::read_csv(opt$input, col_types = readr::cols()) %>%
   select(org1_size, org2_size,
          org1_country, org2_country,
          count, gravity,
-         geo_distance, ppr_distance, emb_distance) %>%
+         geo_distance, pprcos_distance, pprjsd_distance, emb_distance) %>%
   rename(actual = count)
 
 # If the geographic constraint (--geo) is set, then filter the
@@ -69,17 +69,29 @@ if (opt$distance == "geo") {
       # Calculate the expected value using the embedding similarity formula
       expected = org1_size * org2_size * exp((emb_coef * emb_distance) + intercept)
     )
-} else if (opt$distance == "ppr") {
-  fit <- summary(lm(log(gravity) ~ ppr_distance, data = agg))
+} else if (opt$distance == "pprcos") {
+  fit <- summary(lm(log(gravity) ~ pprcos_distance, data = agg))
 
   # Save the coefficients for use later
   intercept <- fit$coefficients["(Intercept)", "Estimate"]
-  ppr_coef <- fit$coefficients["ppr_distance", "Estimate"]
+  ppr_coef <- fit$coefficients["pprcos_distance", "Estimate"]
 
   agg <- agg %>%
     mutate(
       # Calculate the expected value using the embedding similarity formula
-      expected = org1_size * org2_size * exp((ppr_coef * ppr_distance) + intercept)
+      expected = org1_size * org2_size * exp((ppr_coef * pprcos_distance) + intercept)
+    )
+} else if (opt$distance == "pprjsd") {
+  fit <- summary(lm(log(gravity) ~ pprjsd_distance, data = agg))
+
+  # Save the coefficients for use later
+  intercept <- fit$coefficients["(Intercept)", "Estimate"]
+  ppr_coef <- fit$coefficients["pprjsd_distance", "Estimate"]
+
+  agg <- agg %>%
+    mutate(
+      # Calculate the expected value using the embedding similarity formula
+      expected = org1_size * org2_size * exp((ppr_coef * pprjsd_distance) + intercept)
     )
 }
 
