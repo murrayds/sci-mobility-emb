@@ -80,6 +80,7 @@ ORG_W2V_SIMILARITIES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', '{traj}_d
 ##############
 AGGREGATE_R2 = osjoin(STAT_DATA_DIR, 'aggregate_r2.csv')
 PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{traj}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.csv')
+AGGREGATE_SLOPES = osjoin(STAT_DATA_DIR, 'aggregate_slopes.csv')
 
 ##############
 # SemAxis    #
@@ -106,7 +107,8 @@ COUNTRY_LOOKUP = osjoin(ADDITIONAL_DATA_DIR, 'iso_to_country.txt')
 TRAJ_PRECEDENCE = osjoin(ADDITIONAL_DATA_DIR, 'traj_precedence_rules.txt')
 ORG_RANKINGS = osjoin(ADDITIONAL_DATA_DIR, '{ranking}_ranking.csv')
 ORG_SHORT_LABELS = osjoin(ADDITIONAL_DATA_DIR, 'org_shortlabels.csv')
-ORG_PPR_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_euclidian_distance.csv')
+ORG_PPR_COS_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_cosine_with_0_9.csv')
+ORG_PPR_JSD_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_jsd_with_0_9.csv')
 ORG_TYPES = osjoin(ADDITIONAL_DATA_DIR, 'org_types.csv')
 
 ###############################################################################
@@ -170,7 +172,7 @@ SECTORS = ['Teaching', 'Government', 'Institute']
 
 # Gravity law parameters
 TO_FILTER = ["filter"]
-DISTANCE_PARAMS = ['geo', 'emb', 'ppr']
+DISTANCE_PARAMS = ['geo', 'emb', 'pprcos', 'pprjsd']
 GEO_CONSTRAINTS = ['global',
                    'same-country',
                    'different-country']
@@ -234,6 +236,7 @@ rule all:
                geo_constraint_filt = GEO_CONSTRAINTS_FILT,
                window = W2V_WINDOW_SIZE),
         GRADIENT_LEGEND,
+        AGGREGATE_SLOPES,
 
         # Descriptive Plots
         expand(PUBS_OVER_TIME_PLOT, traj = TRAJECTORIES),

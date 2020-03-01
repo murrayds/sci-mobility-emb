@@ -74,7 +74,7 @@ if (opt$geo == "same-country") {
 
 # Reduce the size to save on memory
 dist <- dist %>%
-  select(geo_distance, emb_distance, ppr_distance, gravity)
+  select(geo_distance, emb_distance, pprcos_distance, pprjsd_distance, gravity)
 
 axislabel <- "DEFAULT"
 # Select the appropriate metric using the --distance command line argument
@@ -93,12 +93,18 @@ if (opt$distance == "geo") {
 
   # Provide axis label
   axislabel <- "Cosine distance"
-} else if (opt$distance == "ppr") {
+} else if (opt$distance == "pprcos") {
   dist <- dist %>%
-    rename(distance = ppr_distance)
+    rename(distance = pprcos_distance)
 
   # Provide axis label
-  axislabel <- "PPR Distance"
+  axislabel <- "PPR cosine distance"
+} else if (opt$distance == "pprjsd") {
+  dist <- dist %>%
+    rename(distance = pprjsd_distance)
+
+  # Provide axis label
+  axislabel <- "PPR Jensen-Shannon"
 }
 
 # Calculate the logged gravity and select only relevant columns
@@ -182,7 +188,7 @@ if (opt$distance == "geo") {
                        labels = function(x) { parse(text=paste0("10^", x)) },
                        expand = c(0, 0)
                      )
-} else if (opt$distance == "emb" | opt$distance == "ppr") {
+} else if (opt$distance == "emb" | grepl("ppr", opt$distance, fixed = TRUE) == T) {
   plot <- plot +
     scale_x_continuous(breaks = c(0, 0.5, 1),
                        limits = c(0, 1),
@@ -198,7 +204,7 @@ if (opt$showcoef) {
                           geom = "text",
                           aes(label = paste(..rr.label.., sep = "~~~")),
                           parse=TRUE,
-                          label.x.npc = 0.75,
+                          label.x.npc = ifelse(grepl("ppr", opt$distance, fixed = TRUE), 0.25, 0.75),
                           rr.digits = 2,
                           size = 7
     )

@@ -147,7 +147,8 @@ rule build_aggregate_org_distances:
            geo = ancient(rules.calculate_org_geographic_distance.output),
            emb = ancient(rules.calculate_org_w2v_similarities.output),
            orgs = ancient(rules.add_state_to_lookup.output),
-           ppr = ancient(ORG_PPR_DISTANCE)
+           pprcos = ancient(ORG_PPR_COS_DISTANCE),
+           pprjsd = ancient(ORG_PPR_JSD_DISTANCE)
     params:
         sizes = ORG_SIZES,
     # This can eat up a lot of memory which is a problem when running paralell.
@@ -158,4 +159,5 @@ rule build_aggregate_org_distances:
     shell:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
-                 --ppr {input.ppr} --orgs {input.orgs} --out {output}"
+                 --pprcos {input.pprcos} --pprjsd {input.pprjsd} \
+                 --orgs {input.orgs} --out {output}"
