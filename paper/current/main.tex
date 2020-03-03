@@ -205,7 +205,7 @@ Let $t_{ij}$ represents the total \textbf{flux}, the number of people who moved 
 
 \begin{equation}
     \label{eq:gravity_model}
-    \frac{f_{ij}}{M_{i} M_{j}} \propto \exp(\cos(v_i,v_j))
+    \frac{t_{ij}}{M_{i} M_{j}} \propto \exp(\cos(v_i,v_j))
 \end{equation}
 
 where the cosine similarity between two vectors, $\cos(v_{i}, v_{j})$, is defined as,
@@ -214,19 +214,19 @@ where the cosine similarity between two vectors, $\cos(v_{i}, v_{j})$, is define
     \cos(v_j, v_i) = \frac{v_j \cdot v_i}{|v_j||v_i|} 
 \end{equation}
 
-In the case of scientific co-affiliation, all movements are without direction (symmetric), meaning that  $f_{ij} = f_{ji}$.
+In the case of scientific co-affiliation, all movements are without direction (symmetric), meaning that  $t_{ij} = t_{ji}$.
 Let's denote $\mathpzc{N}_i$ as the neighborhood set of organization i, which are organizations with non-zero co-affiliation to organization i.
 Then, the total flux to or from $i$ can be written as 
 
 \begin{equation}
-    \mu_{i} = \sum_{k\in\mathpzc{N}_i} f_{ik} \propto M_i
+    \mu_{i} = \sum_{k\in\mathpzc{N}_i} t_{ik} \propto M_i
 \end{equation} 
 
 with the hypothesis that a similar fraction of the scholars are mobile in each organization. Then, our gravity model can be written with only terms from mobility data, 
 
 \begin{equation}
     \label{eq:gravity_model_approx}
-    \frac{f_{ij}}{\mu_i  \mu_j} \propto \exp(\cos(v_i,v_j))
+    \frac{t_{ij}}{\mu_i  \mu_j} \propto \exp(\cos(v_i,v_j))
 \end{equation}
 
 The embedding that best represents the data should closely approximate the true conditional probability defined in
@@ -234,14 +234,14 @@ Eq.~\ref{eq:flux_conditional_prob},
 
 \begin{equation}
     \label{eq:flux_conditional_prob}
-    p(j|i) = \frac{f_{ij}}{\mu_i} 
+    p(j|i) = \frac{t_{ij}}{\mu_i} 
 \end{equation}
 
 We can then rewrite Eq.~\ref{eq:gravity_model_approx} as, 
 
 \begin{equation}
     \label{eq:gravity_relationship}
-    \frac{f_{ij}}{\mu_i  \mu_j} = \frac{\mu_i  p(j|i)}{\mu_i\mu_j} =  \frac{p(j|i)}{\mu_j} \propto \exp(\cos(v_i,v_j))
+    \frac{t_{ij}}{\mu_i  \mu_j} = \frac{\mu_i  p(j|i)}{\mu_i\mu_j} =  \frac{p(j|i)}{\mu_j} \propto \exp(\cos(v_i,v_j))
 \end{equation}
 
 Then, the word embedding model will learns vectors under the condition,
