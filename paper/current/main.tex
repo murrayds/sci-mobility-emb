@@ -134,7 +134,7 @@ The result vector of organizations is representation that the \textit{cosine dis
         \textbf{Co-affiliation trajectories represented as sentences}
         \textbf{a.} 
         An author published five papers across five time periods, with only one affiliation listed in the byline of each paper. 
-        A unique identifier is assigned to each organization, and these are concatenated into a mobility sentence. 
+        To each organization, a unique identifier is assigned, and they are assembled into a mobility sentence. 
         \textbf{b.}
         In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. Here, organization ids are still ordered by year, however order within a single year is random.      
     }
@@ -161,11 +161,11 @@ For geographic distance, we define $f(r_{ij})$ as the standard power-law functio
 %
 \subsection*{Embedding performance}
 
-The \SGNS{} model learns an effective distance that explains and predicts scientific mobility better than alternatives. 
-Embedding distance explains more of the expected flow between pairs of organizations, with correlation ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) over double that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
-Embedding distance also explains more of the variance of domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig. ~\ref{fig:supp:gravity_correlation}d) than does geographic distance. 
-After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c-d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e-f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g-h).
-Similarly, embedding distance outperforms distances derived from calculating personalized-page rank scores on the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}). 
+The effective distance  estimated by our embedding model explains and predicts scientific mobility best. 
+Embedding distance ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) is more than twice that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
+This pattern holds for the variance of domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig.~\ref{fig:supp:gravity_correlation}d). 
+After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c--d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e--f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g--h).
+Similarly, embedding ``diffusion'' distance outperforms distances derived from calculating personalized-page rank scores on the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}). 
 Geographic distance alone is a poor tool for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flux between organizations. 
 
 %
@@ -180,7 +180,7 @@ Geographic distance alone is a poor tool for understanding international scienti
 		Red line is line of best fit. 
 		Black dots are mean flux across binned distances.
 		Color indicates frequency of organization pairs within each hex bin.
-		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding distance out-perform those made using geographic distance. 
+		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding distance outperform those made using geographic distance. 
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
 		\textbf{e-f.} Predictions made using model parameters learned from subset of same-country organization pairs. 
@@ -198,14 +198,14 @@ Geographic distance alone is a poor tool for understanding international scienti
 %
 \subsection*{Mathematical explanation}
 
-Why does the SNGS model, a tool designed for natural language processing, produce such a reasonable distance that models gravity relationships between organizations?
+Why does the word embedding model, a tool designed for natural language processing, produce such a reasonable distance that models gravity relationships between organizations?
 We find evidence of a theoretical connection between the two models, one that makes the skip-gram model applicable to many other forms of mobility trajectory. 
 
-Let $f_{ij}$ represents the total \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
+Let $t_{ij}$ represents the total \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
 
 \begin{equation}
     \label{eq:gravity_model}
-    \frac{f_{ij}}{M_{i} * M_{j}} \propto \exp(\cos(v_i,v_j))
+    \frac{f_{ij}}{M_{i} M_{j}} \propto \exp(\cos(v_i,v_j))
 \end{equation}
 
 where the cosine similarity between two vectors, $\cos(v_{i}, v_{j})$, is defined as,
@@ -226,7 +226,7 @@ with the hypothesis that a similar fraction of the scholars are mobile in each o
 
 \begin{equation}
     \label{eq:gravity_model_approx}
-    \frac{f_{ij}}{\mu_i * \mu_j} \propto \exp(\cos(v_i,v_j))
+    \frac{f_{ij}}{\mu_i  \mu_j} \propto \exp(\cos(v_i,v_j))
 \end{equation}
 
 The embedding that best represents the data should closely approximate the true conditional probability defined in
@@ -241,14 +241,14 @@ We can then rewrite Eq.~\ref{eq:gravity_model_approx} as,
 
 \begin{equation}
     \label{eq:gravity_relationship}
-    \frac{f_{ij}}{\mu_i * \mu_j} = \frac{\mu_i * p(j|i)}{\mu_i * \mu_j} =  \frac{p(j|i)}{\mu_j} \propto \exp(\cos(v_i,v_j))
+    \frac{f_{ij}}{\mu_i  \mu_j} = \frac{\mu_i  p(j|i)}{\mu_i\mu_j} =  \frac{p(j|i)}{\mu_j} \propto \exp(\cos(v_i,v_j))
 \end{equation}
 
 Then, the word embedding model will learns vectors under the condition,
 
 \begin{equation}
     \label{eq:conditional probability}
-      p(j|i) \propto {\mu_j}* \exp(\cos(v_i,v_j))
+      p(j|i) \propto {\mu_j} \exp(\cos(v_i,v_j))
 \end{equation}
 
 which is restricted to, sum of the conditional probability should be one,
@@ -261,7 +261,7 @@ which is restricted to, sum of the conditional probability should be one,
 Then, we can write $p(j|i)$ with $\mu_{j}$
 
 \begin{equation}
-    p(j|i) \propto \frac{{\mu_j}* \exp(\cos(v_i,v_j)}{\sum_{k\in\mathpzc{N}_i} {\mu_k}* \exp(\cos(v_i,v_k))}
+    p(j|i) \propto \frac{{\mu_j}\exp(\cos(v_i,v_j)}{\sum_{k\in\mathpzc{N}_i} {\mu_k}\exp(\cos(v_i,v_k))}
 \end{equation}
 
 And, if we remove ${\mu_*}$ for simplicity (or for the special case with $\mu_{i} = \mu_{j} = \mu_*$), then $p(j|i)$ can be written as,
