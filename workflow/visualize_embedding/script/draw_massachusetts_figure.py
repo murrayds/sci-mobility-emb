@@ -104,7 +104,6 @@ def draw_figure(
     handles = [lp(k) for k in ["Institute", "Hospital", "University", "Teaching"]]
     plt.legend(handles=handles, bbox_to_anchor=(1, 0.15), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
-    plt.show()
 
 
 if __name__ == "__main__":
