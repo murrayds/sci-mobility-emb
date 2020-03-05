@@ -222,7 +222,7 @@ Then, the total flux to or from $i$ can be written as
     \mu_{i} = \sum_{k \in N} T_{ik} \propto M_i
 \end{equation} 
 
-with the hypothesis that a similar fraction of the scholars are mobile in each organization. Then, our gravity model can be written with only terms from mobility data, 
+with the hypothesis that a similar fraction of the scholars are mobile in each organization. It can be checked in Fig.~\ref{fig:math_part}a. Then, our gravity model can be written with only terms from mobility data, 
 
 \begin{equation}
     \label{eq:gravity_model_approx}
@@ -255,7 +255,7 @@ which is restricted to, sum of the conditional probability should be one,
 
 \begin{equation}
     \label{eq:sum of the conditional probabiitliy}
-    \sum_{j\in\mathpzc{N}_i} p(j|i) = 1
+    \sum_{j \in N} p(j|i) = 1
 \end{equation}
 
 Then, we can write $p(j|i)$ with $\mu_{j}$
@@ -271,7 +271,7 @@ And, if we remove ${\mu_*}$ for simplicity (or for the special case with $\mu_{i
     p(j|i) \propto \frac{\exp(\cos(v_j, v_i))}{\sum_{k \in N} \exp(\cos(v_k,v_i))}
 \end{equation}
 
-We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good approximation functional form of is $p(i|j)$ in Fig. \ref{fig:real_embedding_relationship}, as high values of flow correspond to high Eq.\ref{eq:real_embedding_relationship} values.
+We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good approximation functional form of is $p(i|j)$ in Fig.~\ref{fig:math_part}b, as high values of flow correspond to high Eq.\ref{eq:real_embedding_relationship} values.
 
 %
 % Figure - Conditional Probability
@@ -279,8 +279,10 @@ We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good
 \begin{figure}
     \centering
     \includegraphics[width=0.8\columnwidth]{\figdir/Math/use_all_log.pdf}
-    \caption{Relationship between the conditional probability $p(j|i)$ \ref{eq:flux_conditional_prob} which is measured in the data and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
-    \label{fig:real_embedding_relationship}
+    \caption{
+    \textbf{a}.   Relationship between $M_i$ and $\mu_i$.
+    \textbf{b}.   Relationship between the conditional probability $p(j|i)$, Eq. \ref{eq:flux_conditional_prob} which is measured in the data and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
+    \label{fig:math_part}
 \end{figure}
 
 This finding relates to the objective function of the \SGNS{} model. The model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
@@ -325,7 +327,7 @@ Similar dynamics can be observed in many states (New York, California, etc.), su
 
 \begin{figure}[hp!]
 	\centering
-	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.png}
+	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.pdf}
 	\caption{
 		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
 		\textbf{a.}
