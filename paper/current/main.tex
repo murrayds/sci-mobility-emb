@@ -215,11 +215,11 @@ where the cosine similarity between two vectors, $\cos(v_{i}, v_{j})$, is define
 \end{equation}
 
 In the case of scientific co-affiliation, all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$.
-Let's denote $\mathpzc{N}_i$ as the neighborhood set of organization i, which are organizations with non-zero co-affiliation to organization i.
+Let's denote $N$ as set of organizations in the data.
 Then, the total flux to or from $i$ can be written as 
 
 \begin{equation}
-    \mu_{i} = \sum_{k\in\mathpzc{N}_i} T_{ik} \propto M_i
+    \mu_{i} = \sum_{k \in N} T_{ik} \propto M_i
 \end{equation} 
 
 with the hypothesis that a similar fraction of the scholars are mobile in each organization. Then, our gravity model can be written with only terms from mobility data, 
@@ -261,14 +261,14 @@ which is restricted to, sum of the conditional probability should be one,
 Then, we can write $p(j|i)$ with $\mu_{j}$
 
 \begin{equation}
-    p(j|i) \propto \frac{{\mu_j}\exp(\cos(v_i,v_j)}{\sum_{k\in\mathpzc{N}_i} {\mu_k}\exp(\cos(v_i,v_k))}
+    p(j|i) \propto \frac{{\mu_j}\exp(\cos(v_i,v_j)}{\sum_{k \in N} {\mu_k}\exp(\cos(v_i,v_k))}
 \end{equation}
 
 And, if we remove ${\mu_*}$ for simplicity (or for the special case with $\mu_{i} = \mu_{j} = \mu_*$), then $p(j|i)$ can be written as,
 
 \begin{equation}
     \label{eq:real_embedding_relationship}
-    p(j|i) \propto \frac{\exp(\cos(v_j, v_i))}{\sum_{k\in\mathpzc{N}_i} \exp(\cos(v_k,v_i))}
+    p(j|i) \propto \frac{\exp(\cos(v_j, v_i))}{\sum_{k \in N} \exp(\cos(v_k,v_i))}
 \end{equation}
 
 We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good approximation functional form of is $p(i|j)$ in Fig. \ref{fig:real_embedding_relationship}, as high values of flow correspond to high Eq.\ref{eq:real_embedding_relationship} values.
@@ -278,7 +278,7 @@ We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good
 %
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\columnwidth]{\figdir/Math/approxi_proof.png}
+    \includegraphics[width=0.8\columnwidth]{\figdir/Math/use_all_log.pdf}
     \caption{Relationship between the conditional probability $p(j|i)$ \ref{eq:flux_conditional_prob} which is measured in the data and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
     \label{fig:real_embedding_relationship}
 \end{figure}
@@ -297,7 +297,7 @@ where the conditional probability of observing one word, $w_{0}$, given another,
     p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_I})}, 
 \end{equation}
 
-where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary. With facts that the denominator is not calculated entirely in the negative sampling strategies and the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form (or Eq.~\ref{eq:real_embedding_relationship} is a special case of Eq. ~\ref{eq:skipgram_conditional_expanded}).
+where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary. With facts that the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form, or exact same if vectors are normalized.
 
 Hence, the \SGNS{} model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility. 
 
