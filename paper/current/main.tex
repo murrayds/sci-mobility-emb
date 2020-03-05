@@ -215,14 +215,14 @@ where the cosine similarity between two vectors, $\cos(v_{i}, v_{j})$, is define
 \end{equation}
 
 In the case of scientific co-affiliation, all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$.
-Let's denote $\mathpzc{N}_i$ as the neighborhood set of organization i, which are organizations with non-zero co-affiliation to organization i.
+Let's denote $N$ as set of organizations in the data.
 Then, the total flux to or from $i$ can be written as 
 
 \begin{equation}
-    \mu_{i} = \sum_{k\in\mathpzc{N}_i} T_{ik} \propto M_i
+    \mu_{i} = \sum_{k \in N} T_{ik} \propto M_i
 \end{equation} 
 
-with the hypothesis that a similar fraction of the scholars are mobile in each organization. Then, our gravity model can be written with only terms from mobility data, 
+with the hypothesis that a similar fraction of the scholars are mobile in each organization. It can be checked in Fig.~\ref{fig:math_part}a. Then, our gravity model can be written with only terms from mobility data, 
 
 \begin{equation}
     \label{eq:gravity_model_approx}
@@ -255,32 +255,34 @@ which is restricted to, sum of the conditional probability should be one,
 
 \begin{equation}
     \label{eq:sum of the conditional probabiitliy}
-    \sum_{j\in\mathpzc{N}_i} p(j|i) = 1
+    \sum_{j \in N} p(j|i) = 1
 \end{equation}
 
 Then, we can write $p(j|i)$ with $\mu_{j}$
 
 \begin{equation}
-    p(j|i) \propto \frac{{\mu_j}\exp(\cos(v_i,v_j)}{\sum_{k\in\mathpzc{N}_i} {\mu_k}\exp(\cos(v_i,v_k))}
+    p(j|i) \propto \frac{{\mu_j}\exp(\cos(v_i,v_j)}{\sum_{k \in N} {\mu_k}\exp(\cos(v_i,v_k))}
 \end{equation}
 
 And, if we remove ${\mu_*}$ for simplicity (or for the special case with $\mu_{i} = \mu_{j} = \mu_*$), then $p(j|i)$ can be written as,
 
 \begin{equation}
     \label{eq:real_embedding_relationship}
-    p(j|i) \propto \frac{\exp(\cos(v_j, v_i))}{\sum_{k\in\mathpzc{N}_i} \exp(\cos(v_k,v_i))}
+    p(j|i) \propto \frac{\exp(\cos(v_j, v_i))}{\sum_{k \in N} \exp(\cos(v_k,v_i))}
 \end{equation}
 
-We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good approximation functional form of is $p(i|j)$ in Fig. \ref{fig:real_embedding_relationship}, as high values of flow correspond to high Eq.\ref{eq:real_embedding_relationship} values.
+We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good approximation functional form of is $p(i|j)$ in Fig.~\ref{fig:math_part}b, as high values of flow correspond to high Eq.\ref{eq:real_embedding_relationship} values.
 
 %
 % Figure - Conditional Probability
 %
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\columnwidth]{\figdir/Math/approxi_proof.png}
-    \caption{Relationship between the conditional probability $p(j|i)$ \ref{eq:flux_conditional_prob} which is measured in the data and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
-    \label{fig:real_embedding_relationship}
+    \includegraphics[width=0.8\columnwidth]{\figdir/Math/use_all_log.pdf}
+    \caption{
+    \textbf{a}.   Relationship between $M_i$ and $\mu_i$.
+    \textbf{b}.   Relationship between the conditional probability $p(j|i)$, Eq. \ref{eq:flux_conditional_prob} which is measured in the data and approximate functional form Eq. \ref{eq:real_embedding_relationship}}.
+    \label{fig:math_part}
 \end{figure}
 
 This finding relates to the objective function of the \SGNS{} model. The model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
@@ -297,7 +299,7 @@ where the conditional probability of observing one word, $w_{0}$, given another,
     p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_I})}, 
 \end{equation}
 
-where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary. With facts that the denominator is not calculated entirely in the negative sampling strategies and the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form (or Eq.~\ref{eq:real_embedding_relationship} is a special case of Eq. ~\ref{eq:skipgram_conditional_expanded}).
+where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary. With facts that the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form, or exact same if vectors are normalized.
 
 Hence, the \SGNS{} model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility. 
 
@@ -325,7 +327,7 @@ Similar dynamics can be observed in many states (New York, California, etc.), su
 
 \begin{figure}[hp!]
 	\centering
-	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.png}
+	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.pdf}
 	\caption{
 		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
 		\textbf{a.}
@@ -536,9 +538,9 @@ We note that this performance and the outcomes of analysis was robust to hyperpa
 %
 \subsection{Distance}
 %% Distance calculations
-We calculate $f_{ij}$, the pairwise number of co-affiliations between organizations, calculated as the number of co-occurrences of organizations within author co-affiliation trajectories. 
-For example, $f_{ij} = 10$ indicates that ten authors were co-affiliated with both organization $i$ and $j$ between 2008 and 2019, as evidenced from their publications. 
-In contrast to traditional mobility studies, all co-affiliations are symmetric, meaning that $f_{ij} = f_{ji}$. 
+We calculate $T_{ij}$, the pairwise number of co-affiliations between organizations, calculated as the number of co-occurrences of organizations within author co-affiliation trajectories. 
+For example, $T_{ij} = 10$ indicates that ten authors were co-affiliated with both organization $i$ and $j$ between 2008 and 2019, as evidenced from their publications. 
+In contrast to traditional mobility studies, all co-affiliations are symmetric, meaning that $T_{ij} = T_{ji}$. 
 
 We also calculate two forms of distance between organizations. 
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between organizations.
@@ -551,14 +553,14 @@ The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance 
 %
 \subsection{Gravity Law}
 
-We model the flux of authors between organizations, $f_{ij}$, using the gravity law. 
+We model the flux of authors between organizations, $T_{ij}$, using the gravity law. 
 the gravity law of mobility loosely derives from the physical law of gravity, whereby the attraction between two objects is a function of their mass and the distance between them.
 Given its simplicity and flexibility, this formulation and variants have proven incredibly useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}.
-Following the gravity law, the expected flux $\widetilde{f_{ij}}$ between two organizations is defined as follows,
+Following the gravity law, the expected flux $\hat{T_{ij}}$ between two organizations is defined as follows,
 
 \begin{equation}
 	\label{eq:gravity_basic}
-	\widetilde{f_{ij}} = C*m_{i}m_{j}*f(r_{ij})
+	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij})
 \end{equation}
 
 where $m_{i}$ and $m_{j}$ are the yearly-average size of each organization during the time window, and $f(r_{ij})$ is a distance-decaying function  between the two organizations. There are two popular forms of the $f(r_{ij})$. The first one is power-law function with $f(r_{ij})= r^{-\alpha}_{ij}  (\alpha > 0)$, and the another one is exponential function with $f(r_{ij}) = e^{-\beta r_{ij}} (\beta > 0)$ \autocite{chen2015distance}.  $f(r_{ij})$, $C$ can be chosen as to fit the data with the simple regression.
@@ -571,15 +573,15 @@ To estimate parameters $C$, $\alpha$ and $\beta$ are estimated by log-transformi
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
-	\ln(\frac{f_{ij}}{m_im_j}) = \ln(C)  - \alpha \ln(g_{ij})
+	\ln(\frac{T_{ij}}{m_im_j}) = \ln(C)  - \alpha \ln(g_{ij})
 \end{equation}
 
 \begin{equation}
 	\label{eq:linear_flux_emb}
-	\ln(\frac{f_{ij}}{m_im_j}) = \ln(C) - \beta d_{ij}
+	\ln(\frac{T_{ij}}{m_im_j}) = \ln(C) - \beta d_{ij}
 \end{equation}
 
-where $f_{ij}$ is the real flux from dataset. The gravity law of mobility is known to be sensitive to the case where $f_{ij} = 0$, or zero movement between organizations. 
+where $T_{ij}$ is the real flux from dataset. The gravity law of mobility is known to be sensitive to the case where $T_{ij} = 0$, or zero movement between organizations. 
 Here, non-zero flows account for only 4.2 percent of all possible pairs of  the 6,580 organizations represented in the embedding.
 This value is comparable to other common applications of the gravity law, such as to hone calls, commuting, and migration \autocite{simini2012universal}.
 We follow standard practice and exclude from our analysis zero flows. 
