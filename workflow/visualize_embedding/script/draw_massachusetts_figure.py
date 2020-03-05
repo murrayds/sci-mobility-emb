@@ -46,9 +46,8 @@ def draw_figure(
     else:
         prop = font_manager.FontProperties(size=28)
         large_prop = font_manager.FontProperties(size=32)
-
     awesome_c_list = get_awesome_c_list()
-    color_dict = {"Institute": 0, "Hospital": 3, "University": 4}
+    color_dict = {"Institute": 0, "Hospital": 3, "University": 4, "Teaching": 7}
     c_list = [awesome_c_list[color_dict[row]] for row in orgs_list]
     argumented_size_list = np.array([np.log(size) / np.log(1.1) for size in size_list])
 
@@ -102,7 +101,7 @@ def draw_figure(
         ls="",
         marker="o",
     )[0]
-    handles = [lp(k) for k in ["Institute", "Hospital", "University"]]
+    handles = [lp(k) for k in ["Institute", "Hospital", "University", "Teaching"]]
     plt.legend(handles=handles, bbox_to_anchor=(1, 0.15), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
     plt.show()
