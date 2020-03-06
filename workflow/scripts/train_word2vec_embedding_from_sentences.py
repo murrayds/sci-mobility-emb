@@ -25,7 +25,7 @@ def shuffle_sentence(x):
 # This next function takes the mobility dataframe, and
 # builds a vocabulary from the mobility across all years,
 # shuffling if the paramter is set to true.
-def build_vocab(df, shuffle = False):
+def build_sentences(df, shuffle = False):
     if (shuffle):
         df['sentence'] = df['sentence'].apply(shuffle_sentence)
 
@@ -70,7 +70,7 @@ mobility_df = pd.concat(mobility_frames)
 
 # Tokenize the sentences into a format that gensim can work with
 logging.info("Building initial vocabulary")
-tokens = build_vocab(mobility_df, shuffle = False)
+tokens = build_sentences(mobility_df, shuffle = False)
 
 # Build and train the gensim word2vec model.
 # First, perform initial training on unshuffled vocabulary
@@ -89,7 +89,7 @@ model = gensim.models.Word2Vec(
 # repeat for the remaining iterations.
 for i in range(args.iterations - 1):
     logging.info("Building new shuffled vocabulary for iteration {}".format(i + 2))
-    tokens = build_vocab(mobility_df, shuffle = True)
+    tokens = build_sentences(mobility_df, shuffle = True)
     model.train(
         tokens,
         total_examples = len(tokens),
