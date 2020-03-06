@@ -58,22 +58,39 @@ agg <- data.table::rbindlist(lapply(SEMAXIS_FILES, function(path) {
       left_join(times, by = "cwts_org_no", col_types = cols())
   }
 
+  # determine which organizations were included, and which were excluded.
+  n = as.numeric(gsub("[^0-9.-]", "", filename.split[4]))
+  data <- data %>%
+    arrange(desc(score)) %>%
+    mutate(rank = row_number()) %>%
+    mutate(included = ifelse(rank <= n | rank >= max(rank) - n,
+                             TRUE, FALSE))
+
   # Calculate the spearman correlation between our simialrity
   # axis, and the scores from the ranking
   spear <- cor.test(~ sim + score,
-                data = data,
-                method = "spearman",
-                continuity = FALSE,
-                conf.level = 0.99)
+                    data = data,
+                    method = "spearman",
+                    continuity = FALSE,
+                    conf.level = 0.99)
+
+  # Also calculate the spearman correlation using only the excluded values
+  spear.excluded <- cor.test( ~ sim + score,
+                             data=subset(data, included == F),
+                             method = "spearman",
+                             continuity = FALSE,
+                             conf.level = 0.95)
 
   # Build dataframe, extracting relevant fields from the filename
   df <- data.frame(
     dim = as.numeric(gsub("[^0-9.-]", "", filename.split[2])),
     ws = as.numeric(gsub("[^0-9.-]", "", filename.split[3])),
-    n = as.numeric(gsub("[^0-9.-]", "", filename.split[4])),
+    n = n,
     traj = filename.split[5],
     rho = abs(as.numeric(spear["estimate"])),
     p.value = as.numeric(spear["p.value"]),
+    rho.excluded = abs(as.numeric(spear.excluded["estimate"])),
+    p.value.excluded = as.numeric(spear.excluded["p.value"]),
     ranking = type
   )
 
