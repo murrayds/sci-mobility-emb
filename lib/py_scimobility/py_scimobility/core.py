@@ -4,6 +4,7 @@ import logging
 import umap
 import pickle
 import numpy as np
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 
 from geopy.distance import great_circle
@@ -18,12 +19,18 @@ def compute_geo_distance(u, v):
     v -- Second coordinate, list in form [<lat>, <lon>]
     """
     if np.isnan([u[0], u[1], v[0], v[1]]).any():
-        return(np.nan)
+        return np.nan
     else:
-        return(great_circle(u, v).kilometers)
-    
+        return great_circle(u, v).kilometers
+
+
 def get_and_save_umap_coordinate(
-    embedding_list, entity_list, n_neighbor=10, min_dist=0.1, random_state=None, out_file_path=None,
+    embedding_list,
+    entity_list,
+    n_neighbor=10,
+    min_dist=0.1,
+    random_state=None,
+    out_file_path=None,
 ):
     umap_result = umap.UMAP(
         n_neighbors=n_neighbor, min_dist=min_dist, metric="cosine", random_state=None
@@ -36,7 +43,8 @@ def get_and_save_umap_coordinate(
         logging.info("Save umap result dict under {}".format(out_file_path))
 
     return umap_result_dict
-    
+
+
 def get_awesome_c_list():
     c_list = [
         "#607D8B",
@@ -61,5 +69,3 @@ def get_awesome_c_list():
         "#d3d3d3",
     ]
     return c_list
-
-
