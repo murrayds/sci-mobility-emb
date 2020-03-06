@@ -23,6 +23,7 @@ def get_avg_vec_from_list(emb, wordlist):
     tmp = [emb.wv[word] for word in wordlist if word in emb.wv.vocab]
     return np.mean(tmp, axis=0)
 
+
 def project_onto_axis(emb, word, antonym):
     """Project word in model onto the defined antonym axis
 
@@ -32,4 +33,4 @@ def project_onto_axis(emb, word, antonym):
     antonym -- List of two vectors to be used as the poles of the antonym axis
     """
     axis = antonym[1] - antonym[0]
-    return(1.0 - spatial.distance.cosine(emb.wv[word], axis))
+    return 1.0 - spatial.distance.cosine(emb.wv[word], axis)

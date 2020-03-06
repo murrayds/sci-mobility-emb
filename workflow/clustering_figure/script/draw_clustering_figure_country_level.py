@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 from clusim.clustering import Clustering
 import clusim.sim as sim
-from common import get_awesome_c_list
+from py_scimobility.core import get_awesome_c_list
 
 
 def draw_figure(

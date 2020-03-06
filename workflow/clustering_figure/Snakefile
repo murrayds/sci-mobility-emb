@@ -15,7 +15,7 @@ FONT_PATH = osjoin(ASSET_DIR, 'Helvetica.ttf')
 BOLD_FONT_PATH = osjoin(ASSET_DIR, 'helvetica-bold.ttf')
 
 # Meta_info_files 
-EMBEDDING_FILE_DIR = osjoin(EMBEDDINGS_DIR, "2008-2019_word2vec_d200_ws2_model_test.bin")
+EMBEDDING_FILE_DIR = osjoin(EMBEDDINGS_DIR, "2008-2019_word2vec_d200_ws2_model.bin")
 INST_LOOK_UP_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "institution_lookup_with_states.txt")
 COUNTRY_META_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "country_metadata.csv")
 
