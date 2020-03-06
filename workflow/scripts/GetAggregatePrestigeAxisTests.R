@@ -79,7 +79,7 @@ agg <- data.table::rbindlist(lapply(SEMAXIS_FILES, function(path) {
                              data=subset(data, included == F),
                              method = "spearman",
                              continuity = FALSE,
-                             conf.level = 0.95)
+                             conf.level = 0.99)
 
   # Build dataframe, extracting relevant fields from the filename
   df <- data.frame(
