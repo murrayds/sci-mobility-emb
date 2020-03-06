@@ -5,7 +5,7 @@ import numpy as np
 import umap
 import pickle
 from gensim.models import Word2Vec
-from common import get_and_save_umap_coordinate
+from py_scimobility.core import get_and_save_umap_coordinate
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 
@@ -45,7 +45,7 @@ def get_umap_coordinate_by_level(
 
     embedding_list = np.array([model.wv[x] for x in institute_list])
     get_and_save_umap_coordinate(
-        embedding_list, institute_list, N_NEIGHBOR, MIN_DIST, OUTPUT_FILE
+        embedding_list, institute_list, n_neighbor=N_NEIGHBOR, min_dist=MIN_DIST, out_file_path=OUTPUT_FILE
     )
 
 

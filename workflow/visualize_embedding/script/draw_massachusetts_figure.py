@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from pylab import rcParams
-from common import get_awesome_c_list
+from py_scimobility.core import get_awesome_c_list
 
 
 def draw_figure(
