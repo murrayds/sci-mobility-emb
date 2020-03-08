@@ -36,20 +36,38 @@ corr <- read_csv(opt$input, col_types = readr::cols()) %>%
   filter(traj == "precedence") %>%
   filter(dim == opt$dim) %>%
   filter(ws == opt$ws) %>%
-  filter(ranking == opt$ranking)
+  filter(ranking == opt$ranking) %>%
+  tidyr::gather(key, value, rho, rho.excluded)
 
 
 plot <- corr %>%
-  ggplot(aes(x = n, y = rho)) +
-  geom_point(size = 3) +
+  mutate(
+    key = factor(key,
+                 levels = c("rho", "rho.excluded"),
+                 labels = c("All orgs", "Non-axis orgs"))
+  ) %>%
+  ggplot(aes(x = n, y = value, fill = key, shape = key, linetype = key)) +
   geom_line() +
+  geom_point(size = 3) +
+  scale_shape_manual(values = c(16, 21)) +
+  #scale_color_manual(values = c("black", "white")) +
+  scale_fill_manual(values = c("black", "white")) +
+  scale_y_continuous(
+    limits = c(0.4, 1.0),
+    expand = c(0, 0),
+    breaks = c(0.4, 0.6, 0.8, 1.0),
+    labels = c("0.40", "0.60", "0.80", "1.0")
+  ) +
   theme_minimal() +
   theme(
     text = element_text(size = 12, family = "Helvetica"),
     strip.text = element_text(size = 12, face = "bold"),
     axis.title = element_text(size = 14, face = "bold"),
     panel.grid.minor = element_blank(),
-    panel.spacing = unit(2, 'lines')
+    panel.spacing = unit(2, 'lines'),
+    legend.position = c(0.3, 0.2),
+    legend.background = element_rect(colour="black", fill="white"),
+    legend.title = element_blank()
   ) +
   xlab("Num orgs in axis") +
   ylab("Spearman's Rho")
