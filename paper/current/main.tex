@@ -434,7 +434,7 @@ To test this, we derive a ranking using the prestige axis that we call \textit{S
 SemRank is defined from the position of organizations along the prestige axis, with the top ranked being the furthest towards the \textit{Elite} end of the axis.
 We find that SemRank derived is highly correlated with the Times ranking ($\rho = 0.81$, Fig.~\ref{fig:semaxis}b).
 This correlation is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities is strongly correlated with the Times Ranking ($\rho = 0.46$).
-For reference, SemRank achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking mean-normalized citation score ($\rho = 0.87$).
+For reference, SemRank achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking mean-normalized citation score ($\rho = 0.87$, Fig.~\ref{fig:supp:times_vs_leiden}).
 This suggests that \SGNS{} model, in addition to learning the latent geography of mobility, while capture more nuanced characteristics such as latent hierarchy in the axis of the embedding, which is fascinating characteristic of our approach.
 
 
@@ -880,6 +880,23 @@ where $M=\frac{1}{2}(P+Q)$. We report the both results, PPR with cosine distance
 	}
 	\label{fig:supp:semaxis_compare}
 \end{figure}
+
+
+%
+% Figure - Times Ranking vs. Leiden Ranking
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/times_leiden_compare.pdf}
+	\caption{
+		\textbf{Correlation between Times and Leiden Ranking.}
+		Comparison between the Times and Leiden rankings of universities.
+		Here, the Leiden Ranking is operationalized as the mean normalized fractional citation impact for each university~\autocite{waltman2012leidenrankings}. 
+	  	PCC details the estimate from Spearman correlation between the two rankings.
+	}
+	\label{fig:supp:times_vs_leiden}
+\end{figure}
+
 
 
 %

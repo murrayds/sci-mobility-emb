@@ -99,3 +99,18 @@ rule plot_country_mobility_distribution:
         "Rscript scripts/PlotCountryMobilityDistribution.R --flows {input.flows}\
                  --nonmobile {input.nonmobile} --researchers {input.researchers} --lookup {input.lookup} \
                  --output {output}"
+
+
+###############################################################################
+# Rankings
+###############################################################################
+rule plot_times_leiden_compare:
+    input:
+        lookup = ancient(rules.add_state_to_lookup.output),
+    params:
+        times = ORG_RANKINGS.format(ranking = "times"),
+        leiden = ORG_RANKINGS.format(ranking = "leiden")
+    output: TIMES_LEIDEN_COMPARE_PLOT
+    shell:
+        "Rscript scripts/PlotTimesVsLeidenRank.R --lookup {input.lookup} \
+        --times {params.times} --leiden {params.leiden} --output {output}"

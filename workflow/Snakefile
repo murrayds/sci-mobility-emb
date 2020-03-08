@@ -136,6 +136,7 @@ SEMAXIS_2D_COASTS_PRESTIGE_OVERALL_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}'
 SEMAXIS_2D_COASTS_PRESTIGE_STATE_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'states', '{state}_coasts_{ranking}_rank_2Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_2D_COASTS_PRESTIGE_SECTOR_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'sectors', '{sector}_coasts_{ranking}_rank_2Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_RANK_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'n{numorgs}_{ranking}_semcompare_d{dimensions}_ws{window}.pdf')
+TIMES_LEIDEN_COMPARE_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'times_leiden_compare.pdf')
 RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correlation.pdf')
 
 ###############################################################################
@@ -253,6 +254,7 @@ rule all:
         expand(COUNTRY_MOBILITY_ECDF, traj = TRAJECTORIES),
         expand(COUNTRY_MOBILITY_DISTRIBUTION, traj = TRAJECTORIES),
         HYPERPARAMETER_PERFORMANCE,
+        TIMES_LEIDEN_COMPARE_PLOT,
 
         # SemAxis plots
         expand(SEMAXIS_1D_COASTS_PLOT,
