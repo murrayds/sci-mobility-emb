@@ -155,7 +155,7 @@ We adopt the Gravity Model of mobility~\autocite{zipf1946gravity, barbosa2018hum
 Where the flux, $T_{ij}$, or number of authors co-affiliated with a pair organizations during the time period increases with the organization's sizes, $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
 We consider two distances, the geographic distance between the organizations as a baseline, and the \textit{embedding distance} defined as the cosine distance between the organization's vector in the trained embedding space.
 We argue that the performance of a distance measure can be observed from their ability to explain expected mobility between organizations and to make predictions using the gravity model.
-For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (ref SI.XYZ).
+For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
 
 
 %
@@ -167,7 +167,7 @@ The effective distance estimated by our embedding model explains and predicts sc
 The amount of variance explained by embedding distance ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) is more than twice that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
 This pattern holds for the variance of only domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig.~\ref{fig:supp:gravity_correlation}d).
 After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c--d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e--f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g--h).
-Similarly, embedding distance outperforms ``diffusion''  distances such as those derived from calculating personalized-page rank scores on the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
+Similarly, embedding distance outperforms ``diffusion''  distances such as those derived from calculating personalized-page rank scores (see supporting materials) on the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
 Geographic distance alone is a poor tool for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flux between organizations.
 
 %
@@ -617,7 +617,6 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 
 %
 % S1 TEXT
-\newpage
 \paragraph*{S1 Text}
 \label{si:text:ppr_dist}
 {\bf Network-based personalized page rank distances.}
@@ -735,7 +734,45 @@ where $M=\frac{1}{2}(P+Q)$. We report the both results, PPR with cosine distance
 	\label{fig:supp:hyperparams}
 \end{figure}
 
-\newpage
+
+%
+% Figure - Geographic predictions, by model
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_geo_bymodel.pdf}
+	\caption{
+		\textbf{For geographic distance, the power-decay gravity model is better.}
+		Predictions of flux between organization pairs made using geographic distance the exponential gravity model (top), and the power-law decay model (bottom). 
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+		Shown using all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility. 
+		The power-decay model outperforms the exponential gravity model.
+	}
+	\label{fig:supp:predict_geo_bymodel}
+\end{figure}
+
+
+
+%
+% Figure - Embedding predictions, by model
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_emb_bymodel.pdf}
+	\caption{
+		\textbf{For embedding distance, the exponential gravity model is better.}
+		Predictions of flux between organization pairs made using embedding distance the exponential gravity model (top), and the power-law decay model (bottom). 
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+		Shown using all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility. 
+		The exponential gravity model out-performs the power-decay model. 
+	}
+	\label{fig:supp:predict_emb_bymodel}
+\end{figure}
+
+
+
 %
 % Figure - gravity correlation
 %
