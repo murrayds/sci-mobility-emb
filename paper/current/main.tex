@@ -105,7 +105,7 @@ With this approach, we can learn scalable, dense, and meaningful vector represen
 % Introduce the question, why is it important?
 
 When scientists move, they bring their knowledge with them.
-For scientific mobility, like all human movements, distance matters.
+When it comes to mobility, whether scientific or more otherwise, distance matters.
 However, how exactly do we measure the distance between two places?
 Although many alternative ways to quantify the distance~\autocite{boschma2005proximity} exist, geographic distance remains an unambiguous and foundational quantity for the distance.
 In turn, models of human mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation models ~\autocite{simini2012universal}, rely almost exclusively on geographic distance, yet, geographic distance fails to capture historical, linguistic, cultural, and cognitive proximity.
@@ -118,12 +118,11 @@ Then, how can we quantify meaningful, useful distance between institutions, citi
 
 It has been demonstrated that the neural embedding model preserves semantic relationships between words in a dense, continuous and meaningful low-dimensional vector representation~\autocite{mikolov2013word2vec}, and has been applied to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
 In addition to encoding latent structure, this approach is computationally efficient, scalable for large datasets, robust to noise, and allows for a range of unique analyses that leverage their semantic properties using simple vector arithmetic.
-Here, we propose a neural embedding model as an efficient means of encoding an effective measure of distance using massive trajectory data.
+Here, we propose a neural embedding model as an efficient means of encoding an effective measure of distance using large-scale data on mobility trajectories.
 
 As scientist's careers progress, they move between organizations or pick up additional affiliations, forming co-affiliation or \textit{mobility trajectories} that can be derived from their publication histories~\autocite{robinson2019mobility, sugimoto2017mostimpact}.
-By treating geo-located organizations analogously to words and trajectories analogously to sentences, we learn vector-space embedding of organizations using a neural embedding method(Fig.~\ref{fig:methods:mobility_sentence}).
-The resulting vector of organizations is representation that the \textit{cosine distance} between vectors represents the distance in the landscape of scientific mobility.
-
+By treating geo-located organizations analogously to words and trajectories analogously to sentences, we learn vector-space embedding of organizations using a neural embedding method (Fig.~\ref{fig:methods:mobility_sentence}).
+In the resulting embedding, each organization corresponds to a vector, and the \textit{cosine distance} between vectors represents the distance in the landscape of scientific mobility.
 
 %
 % Figure - Example of mobility sentences
@@ -201,8 +200,8 @@ Geographic distance alone is a poor tool for understanding international scienti
 %
 \subsection*{Mathematical connection between gravity model and neural embedding }
 
-Why does the word embedding model, a tool designed for natural language processing, produce such a reasonable distance that models gravity relationships between organizations?
-We find evidence of a theoretical connection between the two models, one that makes the skip-gram model applicable to many other forms of mobility trajectory.
+Why does the word embedding model, originally designed for natural language processing, produce a reasonable distance that models gravity relationships between organizations?
+We find evidence of a theoretical connection between the two models, one that makes the skip-gram model applicable to embedding many forms of mobility trajectories.
 
 Let $T_{ij}$ represents the total \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
 
@@ -428,13 +427,13 @@ Among teaching organizations, the top-ranked tend to be notable private liberal 
 	\label{fig:semaxis}
 \end{figure}
 
-In addition to learning geography, its clear that the word embedding also encodes the latent prestige hierarchies of academic mobility.
-To test this, we derive a ranking using the prestige axis that we call \textit{SemRank}, and compare them to traditional university rankings.
+In addition to capturing geography, the word embedding also encodes the well-known latent prestige hierarchies of academic mobility~\autocite{deville2014career, clauset2015hierarchy}.
+We derive a ranking using the prestige axis that we call \textit{SemRank}, and compare them to traditional university rankings.
 SemRank is defined from the position of organizations along the prestige axis, with the top ranked being the furthest towards the \textit{Elite} end of the axis.
 We find that SemRank derived is highly correlated with the Times ranking ($\rho = 0.81$, Fig.~\ref{fig:semaxis}b).
-This correlation is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities is strongly correlated with the Times Ranking ($\rho = 0.46$).
-For reference, SemRank achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking mean-normalized citation score ($\rho = 0.87$, Fig.~\ref{fig:supp:times_vs_leiden}).
-This suggests that word embeddings, in addition to learning the latent geography of mobility, while capture more nuanced characteristics such as latent hierarchy in the axis of the embedding, which is fascinating characteristic of our approach.
+This correlation is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities is strongly correlated with the Times Ranking ($\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
+For reference, SemRank achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically informed university ranking ($\rho = 0.87$, Fig.~\ref{fig:supp:times_vs_leiden}).
+This suggests that word embeddings, in addition to learning the latent geography of mobility, also capture more nuanced characteristics such as latent hierarchy in the axis of the embedding, which is a unique and fascinating characteristic of this approach.
 
 
 %
@@ -442,12 +441,12 @@ This suggests that word embeddings, in addition to learning the latent geography
 %
 \section*{Conclusion}
 
-By learning a distance directly from the data, word embeddings successfully  and efficiently captures a robust measure of semantic distance between entities, all with existing tools and minor data processing.
+By learning a distance directly from data, word embeddings successfully  and efficiently captures a robust measure of semantic distance between entities, all with existing tools and minor data processing.
 This methodology is broadly applicable to studies of mobility.
 Its success also points to the broad applicability of ideas from language and graph embedding techniques such as GLoVE~\autocite{pennington2014glove}, BERT~\autocite{devlin2018bert}, hyperbolic embeddings~\autocite{nickel2017poincare, linzhuo2020hyperbolic}, and persona2vec () to other problem domains, such as the social sciences.
-In addition to their technical advantages and the unique suite of methodologies they allow, they are also  readily transferable and can be trivially fit into a diverse array of analyses.
+In addition to their technical advantages and their unique suite of analytical tools, they are also readily transferable and can be trivially fit into a diverse array of analyses.
 
-Globally, science has experienced many changes, from gradual globalization to the more sudden 2017 U.S. travel bans.
+Globally, science has experienced many changes, from gradual globalization~\autocite{czaika2018globalisation} to the more sudden 2016 Brexit and 2017 U.S. travel bans.
 The consequences of these changes are far-reaching, and how nations respond to them will shape the future of the scientific enterprise~\autocite{chinchilla2018travelban, wagner2017open, sugimoto2017mostimpact, whetsell2019democracy}.
 Given mobility's importance, its vital that we gain a better understanding of where, how, and why researchers move, and what the impact of these movements will be.
 With this new data-driven approach to learning distances relating to mobility, we capture the latent and nuanced structure of mobility at multiple scales;
