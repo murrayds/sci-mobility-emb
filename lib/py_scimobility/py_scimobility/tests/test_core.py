@@ -5,8 +5,8 @@ import py_scimobility.core as mob
 
 import numpy as np
 
-class Test_ComputeGeoDistance(TestCase):
 
+class Test_ComputeGeoDistance(TestCase):
     def test_with_all_nan(self):
         """
         Test to ensure that input of all NaN returns NaN

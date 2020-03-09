@@ -34,14 +34,15 @@ rule plot_predicted_vs_actual:
     input: rules.calculate_predicted_vs_actual.output
     output: PREDICTED_VS_ACTUAL_PLOT
     shell:
-        "Rscript scripts/PlotPredictedVsActual.R --input {input} --output {output}"
+        "Rscript scripts/PlotPredictedVsActual.R --input {input} \
+        --model {wildcards.model} --output {output}"
 
 rule plot_predicted_vs_actual_filtered:
     input: rules.calculate_predicted_vs_actual.output,
     output: PREDICTED_VS_ACTUAL_PLOT_FILT
     shell:
         "Rscript scripts/PlotPredictedVsActual.R --input {input} --output {output} \
-        --geo {wildcards.geo_constraint_filt}"
+        --model {wildcards.model} --geo {wildcards.geo_constraint_filt}"
 
 ###############################################################################
 # HYPERPARAMETER PERFORMANCE

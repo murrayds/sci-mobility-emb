@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
 from pylab import rcParams
-from common import get_awesome_c_list
+from py_scimobility.core import get_awesome_c_list
 
 
 def draw_figure(
@@ -117,7 +117,6 @@ def draw_figure(
     handles = [lp(k) for k in ["west", "south", "midwest", "northeast", "pacific"]]
     plt.legend(handles=handles, bbox_to_anchor=(0.9, 0.22), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
-    plt.show()
 
 
 if __name__ == "__main__":

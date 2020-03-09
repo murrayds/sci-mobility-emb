@@ -175,7 +175,7 @@ plot <- dist %>%
     ) +
     # Add labels
     xlab(axislabel) +
-    ylab(latex2exp::TeX("\\textit{$\\frac{f_{ij}}{m_{i}m_{j}}$}"))
+    ylab(latex2exp::TeX("\\textit{$\\frac{T_{ij}}{m_{i}m_{j}}$}"))
 
 
 #

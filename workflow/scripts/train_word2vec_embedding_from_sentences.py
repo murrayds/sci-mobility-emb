@@ -9,10 +9,35 @@ This performs the word2vec training procedure.
 """
 import gensim
 import pandas as pd
+import random
 
 # Set up the logging so that we can see progress
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+
+# Helper functions, to eventually be moved off into the package
+# This first one simply takes a sentence, and shuffles the words within
+def shuffle_sentence(x):
+    x = x.split()
+    x = random.sample(x, len(x))
+    return(' '.join(x))
+
+# This next function takes the mobility dataframe, and
+# builds a vocabulary from the mobility across all years,
+# shuffling if the paramter is set to true.
+def build_sentences(df, shuffle = False):
+    if (shuffle):
+        df['sentence'] = df['sentence'].apply(shuffle_sentence)
+
+    df = df.groupby(['cluster_id'])['sentence'].apply(lambda x: ' '.join(x)).reset_index()
+
+    # Tokenize the sentences into a format that gensim can work with
+    tokens = []
+    for sentence in df.sentence:
+        tokens.append(sentence.split(' '))
+
+    return(tokens)
+
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -36,30 +61,40 @@ parser.add_argument("-o", "--output", help = "Output data path",
 args = parser.parse_args()
 
 # Load all of the the data to use in the embedding
+logging.info("Loading mobility trajectories")
 mobility_frames = []
 for path in args.files:
     mobility_frames.append(pd.read_csv(path))
 
 mobility_df = pd.concat(mobility_frames)
 
-# We want a sentence representing mobility across the whole period, join all
-mobility_df = mobility_df.groupby(['cluster_id'])['sentence'].apply(lambda x: ' '.join(x)).reset_index()
-
 # Tokenize the sentences into a format that gensim can work with
-mobility_tokens = []
-for sentence in mobility_df.sentence:
-    mobility_tokens.append(sentence.split(' '))
+logging.info("Building initial vocabulary")
+tokens = build_sentences(mobility_df, shuffle = False)
 
-# Build and train the gensim word2vec model
+# Build and train the gensim word2vec model.
+# First, perform initial training on unshuffled vocabulary
 model = gensim.models.Word2Vec(
-            mobility_tokens,
+            tokens,
             size = args.dimensions,
             window = args.window, # just use the entire sentence
             min_count = args.minfrequency, # Remove tokens that don't appear enough
             workers = args.numworkers, # paralellize, use 4 workers
-            iter = args.iterations,
+            iter = 1,
             sg = 1 # use the skip_gram model
 ) # end model
+
+# Now update the model, training with shuffled versions of the
+# mobility sentences. One iteration has already been completed, so
+# repeat for the remaining iterations.
+for i in range(args.iterations - 1):
+    logging.info("Building new shuffled vocabulary for iteration {}".format(i + 2))
+    tokens = build_sentences(mobility_df, shuffle = True)
+    model.train(
+        tokens,
+        total_examples = len(tokens),
+        epochs = 1
+    )
 
 # Save the model
 model.save(args.output)

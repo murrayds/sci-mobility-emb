@@ -30,6 +30,8 @@ option_list = list(
               help="Path to file containing predicted vs. actual flows"),
   make_option(c("--geo"), action="store", default="none",
               help="Geographic constraint, none, or same or different country"),
+  make_option(c("--model"), action="store", default="none",
+              help="Model type, either exponential (exp) or power decay (power)"),
   make_option(c("-o", "--output"), action="store", default=NA, type='character',
               help="Path to save distances")
 ) # end option_list
@@ -44,6 +46,15 @@ if (opt$geo == "same-country") {
   data <- data %>% filter(org1_country == org2_country)
 } else if (opt$geo == "different-country") {
   data <- data %>% filter(org1_country != org2_country)
+}
+
+# Set the correct distance variable based on input parameter
+if (opt$model == "exp") {
+  data <- data %>%
+    mutate(expected = expected.exp)
+} else if (opt$model == "power") {
+  data <- data %>%
+    mutate(expected = expected.power)
 }
 
 # Create bins for epected values within which we will calculate
