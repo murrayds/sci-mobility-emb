@@ -105,18 +105,18 @@ With this approach, we can learn scalable, dense, and meaningful vector represen
 % Introduce the question, why is it important?
 
 When scientists move, they bring their knowledge with them.
-For scientific mobility, like all human movement, distance matters.
+For scientific mobility, like all human movements, distance matters.
 However, how exactly do we measure the distance between two places?
 Although many alternative ways to quantify the distance~\autocite{boschma2005proximity} exist, geographic distance remains an unambiguous and foundational quantity for the distance.
 In turn, models of human mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation models ~\autocite{simini2012universal}, rely almost exclusively on geographic distance, yet, geographic distance fails to capture historical, linguistic, cultural, and cognitive proximity.
 For instance, Australia may be physically close to Indonesia, but in terms of language, history, and shared culture, they are essentially neighbors to geographically distant countries like the United Kingdom.
-Then, how can we quantify meaningful, useful distance between institutions, cities and countries?
+Then, how can we quantify meaningful, useful distance between institutions, cities, and countries?
 
 
 % Let's rephease and reuse to somewhere else:)
 %Encoding distance in a way that considers not just geography, but also historical, linguistic, cultural, and cognitive proximity would improve our models and thus ability to reason about science and immigration policies.
 
-It has been demonstrated that neural embedding model preserves semantic relationships between words in a dense, continuous and meaningful low-dimensional vector representation~\autocite{mikolov2013word2vec}, and has been applied to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
+It has been demonstrated that the neural embedding model preserves semantic relationships between words in a dense, continuous and meaningful low-dimensional vector representation~\autocite{mikolov2013word2vec}, and has been applied to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
 In addition to encoding latent structure, this approach is computationally efficient, scalable for large datasets, robust to noise, and allows for a range of unique analyses that leverage their semantic properties using simple vector arithmetic.
 Here, we propose a neural embedding model as an efficient means of encoding an effective measure of distance using massive trajectory data.
 
@@ -181,12 +181,12 @@ Geographic distance alone is a poor tool for understanding international scienti
 		Red line is line of best fit.
 		Black dots are mean flux across binned distances.
 		Error bars are 99\% confidence intervals.
-		Color indicates frequency of organization pairs within each hex bin.
-		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding distance outperform those made using geographic distance.
+		Color indicates the frequency of organization pairs within each hex bin.
+		\textbf{c-d.} Predictions of flux between organization pairs made using embedding distance outperform those made using geographic distance.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		``Err'' is calculated as the root-mean squared error between the actual and predicted values.
-		\textbf{e-f.} Predictions made using model parameters learned from subset of domestic (within-country) organization pairs.
+		``Err'' is calculated as the root-mean-squared error between the actual and predicted values.
+		\textbf{e-f.} Predictions made using model parameters learned from a subset of domestic (within-country) organization pairs.
 		Embedding distance outperforms those made for geographic distance.
 		\textbf{g-h.} Embedding distance also outperforms geographic distance when predicting flux using model parameters estimated from only international mobility (across-country organization pairs).
 		Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. \ref{fig:supp:gravity_prediction_subsets}).
@@ -214,7 +214,7 @@ Let $T_{ij}$ represents the total \textbf{flux}, the number of people who moved 
 where the cosine similarity between two vectors, $\cos(v_{i}, v_{j})$, is defined as,
 
 \begin{equation}
-    \cos(v_j, v_i) = \frac{v_j \cdot v_i}{|v_j||v_i|}
+    \cos(v_i, v_j) = \frac{v_i \cdot v_j}{\Vert v_j \Vert \Vert v_i  \Vert}
 \end{equation}
 
 In the case of scientific co-affiliation, all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$.
@@ -288,7 +288,7 @@ We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good
     \label{fig:math_part}
 \end{figure}
 
-This finding relates to the objective function of the skip-gram model. The model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
+This finding relates to the objective function of the neural embedding model. The model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
 
 \begin{equation}
     \label{eq:skipgram_log_prob_condensed}
@@ -304,7 +304,7 @@ where the conditional probability of observing one word, $w_{0}$, given another,
 
 where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary. With facts that the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form, or exact same if vectors are normalized.
 
-Hence, the skip-gram word embedding model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility.
+Hence, the neural embedding model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility.
 
 
 %
@@ -338,7 +338,7 @@ Similar dynamics can be observed in many states (New York, California, etc.), su
 		Each point corresponds to an organization.
 		Size indicates the size of the organization.
 		Color indicates the continent.
-		We re-project subsets of organizational vectors to uncover more complex local structure.
+		We re-project subsets of organizational vectors to uncover more complex local structures.
 		\textbf{b.} Re-projection of organizational vectors roughly corresponding to West-Asian, Southeast Asian, and South Asian countries.
 		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portuguese- and Spanish-speaking countries South and Central America.
 		\textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
@@ -519,7 +519,7 @@ In more complex cases, such as listing multiple affiliations on the same paper o
 These mobility sentences are used as input to the standard skip-gram negative sampling model, for word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec} .
 In natural-language processing, word embeddings are used to construct dense vector-space representations of words and phrases, in which distance relationships between words correspond to a notion of semantic distance.
 By embedding co-affiliation trajectories, we aim to learn a dense vector for every organization where distance between vectors relates to the tendency for two organizations to co-occur in a token window around the target term in the same career trajectory.
-Vectors are learned by training a neural network to optimize the prediction of so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory.
+Vectors are learned by training a neural network to optimize the prediction of the so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory.
 The hidden layer of the trained neural network is used as the
 
 %% Word2vec parameters and training procedure
@@ -559,7 +559,7 @@ The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance 
 We model the flux of authors between organizations, $T_{ij}$, using the gravity law.
 the gravity law of mobility loosely derives from the physical law of gravity, whereby the attraction between two objects is a function of their mass and the distance between them.
 Given its simplicity and flexibility, this formulation and variants have proven incredibly useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}.
-Following the gravity law, the expected flux $\hat{T_{ij}}$ between two organizations is defined as follows,
+Following the gravity law, the \textit{expected flux} $\hat{T_{ij}}$ between two organizations is defined as follows,
 
 \begin{equation}
 	\label{eq:gravity_basic}
@@ -936,3 +936,4 @@ where $M=\frac{1}{2}(P+Q)$. We report the both results, PPR with cosine distance
 \printbibliography{}
 
 \end{document} %}}}
+
