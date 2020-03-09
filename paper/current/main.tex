@@ -92,9 +92,9 @@ Common models of mobility, such as the Gravity Model~\autocite{zipf1946gravity, 
 However, amid a globalizing scientific enterprise~\autocite{czaika2018globalisation}, geographic distance is losing its relevance for understanding mobility, whereas other abstract notions of distance~\autocite{boschma2005proximity} pose practical and theoretical challenges.
 Accordingly, the complexity of factors shaping global scientific mobility~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics} necessitates simplified models for reasoning about and crafting effective policy.
 Here, we demonstrate a data-driven approach of learning an effective distance that encodes the latent structure of mobility using a neural embedding model~\autocite{mikolov2013word2vec} trained on mobility traces sourced from the publications of disambiguated authors from the Web of Science database between 2008 and 2019.
-Distance between vectors in the learned embedding space explain and predict mobility between organizations better than  geographic distance or network distance. We argue that such power emerges from an underlying connection between embeddings and the gravity model.
+Distance between vectors in the learned embedding space explains and predicts mobility between organizations better than  geographic distance or network distance. We argue that such power emerges from an underlying connection between the neural embedding model and the gravity model.
 In addition to geography, these embeddings also capture latent religious, cultural, social, and linguistic, and even prestige of organizations at multiple levels of granularity.
-With this approach, we can learn scalable, dense, and meaningful vector representations of scientific mobility directly from the data using a methodology that can be easily applied to all kinds of mobility.
+With this approach, we can learn scalable, dense, and meaningful vector representations of scientific mobility directly from the data using a methodology that can be easily applied to all kinds of mobility data.
 \end{abstract}
 
 %
@@ -105,23 +105,23 @@ With this approach, we can learn scalable, dense, and meaningful vector represen
 % Introduce the question, why is it important?
 
 When scientists move, they bring their knowledge with them.
-For scientific mobility, like all human movement, distance matters.
+For scientific mobility, like all human movements, distance matters.
 However, how exactly do we measure the distance between two places?
 Although many alternative ways to quantify the distance~\autocite{boschma2005proximity} exist, geographic distance remains an unambiguous and foundational quantity for the distance.
 In turn, models of human mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation models ~\autocite{simini2012universal}, rely almost exclusively on geographic distance, yet, geographic distance fails to capture historical, linguistic, cultural, and cognitive proximity.
 For instance, Australia may be physically close to Indonesia, but in terms of language, history, and shared culture, they are essentially neighbors to geographically distant countries like the United Kingdom.
-Then, how can we quantify meaningful, useful distance between institutions, cities and countries?
+Then, how can we quantify meaningful, useful distance between institutions, cities, and countries?
 
 
 % Let's rephease and reuse to somewhere else:)
 %Encoding distance in a way that considers not just geography, but also historical, linguistic, cultural, and cognitive proximity would improve our models and thus ability to reason about science and immigration policies.
 
-It has been demonstrated that neural embedding models preserves semantic relationships between words in a dense, continuous and meaningful low-dimensional vector representation~\autocite{mikolov2013word2vec}, and have been applied to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
+It has been demonstrated that the neural embedding model preserves semantic relationships between words in a dense, continuous and meaningful low-dimensional vector representation~\autocite{mikolov2013word2vec}, and has been applied to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
 In addition to encoding latent structure, this approach is computationally efficient, scalable for large datasets, robust to noise, and allows for a range of unique analyses that leverage their semantic properties using simple vector arithmetic.
-Here, we propose a neural embedding model as an effective means of encoding an effective measure of distance using massive trajectory data.
+Here, we propose a neural embedding model as an efficient means of encoding an effective measure of distance using massive trajectory data.
 
 As scientist's careers progress, they move between organizations or pick up additional affiliations, forming co-affiliation or \textit{mobility trajectories} that can be derived from their publication histories~\autocite{robinson2019mobility, sugimoto2017mostimpact}.
-By treating geo-located organizations analogously to words and trajectories analogously to sentences, we learn vector-space embedding of organizations using neural embedding (Fig.~\ref{fig:methods:mobility_sentence}).
+By treating geo-located organizations analogously to words and trajectories analogously to sentences, we learn vector-space embedding of organizations using a neural embedding method(Fig.~\ref{fig:methods:mobility_sentence}).
 The resulting vector of organizations is representation that the \textit{cosine distance} between vectors represents the distance in the landscape of scientific mobility.
 
 
@@ -151,7 +151,7 @@ We adopt the Gravity Model of mobility~\autocite{zipf1946gravity, barbosa2018hum
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij})
 \end{equation}
 
-Where the flux, $T_{ij}$, or number of authors co-affiliated with a pair organizations during the time period increases with the organization's sizes, $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
+Where the \textit{expected flux}, $\hat{T_{ij}}$, or expected number of authors co-affiliated with a pair organizations during the time period increases with the organization's sizes, $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
 We consider two distances, the geographic distance between the organizations as a baseline, and the \textit{embedding distance} defined as the cosine distance between the organization's vector in the trained embedding space.
 We argue that the performance of a distance measure can be observed from their ability to explain expected mobility between organizations and to make predictions using the gravity model.
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
@@ -181,12 +181,12 @@ Geographic distance alone is a poor tool for understanding international scienti
 		Red line is line of best fit.
 		Black dots are mean flux across binned distances.
 		Error bars are 99\% confidence intervals.
-		Color indicates frequency of organization pairs within each hex bin.
-		\textbf{c-d.} Predictions  of flux between organization pairs made using embedding distance outperform those made using geographic distance.
+		Color indicates the frequency of organization pairs within each hex bin.
+		\textbf{c-d.} Predictions of flux between organization pairs made using embedding distance outperform those made using geographic distance.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		``Err'' is calculated as the root-mean squared error between the actual and predicted values.
-		\textbf{e-f.} Predictions made using model parameters learned from subset of domestic (within-country) organization pairs.
+		``Err'' is calculated as the root-mean-squared error between the actual and predicted values.
+		\textbf{e-f.} Predictions made using model parameters learned from a subset of domestic (within-country) organization pairs.
 		Embedding distance outperforms those made for geographic distance.
 		\textbf{g-h.} Embedding distance also outperforms geographic distance when predicting flux using model parameters estimated from only international mobility (across-country organization pairs).
 		Predictions are not meaningfully different if estimates are learned on all pairs of organizations (Fig. \ref{fig:supp:gravity_prediction_subsets}).
@@ -214,7 +214,7 @@ Let $T_{ij}$ represents the total \textbf{flux}, the number of people who moved 
 where the cosine similarity between two vectors, $\cos(v_{i}, v_{j})$, is defined as,
 
 \begin{equation}
-    \cos(v_j, v_i) = \frac{v_j \cdot v_i}{|v_j||v_i|}
+    \cos(v_i, v_j) = \frac{v_i \cdot v_j}{\Vert v_j \Vert \Vert v_i  \Vert}
 \end{equation}
 
 In the case of scientific co-affiliation, all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$.
@@ -288,7 +288,7 @@ We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good
     \label{fig:math_part}
 \end{figure}
 
-This finding relates to the objective function of the skip-gram model. The model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
+This finding relates to the objective function of the neural embedding model. The model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
 
 \begin{equation}
     \label{eq:skipgram_log_prob_condensed}
@@ -304,7 +304,7 @@ where the conditional probability of observing one word, $w_{0}$, given another,
 
 where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary. With facts that the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form, or exact same if vectors are normalized.
 
-Hence, the skip-gram word embedding model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility.
+Hence, the neural embedding model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility.
 
 
 %
@@ -338,7 +338,7 @@ Similar dynamics can be observed in many states (New York, California, etc.), su
 		Each point corresponds to an organization.
 		Size indicates the size of the organization.
 		Color indicates the continent.
-		We re-project subsets of organizational vectors to uncover more complex local structure.
+		We re-project subsets of organizational vectors to uncover more complex local structures.
 		\textbf{b.} Re-projection of organizational vectors roughly corresponding to West-Asian, Southeast Asian, and South Asian countries.
 		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portuguese- and Spanish-speaking countries South and Central America.
 		\textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
@@ -519,7 +519,7 @@ In more complex cases, such as listing multiple affiliations on the same paper o
 These mobility sentences are used as input to the standard skip-gram negative sampling model, for word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec} .
 In natural-language processing, word embeddings are used to construct dense vector-space representations of words and phrases, in which distance relationships between words correspond to a notion of semantic distance.
 By embedding co-affiliation trajectories, we aim to learn a dense vector for every organization where distance between vectors relates to the tendency for two organizations to co-occur in a token window around the target term in the same career trajectory.
-Vectors are learned by training a neural network to optimize the prediction of so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory.
+Vectors are learned by training a neural network to optimize the prediction of the so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory.
 The hidden layer of the trained neural network is used as the
 
 %% Word2vec parameters and training procedure
@@ -559,7 +559,7 @@ The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance 
 We model the flux of authors between organizations, $T_{ij}$, using the gravity law.
 the gravity law of mobility loosely derives from the physical law of gravity, whereby the attraction between two objects is a function of their mass and the distance between them.
 Given its simplicity and flexibility, this formulation and variants have proven incredibly useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}.
-Following the gravity law, the expected flux $\hat{T_{ij}}$ between two organizations is defined as follows,
+Following the gravity law, the \textit{expected flux} $\hat{T_{ij}}$ between two organizations is defined as follows,
 
 \begin{equation}
 	\label{eq:gravity_basic}
@@ -936,3 +936,4 @@ where $M=\frac{1}{2}(P+Q)$. We report the both results, PPR with cosine distance
 \printbibliography{}
 
 \end{document} %}}}
+
