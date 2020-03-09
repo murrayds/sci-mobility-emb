@@ -45,6 +45,8 @@ option_list = list(
               help="Name of the state to highlight"),
   make_option(c("--types"), action="store", default=NA, type='character',
               help="Path to file containing org types"),
+  make_option(c("--exclude"), action="store", default=NA, type='character',
+              help="Path to file containing orgs to exclude due to being mis-classified"),
   make_option(c("--sector"), action="store", default=NA, type='character',
               help="Name of sector: Teaching, Government, or Institute"),
   make_option(c("-o", "--output"), action="store", default=NA, type='character',
@@ -98,8 +100,11 @@ if (opt$overall == TRUE) {
   ###
   if (!is.na(opt$sector)) {
     org_types <- read_csv(opt$types, col_types = cols())
+    orgs_excluded <- read_csv(opt$exclude, col_types = cols())
+
     plotdata <- plotdata %>%
       left_join(org_types, by = "org_type") %>%
+      anti_join(orgs_excluded, by = "cwts_org_no") %>%
       filter(org_type_simplified == opt$sector | org_type_code == "U") %>%
       mutate(
         highlight = ifelse(org_type_simplified %in% ORG_TYPES, org_type_simplified, "Others"),
