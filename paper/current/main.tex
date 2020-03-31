@@ -91,7 +91,7 @@ Scientific mobility drives innovation~\autocite{braunerhjelm2020labor, kaiser201
 Common models of mobility, such as the Gravity Model~\autocite{zipf1946gravity, xia2005measlesgravity, jung2008highwaygravity, barbosa2018human, curiel2018citygravity, lewer2008immigrationgravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity, simini2012universal}, describes mobility using the \textit{distance} between places.
 However, amid a globalizing scientific enterprise~\autocite{czaika2018globalisation}, geographic distance is losing its relevance for understanding mobility, whereas other abstract notions of distance~\autocite{boschma2005proximity} pose practical and theoretical challenges.
 %Accordingly, the complexity of factors shaping global scientific mobility~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics} necessitates simplified models for reasoning about and crafting effective policy.
-Leveraging neural embedding~\autocite{mikolov2013word2vec}, we demonstrate a data-driven approach for learning a dense, meaningful, and useful vector-space representation of organizations that encodes the latent, complex, and multi-faceted structure of mobility.
+Leveraging the neural embedding model~\autocite{mikolov2013word2vec}, we demonstrate a data-driven approach for learning a vector-space representation that encodes an effective distance between places and captures the latent and multi-faceted structure of mobility.
 We train scientific mobility embedding using the organizational trajectories derived from the publications of disambiguated authors from the Web of Science database between 2008 and 2019.
 Distance between vectors in the learned embedding space explains and predicts mobility between organizations better than  geographic distance or network distance. We argue that such power emerges from an underlying connection between the neural embedding model and the gravity model.
 In addition to geography, these embeddings also capture latent religious, cultural, social, and linguistic, and even prestige of organizations at multiple levels of granularity.
@@ -105,21 +105,19 @@ With this approach, we can learn scalable, dense, and meaningful vector represen
 
 % Introduce the question, why is it important?
 
-When scientists move, they bring their knowledge with them.
-When it comes to mobility, whether scientific or more otherwise, distance matters.
-However, how exactly do we measure the distance between two places?
+When scientists move, they bring their knowledge with them, and so understanding the flows of scientists allows us to understand the flow of knowledge around the world. 
+However, given its complexity~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}, new approaches are needed to make sense of landscape of global scientific mobility. 
+A basic component of mobility is distance--people are more likely to move nearby than to cross continents.
 Although many alternative ways to quantify the distance~\autocite{boschma2005proximity} exist, geographic distance remains an unambiguous and foundational quantity for the distance.
-In turn, models of human mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation models ~\autocite{simini2012universal}, rely almost exclusively on geographic distance, yet, geographic distance fails to capture historical, linguistic, cultural, and cognitive proximity.
-For instance, Australia may be physically close to Indonesia, but in terms of language, history, and shared culture, they are essentially neighbors to geographically distant countries like the United Kingdom.
+In turn, models of human mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation models ~\autocite{simini2012universal}, rely almost exclusively on geographic distance.
+However, distance is not always so straightforward as simple geography. 
+Geographic distance fails to capture the host of historical, linguistic, cultural, and cognitive distance that also drive mobility. 
+For instance, Australia may be physically close to Indonesia, but in terms of language, history, and shared culture, they are essentially neighbors to the United Kingdom.
 Then, how can we quantify meaningful, useful distance between institutions, cities, and countries?
 
-
-% Let's rephease and reuse to somewhere else:)
-%Encoding distance in a way that considers not just geography, but also historical, linguistic, cultural, and cognitive proximity would improve our models and thus ability to reason about science and immigration policies.
-
+Here, we propose a neural embedding model as an efficient means of encoding an effective measure of distance using large-scale data on mobility trajectories.
 It has been demonstrated that the neural embedding model preserves semantic relationships between words in a dense, continuous and meaningful low-dimensional vector representation~\autocite{mikolov2013word2vec}, and has been applied to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
 In addition to encoding latent structure, this approach is computationally efficient, scalable for large datasets, robust to noise, and allows for a range of unique analyses that leverage their semantic properties using simple vector arithmetic.
-Here, we propose a neural embedding model as an efficient means of encoding an effective measure of distance using large-scale data on mobility trajectories.
 
 As scientist's careers progress, they move between organizations or pick up additional affiliations, forming co-affiliation or \textit{mobility trajectories} that can be derived from their publication histories~\autocite{robinson2019mobility, sugimoto2017mostimpact}.
 By treating geo-located organizations analogously to words and trajectories analogously to sentences, we learn vector-space embedding of organizations using a neural embedding method (Fig.~\ref{fig:methods:mobility_sentence}).
@@ -144,14 +142,14 @@ In the resulting embedding, each organization corresponds to a vector, and the \
 
 
 We use the trajectories of the three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
-We adopt the Gravity Model of mobility~\autocite{zipf1946gravity, barbosa2018human}, one of the most common and broadly applied mobility models~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity} to assess how well the embedding captures mobility. After fitting the parameters of the gravity model, we use it to derive the \textit{expected flux} $\hat{T_{ij}}$ between organizations, defined as,
+We adopt the Gravity Model of mobility~\autocite{zipf1946gravity, barbosa2018human}, one of the most broadly applied mobility models~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity} to assess how well the embedding captures mobility. After fitting the parameters of the gravity model, we use it to derive the \textit{expected flux} $\hat{T_{ij}}$ between organizations, defined as,
 
 \begin{equation}
 	\label{eq:gravity_basic}
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij})
 \end{equation}
 
-Where the \textit{expected flux}, $\hat{T_{ij}}$, or expected number of authors co-affiliated with a pair organizations during the time period increases with the organization's sizes, $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
+Where the \textit{expected flux}, $\hat{T_{ij}}$, or expected number of authors co-affiliated with a pair organizations during the time period is proportional to the organization's sizes, $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
 We consider two distances, the geographic distance between the organizations as a baseline, and the \textit{embedding distance} defined as the cosine distance between the organization's vector in the trained embedding space.
 We argue that the performance of a distance measure can be observed from their ability to explain expected mobility between organizations and to make predictions using the gravity model.
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
@@ -167,7 +165,7 @@ The amount of variance explained by embedding distance ($R^{2} = 0.46$, Fig.~\re
 This pattern holds for the variance of only domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig.~\ref{fig:supp:gravity_correlation}d).
 After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c--d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e--f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g--h).
 Similarly, embedding distance outperforms ``diffusion''  distances such as those derived from calculating personalized-page rank scores (see supporting materials) on the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-Geographic distance alone is a poor tool for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flux between organizations.
+Geographic distance alone is a poor perspective for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flux between organizations.
 
 %
 % Figure - Gravity law performance
