@@ -345,20 +345,15 @@ Similar structures can be observed in many states (New York, California, etc.), 
 	\label{fig:projection}
 \end{figure}
 
+We can also examine high-level structure by estimating aggregate embeddings of countries. 
+Namely, we calculate the representative vector of each country by averaging organization vectors within the given country.
+We then perform hierarchical clustering of nations that have at least 25 organizations represented in the embedding space, excluding the United States which has high similarity with most other countries (see Fig. \ref{fig:clustering}a). 
+The identified six clusters roughly correspond to: East-Asian (orange), Scandinavian (dark purple), British Commonwealth (light purple), Central and Eastern European countries (light blue), and then two cluster diverse clusters with a mix of European, Latin American, and Mediterranean countries.
+Countries are either grouped geographically or by linguistic or historical ties. 
 
-\subsection*{Embeddings capture international relationships}
-
-What latent information do embeddings of scientific mobility capture, beyond geography?
-We build on descriptive results to quantitatively assess the national factors captured in the learned vector-space.
-We calculate the representative vector of each country with averaging organization vectors within the given country, calculate pairwise cosine similarity, and perform hierarchical clustering (Fig. \ref{fig:clustering}a) of nations that have at least 25 organizations, excluding the United States which has high similarity with most other countries.
-
-Six country clusters were identified, reflecting a mixture of the regional, linguistic, historical clusters, with clusters consisting of East-Asian (orange), Scandinavian (dark purple), British Commonwealth (light purple), Central and Eastern European countries (light blue), and then two cluster diverse clusters with a mix of European, Latin American, and Mediterranean countries.
-When not defined by geography, clusters appear to be defined by linguistic and historical ties, as is the case for the commonwealth countries.
-There is a tendency that countries are grouped if they are in the same geographic region, if they are historically or culturally aligned, and if they share a similar language.
-
-We investigate the extent to which geography and language dictate the formation of clusters using \textit{CluSim}~\autocite{gates2019element}, a method that compares different groupings and, for hierarchical clustering, can adjust the relative importance of membership at different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
+We investigate the extent to which geography and language dictate the formation of clusters using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
 If $r$ is high, the similarity is based on the lower levels of the dendrogram, whereas when $r$ is low, similarity is based on higher levels.
-Fig. \ref{fig:clustering}b demonstrates that continent plays a major role at higher levels of clustering process (low $r$), and language family and then language explain the clustering process more at the lower levels (high $r$).
+Fig. \ref{fig:clustering}b demonstrates that continent plays a major role at higher levels of clustering process (low $r$), and language (family) explain the clustering more at the lower levels (high $r$).
 This suggests that geography, then language, are important factors contributing to the structure of international scientific mobility.
 
 %
