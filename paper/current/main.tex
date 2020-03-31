@@ -310,21 +310,22 @@ Hence, the neural embedding model can be an effective model for investigating an
 %
 \subsection*{Embeddings capture global structure of mobility}
 
-Word embeddigns produces an effective distnace from mobility which can be visualized by projecting the embedding space into two dimensions using UMAP~\autocite{mcinnes2018umap} (Fig.~\ref{fig:projection}a).
-Overall, organizations are clustered by geography, according to the nations in which they are location;
-however, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions at multiple scales.
+Given that embeddings capture effective distance between organizations, we can now examine the global structure of scientific mobility.
+Because the embeddings are defined in a high-dimensional space, we apply a widely-used dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) to visualize the overall structure (Fig.~\ref{fig:projection}a).
+Globally, the effect of geography is conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors. 
+At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions.
 
-Re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries related to geography and religion moving from majority-Muslim nations in the Middle East towards similarity-religious nations of Pakistan, Bangladesh, and Indonesia, and finally towards East-Asian nations with different religious majorities such as Vietnam, the Philippines, and Thailand.
+Re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries from majority-Muslim countries in the Middle East to South Asian countries of Pakistan, Bangladesh, and Indonesia, and finally towards Southeast-Asian nations with different religious majorities such as Vietnam, the Philippines, and Thailand.
 Linguistic and historical ties are also important.
-For example, we observe that Spanish-speaking and colonized Latin American nations (Mexico, Chile, Peru, etc.) are positioned near Spain, whereas Brazil is instead positioned nearer to Portugal (Fig.~\ref{fig:projection}c).
-Similarly, Algeria and Morocco, nations in close proximity to and with historic ties to France, and positioned near the French cluster of organizations (Fig.~\ref{fig:projection}a).
-These dynamics can manifest even within the same country.
-For example, organizations located within the french-speaking region of Quebec in Canada are positioned near the French cluster rather than Canada.
+For example, we observe that Spanish-speaking post-colonial Latin American nations (Mexico, Chile, Peru, etc.) are positioned near Spain, whereas Brazil is nearer to Portugal (Fig.~\ref{fig:projection}c).
+Similarly, Algeria and Morocco are near the French cluster (Fig.~\ref{fig:projection}a).
+Comparable structural patterns exist even within a single country.
+For example, organizations within Quebec in Canada are located near the French cluster rather than the rest of Canada.
 
-A unique characteristic of semantic mobility embeddings is the ability to capture structure at multiple scales of granularity.
-For example, just as the global embedding captures geographic structure between nations, so too does a projection or organizations in the United States reflect organizational structure based on states (Fig.~\ref{fig:projection}d).
-By re-projecting at the state-level for Massachusetts (Fig.~\ref{fig:projection}e), we observe structure between urban Centers (Boston vs. Worcester), but also based on organization type (hospitals tend to be adjacent) and different university systems. Even though UMass Boston is located in Boston, it clusters near other universities in the UMass System, reflecting a relative lack of mobility between the two systems, even within the same state.
-Similar dynamics can be observed in many states (New York, California, etc.), such that prestigious university systems are separate from more regional ones (SI~?).
+Just as the global embedding captures national-level geographic structure, so does a projection of organizations in the United States reflect organizational structure based on states (Fig.~\ref{fig:projection}d).
+By re-projecting at the state-level for Massachusetts (Fig.~\ref{fig:projection}e), we observe structure between urban Centers (Boston vs. Worcester), but also based on organization type (e.g., hospitals vs. universities) and university systems.
+Even though UMass Boston is located in Boston, it clusters near other universities in the UMass System rather than the typically more elite and research-focused universities in Boston, reflecting a relative lack of mobility between the two systems, even within the same state.
+Similar structures can be observed in many states (New York, California, etc.), such that prestigious university systems are separate from more regional ones (SI~TBD).
 
 \begin{figure}[hp!]
 	\centering
@@ -332,17 +333,13 @@ Similar dynamics can be observed in many states (New York, California, etc.), su
 	\caption{
 		\textbf{Projection of embedding demonstrates complex multi-scale structure.}
 		\textbf{a.}
-		UMAP projection \autocite{mcinnes2018umap} of the entire embedding space reveals geographic clustering.
-		Each point corresponds to an organization.
-		Size indicates the size of the organization.
+		UMAP projection \autocite{mcinnes2018umap} of the embedding space reveals strong country-level clustering.
+		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019. 
 		Color indicates the continent.
-		We re-project subsets of organizational vectors to uncover more complex local structures.
-		\textbf{b.} Re-projection of organizational vectors roughly corresponding to West-Asian, Southeast Asian, and South Asian countries.
-		\textbf{c.} Re-projection of organizations in Spain, Portugal, and the Portuguese- and Spanish-speaking countries South and Central America.
-		\textbf{d.} Re-projection of organizations in the United States reveal geographic clustering based on state.
-		Color indicates Census Bureau-designated regions,
-		\textbf{e.} Re-projection of organizations in Massachusetts reveal clustering based on organizational sector, prestige.
-		Color indicates sector designation of organization.
+		\textbf{b.} Zooming into (re-projecting) the area containing countries in the Middle East and South and Southeast Asia shows a geographic and cultural gradient of country clusters. 
+		\textbf{c.} Similarly, zooming into the area organizations in Spain, Portugal, South and Central America show clustering by majority language group--Spanish and Portuguese.
+		\textbf{d.} Doing the same for organizations in the United States reveals geographic clustering based on state, roughly grouped by Census Bureau-designated regions,
+		\textbf{e.} Zooming in further on Massachusetts reveals clustering based on urban center (Boston, Worcester), organizational sector (hospitals vs. universities), and university systems and prestige (UMass system vs. Harvard, MIT, etc.).
 	}
 	\label{fig:projection}
 \end{figure}
