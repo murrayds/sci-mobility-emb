@@ -30,7 +30,7 @@ def draw_figure(
     simple_orgs_file = simple_orgs_file.set_index("org_type")
     orgs_to_simple_orgs = simple_orgs_file["org_type_simplified"].to_dict()
     # for missclassfied kavil foundation
-    orgs_to_simple_orgs['Funding Organisation'] = 'Institute'
+    orgs_to_simple_orgs["Funding Organisation"] = "Institute"
     orgs_list = np.array(
         [orgs_to_simple_orgs[code_to_org_type[int(inst)]] for inst in institute_list]
     )
@@ -120,7 +120,7 @@ def draw_figure(
         ls="",
         marker="o",
     )[0]
-    
+
     handles = [lp(k) for k in ["Institute", "Hospital", "University", "Teaching"]]
     plt.legend(handles=handles, bbox_to_anchor=(1.08, 0.21), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
