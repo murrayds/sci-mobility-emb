@@ -33,7 +33,7 @@ def get_and_save_umap_coordinate(
     out_file_path=None,
 ):
     umap_result = umap.UMAP(
-        n_neighbors=n_neighbor, min_dist=min_dist, metric="cosine", random_state=None
+        n_neighbors=n_neighbor, min_dist=min_dist, metric="cosine", random_state=random_state
     ).fit_transform(embedding_list)
 
     umap_result_dict = {entity: umap for entity, umap in zip(entity_list, umap_result)}
