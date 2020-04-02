@@ -328,7 +328,7 @@ For example, organizations within Quebec in Canada are located near the French c
 Just as the global embedding captures national-level geographic structure, so does a projection of organizations in the United States reflect organizational structure based on states (Fig.~\ref{fig:projection}d).
 By re-projecting at the state-level for Massachusetts (Fig.~\ref{fig:projection}e), we observe structure between urban Centers (Boston vs. Worcester), but also based on organization type (e.g., hospitals vs. universities) and university systems.
 Even though UMass Boston is located in Boston, it clusters near other universities in the UMass System rather than the typically more elite and research-focused universities in Boston, reflecting a relative lack of mobility between the two systems, even within the same state.
-Similar structures can be observed in many states (New York, California, etc.), such that prestigious university systems are separate from more regional ones (SI~TBD).
+Similar structures can be observed in other states such as among New York's CUNY and SUNY systems (Fig.~\ref{fig:supp:proj_newyork}), Pennsylvania's state system (Fig.~\ref{fig:supp:proj_pennsylvania}), Texas's Agricultural and Mechanical universities(Fig.~\ref{fig:supp:proj_texas}), and between the University of California and State University of California systems (Fig.~\ref{fig:supp:proj_california}). 
 
 \begin{figure}[hp!]
 	\centering
@@ -952,6 +952,68 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
 	}
 	\label{fig:supp:gravity_pprjsd}
+\end{figure}
+
+
+%
+% Figure - New York Projection
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_New_York.pdf}
+	\caption{
+		\textbf{UMAP Projection of organizations in New York.}
+		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019. 
+		Color indicates the sector. 
+	}
+	\label{fig:supp:proj_newyork}
+\end{figure}
+
+
+%
+% Figure - Pennsylvania Projection
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Pennsylvania.pdf}
+	\caption{
+		\textbf{UMAP Projection of organizations in Pennsylvania.}
+		UMAP projection of the embedding space of organizations in Pennsylvania reveal clustering based on geography, sector, and academic prestige.
+		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019. 
+		Color indicates the sector. 
+	}
+	\label{fig:supp:proj_pennsylvania}
+\end{figure}
+
+
+%
+% Figure - Texas Projection
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Texas.pdf}
+	\caption{
+		\textbf{UMAP Projection of organizations in Texas.}
+		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019. 
+		Color indicates the sector. 
+	}
+	\label{fig:supp:proj_texas}
+\end{figure}
+
+
+
+%
+% Figure - California Projection
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_California.pdf}
+	\caption{
+		\textbf{UMAP Projection of organizations in California.}
+		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019. 
+		Color indicates the sector. 
+	}
+	\label{fig:supp:proj_california}
 \end{figure}
 
 
