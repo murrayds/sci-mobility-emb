@@ -100,7 +100,7 @@ def draw_figure(
     plt.text(-2.85, 4.3, "M.D. Anderson\nCancer Center", c=c, fontproperties=prop)
     plt.text(-0.7, 1.82, "Southwest Research\nInstitute", c=c, fontproperties=prop)
     plt.text(
-        -1.85, 2.2, "US Army Institue\nof Surgircal Research", c=c, fontproperties=prop
+        -1.85, 2.2, "US Army Institute\nof Surgircal Research", c=c, fontproperties=prop
     )
     plt.text(-3.9, -4.2, "Texas AgriLife", c=c, fontproperties=prop)
 
