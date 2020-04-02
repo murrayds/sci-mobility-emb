@@ -82,7 +82,7 @@ def draw_figure(
     ## Western Asia annotate
     c = awesome_c_list[color_by_category[0]]
     plt.text(7.8, 3.8, "Egypt", c=c, fontproperties=prop)
-    plt.text(6.6, 1.2, "Omen", c=c, fontproperties=prop)
+    plt.text(6.6, 1.2, "Oman", c=c, fontproperties=prop)
     plt.text(4.5, 3.8, "Jordan", c=c, fontproperties=prop)
     plt.text(4.4, 2.2, "Qatar", c=c, fontproperties=prop)
     plt.text(6.8, 1.9, "Saudi Arabia", c=c, fontproperties=prop)
