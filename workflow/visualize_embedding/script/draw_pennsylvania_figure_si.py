@@ -89,7 +89,7 @@ def draw_figure(
         c=c,
         fontproperties=prop,
     )
-    plt.text(1.4, 5.6, "U.Pittsburgh\nMedical Center", c=c, fontproperties=prop)
+    plt.text(1.4, 5.6, "U. Pittsburgh\nMedical Center", c=c, fontproperties=prop)
     plt.text(1.5, 4.2, "UPMC Presbyterian", c=c, fontproperties=prop)
 
     ## Inst annoate
@@ -99,7 +99,7 @@ def draw_figure(
     plt.text(
         3.75,
         -2.75,
-        "The Sigfried and\nJanet Weis\nCenter for Research",
+        "The Siegfried and\nJanet Weis\nCenter for Research",
         c=c,
         fontproperties=prop,
     )
