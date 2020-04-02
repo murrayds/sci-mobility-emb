@@ -61,11 +61,10 @@ def draw_figure(
         linewidth=0.4,
         edgecolor="white",
     )
-    
+
     plt.text(-1.9, 5.5, "Houston", c="black", fontproperties=large_prop)
     plt.text(-2.9, 1.9, "Austin", c="black", fontproperties=large_prop)
     plt.text(-2.3, 0.1, "Dallas", c="black", fontproperties=large_prop)
-
 
     ## Univ annoate
     c = awesome_c_list[4]
@@ -74,29 +73,36 @@ def draw_figure(
     plt.text(-2.25, 1.3, "Southern\nMethodist", c=c, fontproperties=prop)
     plt.text(-3.4, -5.7, "Texas A&M System", c=c, fontproperties=prop)
     plt.text(-2.95, -3.65, "Baylor", c=c, fontproperties=prop)
-    plt.text(-2.3, -1.9,  "Texas\nChristian", c=c, fontproperties=prop)
+    plt.text(-2.3, -1.9, "Texas\nChristian", c=c, fontproperties=prop)
     plt.text(-2.78, 1.1, "UT Dallas", c=c, fontproperties=prop)
     plt.text(-2.5, 5.5, "U.Houston", c=c, fontproperties=prop)
-    plt.text(-.6, 0, "UT System", c=c, fontproperties=prop)
+    plt.text(-0.6, 0, "UT System", c=c, fontproperties=prop)
     plt.text(-3.75, -2.4, "Texas Tech", c=c, fontproperties=prop)
-    plt.text(-3.1, -.8, "U.North Texas", c=c, fontproperties=prop)
+    plt.text(-3.1, -0.8, "U.North Texas", c=c, fontproperties=prop)
     plt.text(-2.9, 3.6, "UT Health", c=c, fontproperties=prop)
-    
+
     ## Hospital annoate
     c = awesome_c_list[3]
-    plt.text(-.7,5, "Methodist\nHospital,\nHouston", c=c, fontproperties=prop)
+    plt.text(-0.7, 5, "Methodist\nHospital,\nHouston", c=c, fontproperties=prop)
     plt.text(-2.75, -4.3, "Baylor Scott and\nWhite Health", c=c, fontproperties=prop)
-    plt.text(-2.15, 2.8, "Memorial\nHermann-\nTexas\nMedical Center", c=c, fontproperties=prop)
-    plt.text(-.9,4.5, "Texas Children's Hospital", c=c, fontproperties=prop)
-    plt.text(-1.5,3.8, "Baylor St. Luke's\nMedical Center", c=c, fontproperties=prop)
+    plt.text(
+        -2.15,
+        2.8,
+        "Memorial\nHermann-\nTexas\nMedical Center",
+        c=c,
+        fontproperties=prop,
+    )
+    plt.text(-0.9, 4.5, "Texas Children's Hospital", c=c, fontproperties=prop)
+    plt.text(-1.5, 3.8, "Baylor St. Luke's\nMedical Center", c=c, fontproperties=prop)
 
     ## Inst annoate
     c = awesome_c_list[0]
     plt.text(-2.85, 4.3, "M.D. Anderson\nCancer Center", c=c, fontproperties=prop)
     plt.text(-0.7, 1.82, "Southwest Research\nInstitute", c=c, fontproperties=prop)
-    plt.text(-1.85, 2.2, "US Army Institue\nof Surgircal Research", c=c, fontproperties=prop)
+    plt.text(
+        -1.85, 2.2, "US Army Institue\nof Surgircal Research", c=c, fontproperties=prop
+    )
     plt.text(-3.9, -4.2, "Texas AgriLife", c=c, fontproperties=prop)
-
 
     plt.axis("off")
 
