@@ -44,53 +44,65 @@ def draw_figure(
     rcParams["figure.figsize"] = 20, 18
     if FONT_PATH:
         prop = font_manager.FontProperties(fname=FONT_PATH, size=28)
-        large_prop = font_manager.FontProperties(fname=FONT_PATH, size=32)
+        large_prop = font_manager.FontProperties(fname=FONT_PATH, size=40)
     else:
         prop = font_manager.FontProperties(size=28)
-        large_prop = font_manager.FontProperties(size=32)
+        large_prop = font_manager.FontProperties(size=40)
     awesome_c_list = get_awesome_c_list()
     color_dict = {"Institute": 0, "Hospital": 3, "University": 4, "Teaching": 7}
     c_list = [awesome_c_list[color_dict[row]] for row in orgs_list]
     argumented_size_list = np.array([np.log(size) / np.log(1.1) for size in size_list])
 
     plt.scatter(
-        -umap_coords[:, 0],
+        umap_coords[:, 0],
         umap_coords[:, 1],
         s=argumented_size_list * 1.5,
         c=c_list,
-        linewidth=0.3,
+        linewidth=0.4,
         edgecolor="white",
     )
-    plt.text(4.7, -4.3, "Boston,\nCambridge", c="black", fontproperties=large_prop)
-    plt.text(7, -1.8, "Worcester", c="black", fontproperties=large_prop)
+
+    plt.text(-1.9, 5.5, "Houston", c="black", fontproperties=large_prop)
+    plt.text(-2.9, 1.9, "Austin", c="black", fontproperties=large_prop)
+    plt.text(-2.3, 0.1, "Dallas", c="black", fontproperties=large_prop)
 
     ## Univ annoate
     c = awesome_c_list[4]
-    plt.text(8.2, -2.8, "The UMass\nSystem", c=c, fontproperties=prop)
-    plt.text(4.1, -2.8, "MIT", c=c, fontproperties=prop)
-    plt.text(4.0, -4.6, "Harvard", c=c, fontproperties=prop)
-    plt.text(6.1, -4.1, "Boston \nUniversity", c=c, fontproperties=prop)
-    plt.text(5.8, -5, "Northeastern\nUniversity", c=c, fontproperties=prop)
-    plt.text(7.5, -1.4, "Clark University", c=c, fontproperties=prop)
-    plt.text(3.2, -6.3, "Tufts\nUniversity", c=c, fontproperties=prop)
-    plt.text(6.7, -5.6, "Brandeis\nUniversity", c=c, fontproperties=prop)
+    plt.text(-1.78, 4.3, "Rice", c=c, fontproperties=prop)
+    plt.text(-2.65, 2.3, "UT Austin", c=c, fontproperties=prop)
+    plt.text(-2.25, 1.3, "Southern\nMethodist", c=c, fontproperties=prop)
+    plt.text(-3.4, -5.7, "Texas A&M System", c=c, fontproperties=prop)
+    plt.text(-2.95, -3.65, "Baylor", c=c, fontproperties=prop)
+    plt.text(-2.3, -1.9, "Texas\nChristian", c=c, fontproperties=prop)
+    plt.text(-2.78, 1.1, "UT Dallas", c=c, fontproperties=prop)
+    plt.text(-2.5, 5.5, "U.Houston", c=c, fontproperties=prop)
+    plt.text(-0.6, 0, "UT System", c=c, fontproperties=prop)
+    plt.text(-3.75, -2.4, "Texas Tech", c=c, fontproperties=prop)
+    plt.text(-3.1, -0.8, "U.North Texas", c=c, fontproperties=prop)
+    plt.text(-2.9, 3.6, "UT Health", c=c, fontproperties=prop)
 
     ## Hospital annoate
     c = awesome_c_list[3]
-    plt.text(3.85, -5.55, "Brigham And \nWomen's Hospital", c=c, fontproperties=prop)
-    plt.text(2.7, -4.5, "Massachusetts\nGeneral Hospital", c=c, fontproperties=prop)
-    plt.text(6.85, -2.2, "UMass General\nHealth Care", c=c, fontproperties=prop)
-
-    ## Inst annoate
-    c = awesome_c_list[0]
-    plt.text(4.1, -6.43, "New England\nResearch\nInstitute", c=c, fontproperties=prop)
+    plt.text(-0.7, 5, "Methodist\nHospital,\nHouston", c=c, fontproperties=prop)
+    plt.text(-2.75, -4.3, "Baylor Scott and\nWhite Health", c=c, fontproperties=prop)
     plt.text(
-        4.3,
-        -3.6,
-        "Harvard-MIT Health \nSciences and Technology",
+        -2.15,
+        2.8,
+        "Memorial\nHermann-\nTexas\nMedical Center",
         c=c,
         fontproperties=prop,
     )
+    plt.text(-0.9, 4.5, "Texas Children's Hospital", c=c, fontproperties=prop)
+    plt.text(-1.5, 3.8, "Baylor St. Luke's\nMedical Center", c=c, fontproperties=prop)
+
+    ## Inst annoate
+    c = awesome_c_list[0]
+    plt.text(-2.85, 4.3, "M.D. Anderson\nCancer Center", c=c, fontproperties=prop)
+    plt.text(-0.7, 1.82, "Southwest Research\nInstitute", c=c, fontproperties=prop)
+    plt.text(
+        -1.85, 2.2, "US Army Institute\nof Surgircal Research", c=c, fontproperties=prop
+    )
+    plt.text(-3.9, -4.2, "Texas AgriLife", c=c, fontproperties=prop)
 
     plt.axis("off")
 
@@ -103,8 +115,8 @@ def draw_figure(
         ls="",
         marker="o",
     )[0]
-    handles = [lp(k) for k in ["Institute", "Hospital", "University", "Teaching"]]
-    plt.legend(handles=handles, bbox_to_anchor=(1, 0.15), prop=prop, frameon=False)
+    handles = [lp(k) for k in ["Institute", "Hospital", "University",]]
+    plt.legend(handles=handles, bbox_to_anchor=(1.09, 0.15), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
 
 

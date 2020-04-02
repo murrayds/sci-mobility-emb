@@ -1,10 +1,12 @@
-import sys
 import pickle
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import sys
+
 import matplotlib.font_manager as font_manager
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from pylab import rcParams
+
 from py_scimobility.core import get_awesome_c_list
 
 

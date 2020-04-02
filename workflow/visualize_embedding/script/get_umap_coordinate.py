@@ -1,10 +1,12 @@
-import sys
 import logging
-import pandas as pd
-import numpy as np
-import umap
 import pickle
+import sys
+
+import numpy as np
+import pandas as pd
+import umap
 from gensim.models import Word2Vec
+
 from py_scimobility.core import get_and_save_umap_coordinate
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
