@@ -68,7 +68,7 @@ def draw_figure(
         edgecolor="white",
     )
 
-    plt.text(3, -3.7, "San Franciso\nBay Area", c="black", fontproperties=large_prop)
+    plt.text(3, -3.7, "San Francisco\nBay Area", c="black", fontproperties=large_prop)
     plt.text(-3, 0.6, "Los Angeles", c="black", fontproperties=large_prop)
     plt.text(-4.6, -3.6, "San Diego", c="black", fontproperties=large_prop)
 
@@ -92,7 +92,7 @@ def draw_figure(
     plt.text(-3.1, -0.64, "UCLA\nHealth", c=c, fontproperties=prop)
     plt.text(2.5, -2.4, "UCSF\nMedical\nCenter", c=c, fontproperties=prop)
     plt.text(-1.95, -0.1, "Cedars-Sinai\nMedical Center", c=c, fontproperties=prop)
-    plt.text(1.6, -1.8, "Standfoard\nHealth Care", c=c, fontproperties=prop)
+    plt.text(1.6, -1.8, "Standford\nHealth Care", c=c, fontproperties=prop)
     plt.text(-3.4, -3.3, "UCSD\nHealth", c=c, fontproperties=prop)
 
     ## Inst annoate
