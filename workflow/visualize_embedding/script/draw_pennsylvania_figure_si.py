@@ -61,10 +61,9 @@ def draw_figure(
         linewidth=0.4,
         edgecolor="white",
     )
-    
+
     plt.text(1.3, 3.8, "Pittsburgh", c="black", fontproperties=large_prop)
     plt.text(2.4, 1.5, "Philadelphia", c="black", fontproperties=large_prop)
-
 
     ## Univ annoate
     c = awesome_c_list[4]
@@ -73,27 +72,38 @@ def draw_figure(
     plt.text(3.65, 0.88, "Villanova", c=c, fontproperties=prop)
     plt.text(2.82, -1.35, "Lehigh", c=c, fontproperties=prop)
     plt.text(3, -2.7, "Pennsylvania\nState System", c=c, fontproperties=prop)
-    plt.text(1.35, 5.05,  "Pittsburgh", c=c, fontproperties=prop)
+    plt.text(1.35, 5.05, "Pittsburgh", c=c, fontproperties=prop)
     plt.text(2.78, 2.45, "Drexel", c=c, fontproperties=prop)
     plt.text(4.17, 2.8, "Temple", c=c, fontproperties=prop)
     plt.text(2.2, 4.6, "Duquesne", c=c, fontproperties=prop)
-    plt.text(1.23, .9, "Thomas\nJefferson", c=c, fontproperties=prop)
-    
+    plt.text(1.23, 0.9, "Thomas\nJefferson", c=c, fontproperties=prop)
+
     ## Hospital annoate
     c = awesome_c_list[3]
-    plt.text(4.7,0.84, "UPenn\nHealth\nSystem", c=c, fontproperties=prop)
+    plt.text(4.7, 0.84, "UPenn\nHealth\nSystem", c=c, fontproperties=prop)
     plt.text(0.88, 2.1, "Thomas Jefferson\nU. Hospital", c=c, fontproperties=prop)
-    plt.text(2.3, -3.3, "Penn State Health Milton\nS. Hershey Medical Center", c=c, fontproperties=prop)
+    plt.text(
+        2.3,
+        -3.3,
+        "Penn State Health Milton\nS. Hershey Medical Center",
+        c=c,
+        fontproperties=prop,
+    )
     plt.text(1.4, 5.6, "U.Pittsburgh\nMedical Center", c=c, fontproperties=prop)
-    plt.text(1.5,4.2, "UPMC Presbyterian", c=c, fontproperties=prop)
+    plt.text(1.5, 4.2, "UPMC Presbyterian", c=c, fontproperties=prop)
 
     ## Inst annoate
     c = awesome_c_list[0]
     plt.text(3.85, 3.3, "Fox Chase\nCancer Center", c=c, fontproperties=prop)
-    plt.text(2,4.9, "National Energy\nTechnology Laboratory", c=c, fontproperties=prop)
-    plt.text(3.75, -2.75, "The Sigfried and\nJanet Weis\nCenter for Research", c=c, fontproperties=prop)
+    plt.text(2, 4.9, "National Energy\nTechnology Laboratory", c=c, fontproperties=prop)
+    plt.text(
+        3.75,
+        -2.75,
+        "The Sigfried and\nJanet Weis\nCenter for Research",
+        c=c,
+        fontproperties=prop,
+    )
     plt.text(4.4, 1.7, "Wistar\nInstitute", c=c, fontproperties=prop)
-
 
     plt.axis("off")
 
