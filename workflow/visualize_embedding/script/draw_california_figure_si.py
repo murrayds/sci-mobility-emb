@@ -47,7 +47,13 @@ def draw_figure(
         prop = font_manager.FontProperties(size=28)
         large_prop = font_manager.FontProperties(size=40)
     awesome_c_list = get_awesome_c_list()
-    color_dict = {"Institute": 0, "Hospital": 3, "University": 4, "Teaching": 7, 'Government': 9}
+    color_dict = {
+        "Institute": 0,
+        "Hospital": 3,
+        "University": 4,
+        "Teaching": 7,
+        "Government": 9,
+    }
     c_list = [awesome_c_list[color_dict[row]] for row in orgs_list]
     argumented_size_list = np.array([np.log(size) / np.log(1.1) for size in size_list])
 
@@ -59,9 +65,9 @@ def draw_figure(
         linewidth=0.4,
         edgecolor="white",
     )
-    
+
     plt.text(3, -3.7, "San Franciso\nBay Area", c="black", fontproperties=large_prop)
-    plt.text(-3, .6, "Los Angeles", c="black", fontproperties=large_prop)
+    plt.text(-3, 0.6, "Los Angeles", c="black", fontproperties=large_prop)
     plt.text(-4.6, -3.6, "San Diego", c="black", fontproperties=large_prop)
 
     ## Univ annoa
@@ -71,26 +77,28 @@ def draw_figure(
     plt.text(-0.65, -1.85, "Caltech", c=c, fontproperties=prop)
     plt.text(-2.85, -0.05, "UCLA", c=c, fontproperties=prop)
     plt.text(1.9, -3.05, "UC Berkeley", c=c, fontproperties=prop)
-    plt.text(-3.55, -2.5,  "UCSD", c=c, fontproperties=prop)
-    plt.text(-.2, 0.5, "USC", c=c, fontproperties=prop)
+    plt.text(-3.55, -2.5, "UCSD", c=c, fontproperties=prop)
+    plt.text(-0.2, 0.5, "USC", c=c, fontproperties=prop)
     plt.text(-1.35, -2.05, "UCSB", c=c, fontproperties=prop)
     plt.text(-4.2, 0.03, "UC Irvine", c=c, fontproperties=prop)
     plt.text(0, -2.9, "UC Davis", c=c, fontproperties=prop)
     plt.text(3.6, -2.1, "UCSF", c=c, fontproperties=prop)
-    
+
     ## Hospital annoate
     c = awesome_c_list[3]
     plt.text(1.2, -2.8, "UC Davis\nMedical Center", c=c, fontproperties=prop)
-    plt.text(-3.1, -.64, "UCLA\nHealth", c=c, fontproperties=prop)
+    plt.text(-3.1, -0.64, "UCLA\nHealth", c=c, fontproperties=prop)
     plt.text(2.5, -2.4, "UCSF\nMedical\nCenter", c=c, fontproperties=prop)
-    plt.text(-1.95,-0.1, "Cedars-Sinai\nMedical Center", c=c, fontproperties=prop)
+    plt.text(-1.95, -0.1, "Cedars-Sinai\nMedical Center", c=c, fontproperties=prop)
     plt.text(1.6, -1.8, "Standfoard\nHealth Care", c=c, fontproperties=prop)
     plt.text(-3.4, -3.3, "UCSD\nHealth", c=c, fontproperties=prop)
 
     ## Inst annoate
     c = awesome_c_list[0]
     plt.text(-4.9, -2.55, "Scripps\nResearch\nInstitute", c=c, fontproperties=prop)
-    plt.text(0.5, -3.8, "SLAC National\nAccelerator\nLaboratory", c=c, fontproperties=prop)
+    plt.text(
+        0.5, -3.8, "SLAC National\nAccelerator\nLaboratory", c=c, fontproperties=prop
+    )
     plt.text(-2.2, -3.6, "Lockheed\nMartin\nATC", c=c, fontproperties=prop)
     plt.text(0.4, 0.5, "City of Hope\nNational Cancer Center", c=c, fontproperties=prop)
 
@@ -108,7 +116,9 @@ def draw_figure(
         ls="",
         marker="o",
     )[0]
-    handles = [lp(k) for k in ["Institute", "Hospital", "University", "Teaching", "Government"]]
+    handles = [
+        lp(k) for k in ["Institute", "Hospital", "University", "Teaching", "Government"]
+    ]
     plt.legend(handles=handles, bbox_to_anchor=(0.86, 0.24), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
 
