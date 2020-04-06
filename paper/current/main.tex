@@ -386,23 +386,21 @@ This suggests that geography, then language, are important factors contributing 
 The results demonstrating embeddings' ability to capture various features governing mobility raise the question of whether they can also capture semantic axes analogously to word embeddings. 
 For instance, does the mobility embedding encode information about the prestige or universities?
 In addition to encoding national characteristics, the embedding also encodes domestic geography and latent hierarchy.
-Employing the SemAxis approach~\autocite{an2018semaxis} we define two axes.
+Leveraging the unique semantic properties of the organization embedding, we employ the SemAxis approach~\autocite{an2018semaxis} and define two semantic axes.
 The first is the California--Massachusetts axis defined by the mean vector of universities in California on one end, and in Massachusetts on the other. 
 The second axis is the low- to high- prestige axis;
 the elite end of the axis is defined as the top 20 U.S. universities according to the Times Ranking of World Universities, whereas the non-elite axis is defined as bottom-ranked and geographically matched (by U.S. census region) set of universities.
 A university projected onto the axis corresponds to their nearness to the mean vector defining each pole (Fig.~\ref{fig:semaxis}a).
+
+
 Generally, universities in Western states, such as Arizona (Fig.~\ref{fig:supp:semaxis_states}b) are nearer to the California end of the axis, whereas states in the Northeast such as New York (Fig.~\ref{fig:supp:semaxis_states}f) and Connecticut (Fig.~\ref{fig:supp:semaxis_states}e) are nearer the Massachusetts end.
-Universities geographically distance from both California and Massahcussets are less aligned with either, such as Texas (Fig.~\ref{fig:supp:semaxis_states}g)s and Florida (Fig.~\ref{fig:supp:semaxis_states}i).
+Universities geographically distant from both California and Massahcussets are less aligned with either, such as Texas (Fig.~\ref{fig:supp:semaxis_states}g)s and Florida (Fig.~\ref{fig:supp:semaxis_states}i).
 
 
 Universities hiring and mobility networks are known to exhbit latent pretige hierarchies ~\autocite{deville2014career, clauset2015hierarchy} that should be encoded in the embedding space.
 Accordingly, prestigious universities such as Stanford, Colombia, MIT, Harvard, and NYU, group towards the top of the axis.
 Universities at the bottom of this axis tend to be regional universities with lower national profiles.
-
-Once these axes are constructed using university rankings, we can even relate other types of organizations that would not typically be fit onto university rankings.
-For example, among Government institutions, we see that the U.S. Department of Energy is more aligned with Californian universities, whereas the Mayo Clinic is more aligned with Massachusetts and organizations like the National Institute of Arthritis, Musculoskeletal, and Skin Disease and more aligned with elite universities than is the U.S. Department of Agriculture (Fig.~\ref{fig:supp:semaxis_sectors}a).
-Among research institutes, the most aligned with elite universities are typically those prestigious university-adjacent institutes such as the Whitehead Institute, the Broad Institute, and the Dana Faber institute (Fig.~\ref{fig:supp:semaxis_sectors}b); those institutes aligned with low-ranked universities tend to be ecological or agricultural institutes such as the Joseph W. Jones Ecological Research Center and the Louisiana Agriculture Center.
-Among teaching organizations, the top-ranked tend to be notable private liberal arts colleges such as Wellesley College and Carleton College, whereas community colleges and military colleges tend to be more aligned with low-ranked universities (Fig.~\ref{fig:supp:semaxis_sectors}c).
+By considering mobility between all organization types, organization embeddings offer a new means of reasoning about the prestige of organizations typically excluded from rankings such as government organizatioss (Fig.~\ref{fig:supp:semaxis_sectors}a), research institutes (Fig.~\ref{fig:supp:semaxis_sectors}b), and teaching colleges (Fig.~\ref{fig:supp:semaxis_sectors}c)
 
 %
 % Figure - SemAxis results
@@ -442,7 +440,7 @@ This methodology is broadly applicable to studies of mobility.
 Its success also points to the broad applicability of ideas from language and graph embedding techniques such as GLoVE~\autocite{pennington2014glove}, BERT~\autocite{devlin2018bert}, hyperbolic embeddings~\autocite{nickel2017poincare, linzhuo2020hyperbolic}, and persona2vec () to other problem domains, such as the social sciences.
 In addition to their technical advantages and their unique suite of analytical tools, they are also readily transferable and can be trivially fit into a diverse array of analyses.
 
-Globally, science has experienced many changes, from gradual globalization~\autocite{czaika2018globalisation} to the more sudden 2016 Brexit and 2017 U.S. travel bans.
+Globally, science has experienced many changes, from gradual globalization~\autocite{czaika2018globalisation} to the more sudden 2016 Brexit and 2017 U.S. travel bans, and more recently the Covid19 global pandemic.
 The consequences of these changes are far-reaching, and how nations respond to them will shape the future of the scientific enterprise~\autocite{chinchilla2018travelban, wagner2017open, sugimoto2017mostimpact, whetsell2019democracy}.
 Given mobility's importance, its vital that we gain a better understanding of where, how, and why researchers move, and what the impact of these movements will be.
 With this new data-driven approach to learning distances relating to mobility, we capture the latent and nuanced structure of mobility at multiple scales;
