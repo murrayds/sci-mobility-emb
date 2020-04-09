@@ -26,7 +26,7 @@ dependencies:
   - cachetools=3.1.1=py_0
   - cairo=1.16.0=he1c11cd_1002
   - cctools=927.0.2=h5ba7a2e_4
-  - certifi=2019.11.28=py37_0
+  - certifi=2019.11.28=py37hc8dfbb8_1
   - cffi=1.13.2=py37h33e799b_0
   - chardet=3.0.4=py37_1003
   - clang=9.0.1=default_hf57f61e_0
@@ -145,7 +145,7 @@ dependencies:
   - numba=0.48.0=py37h4f17bb1_0
   - numpy=1.18.1=py37hde6bac1_0
   - openjpeg=2.3.1=hcdae239_3
-  - openssl=1.1.1d=h0b31af3_0
+  - openssl=1.1.1f=h0b31af3_0
   - packaging=20.1=py_0
   - pandas=1.0.1=py37h4f17bb1_0
   - pandoc=2.9.2=0
@@ -185,6 +185,7 @@ dependencies:
   - python=3.7.6=h5c2c468_2
   - python-dateutil=2.8.1=py_0
   - python-irodsclient=0.8.2=py_0
+  - python_abi=3.7=1_cp37m
   - pytz=2019.3=py_0
   - pyzmq=18.1.1=py37h4bf09a9_0
   - qt=5.12.5=h1b46049_0
@@ -202,6 +203,7 @@ dependencies:
   - r-clipr=0.4.1=r351hf348343_0
   - r-colorspace=1.4_1=r35h159158b_1
   - r-crayon=1.3.4=r351hf348343_0
+  - r-crosstalk=1.0.0=r35h6115d3f_1002
   - r-curl=3.2=r351h6402f54_0
   - r-data.table=1.12.8=r35h17f1fa6_0
   - r-dbi=1.0.0=r351hf348343_0
@@ -226,10 +228,13 @@ dependencies:
   - r-highr=0.7=r351hf348343_0
   - r-hms=0.4.2=r351hf348343_0
   - r-htmltools=0.3.6=r351h32998d9_0
+  - r-htmlwidgets=1.5.1=r35h6115d3f_0
+  - r-httpuv=1.5.2=r35hf99fc2c_1
   - r-httr=1.3.1=r351hf348343_0
   - r-jsonlite=1.5=r351h6402f54_0
   - r-knitr=1.20=r351hf348343_0
   - r-labeling=0.3=r351hf348343_4
+  - r-later=1.0.0=r35hc5da6b9_0
   - r-latex2exp=0.4.0=r35h6115d3f_1002
   - r-lattice=0.20_35=r351h6402f54_0
   - r-lazyeval=0.2.2=r35h159158b_1
@@ -249,11 +254,13 @@ dependencies:
   - r-pillar=1.4.3=r35h6115d3f_0
   - r-pkgconfig=2.0.3=r35h6115d3f_0
   - r-plogr=0.2.0=r351hf348343_0
+  - r-plotly=4.8.0=r351h6115d3f_0
   - r-plyr=1.8.4=r351h32998d9_0
   - r-polynom=1.4_0=r35h6115d3f_1
   - r-prettyunits=1.0.2=r351hf348343_0
   - r-processx=3.4.2=r35h17f1fa6_0
   - r-progress=1.2.2=r35h6115d3f_1
+  - r-promises=1.1.0=r35hc5da6b9_0
   - r-ps=1.3.2=r35h17f1fa6_0
   - r-purrr=0.3.3=r35h17f1fa6_0
   - r-r6=2.2.2=r351hf348343_0
@@ -271,7 +278,10 @@ dependencies:
   - r-rvest=0.3.2=r351hf348343_0
   - r-scales=1.1.0=r35h6115d3f_0
   - r-selectr=0.4_1=r351hf348343_0
+  - r-shiny=1.2.0=r351_0
+  - r-sourcetools=0.1.7=r35h6de7cb9_1001
   - r-splus2r=1.2_2=r35h85e41a7_1004
+  - r-stargazer=5.2.2=r35h6115d3f_1
   - r-stringi=1.4.5=r35h3211bb2_0
   - r-stringr=1.3.1=r351hf348343_0
   - r-sys=3.3=r35h159158b_0
@@ -287,6 +297,7 @@ dependencies:
   - r-withr=2.1.2=r351hf348343_0
   - r-xfun=0.3=r351hf348343_0
   - r-xml2=1.2.0=r351h32998d9_0
+  - r-xtable=1.8_2=r351hf348343_0
   - r-xts=0.12_0=r35h17f1fa6_0
   - r-yaml=2.2.0=r351h6402f54_0
   - r-zeallot=0.1.0=r351h6115d3f_0

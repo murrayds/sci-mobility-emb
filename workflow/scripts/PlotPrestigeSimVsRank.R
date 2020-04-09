@@ -82,38 +82,50 @@ sims <- sims %>%
   mutate(included = ifelse(rank <= opt$norgs | rank >= max(rank) - opt$norgs,
                            "included", "not"))
 
+max_val <- max(sims$rank)
+
+sims <- sims %>%
+  mutate(
+    rank = max_val - rank,
+    sim_rank = max_val - sim_rank
+  )
+
 # Define which organizations will be labeled
 labels <- sims %>%
-  mutate(diff = abs(sim_rank - rank)) %>%
+  mutate(
+    diff = abs(sim_rank - rank)
+  ) %>%
   filter(rank < 130 & sim_rank < 130) %>%
   top_n(10, diff) %>%
   # Wrap the text when its too long
   mutate(
     label = gsub('University', 'Univ', full_name),
     label = gsub('(.{1,24})(\\s|$)', '\\1\n', label),
-    label = trimws(label)
+    label = trimws(label),
+    #rank = max_val - rank
   )
 
 # Get the spearman correlation between the SemAxis-derived ranking
 # and the formal univeristy ranking. The estimate will be shown
 # on the plot
 cor <- cor.test( ~ sim_rank + rank,
-                data=sims,
+                data = sims,
                 method = "spearman",
                 continuity = FALSE,
                 conf.level = 0.95)
 
-max_val <- max(sims$rank)
+print(min(sims$sim_rank))
+print(max_val)
 
 # Build the plot
 plot <- sims %>%
   ggplot(aes(x = sim_rank, y = rank, shape = included)) +
   geom_rect(
-            xmin = 0, xmax = opt$norgs, ymin = 0, ymax = opt$norgs,
+            xmin = 1, xmax = max_val, ymin = 1, ymax = opt$norgs,
             fill = "lightgrey"
           ) +
   geom_rect(
-            xmin = max_val - opt$norgs, xmax = max_val,
+            xmin = 1, xmax = max_val,
             ymin = max_val - opt$norgs, ymax = max_val,
             fill = "lightgrey"
           ) +
@@ -127,8 +139,19 @@ plot <- sims %>%
     aes(label = label),
     size = 3.5) +
   # Add a fake top axis title, just to ensure that its the same size as the 2d fig
-  scale_x_continuous(limits = c(0, max_val), sec.axis = dup_axis(name = "")) +
-  scale_y_continuous(limits = c(0, max_val)) +
+  scale_x_continuous(
+    limits = c(0, max_val + 1),
+    breaks = c(1, 50, 100, max_val),
+    labels = c(as.character(max_val), "100", "50", "1"),
+    sec.axis = dup_axis(name = ""),
+    expand = c(0, 1)
+  ) +
+  scale_y_continuous(
+    limits = c(0, max_val + 1),
+    breaks = c(1, 50, 100, max_val),
+    labels = c(as.character(max_val), "100", "50", "1"),
+    expand = c(0, 1)
+  ) +
   scale_shape_manual(values = c(1, 16)) +
   guides(shape = F) +
   theme_minimal() +
@@ -139,7 +162,7 @@ plot <- sims %>%
     panel.grid.minor = element_blank(),
   ) +
   # Add the Spearman's Rho to the plot
-  annotate("text", x = 20, y = 145,
+  annotate("text", x = 25, y = 140,
            label = paste("PCC = ", round(cor$estimate, 2)),
            size = 7,
            fontface = 2) +

@@ -131,13 +131,14 @@ rule plot_2d_semaxis_projection_by_sector:
         lookup = rules.add_state_to_lookup.output
     params:
         types = ORG_TYPES,
+        exclude = ORGS_TO_EXCLUDE,
         labels = ORG_SHORT_LABELS
     output: SEMAXIS_2D_COASTS_PRESTIGE_SECTOR_PLOT
     shell:
         "Rscript scripts/Plot2DSemAxis.R --axis1 {input.axis1} --axis2 {input.axis2} \
         --output {output} \
         --lookup {input.lookup} --labels {params.labels} --types {params.types} \
-        --sector {wildcards.sector}"
+        --sector {wildcards.sector} --exclude {params.exclude}"
 
 rule plot_2d_semaxis_overall_projection:
     input:

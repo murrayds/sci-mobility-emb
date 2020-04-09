@@ -161,3 +161,12 @@ rule build_aggregate_org_distances:
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
                  --pprcos {input.pprcos} --pprjsd {input.pprjsd} \
                  --orgs {input.orgs} --out {output}"
+
+###############################################################################
+# MISC
+###############################################################################
+rule tabulate_org_shortlabels:
+    input: ORG_SHORT_LABELS
+    output: ORG_LABEL_TABLE
+    shell:
+        "Rscript scripts/TabulateOrgShortLabels.R --labels {input} --output {output}"
