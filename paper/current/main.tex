@@ -204,7 +204,7 @@ Geographic distance alone is a poor perspective for understanding international 
 Why does the word embedding model, originally designed for natural language processing, produce a reasonable distance that models gravity relationships between organizations?
 We find evidence of a theoretical connection between the two models, one that makes the skip-gram model applicable to embedding many forms of mobility trajectories.
 
-Let $T_{ij}$ represents the total \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
+Let $T_{ij}$ represents the \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
 
 \begin{equation}
     \label{eq:gravity_model}
@@ -279,7 +279,7 @@ Where $|D|$ and $k$ are constants, such that the functional form can be re-writt
      \frac{\#(w_i, w_j)}{\#(w_i) \#(w_j)}  \propto  \exp(v_{w_i} \cdot v_{w_j} )
 \end{equation}
 
-Combining Eq.~\ref{eq:approxi_mass_term}, we have
+In or model, $\#(w_i)$ and $\#(w_j)$ are total flux $M_i$ and $M_j$ respectively,  and $\#(w_i,w_j)$ is just  $T_{ij}$, flux between i and j. Then, we have same expression with gravity model,
 
 \begin{equation}
     \label{eq:sgns_relation_w,i, w_j_combining}
