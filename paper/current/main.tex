@@ -1,4 +1,4 @@
-\documentclass[12pt]{article} %{{{
+	\documentclass[12pt]{article} %{{{
 
 
 % Text
@@ -222,59 +222,16 @@ Let's denote $N$ as set of organizations in the data.
 Then, the total flux to or from $i$ can be written as
 
 \begin{equation}
+	\label{eq:approxi_mass_term}
     \mu_{i} = \sum_{k \in N} T_{ik} \propto M_i
 \end{equation}
 
-with the hypothesis that a similar fraction of the scholars are mobile in each organization. It can be checked in Fig.~\ref{fig:math_part}a. Then, our gravity model can be written with only terms from mobility data,
-
+Then, we can rewrite the \ref{eq:gravity_model},
 \begin{equation}
-    \label{eq:gravity_model_approx}
-    \frac{T_{ij}}{\mu_i  \mu_j} \propto \exp(\cos(v_i,v_j))
+   \frac{T_{ij}}{\mu_{i} \mu_{j}} \propto \exp(\cos(v_i,v_j))
 \end{equation}
 
-The embedding that best represents the data should closely approximate the true conditional probability defined in
-Eq.~\ref{eq:flux_conditional_prob},
 
-\begin{equation}
-    \label{eq:flux_conditional_prob}
-    p(j|i) = \frac{T_{ij}}{\mu_i}
-\end{equation}
-
-We can then rewrite Eq.~\ref{eq:gravity_model_approx} as,
-
-\begin{equation}
-    \label{eq:gravity_relationship}
-    \frac{T_{ij}}{\mu_i  \mu_j} = \frac{\mu_i  p(j|i)}{\mu_i\mu_j} =  \frac{p(j|i)}{\mu_j} \propto \exp(\cos(v_i,v_j))
-\end{equation}
-
-Then, the word embedding model will learns vectors under the condition,
-
-\begin{equation}
-    \label{eq:conditional probability}
-      p(j|i) \propto {\mu_j} \exp(\cos(v_i,v_j))
-\end{equation}
-
-which is restricted to, sum of the conditional probability should be one,
-
-\begin{equation}
-    \label{eq:sum of the conditional probabiitliy}
-    \sum_{j \in N} p(j|i) = 1
-\end{equation}
-
-Then, we can write $p(j|i)$ with $\mu_{j}$
-
-\begin{equation}
-    p(j|i) \propto \frac{{\mu_j}\exp(\cos(v_i,v_j)}{\sum_{k \in N} {\mu_k}\exp(\cos(v_i,v_k))}
-\end{equation}
-
-And, if we remove ${\mu_*}$ for simplicity (or for the special case with $\mu_{i} = \mu_{j} = \mu_*$), then $p(j|i)$ can be written as,
-
-\begin{equation}
-    \label{eq:real_embedding_relationship}
-    p(j|i) \propto \frac{\exp(\cos(v_j, v_i))}{\sum_{k \in N} \exp(\cos(v_k,v_i))}
-\end{equation}
-
-We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good approximation functional form of is $p(i|j)$ in Fig.~\ref{fig:math_part}b, as high values of flow correspond to high Eq.\ref{eq:real_embedding_relationship} values.
 
 %
 % Figure - Conditional Probability
@@ -288,7 +245,7 @@ We can check the evidence that Eq.\ref{eq:real_embedding_relationship} is a good
     \label{fig:math_part}
 \end{figure}
 
-This finding relates to the objective function of the neural embedding model. The model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
+This mathematical form relates to the objective function of the neural embedding model. The model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
 
 \begin{equation}
     \label{eq:skipgram_log_prob_condensed}
@@ -302,9 +259,35 @@ where the conditional probability of observing one word, $w_{0}$, given another,
     p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_I})},
 \end{equation}
 
-where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary. With facts that the cosine similarity of in-vectors is used as a measure of affinity in general, Eq. \ref{eq:skipgram_conditional_expanded} and Eq. \ref{eq:real_embedding_relationship} share a similar functional form, or exact same if vectors are normalized.
+where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary.  We use Skip-gram negative sampling, and following the work by Levy and Goldberg, it is implicitly factorizing 
 
-Hence, the neural embedding model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility.
+\begin{equation}
+    \label{eq:sgns_relation}
+    \log \left(\frac{\#(w,c) |D|}{\#(w) \#(c)} \right) - \log k
+\end{equation}
+where $\#(w)\text{,} \#(w) \text{ and } \#(c)$ denote the number of times word w, c and word-context-pair (w,c) in the corpus respectively. $k$ is the number of negative samples and $|D|$ is the size of the corpus. Eq. \ref{eq:sgns_relation} is symmetry matrix, result vector representation  $v_w$ and $v'_w$ are identical. With these relations, for a specific pair of words $(w_i, w_j)$,
+
+\begin{equation}
+    \label{eq:sgns_relation_w,i, w_j}
+    v_{w_i} \cdot v_{w_j} =  \log \left(\frac{\#(w_i, w_j) |D|}{\#(w_i) \#(w_j)} \right) - \log k
+\end{equation}
+
+$|D|$ and k is constant, then it can be rewritten as
+
+\begin{equation}
+    \label{eq:sgns_relation_w,i, w_j}
+     \frac{\#(w_i, w_j)}{\#(w_i) \#(w_j)}  \propto  \exp(v_{w_i} \cdot v_{w_j} )
+\end{equation}
+
+Combining Eq. \ref{eq:approxi_mass_term}, we have
+
+\begin{equation}
+    \label{eq:sgns_relation_w,i, w_j_combining}
+     \frac{T_{ij}}{\mu_{i} \mu_{j}}  \propto  \exp(v_{w_i} \cdot v_{w_j} )
+\end{equation}
+
+It is consistent with the finding on our model, we can say that there is a mathematical link between the neural embedding model and the gravity model. Hence, the neural embedding model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility.
+
 
 
 %
