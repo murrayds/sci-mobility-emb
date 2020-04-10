@@ -259,7 +259,7 @@ where the conditional probability of observing one word, $w_{0}$, given another,
     p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_I})},
 \end{equation}
 
-where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary.  We use Skip-gram negative sampling, and following the work by Levy and Goldberg, it is implicitly factorizing 
+where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary.  We use Skip-gram negative sampling, and following the work by Levy and Goldberg \cite{levy2014neural}, it is implicitly factorizing 
 
 \begin{equation}
     \label{eq:sgns_relation}
