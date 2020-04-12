@@ -204,31 +204,25 @@ Geographic distance alone is a poor perspective for understanding international 
 Why does the word embedding model, originally designed for natural language processing, produce a reasonable distance that models gravity relationships between organizations?
 We find evidence of a theoretical connection between the two models, one that makes the skip-gram model applicable to embedding many forms of mobility trajectories.
 
-Let $T_{ij}$ represents the \textbf{flux}, the number of people who moved between organizations $i$ and $j$. $M_{i}$ and $M_{j}$ represent the size of an organization. According to our gravity model on the embedding space,
+According to our observation on the embedding space,
 
 \begin{equation}
     \label{eq:gravity_model}
-    \frac{T_{ij}}{M_{i} M_{j}} \propto \exp(\cos(v_i,v_j))
+    \frac{T_{ij}}{M_{i} M_{j}} \propto -\exp(d_{ij}) = - \exp(1 - \cos(v_i,v_j)) \propto \exp(\cos(v_i,v_j)),
 \end{equation}
 
-where the cosine similarity between two vectors, $\cos(v_{i}, v_{j})$, is defined as,
+where $T_{ij}$ represents the \textbf{flux}, the number of people who moved between organizations $i$ and $j$,  $M_{i}$ and $M_{j}$ represent the size of an organization,  $d_{ij} = 1 - \cos(v_{i}, v_{j})$ is the embedding distance, and $\cos(v_{i}, v_{j})=\frac{v_{i} \cdot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$  is the cosine similarity between two vectors. In the case of scientific co-affiliation, we assume all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$. 
 
-\begin{equation}
-    \cos(v_i, v_j) = \frac{v_i \cdot v_j}{\Vert v_j \Vert \Vert v_i  \Vert}
-\end{equation}
 
-In the case of scientific co-affiliation, all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$.
-Let's denote $N$ as set of organizations in the data.
-Then, the total flux to or from $i$ can be written as
+To convert Eq. \ref{eq:gravity_model} to a flux-related term only, we replace  $M_*$ with $\mu_{i*}$, the total flux to or from $i$ which can be written as
 
 \begin{equation}
 	\label{eq:approxi_mass_term}
-    \mu_{i} = \sum_{k \in N} T_{ik} \propto M_i
+    \mu_{i} = \sum_{k \in N} T_{ik} \propto M_i,
 \end{equation}
-
-It can be checked in Fig.\ref{fig:math_part}. With this approximation, we can rewrite Eq.~\ref{eq:gravity_model} as,
+where $N$ as set of organizations in the data. It can be checked in Fig.\ref{fig:math_part}. With this approximation, we can rewrite Eq.~\ref{eq:gravity_model} as,
 \begin{equation}
-   \frac{T_{ij}}{\mu_{i} \mu_{j}} \propto \exp(\cos(v_i,v_j))
+   \frac{T_{ij}}{\mu_{i} \mu_{j}} \propto \exp(\cos(v_i,v_j)).
 \end{equation}
 
 
@@ -251,39 +245,41 @@ This mathematical form relates to the objective function of the neural embedding
     \frac{1}{T}\sum_{t=1}^{T} \sum_{-c \le j \le c, j \neq 0} \log p(w_{t+j}|w_t),
 \end{equation}
 
-where the conditional probability of observing one word, $w_{0}$, given another, $w_{1}$, is defined as,
+where the conditional probability of observing one word, $w_{O}$, given another, $w_{I}$, is defined as,
 
 \begin{equation}
     \label{eq:skipgram_conditional_expanded}
     p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_I})},
 \end{equation}
 
-where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary.  We use Skip-gram negative sampling, and following the work by Levy and Goldberg \cite{levy2014neural}, consider the model as implicitely performing matrix factorization as shown below,
+where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary.  We use Skip-gram negative sampling, and following the work by Levy and Goldberg \autocite{levy2014neural}, consider the model as implicitly performing matrix factorization as shown below,
 
 \begin{equation}
     \label{eq:sgns_relation}
-    \log \left(\frac{\#(w,c) |D|}{\#(w) \#(c)} \right) - \log k
+    \log \left(\frac{\#(w,c) |D|}{\#(w) \#(c)} \right) - \log k,
 \end{equation}
 
-where $\#(w)\text{, } \#(w) \text{ and } \#(c)$ denotes the number of times word $w$, $c$ and word-context-pair ($w$, $c$) in the corpus respectively. $k$ is the number of negative samples and $|D|$ is the size of the corpus. Eq. \ref{eq:sgns_relation} is symmetry matrix, result vector representation  $v_w$ and $v'_w$ are identical. With these relations, for a specific pair of words $(w_i, w_j)$,
+where $\#(w)\text{, } \#(c) \text{ and } \#(w, c)$ denotes the number of times word $w$, $c$, and word-context-pair ($w$, $c$) in the corpus respectively. Variable $k$ is the number of negative samples and $|D|$ is the size of the corpus.
+
+Mathematically, the maximization of the objective function of the model yields $V=L$ and $V'=R$ where L and R are the left and right singular vectors of the matrix Eq.\ref{eq:sgns_relation}, respectively. Note that $V=L=R=V'$ because Eq.\ref{eq:sgns_relation} is a real symmetric matrix. With these relations, for a specific pair of words $(w_i ,w_j )$,
 
 \begin{equation}
     \label{eq:sgns_relation_w,i, w_j}
-    v_{w_i} \cdot v_{w_j} =  \log \left(\frac{\#(w_i, w_j) |D|}{\#(w_i) \#(w_j)} \right) - \log k
+    v_{w_i} \cdot v_{w_j} =  \log \left(\frac{\#(w_i, w_j) |D|}{\#(w_i) \#(w_j)} \right) - \log k,
 \end{equation}
 
-Where $|D|$ and $k$ are constants, such that the functional form can be re-written as,
+where $|D|$ and $k$ are constants, such that the functional form can be re-written as,
 
 \begin{equation}
     \label{eq:sgns_relation_w,i, w_j}
-     \frac{\#(w_i, w_j)}{\#(w_i) \#(w_j)}  \propto  \exp(v_{w_i} \cdot v_{w_j} )
+     \frac{\#(w_i, w_j)}{\#(w_i) \#(w_j)}  \propto  \exp(v_{w_i} \cdot v_{w_j} ).
 \end{equation}
 
-In or model, $\#(w_i)$ and $\#(w_j)$ are total flux $M_i$ and $M_j$ respectively,  and $\#(w_i,w_j)$ is just  $T_{ij}$, flux between i and j. Then, we have same expression with gravity model,
+In our model, $\#(w_i)$ and $\#(w_j)$ are total flux $M_i$ and $M_j$ respectively,  and $\#(w_i,w_j)$ is just  $T_{ij}$, flux between $i$ and $j$. Then, we have the same expression with gravity model,
 
 \begin{equation}
     \label{eq:sgns_relation_w,i, w_j_combining}
-     \frac{T_{ij}}{\mu_{i} \mu_{j}}  \propto  \exp(v_{w_i} \cdot v_{w_j} )
+     \frac{T_{ij}}{\mu_{i} \mu_{j}}  \propto  \exp(v_{i} \cdot v_{j} ).
 \end{equation}
 
 This proportionality relationship is consistent with findings from our model, and so we can say that there is a mathematical link between the neural embedding model and the gravity model. Hence, the neural embedding model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility.
