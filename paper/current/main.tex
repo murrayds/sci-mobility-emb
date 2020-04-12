@@ -496,7 +496,7 @@ We also calculate two forms of distance between organizations.
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between organizations.
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations.
 When less than one kilometer, a distance of one is imputed.
-The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = 1 - \frac{v_{i} \dot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
+The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = 1 - \frac{v_{i} \cdot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
 
 %
 % SUBSECTION: GRAVITY LAW
