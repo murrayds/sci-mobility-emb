@@ -119,6 +119,7 @@ ORGS_TO_EXCLUDE = osjoin(ADDITIONAL_DATA_DIR, 'orgs_not_government.csv')
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dimensions}', 'data', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_data.csv')
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dimensions}', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', '{traj}', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
+DOT_COSINE_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Math', '{traj}', 'd{dimensions}', 'd{dimensions}_ws{window}_dot_cosine.pdf')
 PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', '{model}', 'd{dimensions}', '{distance}', '{traj}_{model}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
 PREDICTED_VS_ACTUAL_PLOT_FILT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', '{model}', 'filtered', 'd{dimensions}', '{distance}', '{traj}_{model}_{geo_constraint_filt}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
 PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'pubs_over_time_plot.pdf')
@@ -230,6 +231,10 @@ rule all:
                to_filter = TO_FILTER,
                distance = DISTANCE_PARAMS,
                geo_constraint = GEO_CONSTRAINTS,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(DOT_COSINE_RELATIONSHIP_PLOT,
+               traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
         expand(PREDICTED_VS_ACTUAL_PLOT,

@@ -171,6 +171,12 @@ rule build_aggregate_org_distances:
 ###############################################################################
 # MISC
 ###############################################################################
+rule plot_dot_cosine_relationship:
+    input: rules.build_aggregate_org_distances.output
+    output: DOT_COSINE_RELATIONSHIP_PLOT
+    shell:
+        "Rscript scripts/PlotDotCosineRelationship.R --input {input} --output {output}"
+
 rule tabulate_org_shortlabels:
     input: ORG_SHORT_LABELS
     output: ORG_LABEL_TABLE
