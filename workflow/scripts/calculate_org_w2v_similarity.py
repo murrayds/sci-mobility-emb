@@ -20,6 +20,8 @@ parser = argparse.ArgumentParser()
 # System arguments
 parser.add_argument("-mod", "--model", help = "Path to word2vec model",
                     type = str, required = True)
+parser.add_argument("--type", help = "Type of similarity, 'dot' or 'cos'",
+                    type = str, required = True)
 parser.add_argument("-o", "--output", help = "Output data path",
                     type = str, required = True)
 
@@ -33,10 +35,19 @@ vocab = model.wv.vocab
 
 # Construct the distnace matrix
 D = defaultdict(lambda: defaultdict(float))
-for word1, word2 in combinations(vocab, 2):
-    temp_sim = model.similarity(word1,word2)
-    D[word1][word2] = temp_sim
-    D[word2][word1] = temp_sim
+
+# There is some code repetition here, but its worth it to
+# not check the args.type every iteration of the loop
+if args.type == 'cos':
+    for word1, word2 in combinations(vocab, 2):
+        temp_sim = model.similarity(word1, word2)
+        D[word1][word2] = temp_sim
+        D[word2][word1] = temp_sim
+elif args.type == 'dot':
+    for word1, word2 in combinations(vocab, 2):
+        temp_sim = np.dot(model.wv[word1], model.wv[word2])
+        D[word1][word2] = temp_sim
+        D[word2][word1] = temp_sim
 
 # Convert distance matrix to a dataframe
 distance_df = pd.DataFrame(D)

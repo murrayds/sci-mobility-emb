@@ -74,7 +74,8 @@ if (opt$geo == "same-country") {
 
 # Reduce the size to save on memory
 dist <- dist %>%
-  select(geo_distance, emb_distance, pprcos_distance, pprjsd_distance, gravity)
+  select(geo_distance, emb_distance, dot_distance,
+         pprcos_distance, pprjsd_distance,  gravity)
 
 axislabel <- "DEFAULT"
 # Select the appropriate metric using the --distance command line argument
@@ -105,6 +106,12 @@ if (opt$distance == "geo") {
 
   # Provide axis label
   axislabel <- "PPR Jensen-Shannon"
+} else if (opt$distance == "dot") {
+  dist <- dist %>%
+    rename(distance = dot_distance)
+
+  # Provide axis label
+  axislabel <- "Dot product distance"
 }
 
 # Calculate the logged gravity and select only relevant columns
@@ -201,7 +208,7 @@ if (opt$showcoef) {
   plot <- plot +
     # Add the r-squared coefficient to the plot
     ggpmisc::stat_poly_eq(formula = y ~ x,
-                          geom = "text",
+                          geom = "text_npc",
                           aes(label = paste(..rr.label.., sep = "~~~")),
                           parse=TRUE,
                           label.x.npc = ifelse(grepl("ppr", opt$distance, fixed = TRUE), 0.25, 0.75),

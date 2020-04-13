@@ -132,12 +132,17 @@ rule calculate_org_geographic_distance:
 
 rule calculate_org_w2v_similarities:
     input: rules.train_word2vec_model.output
-    output: ORG_W2V_SIMILARITIES
+    output: ORG_W2V_COS_SIMS
     shell:
-        "python scripts/calculate_org_w2v_similarity.py --model {input} --output {output}"
+        "python scripts/calculate_org_w2v_similarity.py \
+        --model {input} --output {output} --type cos"
 
-
-
+rule calculate_org_w2v_dot:
+    input: rules.train_word2vec_model.output
+    output: ORG_W2V_DOT_SIMS
+    shell:
+        "python scripts/calculate_org_w2v_similarity.py \
+        --model {input} --output {output} --type dot"
 
 ###############################################################################
 # AGGREGATE DISTANCES
@@ -147,6 +152,7 @@ rule build_aggregate_org_distances:
            geo = ancient(rules.calculate_org_geographic_distance.output),
            emb = ancient(rules.calculate_org_w2v_similarities.output),
            orgs = ancient(rules.add_state_to_lookup.output),
+           dot = ancient(rules.calculate_org_w2v_dot.output),
            pprcos = ancient(ORG_PPR_COS_DISTANCE),
            pprjsd = ancient(ORG_PPR_JSD_DISTANCE)
     params:
@@ -159,7 +165,7 @@ rule build_aggregate_org_distances:
     shell:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
-                 --pprcos {input.pprcos} --pprjsd {input.pprjsd} \
+                 --pprcos {input.pprcos} --pprjsd {input.pprjsd} --dot {input.dot} \
                  --orgs {input.orgs} --out {output}"
 
 ###############################################################################
