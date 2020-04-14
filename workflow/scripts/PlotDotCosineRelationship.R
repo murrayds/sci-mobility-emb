@@ -114,7 +114,7 @@ plot <- dist %>%
     ) +
     # Add labels
     xlab("Embedding distance") +
-    ylab("Dot product distance")
+    ylab("Dot product similarity")
 
 p <- egg::set_panel_size(plot,
                          width  = unit(FIG_WIDTH, "in"),
