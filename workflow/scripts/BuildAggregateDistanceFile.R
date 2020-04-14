@@ -26,6 +26,8 @@ option_list = list(
               help="Path to file containing organization PPR distances"),
   make_option(c("--pprjsd"), action="store", default=NA, type='character',
               help="Path to file containing organization PPR distances"),
+  make_option(c("--dot"), action="store", default=NA, type='character',
+              help="Path to file containing organization dot product similarities"),
   make_option(c("-o", "--out"), action="store", default=NA, type='character',
               help="Path to save aggregated distance file")
 ) # end option_list
@@ -112,7 +114,7 @@ remove("geo1", "geo2", "geographic_distance")
 # EMBEDDING DISTANCES
 #
 
-# Merge embedding distances
+# Merge embedding distances, starting with cosine similarities
 emb1 <- distance_all %>%
   inner_join(embedding_similarities, by = c("org1" = "org1", "org2" = "org2"))
 
@@ -131,6 +133,21 @@ distance_all <- data.table::rbindlist(list(emb1, emb2)) %>%
 # remove the extra dataframes
 remove("emb1", "emb2", "embedding_similarities")
 
+# Now merge dot product similarities
+dot <- read_csv(opt$dot, col_types = cols()) %>%
+  select(org1, org2, similarity) %>%
+  rename(dot_distance = similarity)
+
+dot1 <- distance_all %>%
+  inner_join(dot, by = c("org1" = "org1", "org2" = "org2"))
+
+dot2 <- distance_all %>%
+  inner_join(dot, by = c("org2" = "org1", "org1" = "org2"))
+
+distance_all <- data.table::rbindlist(list(dot1, dot2)) %>%
+  distinct(org1, org2, .keep_all = TRUE)
+
+remove("dot", "dot1", "dot2")
 
 # PPR Cosine distnaces
 ppr <- read_csv(opt$pprcos, col_types = cols()) %>%
@@ -189,11 +206,11 @@ distance_all <- distance_all %>%
   # Select only relevant variables
   select(org1, org2, count,
          org1_size, org2_size,
-         geo_distance, emb_similarity, emb_distance,
+         geo_distance, emb_distance, dot_distance,
          pprcos_distance, pprjsd_distance, gravity,
          org1_city, org1_region, org1_country,
          org2_city, org2_region, org2_country
-         )
+  )
 
 
 # Write the output

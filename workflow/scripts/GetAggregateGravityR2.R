@@ -99,10 +99,10 @@ agg <- data.table::rbindlist(lapply(DISTANCE_FILES, function(path) {
   df1 <- get_correlations(distance_data)
   df1$metric = "geo"
 
-  # Rename emb_similarity to "distance", remove the old column
+  # Rename emb_distance to "distance", remove the old column
   distance_data <- distance_data %>%
-    mutate(distance = emb_similarity) %>%
-    select(-emb_similarity)
+    mutate(distance = emb_distance) %>%
+    select(-emb_distance)
 
   df2 <- get_correlations(distance_data)
   df2$metric = "emb"
