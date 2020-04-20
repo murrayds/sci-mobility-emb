@@ -214,7 +214,7 @@ According to our observation on the embedding space from Eq.\ref{eq:linear_flux_
 where $T_{ij}$ represents the \textbf{flux}, the number of people who moved between organizations $i$ and $j$,  $M_{i}$ and $M_{j}$ represent the size of an organization,  $d_{ij} = - v_{i}, v_{j}$ is the embedding distance.  In the case of scientific co-affiliation, we assume all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$. 
 
 
-To rewrite  Eq.\ref{eq:gravity_model} in terms of $T_{ij}$, we replace  $M_*$ with $\mu_{i*}$, the total flux to or from $i$ which can be written as
+To rewrite  Eq.\ref{eq:gravity_model} in terms of $T_{ij}$, we replace  $M_i$ with $\mu_{i}$, the total flux to or from $i$ which can be written as
 
 \begin{equation}
 	\label{eq:approxi_mass_term}
@@ -257,9 +257,7 @@ where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of ea
     A = \left(a_{ij}\right)_{W*W} = \log \left(\frac{N(i, j) |D|}{N(i) N(j)} \right) - \log k,
 \end{equation}
 
-where $N(i)\text{, } N(j) \text{ and } N(i,j)$ denotes the number of times word $i$, $j$, and word-context-pair ($i$, $j$) in the corpus respectively. Variable $k$ is the number of negative samples and $|D|$ is the size of the corpus.
-
-From Matrix Eq.\ref{eq:sgns_relation}, we can get embedding vector with rank-d approximation by SVD. The rank-d SVD factorize matrix A into product of three matrices  $L_d \Sigma R_d^T$, where $L_d$ and $R_d$ is $n \times d$ real matrices, and $\Sigma$ is    $d \times d$ diagonal matrix.
+where $N(i)\text{, } N(j) \text{ and } N(i,j)$ denotes the number of times word $i$, $j$, and word-context-pair ($i$, $j$) in the corpus respectively. Variable $k$ is the number of negative samples and $|D|$ is the size of the corpus. From Matrix Eq.\ref{eq:sgns_relation}, we can get embedding vector with rank-d approximation by SVD. The rank-d SVD factorize matrix A into product of three matrices  $L_d \Sigma R_d^T$, where $L_d$ and $R_d$ is $n \times d$ real matrices, and $\Sigma$ is    $d \times d$ diagonal matrix.
 
 Mathematically, the maximization of the objective function of the model yields $A_d = L_d \Sigma R_d^T$ such that $A_d = \arg \ \min_{Rank(A')=d} \Vert A' - A  \Vert$, which is the best approximate of the original matrix $A$. If we set, $V=L_d \Sigma$ and $V'=R_d$, then dot product between the rows of $V$ are equal to the dot products between rows of $A_d$ because $V$ is orthogonal real matrix  \autocite{levy2014neural}. With this relationship, we can rewrite the equation in terms of $V$.  For a specific word pair $(i,j)$,
 
