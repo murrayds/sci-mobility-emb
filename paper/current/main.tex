@@ -562,6 +562,59 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 \beginsupplement
 \section{Supporting Information}
 
+
+
+%
+%
+\paragraph*{S1 Text}
+\label{si:text:mobility_science}
+{\bf Mobility and science.}
+TODO: why is mobility important to science?
+
+
+%
+%
+\paragraph*{S1 Text}
+\label{si:text:mobility_models}
+{\bf Modeling scientific mobility.}
+There are many ways of modeling scientific mobility from bibliographic data, the first consideration being the unit of analysis. 
+Most studies of mobility have focused on \textit{country-level} mobility--the flows of researchers across nations~\autocite{sugimoto2017mostimpact, scellato2015migrant, robinson-garcia2018indicators, franzoni2012foreign-born}.
+Practically, country-level analyses benefit from higher reliability, such that such that idiosyncrasies and errors inherent to bibliographic databases are mitigated by this higher level of aggregation.
+Epistemically, country-level analysis is useful for national science governance who aim to understand the status of their country in the global landscape and make informed policy decisions. 
+Analyses at lower levels of analysis are far less common. 
+\textit{Regional}-level scientific mobility--the flow of researchers between regions or cities within or across countries, has been only minimally studied~\autocite{vaccario2019mobility}, possibly due to lack of reliable long-term data and lack of policy relevance to national-level lawmakers. 
+\textit{Organization}-level mobility has potential to inform institutional policy and for understand the composition of mobility within a single country or region, especially as it relates to organization performance, prestige, and inequality~\autocite{albarran2017topeconomic, deville2014career, morgan2018prestige, clauset2015hierarchy}.
+However, affiliation disambiguation and noise in bibliometric data has makes large-scale organization-level analysis challenging.
+Here, we learn neural-network embeddings of scientific mobility at the level of organizations using a curated bibliographic database.
+These embeddings are robust to noise, and so are capable of representing clear structure even amid issues with organizational disambiguation. 
+In doing so, embeddings also capture a more detailed understanding of mobility than has been previously studied. 
+
+Another consideration when analyzing scientific mobility are what kinds of mobility to study. 
+Typical understandings of mobility are directional, meaning that movement is always \textit{from} one place and \textit{to} another. 
+Scientific mobility, however, is more complicated.
+For example, scientists often hold multiple affiliations at a time~\autocite{markova2016synchronous}, listing them as co-affiliations on a single paper, or even choosing a subset of affiliations to use for multiple simultaneous projects~\autocite{robinson2019mobility}.
+Even clearly-directional migration to another institution is complex--researchers may continue to publish with an old affiliation for projects that began before their move, and they may maintain social and organizational links  to their old institution (e.g., collaborators, projects, graduate students) such that there is no clear breakage after migrating. 
+There are also a whole range of short-term scientific mobility, such as visiting scholarships and short-term visits that are only visible through intensive efforts such as manual extraction from CVs~\autocite{woolley2009cv, sandstrom2009cv, canibano2011temporary}.
+Here, we focus on more long-term mobility that can be derived from bibliographic data. 
+Due to the complexity of scientific mobility, we make the simplifying assumption that all scientific mobility is \textit{symmetric} or without direction such that any move from organization $A$ to organization $B$ is equivalent to a move from $B$ to $A$. 
+By assuming non-directional mobility, all mobility events are commensurate, meaning that they can be treated identically in our analysis--this allows us to represent the complexity of mobility without making decisions for individual researcher's about the directional of their mobility or which is their main affiliation.
+Moreover, this assumption has the practical advantage of matching the data format expected by the \textit{word2vec} model, as well as the theoretical advantage of adhering to the symmetricity assumption of the gravity model of mobility. 
+
+
+%
+% S1 TEXT
+\paragraph*{S1 Text}
+\label{si:text:mobility_traj}
+{\bf Building mobility trajectories.}
+
+
+
+
+For example, a researcher listing the set of affiliations $\{A, B, C\}$ on papers published in three different years will be considered two distinct instances of mobility, ${A \leftrightarrow B}$ and ${B \leftrightarrow C}$, where ${A \leftrightarrow B} = {B \leftrightarrow A}$ and  ${B \leftrightarrow C} = {C \leftrightarrow B}$. 
+
+
+
+
 %
 % S1 TEXT
 \paragraph*{S1 Text}
