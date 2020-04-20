@@ -152,7 +152,7 @@ We adopt the Gravity Model of mobility~\autocite{zipf1946gravity, barbosa2018hum
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij})
 \end{equation}
 
-Where the \textit{expected flux}, $\hat{T_{ij}}$, or expected number of authors co-affiliated with a pair organizations during the time period is proportional to the organization's sizes, $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
+Where the \textit{expected flux}, $\hat{T_{ij}}$, or expected number of authors co-affiliated with a pair organizations during the time period is proportional to the organization's sizes (both mobile and non-mobile researchers, see Data and Methods), $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
 We consider two distances, the geographic distance between the organizations as a baseline, and the \textit{embedding distance} defined as the cosine distance between the organization's vector in the trained embedding space.
 We argue that the performance of a distance measure can be observed from their ability to explain expected mobility between organizations and to make predictions using the gravity model.
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
@@ -377,7 +377,7 @@ Universities hiring and mobility networks are known to exhbit latent pretige hie
 Accordingly, prestigious universities such as Stanford, Colombia, MIT, Harvard, and NYU, group towards the top of the axis.
 Universities at the bottom of this axis tend to be regional universities with lower national profiles.
 By considering mobility between all organization types, organization embeddings offer a new means of reasoning about the prestige of organizations typically excluded from rankings such as government organizatioss (Fig.~\ref{fig:supp:semaxis_sectors}a), research institutes (Fig.~\ref{fig:supp:semaxis_sectors}b), and teaching colleges (Fig.~\ref{fig:supp:semaxis_sectors}c)
-
+\ref{fig:supp:sem
 %
 % Figure - SemAxis results
 %
@@ -1062,7 +1062,7 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		Nodes are colored by the country of the organization. 
 		Nodes are positioned using the force atlas layout algorithm. 
 	}
-	\label{fig:supp:proj_newyork}
+	\label{fig:supp:network_vis}
 \end{figure}
 
 
@@ -1198,7 +1198,7 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		Grey points correspond to all U.S. universities.
 	    	Full organization names listed in Table~\ref{table:supp:orglabels}.
 	}
-	\label{fig:supp:network_vis}
+	\label{fig:supp:semaxis_sectors}
 \end{figure}
 
 
