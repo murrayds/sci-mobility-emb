@@ -110,14 +110,13 @@ With this approach, we can learn scalable, dense, and meaningful vector represen
 When scientists move, they bring their knowledge with them, and so understanding the flows of scientists allows us to understand the flow of knowledge around the world. 
 However, given its complexity~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}, new approaches are needed to make sense of landscape of global scientific mobility. 
 A basic component of mobility is distance--people are more likely to move nearby than to cross continents.
-Although many alternative ways to quantify the distance~\autocite{boschma2005proximity} exist, geographic distance remains an unambiguous and foundational quantity for the distance.
+Although many alternative ways to quantify the distance exist~\autocite{boschma2005proximity}, geographic distance remains the unambiguous and foundational quantity.
 In turn, models of human mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation models ~\autocite{simini2012universal}, rely almost exclusively on geographic distance.
 However, distance is not always so straightforward as simple geography. 
-Geographic distance fails to capture the host of historical, linguistic, cultural, and cognitive distance that also drive mobility. 
+Geographic distance alone fails to capture the host of historical, linguistic, cultural, and cognitive distances that also drive mobility. 
 For instance, Australia may be physically close to Indonesia, but in terms of language, history, and shared culture, they are essentially neighbors to the United Kingdom.
 Then, how can we quantify meaningful, useful distance between institutions, cities, and countries?
 
-Here, we propose a neural embedding model as an efficient means of encoding an effective measure of distance using large-scale data on mobility trajectories.
 It has been demonstrated that the neural embedding model preserves semantic relationships between words in a dense, continuous and meaningful low-dimensional vector representation~\autocite{mikolov2013word2vec}, and has been applied to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
 In addition to encoding latent structure, this approach is computationally efficient, scalable for large datasets, robust to noise, and allows for a range of unique analyses that leverage their semantic properties using simple vector arithmetic.
 
@@ -135,9 +134,10 @@ In the resulting embedding, each organization corresponds to a vector, and the \
         \textbf{Co-affiliation trajectories represented as sentences}
         \textbf{a.}
         An author published five papers across five time periods, with only one affiliation listed in the byline of each paper.
-        To each organization, a unique identifier is assigned, and they are assembled into a mobility sentence.
+        To each organization, a unique identifier is assigned, and they are assembled into a mobility sentence ordered by year of publication.
         \textbf{b.}
-        In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. Here, organization ids are still ordered by year, however order within a single year is random.
+        In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. 
+        In the case where multiple organizations are listed within the same year, then organization IDs within a single year are randomized across each training iteration or "epoch" of the \textit{word2vec} model. 
     }
     \label{fig:methods:mobility_sentence}
 \end{figure}
@@ -440,7 +440,7 @@ This yields 33,934,672 author-affiliation combinations representing 12,963,792 a
 Each author-affiliation combination is associated with the publication year and an ID linking it to one of 8,661 a dismabiguated organizational affiliation (see supporting materials for more detail)
 Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year.
 
-Scientific mobility is complex and can be defined in many possible ways~\autocite{robinson2019mobility}.
+Scientific mobility is complex and can be defined in many possible ways~\autocite{robinson2019mobility} and at multiple levels of analysis.
 Here, authors are classified as mobile when they have at least two distinct organization ids in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
 Under this definition, mobile authors constitute 3,007,192 or 23.2 percent of all authors, and 17,700,095 author-affiliation combinations.
 Mobile authors were associated with, on average, 2.5 distinct organizational affiliations.
