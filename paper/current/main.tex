@@ -114,7 +114,7 @@ Although many alternative ways to quantify the distance exist~\autocite{boschma2
 In turn, models of human mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation models ~\autocite{simini2012universal}, rely almost exclusively on geographic distance.
 However, distance is not always so straightforward as simple geography. 
 Geographic distance alone fails to capture the host of historical, linguistic, cultural, and cognitive distances that also drive mobility. 
-For instance, Australia may be physically close to Indonesia, but in terms of language, history, and shared culture, they are essentially neighbors to the United Kingdom.
+For instance, Australia may be physically close to Indonesia, but in terms of shared language, history, and culture, they are essentially neighbors to the United Kingdom.
 Then, how can we quantify meaningful, useful distance between institutions, cities, and countries?
 
 Here, we propose a neural embedding model as an efficient means of encoding an effective measure of distance using large-scale data on mobility trajectories, one that encodes complex latent structure.
@@ -138,7 +138,7 @@ In the resulting embedding, each organization corresponds to a vector, and the \
         To each organization, a unique identifier is assigned, and they are assembled into a mobility sentence ordered by year of publication.
         \textbf{b.}
         In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. 
-        In the case where multiple organizations are listed within the same year, then organization IDs within a single year are randomized across each training iteration or "epoch" of the \textit{word2vec} model. 
+        In the case where multiple organizations are listed within the same year, then organization IDs within a single year are randomized across each training iteration or "epoch" of the \textit{word2vec} model (for more detail, see Supporting Materials). 
     }
     \label{fig:methods:mobility_sentence}
 \end{figure}
@@ -586,6 +586,7 @@ Understanding the structure and dynamics of mobility is thus essential for under
 \paragraph*{S2Text}
 \label{si:text:mobility_models}
 {\bf Modeling scientific mobility.}
+
 There are many ways of modeling scientific mobility from bibliographic data, the first consideration being the unit of analysis. 
 Most studies of mobility have focused on \textit{country-level} mobility--the flows of researchers across nations~\autocite{sugimoto2017mostimpact, scellato2015migrant, robinson-garcia2018indicators, franzoni2012foreign-born}.
 Practically, country-level analyses benefit from higher reliability, such that such that idiosyncrasies and errors inherent to bibliographic databases are mitigated by this higher level of aggregation.
