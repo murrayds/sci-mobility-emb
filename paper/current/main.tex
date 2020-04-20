@@ -291,7 +291,7 @@ This proportionality relationship is consistent with findings from our model, an
 Given that embeddings capture effective distance between organizations, we can now examine the global structure of scientific mobility.
 Because the embeddings are defined in a high-dimensional space, we apply a widely-used dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) to visualize the overall structure (Fig.~\ref{fig:projection}a).
 Globally, the effect of geography is conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors. 
-At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions.
+At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than altenrative network visualizations (Fig.~\ref{fig:supp:network_vis}). 
 
 By learning and leveraging the embedding space, these complex national and regional relationships can be quantified and visualized.  
 For example, by re-projecting or \textit{zooming into} organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries from majority-Muslim countries in the Middle East to South Asian countries of Pakistan, Bangladesh, and Indonesia, and finally towards Southeast-Asian nations with different religious majorities such as Vietnam, the Philippines, and Thailand.
@@ -876,8 +876,27 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		All variants perform worse on different-country pairs on organizations.
 		Larger embeddings outperform mid-size embeddings for the different-country case.
 	}
+	\label{fig:supp:cosdot}
+\end{figure}
+
+
+%
+% Figure - Dot product and cosine similarity
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/d300_ws1_dot_cosine.pdf}
+	\caption{
+		\textbf{Cosine distance is correlated with dot product similarity.}
+		Calculated as the pairwise cosine distance (x-axis) and dot product similarity (y-axis) between organizational vectors. 
+		The two quantities are correlated with $R^{2} = 0.73$. 
+		Color indicates frequency of organizations in hex bin. 
+		Black dots are the mean dot product similarity for binned sets of embedding similarity and error bars correspond to 95\textsc{th} percentile confidence intervals. 
+		Red line is line of best fit.
+	}
 	\label{fig:supp:hyperparams}
 \end{figure}
+
 
 
 %
@@ -959,6 +978,31 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 \end{figure}
 
 
+
+%
+% Figure - Dot product distance
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_dot.pdf}
+	\caption{
+		\textbf{Personalized page rank with cosine distance.}
+		Performance of dot product similarities in explaining and predicting mobility.
+		Similarity scores are calculated as the pairwise dot product between organizational vectors. 
+		Dot product similarity performs better than geographic distance, though worse than cosine similarity in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
+		Red line is line of best fit.
+		Black dots are mean flux across binned distances.
+		Color indicates frequency of organization pairs within each hex bin.
+		Similarly, PPR distance performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+	}
+	\label{fig:supp:gravity_dot}
+\end{figure}
+
+
+
+
 %
 % Figure - PPR with COSINE DISTANCE gravity model and predictions
 %
@@ -1003,6 +1047,24 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 	}
 	\label{fig:supp:gravity_pprjsd}
 \end{figure}
+
+
+%
+% Figure - Global Network Projection
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Projection/co_occur_with_label.pdf}
+	\caption{
+		\textbf{Visualization of global mobility network.}
+		The network demonstrates country-level structure, but not at the detail or the extent of the global UMAP projection (Fig.~\ref{fig:projection}a). 
+		Each node corresponds to an organization, whereas  weighted edges (not shown) correspond to the flow of mobile researchers between the two organization.
+		Nodes are colored by the country of the organization. 
+		Nodes are positioned using the force atlas layout algorithm. 
+	}
+	\label{fig:supp:proj_newyork}
+\end{figure}
+
 
 
 %
@@ -1136,7 +1198,7 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		Grey points correspond to all U.S. universities.
 	    	Full organization names listed in Table~\ref{table:supp:orglabels}.
 	}
-	\label{fig:supp:semaxis_sectors}
+	\label{fig:supp:network_vis}
 \end{figure}
 
 
