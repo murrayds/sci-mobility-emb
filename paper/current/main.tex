@@ -166,6 +166,7 @@ The effective distance estimated by our embedding model explains and predicts sc
 The amount of variance explained by embedding distance ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) is more than twice that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
 This pattern holds for the variance of only domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig.~\ref{fig:supp:gravity_correlation}d).
 After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c--d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e--f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g--h).
+We also examine gravity model with dot product in the embedding space, the amount of variance explain ($R^{2} = 0.34$) by dot product outperforms that of geographic distance .
 Similarly, embedding distance outperforms ``diffusion''  distances such as those derived from calculating personalized-page rank scores (see supporting materials) on the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
 Geographic distance alone is a poor perspective for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flux between organizations.
 
@@ -202,15 +203,15 @@ Geographic distance alone is a poor perspective for understanding international 
 \subsection*{Mathematical connection between gravity model and neural embedding }
 
 Why does the word embedding model, originally designed for natural language processing, produce a reasonable distance that models gravity relationships between organizations?
-We find evidence of a theoretical connection between the two models, one that makes the neural embedding model applicable to embedding many forms of mobility trajectories.
+We find evidence of a theoretical connection between the two models, one that makes the neural embedding model applicable to embedding many forms of mobility trajectories. For this section, we relax the cosine similarity as a dot product for simplicity.
 
 According to our observation on the embedding space from Eq.\ref{eq:linear_flux_emb},
 
 \begin{equation}
     \label{eq:gravity_model}
-    \frac{T_{ij}}{M_{i} M_{j}} \propto \exp(-d_{ij}) = - \exp(- (1 - \cos(v_i,v_j))) \propto \exp(\cos(v_i,v_j)),
+    \frac{T_{ij}}{M_{i} M_{j}} \propto \exp(-d_{ij}) =  \exp(- (-v_i \cdot v_j) \propto \exp(v_i \cdot v_j) 
 \end{equation}
-where $T_{ij}$ represents the \textbf{flux}, the number of people who moved between organizations $i$ and $j$,  $M_{i}$ and $M_{j}$ represent the size of an organization,  $d_{ij} = 1 - \cos(v_{i}, v_{j})$ is the embedding distance, and $\cos(v_{i}, v_{j})=\frac{v_{i} \cdot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$  is the cosine similarity between two vectors. In the case of scientific co-affiliation, we assume all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$. 
+where $T_{ij}$ represents the \textbf{flux}, the number of people who moved between organizations $i$ and $j$,  $M_{i}$ and $M_{j}$ represent the size of an organization,  $d_{ij} = - v_{i}, v_{j}$ is the embedding distance.  In the case of scientific co-affiliation, we assume all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$. 
 
 
 To rewrite  Eq.\ref{eq:gravity_model} in terms of $T_{ij}$, we replace  $M_*$ with $\mu_{i*}$, the total flux to or from $i$ which can be written as
@@ -221,7 +222,7 @@ To rewrite  Eq.\ref{eq:gravity_model} in terms of $T_{ij}$, we replace  $M_*$ wi
 \end{equation}
 where $N$ as set of organizations in the data. It can be checked in Fig.\ref{fig:math_part}. With this approximation, we can rewrite Eq.~\ref{eq:gravity_model} as,
 \begin{equation}
-   \frac{T_{ij}}{\mu_{i} \mu_{j}} \propto \exp(\cos(v_i,v_j)).
+   \frac{T_{ij}}{\mu_{i} \mu_{j}} \propto \exp(v_i,v_j).
 \end{equation}
 
 
@@ -258,8 +259,9 @@ where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of ea
 
 where $N(i)\text{, } N(j) \text{ and } N(i,j)$ denotes the number of times word $i$, $j$, and word-context-pair ($i$, $j$) in the corpus respectively. Variable $k$ is the number of negative samples and $|D|$ is the size of the corpus.
 
-From Matrix Eq.\ref{eq:sgns_relation}, we can get embedding vector with rank-d approximation by SVD, $A=L_d \Sigma_d R_d$.
-Mathematically, the maximization of the objective function of the model yields $V=L_d \sqrt{\Sigma_d}$ and $V'=\sqrt{\Sigma_d}R_d$ where L and R are the left and right singular vectors of the matrix Eq.\ref{eq:sgns_relation}, respectively. Note that $V=L_d \sqrt{\Sigma_d}=\sqrt{\Sigma_d}R_d=V'$ because Eq.\ref{eq:sgns_relation} is a real symmetric matrix. With these relations, for a specific pair of words $(i ,j )$,
+From Matrix Eq.\ref{eq:sgns_relation}, we can get embedding vector with rank-d approximation by SVD. The rank-d SVD factorize matrix A into product of three matrices  $L_d \Sigma R_d^T$, where $L_d$ and $R_d$ is $n \times d$ real matrices, and $\Sigma$ is    $d \times d$ diagonal matrix.
+
+Mathematically, the maximization of the objective function of the model yields $A_d = L_d \Sigma R_d^T$ such that $A_d = \arg \ \min_{Rank(A')=d} \Vert A' - A  \Vert$, which is the best approximate of the original matrix $A$. If we set, $V=L_d \Sigma$ and $V'=R_d$, then dot product between the rows of $V$ are equal to the dot products between rows of $A_d$ because $V$ is orthogonal real matrix  \autocite{levy2014neural}. With this relationship, we can rewrite the equation in terms of $V$.  For a specific word pair $(i,j)$,
 
 \begin{equation}
     \label{eq:sgns_relation_w,i, w_j}
@@ -479,6 +481,9 @@ We visualize embeddings by projecting into two dimensions using UMAP~\autocite{m
 Results are reported for embeddings with a dimensionality of 300 and a window size of one, which were the parameters that produced  that best explained the flux between organizations (Fig. SI~\ref{fig:supp:hyperparams}).
 We note that this performance and the outcomes of analysis was robust to hyperparemeters settings.
 
+In embedding space, we can consider two proximity measures: cosine similarity and dot product. Cosine similarity only consider about angle difference of two embedding vectors, while dot product cares about angle and magnitude at the same time. If vectors are normalized, they are the same. In general, which measure is good depends on the task. If the task is desirable to ignore the magnitude, then cosine similarity is better, otherwise, the dot product is better.
+
+
 
 %
 % SUBSECTION: DISTANCE
@@ -493,7 +498,8 @@ We also calculate two forms of distance between organizations.
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between organizations.
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations.
 When less than one kilometer, a distance of one is imputed.
-The embedding distance, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = 1 - \frac{v_{i} \cdot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
+The embedding distance with the cosine similarity, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = 1 - \frac{v_{i} \cdot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
+Additionally, the embedding distance with the dot product, we use  $d_{ij} =  -v_{i} \cdot v_{j}$.
 
 %
 % SUBSECTION: GRAVITY LAW
