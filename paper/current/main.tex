@@ -570,7 +570,8 @@ We compare the SemAxis ranking to the traditional university rankings using Spea
 \paragraph*{S1 Text}
 \label{si:text:mobility_science}
 {\bf Mobility and science.}
-TODO: why is mobility important to science?
+
+Mobility is essential to the scientific enterprise. 
 
 
 %
@@ -608,11 +609,21 @@ Moreover, this assumption has the practical advantage of matching the data forma
 \label{si:text:mobility_traj}
 {\bf Building mobility trajectories.}
 
+We adopt a data-driven approach to constructing mobility trajectories, making as little adjustment to the raw bibliometric data as possible. 
+For each mobile researcher (having at least two distinct affiliations), we construct a mobility trajectory based on the affiliations listed on their published papers indexed in the Web of Science database between 2008 and 2019. 
+An author is considered mobile if they published with at least two distinct affiliations during the time period of study. 
+Affiliations map to disambiguated organizations, each of which matches to a unique identifier. 
+Affiliations in a trajectory are first ordered by year of publication.
+For example, if an author published with affiliation $A$ in $t_{0}$, affiliation $B$ in $t_{1}$, and $A$ again in $t_{2}$, then their ordered mobility trajectory would be $\{A, B, C\}$. 
 
+In the case that multiple affiliations are used within a single year, affiliations listed on publications published in that year are shuffled between each stage of the \textit{word2vec} training process (each epoch). 
+For example, an author who published with affiliation $A$ in $t_{0}$, and affiliations $B, C$ in $t_{1}$ could appear as one of $\{A, B, C\}$ or $\{A, C, B\}$ in each training iteration. 
+This effectively removes the effect of order within a year, as order cannot be meaningfully established based on co-affiliations in a single paper, or on different affiliations listed on separate papers, publication of which is not necessarily representative of the actual completion of the project. 
 
-
-For example, a researcher listing the set of affiliations $\{A, B, C\}$ on papers published in three different years will be considered two distinct instances of mobility, ${A \leftrightarrow B}$ and ${B \leftrightarrow C}$, where ${A \leftrightarrow B} = {B \leftrightarrow A}$ and  ${B \leftrightarrow C} = {C \leftrightarrow B}$. 
-
+Other than restricting to only mobile researchers, we do not perform any filtering or reductions to mobility trajectories.
+For example, in the case than an author publishes with organization $A$ four times in $t_{0}$, and affiliation $B$ two times in $t_{1}$, then their trajectory will be $\{A, A, A, A, B, B\}$. 
+This means that mobile authors who publish more papers will have longer trajectories.
+However, \textit{word2vec} will skip duplicate consecutive organization IDs, effectively eliminating the impact of these long repetitive trajectories. 
 
 
 
