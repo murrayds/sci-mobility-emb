@@ -167,7 +167,7 @@ The effective distance estimated by our embedding model explains and predicts sc
 The amount of variance explained by embedding distance ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) is more than twice that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
 This pattern holds for the variance of only domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig.~\ref{fig:supp:gravity_correlation}d).
 After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c--d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e--f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g--h).
-We also examine gravity model with dot product in the embedding space, the amount of variance explain ($R^{2} = 0.34$) by dot product outperforms that of geographic distance .
+We also examine gravity model with dot product in the embedding space, the amount of variance explain ($R^{2} = 0.34$) by dot product outperforms that of geographic distance (Fig.~\ref{fig:supp:gravity_dot}).
 Similarly, embedding distance outperforms ``diffusion''  distances such as those derived from calculating personalized-page rank scores (see supporting materials) on the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
 Geographic distance alone is a poor perspective for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flux between organizations.
 
@@ -212,6 +212,7 @@ According to our observation on the embedding space from Eq.\ref{eq:linear_flux_
     \label{eq:gravity_model}
     \frac{T_{ij}}{M_{i} M_{j}} \propto \exp(-d_{ij}) =  \exp(- (-v_i \cdot v_j) \propto \exp(v_i \cdot v_j) 
 \end{equation}
+
 where $T_{ij}$ represents the \textbf{flux}, the number of people who moved between organizations $i$ and $j$,  $M_{i}$ and $M_{j}$ represent the size of an organization,  $d_{ij} = - v_{i}, v_{j}$ is the embedding distance.  In the case of scientific co-affiliation, we assume all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$. 
 
 
