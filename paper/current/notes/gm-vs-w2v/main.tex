@@ -73,7 +73,7 @@ With the word2vec, one writes the probability of target node $j$ given center no
 \end{align}
 where vectors $\vec{u}_i$ and $\vec{v}_i$ are the column vectors of length $K$ that represent the coordinates of $i$ and $j$ in the embedding space spanned by in-vectors and out-vectors, respectively.
 Variable $Z_i$ is the normalization constant, i.e., $Z_i:= \sum_{\ell=1}^N \exp\left(\vec{u} ^\top _{i} \vec{v}_{\ell}\right)$. 
-Denote by $d(\vec{u},\vec{u}')$ the distance between nodes $i$ and $j$ for the in-vector, i.e., 
+Denote by $d(\vec{u},\vec{u}')$ the distance between the in-vectors, i.e., 
 \begin{align}
     \label{eq:distance}
     d(\vec{u},\vec{u}'):= \sqrt{\sum_{k=1}^K \left(u_{k} - u'_{k}\right)^2}.
@@ -140,12 +140,12 @@ Substituting Eq.~\eqref{eq:model_node2vec_distance} into Eq.~\eqref{eq:flow} and
 \end{align}
 Remind that $T_{ij}:= G M_i M_j f\left(d\left(\vec{u}_i,\vec{u}_j\right)\right)$ in the gravity model.
 Thus, the word2vec is a gravity model with $M_i=s_i$ and $f\left(d\left(\vec{u}_i,\vec{u}_j\right)\right) = 1/\exp\left[d\left(\vec{u}_i,\vec{u}_j\right) ^ 2 /2\right]$.
-Popularity $s_i$ corresponds to the mass in the gravity model but does not have a solid physical meaning.
+Pulling force $s_i$ corresponds to the mass in the gravity model but does not have a solid physical meaning.
 
 \section{Population, pulling force and gravitational potential}
 
 What is pulling force $s_i$? Is it related to the population $n_i$ in each point?
-To answer these questions, we rewrite $n_i$ as a function of $s_i$ as follows. 
+To answer the questions, we rewrite $n_i$ as a function of $s_i$ as follows. 
 With Eq.~\eqref{eq:const}, we rewrite $n_i$ as 
 \begin{align}
     n_i &= G' Z_i \nonumber \\
@@ -156,7 +156,7 @@ where $\Phi(\vec{u})$ is the potential given by
 \begin{align}
     \Phi(\vec{u}):=-G' \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u},\vec{u}_j\right)\right).
 \end{align}
-Potential $\Phi(\vec{u})$ is analogous to the gravitational potential, i.e., $GM/d$, where $m$ is the mass and $d$ is the distance from the mass.
+Potential $\Phi(\vec{u})$ is analogous to the gravitational potential, i.e., $-GM/d$, where $M$ is the mass and $d$ is the distance from the mass.
 In other words,  $\Phi(\vec{u})$ is the gravitational potential for the field, where 
 each point $\ell$ has a mass $s_{\ell}$ and is away from $u$ with distance $d(\vec{u},\vec{u}_\ell)$, and the effect of the mass decays by the factor of $\exp\left[d(\vec{u},\vec{u}_\ell) ^2 /2\right]$.
 
