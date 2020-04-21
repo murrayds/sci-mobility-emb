@@ -111,7 +111,7 @@ if (opt$distance == "geo") {
     rename(distance = dot_distance)
 
   # Provide axis label
-  axislabel <- "Dot product distance"
+  axislabel <- "Dot product similarity"
 }
 
 # Calculate the logged gravity and select only relevant columns
