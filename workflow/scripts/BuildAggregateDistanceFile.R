@@ -28,6 +28,8 @@ option_list = list(
               help="Path to file containing organization PPR distances"),
   make_option(c("--dot"), action="store", default=NA, type='character',
               help="Path to file containing organization dot product similarities"),
+  make_option(c("--euclidean"), action="store", default=NA, type='character',
+              help="Path to file containing organization euclidean distances"),
   make_option(c("-o", "--out"), action="store", default=NA, type='character',
               help="Path to save aggregated distance file")
 ) # end option_list
@@ -149,6 +151,22 @@ distance_all <- data.table::rbindlist(list(dot1, dot2)) %>%
 
 remove("dot", "dot1", "dot2")
 
+# Now merge dot product similarities
+euclidean <- read_csv(opt$euclidean, col_types = cols()) %>%
+  select(org1, org2, similarity) %>%
+  rename(euclidean_distance = similarity)
+
+euclidean1 <- distance_all %>%
+  inner_join(euclidean, by = c("org1" = "org1", "org2" = "org2"))
+
+euclidean2 <- distance_all %>%
+  inner_join(euclidean, by = c("org2" = "org1", "org1" = "org2"))
+
+distance_all <- data.table::rbindlist(list(euclidean1, euclidean2)) %>%
+  distinct(org1, org2, .keep_all = TRUE)
+
+remove("euclidean", "euclidean1", "euclidean2")
+
 # PPR Cosine distnaces
 ppr <- read_csv(opt$pprcos, col_types = cols()) %>%
   select(org1, org2, distance) %>%
@@ -206,7 +224,7 @@ distance_all <- distance_all %>%
   # Select only relevant variables
   select(org1, org2, count,
          org1_size, org2_size,
-         geo_distance, emb_distance, dot_distance,
+         geo_distance, emb_distance, dot_distance, euclidean_distance,
          pprcos_distance, pprjsd_distance, gravity,
          org1_city, org1_region, org1_country,
          org2_city, org2_region, org2_country

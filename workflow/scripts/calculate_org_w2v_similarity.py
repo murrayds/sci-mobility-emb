@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser()
 # System arguments
 parser.add_argument("-mod", "--model", help = "Path to word2vec model",
                     type = str, required = True)
-parser.add_argument("--type", help = "Type of similarity, 'dot' or 'cos'",
+parser.add_argument("--type", help = "Type of similarity, 'dot', 'euclidean', or 'cos'",
                     type = str, required = True)
 parser.add_argument("-o", "--output", help = "Output data path",
                     type = str, required = True)
@@ -46,6 +46,13 @@ if args.type == 'cos':
 elif args.type == 'dot':
     for word1, word2 in combinations(vocab, 2):
         temp_sim = np.dot(model.wv[word1], model.wv[word2])
+        D[word1][word2] = temp_sim
+        D[word2][word1] = temp_sim
+elif args.type == 'euclidean':
+    for word1, word2 in combinations(vocab, 2):
+        w1 = model.wv[word1]
+        w2 = model.wv[word2]
+        temp_sim = np.power(np.linalg.norm(w1 - w2), 2) / 2
         D[word1][word2] = temp_sim
         D[word2][word1] = temp_sim
 

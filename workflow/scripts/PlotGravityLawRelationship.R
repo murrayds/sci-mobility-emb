@@ -74,7 +74,7 @@ if (opt$geo == "same-country") {
 
 # Reduce the size to save on memory
 dist <- dist %>%
-  select(geo_distance, emb_distance, dot_distance,
+  select(geo_distance, emb_distance, dot_distance, euclidean_distance,
          pprcos_distance, pprjsd_distance,  gravity)
 
 axislabel <- "DEFAULT"
@@ -112,6 +112,12 @@ if (opt$distance == "geo") {
 
   # Provide axis label
   axislabel <- "Dot product similarity"
+} else if (opt$distance == "euclidean") {
+  dist <- dist %>%
+    rename(distance = euclidean_distance)
+
+  # Provide axis label
+  axislabel <- "Euclidean distance"
 }
 
 # Calculate the logged gravity and select only relevant columns

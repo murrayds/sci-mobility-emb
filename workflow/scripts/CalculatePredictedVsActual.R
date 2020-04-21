@@ -30,7 +30,8 @@ agg <- readr::read_csv(opt$input, col_types = readr::cols()) %>%
   select(org1_size, org2_size,
          org1_country, org2_country,
          count, gravity,
-         geo_distance, pprcos_distance, pprjsd_distance, emb_distance, dot_distance) %>%
+         geo_distance, pprcos_distance, pprjsd_distance,
+         emb_distance, dot_distance, euclidean_distance) %>%
   rename(actual = count)
 
 # If the geographic constraint (--geo) is set, then filter the
@@ -51,32 +52,32 @@ if (opt$distance == "geo") {
   # Perform the regression
   agg <- agg %>%
     mutate(
-      distance = geo_distance,
-      distance.log = log(geo_distance)
+      distance = geo_distance
     )
 } else if (opt$distance == "emb") {
   agg <- agg %>%
     mutate(
-      distance = emb_distance,
-      distance.log = log(emb_distance)
+      distance = emb_distance
     )
 } else if (opt$distance == "pprcos") {
   agg <- agg %>%
     mutate(
-      distance = pprcos_distance,
-      distance.log = log(pprcos_distance)
+      distance = pprcos_distance
     )
 } else if (opt$distance == "pprjsd") {
   agg <- agg %>%
     mutate(
-      distance = pprjsd_distance,
-      distance.log = log(pprjsd_distance)
+      distance = pprjsd_distance
     )
 } else if (opt$distance == "dot") {
   agg <- agg %>%
     mutate(
-      distance = dot_distance,
-      distance.log = log(dot_distance)
+      distance = dot_distance
+    )
+} else if (opt$distance == "euclidean") {
+  agg <- agg %>%
+    mutate(
+      distance = euclidean_distance
     )
 }
 
@@ -99,7 +100,7 @@ agg <- agg %>%
 
 agg <- agg %>%
   select(-c(org1_size, org2_size,
-            gravity, geo_distance, emb_distance,
+            gravity, geo_distance, emb_distance, euclidean_distance,
             pprcos_distance, pprjsd_distance, dot_distance))
 
 print(head(agg))

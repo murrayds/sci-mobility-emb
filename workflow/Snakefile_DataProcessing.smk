@@ -144,6 +144,13 @@ rule calculate_org_w2v_dot:
         "python scripts/calculate_org_w2v_similarity.py \
         --model {input} --output {output} --type dot"
 
+rule calculate_org_w2v_euclidean:
+    input: rules.train_word2vec_model.output
+    output: ORG_W2V_EUCLIDEAN_SIMS
+    shell:
+        "python scripts/calculate_org_w2v_similarity.py \
+        --model {input} --output {output} --type euclidean"
+
 ###############################################################################
 # AGGREGATE DISTANCES
 ###############################################################################
@@ -153,6 +160,7 @@ rule build_aggregate_org_distances:
            emb = ancient(rules.calculate_org_w2v_similarities.output),
            orgs = ancient(rules.add_state_to_lookup.output),
            dot = ancient(rules.calculate_org_w2v_dot.output),
+           euclidean = ancient(rules.calculate_org_w2v_euclidean.output),
            pprcos = ancient(ORG_PPR_COS_DISTANCE),
            pprjsd = ancient(ORG_PPR_JSD_DISTANCE)
     params:
@@ -166,7 +174,7 @@ rule build_aggregate_org_distances:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {params.sizes} \
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
                  --pprcos {input.pprcos} --pprjsd {input.pprjsd} --dot {input.dot} \
-                 --orgs {input.orgs} --out {output}"
+                 --euclidean {input.euclidean} --orgs {input.orgs} --out {output}"
 
 ###############################################################################
 # MISC
