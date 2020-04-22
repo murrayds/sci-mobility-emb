@@ -1,0 +1,185 @@
+\documentclass[12pt]{article} %{{{
+\usepackage[margin=1in]{geometry}
+
+% Figures
+\usepackage{graphicx}
+\graphicspath{{../../figs/}}
+
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\DeclareMathOperator*{\argmax}{\arg\!\max}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\diag}{diag}
+\def\given{\mid}
+
+
+% abbreviations
+\def\eg{e.g.,~}
+\def\ie{i.e.,~}
+\def\cf{cf.\ }
+\def\viz{viz.\ }
+\def\vs{vs.\ }
+
+% math notation
+\usepackage{bm}
+\def\tnull{{\text{null}}}
+\def\vec#1{{\bm #1}}
+\def\mat#1{\mathbf{#1}}
+
+% Refs
+\usepackage{biblatex}
+\addbibresource{main.bib}
+
+\usepackage{url}
+
+\newcommand{\secref}[1]{Section~\ref{sec:#1}}
+\newcommand{\figref}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\tabref}[1]{Table~\ref{tab:#1}}
+%\newcommand{\eqnref}[1]{\eqref{eq:#1}}
+%\newcommand{\thmref}[1]{Theorem~\ref{#1}}
+%\newcommand{\prgref}[1]{Program~\ref{#1}}
+%\newcommand{\algref}[1]{Algorithm~\ref{#1}}
+%\newcommand{\clmref}[1]{Claim~\ref{#1}}
+%\newcommand{\lemref}[1]{Lemma~\ref{#1}}
+%\newcommand{\ptyref}[1]{Property~\ref{#1}}
+
+% for quick author comments 
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\definecolor{light-gray}{gray}{0.8}
+\definecolor{light-blue}{RGB}{33,150,243}
+\definecolor{light-green}{RGB}{76, 175, 80}
+\def\del#1{ {\color{light-gray}{#1}} }
+\def\yy#1{\footnote{\color{red}\textbf{yy: #1}} }
+\def\sada#1{\footnote{\color{light-blue}\textbf{sk: #1}} }
+\def\jisung#1{\footnote{\color{light-green}\textbf{js: #1}} }
+
+%}}}
+
+\begin{document} %{{{
+
+\title{Note on the word2vec and the gravity model} %{{{
+\date{\today}
+\author{Sadamori Kojaku}
+\maketitle %}}}
+
+\section{The word2vec and the euclidean distance}
+
+With the word2vec, one writes the probability of target node $j$ given center node $i$ as 
+\begin{align}
+  \label{eq:model_node2vec}
+    P_{\text{W2V}}\left(j \given i\right) := \frac{1}{Z_i}\exp\left(\vec{u} ^\top _{i} \vec{v}_{j}\right), 
+\end{align}
+where vectors $\vec{u}_i$ and $\vec{v}_i$ are the column vectors of length $K$ that represent the coordinates of $i$ and $j$ in the embedding space spanned by in-vectors and out-vectors, respectively.
+Variable $Z_i$ is the normalization constant, i.e., $Z_i:= \sum_{\ell=1}^N \exp\left(\vec{u} ^\top _{i} \vec{v}_{\ell}\right)$. 
+Denote by $d(\vec{u},\vec{u}')$ the distance between the in-vectors, i.e., 
+\begin{align}
+    \label{eq:distance}
+    d(\vec{u},\vec{u}'):= \sqrt{\sum_{k=1}^K \left(u_{k} - u'_{k}\right)^2}.
+\end{align}
+We assume that the in-vectors are equal to the out-vectors, i.e., $\vec{v}_j = \vec{u}_j$.
+Then, the dot similarity for $\vec{u}_i$ and $\vec{v}_j$ is given by 
+\begin{align}
+    \label{eq:dotsim}
+    \vec{u}_i ^\top \vec{v}_j = \frac{1}{2}\left[ ||\vec{u}_i|| + ||\vec{u}_j|| - d\left(\vec{u}_i, \vec{u}_j\right)^2 \right],
+\end{align}
+which leads 
+\begin{align}
+    \exp\left( \vec{u}_i ^\top \vec{v}_j \right) &= \frac{\exp\left( ||\vec{u}_i||/2 + ||\vec{u}_j||/2 \right)}{\exp\left[ d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]} \nonumber \\
+                                                 &= \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2\right]}, \label{eq:exp_distance_form}
+\end{align}
+where $s_i:=\exp(||\vec{u}_i||/2)$. 
+Substituting Eq.~\eqref{eq:exp_distance_form} into Eq.~\eqref{eq:model_node2vec} yields
+\begin{align}
+    \label{eq:model_node2vec_distance}
+    P_{\text{W2V}}\left(j \given i\right) &:= \frac{1}{Z_i}\cdot \frac{s_is_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2/2\right]}. 
+\end{align}
+The walkers in point $i$ tend to move to the points with a large $s_j$ more than those with a smaller $s_j$.
+Thus, variable $s_j$ represents the {\it pulling force} for node $j$\sada{tentative naming}. 
+It turns out that $s_j$ is a mass variable for the gravity model (see Section 2). 
+
+\section{The word2vec is a special case of the gravity model}
+
+The gravity model generates the flow from $i$ to $j$ by 
+\begin{align}
+    \label{eq:gravity_model}
+    T_{ij}:= G M_i M_j f\left(d(\vec{u}_i,\vec{u}_j)\right),
+\end{align}
+where $M_i$ ($M_i>0$) is the mass for the gravity model, $f$ is a function for the distance, and 
+$G$ is the constant analogous to the gravitational constant in physics.  
+
+In migration study, $M_i$ is often fixed to the number of people at a point $i$ (e.g., city and country), which is a restricted version of the gravity model.
+We show that the word2vec is free from the restriction and automatically learns the mass $M_i$ from data, which may not be equal to the number of people at a point.
+To avoid the confusion, we denote by $n_i$ the number of people at a point $i$ in the followings. 
+
+We regard $P_{\text{W2V}}(j \vert i)$ as the transition probability from $i$ to $j$ in a Markov process.
+Then, the number of people that move from $i$ to $j$ (i.e., flow) in one step is given by 
+\begin{align}
+    \label{eq:flow}
+    T_{ij}:= n_i P_{\text{W2V}}(j \vert i).
+\end{align}
+We assume that the Markov process satisfies detailed balanced condition:  
+\begin{align}
+    \label{eq:detailed_balanced}
+    n_i P_{\text{W2V}}\left(j \vert i \right) = n_j P_{\text{W2V}}\left(i \vert j \right).
+\end{align}
+In other words, the flow is symmetric (i.e., $T_{ij} = T_{ji}$) and $n_i$ is the stationary distribution for the Markov process.
+Equation \eqref{eq:detailed_balanced} yields 
+\begin{align}
+    &\frac{n_i}{Z_i}\cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2\right]} = \frac{n_j}{Z_j}\cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]} \\
+    &\iff \frac{n_i}{Z_i} = \frac{n_j}{Z_j} =: G', \label{eq:const}
+\end{align}
+where $G'$ is a constant. 
+Substituting Eq.~\eqref{eq:model_node2vec_distance} into Eq.~\eqref{eq:flow} and exploiting Eq.~\eqref{eq:const} yield 
+\begin{align}
+    \label{eq:flow_gravity_model}
+    T_{ij} &= n_i P_{\text{W2V}}\left(j \vert i \right)\nonumber \\
+           &= \frac{n_i}{Z_i} \cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]}\nonumber \\ 
+           &= G' \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]}. 
+\end{align}
+Remind that $T_{ij}:= G M_i M_j f\left(d\left(\vec{u}_i,\vec{u}_j\right)\right)$ in the gravity model.
+Thus, the word2vec is a gravity model with $M_i=s_i$ and $f\left(d\left(\vec{u}_i,\vec{u}_j\right)\right) = 1/\exp\left[d\left(\vec{u}_i,\vec{u}_j\right) ^ 2 /2\right]$.
+Pulling force $s_i$ corresponds to the mass in the gravity model but does not have a solid physical meaning.
+
+\section{Population, pulling force and gravitational potential}
+
+What is pulling force $s_i$? Is it related to the population $n_i$ in each point?
+To answer the questions, we rewrite $n_i$ as a function of $s_i$ as follows. 
+With Eq.~\eqref{eq:const}, we rewrite $n_i$ as 
+\begin{align}
+    n_i &= G' Z_i \nonumber \\
+        &= G' s_i \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u}_i,\vec{u}_j\right)\right) \nonumber \\ 
+        &= - s_i \Phi(\vec{u}_i), \label{eq:flow_gravity_model_2} %\nonumber \\ 
+\end{align}
+where $\Phi(\vec{u})$ is the potential given by 
+\begin{align}
+    \Phi(\vec{u}):=-G' \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u},\vec{u}_j\right)\right).
+\end{align}
+Potential $\Phi(\vec{u})$ is analogous to the gravitational potential, i.e., $-GM/d$, where $M$ is the mass and $d$ is the distance from the mass.
+In other words,  $\Phi(\vec{u})$ is the gravitational potential for the field, where 
+each point $\ell$ has a mass $s_{\ell}$ and is away from $\vec{u}$ with distance $d(\vec{u},\vec{u}_\ell)$, and the effect of the mass decays by the factor of $\exp\left[d(\vec{u},\vec{u}_\ell) ^2 /2\right]$.
+
+Population $n_i$ is given by $-s_i\Phi(\vec{u}_i)$. What does it mean for the mobility for scientists?
+Suppose two institutions A and B. They have many influx from other institutions for different reasons:
+(i) A is indeed an attractive institution which everyone on the planet wants to go but isolated from other institutions;
+(ii) B is not attractive but close to many attractive institutions (e.g., small universities in a big city) and thus gain many influx from surrounding institutions.
+Pulling force $s_i$ indicates the first factor, i.e., how attractive the individual institution is. 
+Potential $\Phi(\vec{u})$ indicates how attractive the field is, accounting for the second factor.
+The population is large when pulling force $s_i$ is large or the potential $\Phi(\vec{u}_i)$ is small. 
+
+\section*{Random idea}
+\begin{itemize}
+    \item Compute the potential in the embedding and visualize it
+    \item Does the potential predict the birth of new journals?
+    \item What does $s_i$ indicate in the mobility data? Correlation to prestige?
+    \item Use different kernel e.g., $f(d) = 1/exp(d)$, $f(d)=1/exp(\text{L1 norm})$ in the word2vec.
+\end{itemize}
+%\section*{Note}
+%\begin{itemize}
+%    \item The mass $m_i$ in this draft is different from $M_i$ in the manuscript. Variable $m_i$ is a parameter for the gravity model. 
+%\end{itemize}
+
+\printbibliography{}
+   
+\end{document} %}}}
