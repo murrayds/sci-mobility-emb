@@ -82,14 +82,14 @@ We assume that the in-vectors are equal to the out-vectors, i.e., $\vec{v}_j = \
 Then, the dot similarity for $\vec{u}_i$ and $\vec{v}_j$ is given by 
 \begin{align}
     \label{eq:dotsim}
-    \vec{u}_i ^\top \vec{v}_j = \frac{1}{2}\left[ ||\vec{u}_i|| + ||\vec{u}_j|| - d\left(\vec{u}_i, \vec{u}_j\right)^2 \right],
+    \vec{u}_i ^\top \vec{v}_j = \frac{1}{2}\left[ ||\vec{u}_i||^2 + ||\vec{u}_j||^2 - d\left(\vec{u}_i, \vec{u}_j\right)^2 \right],
 \end{align}
 which leads 
 \begin{align}
-    \exp\left( \vec{u}_i ^\top \vec{v}_j \right) &= \frac{\exp\left( ||\vec{u}_i||/2 + ||\vec{u}_j||/2 \right)}{\exp\left[ d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]} \nonumber \\
+    \exp\left( \vec{u}_i ^\top \vec{v}_j \right) &= \frac{\exp\left( ||\vec{u}_i||^2/2 + ||\vec{u}_j||^2/2 \right)}{\exp\left[ d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]} \nonumber \\
                                                  &= \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2\right]}, \label{eq:exp_distance_form}
 \end{align}
-where $s_i:=\exp(||\vec{u}_i||/2)$. 
+where $s_i:=\exp(||\vec{u} _i||^2/2)$. 
 Substituting Eq.~\eqref{eq:exp_distance_form} into Eq.~\eqref{eq:model_node2vec} yields
 \begin{align}
     \label{eq:model_node2vec_distance}
@@ -149,7 +149,7 @@ To answer the questions, we rewrite $n_i$ as a function of $s_i$ as follows.
 With Eq.~\eqref{eq:const}, we rewrite $n_i$ as 
 \begin{align}
     n_i &= G' Z_i \nonumber \\
-        &= G' s_i \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u}_i,\vec{u}_j\right)\right) \nonumber \\ 
+        &= G' s_i \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u}_i,\vec{u}_\ell\right)\right) \nonumber \\ 
         &= - s_i \Phi(\vec{u}_i), \label{eq:flow_gravity_model_2} %\nonumber \\ 
 \end{align}
 where $\Phi(\vec{u})$ is the potential given by 
