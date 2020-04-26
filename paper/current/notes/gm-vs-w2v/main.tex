@@ -82,14 +82,14 @@ We assume that the in-vectors are equal to the out-vectors, i.e., $\vec{v}_j = \
 Then, the dot similarity for $\vec{u}_i$ and $\vec{v}_j$ is given by 
 \begin{align}
     \label{eq:dotsim}
-    \vec{u}_i ^\top \vec{v}_j = \frac{1}{2}\left[ ||\vec{u}_i|| + ||\vec{u}_j|| - d\left(\vec{u}_i, \vec{u}_j\right)^2 \right],
+    \vec{u}_i ^\top \vec{v}_j = \frac{1}{2}\left[ ||\vec{u}_i||^2 + ||\vec{u}_j||^2 - d\left(\vec{u}_i, \vec{u}_j\right)^2 \right],
 \end{align}
 which leads 
 \begin{align}
-    \exp\left( \vec{u}_i ^\top \vec{v}_j \right) &= \frac{\exp\left( ||\vec{u}_i||/2 + ||\vec{u}_j||/2 \right)}{\exp\left[ d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]} \nonumber \\
+    \exp\left( \vec{u}_i ^\top \vec{v}_j \right) &= \frac{\exp\left( ||\vec{u}_i||^2/2 + ||\vec{u}_j||^2/2 \right)}{\exp\left[ d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]} \nonumber \\
                                                  &= \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2\right]}, \label{eq:exp_distance_form}
 \end{align}
-where $s_i:=\exp(||\vec{u}_i||/2)$. 
+where $s_i:=\exp(||\vec{u} _i||^2/2)$. 
 Substituting Eq.~\eqref{eq:exp_distance_form} into Eq.~\eqref{eq:model_node2vec} yields
 \begin{align}
     \label{eq:model_node2vec_distance}
@@ -111,31 +111,32 @@ $G$ is the constant analogous to the gravitational constant in physics.
 
 In migration study, $M_i$ is often fixed to the number of people at a point $i$ (e.g., city and country), which is a restricted version of the gravity model.
 We show that the word2vec is free from the restriction and automatically learns the mass $M_i$ from data, which may not be equal to the number of people at a point.
-To avoid the confusion, we denote by $n_i$ the number of people at a point $i$ in the followings. 
 
 We regard $P_{\text{W2V}}(j \vert i)$ as the transition probability from $i$ to $j$ in a Markov process.
-Then, the number of people that move from $i$ to $j$ (i.e., flow) in one step is given by 
+Denote by $\pi_i$ the number of scientists in institution who may move to different institutions, i.e., mobile scientists.
+We note that $\pi$ may not be equal to the number of scientists in the institution because some scientists always stay in the institutions.
+The number of scientists that move from $i$ to $j$ (i.e., flow) in one step is given by 
 \begin{align}
     \label{eq:flow}
-    T_{ij}:= n_i P_{\text{W2V}}(j \vert i).
+    T_{ij}:= \pi_i P_{\text{W2V}}(j \vert i).
 \end{align}
 We assume that the Markov process satisfies detailed balanced condition:  
 \begin{align}
     \label{eq:detailed_balanced}
-    n_i P_{\text{W2V}}\left(j \vert i \right) = n_j P_{\text{W2V}}\left(i \vert j \right).
+    \pi_i P_{\text{W2V}}\left(j \vert i \right) = \pi_j P_{\text{W2V}}\left(i \vert j \right).
 \end{align}
-In other words, the flow is symmetric (i.e., $T_{ij} = T_{ji}$) and $n_i$ is the stationary distribution for the Markov process.
+In other words, the flow is symmetric (i.e., $T_{ij} = T_{ji}$) and $\pi_i$ is the stationary distribution for the Markov process.
 Equation \eqref{eq:detailed_balanced} yields 
 \begin{align}
-    &\frac{n_i}{Z_i}\cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2\right]} = \frac{n_j}{Z_j}\cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]} \\
-    &\iff \frac{n_i}{Z_i} = \frac{n_j}{Z_j} =: G', \label{eq:const}
+    &\frac{\pi_i}{Z_i}\cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2\right]} = \frac{\pi_j}{Z_j}\cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]} \\
+    &\iff \frac{\pi_i}{Z_i} = \frac{\pi_j}{Z_j} =: G', \label{eq:const}
 \end{align}
 where $G'$ is a constant. 
 Substituting Eq.~\eqref{eq:model_node2vec_distance} into Eq.~\eqref{eq:flow} and exploiting Eq.~\eqref{eq:const} yield 
 \begin{align}
     \label{eq:flow_gravity_model}
-    T_{ij} &= n_i P_{\text{W2V}}\left(j \vert i \right)\nonumber \\
-           &= \frac{n_i}{Z_i} \cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]}\nonumber \\ 
+    T_{ij} &= \pi_i P_{\text{W2V}}\left(j \vert i \right)\nonumber \\
+           &= \frac{\pi_i}{Z_i} \cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]}\nonumber \\ 
            &= G' \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]}. 
 \end{align}
 Remind that $T_{ij}:= G M_i M_j f\left(d\left(\vec{u}_i,\vec{u}_j\right)\right)$ in the gravity model.
@@ -144,23 +145,23 @@ Pulling force $s_i$ corresponds to the mass in the gravity model but does not ha
 
 \section{Population, pulling force and gravitational potential}
 
-What is pulling force $s_i$? Is it related to the population $n_i$ in each point?
-To answer the questions, we rewrite $n_i$ as a function of $s_i$ as follows. 
-With Eq.~\eqref{eq:const}, we rewrite $n_i$ as 
+What is pulling force $s_i$? Is it related to the mobile population $\pi_i$ in each point?
+To answer the questions, we rewrite $\pi_i$ as a function of $s_i$ as follows. 
+With Eq.~\eqref{eq:const}, we rewrite $\pi_i$ as 
 \begin{align}
-    n_i &= G' Z_i \nonumber \\
-        &= G' s_i \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u}_i,\vec{u}_j\right)\right) \nonumber \\ 
-        &= - s_i \Phi(\vec{u}_i), \label{eq:flow_gravity_model_2} %\nonumber \\ 
+    \pi_i &= G' Z_i \nonumber \\
+        &= G' s_i \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u}_i,\vec{u}_\ell\right)\right) \nonumber \\ 
+        &= G' s_i ^2 - s_i \Phi(\vec{u}_i), \label{eq:flow_gravity_model_2} %\nonumber \\ 
 \end{align}
 where $\Phi(\vec{u})$ is the potential given by 
 \begin{align}
-    \Phi(\vec{u}):=-G' \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u},\vec{u}_j\right)\right).
+    \Phi(\vec{u}):=-G' \sum_{\ell=1, \vec{u}\neq \vec{u}_\ell}^N s_\ell f\left(d\left(\vec{u},\vec{u}_\ell\right)\right).
 \end{align}
 Potential $\Phi(\vec{u})$ is analogous to the gravitational potential, i.e., $-GM/d$, where $M$ is the mass and $d$ is the distance from the mass.
 In other words,  $\Phi(\vec{u})$ is the gravitational potential for the field, where 
 each point $\ell$ has a mass $s_{\ell}$ and is away from $\vec{u}$ with distance $d(\vec{u},\vec{u}_\ell)$, and the effect of the mass decays by the factor of $\exp\left[d(\vec{u},\vec{u}_\ell) ^2 /2\right]$.
 
-Population $n_i$ is given by $-s_i\Phi(\vec{u}_i)$. What does it mean for the mobility for scientists?
+Population $\pi_i$ is given by $-s_i\Phi(\vec{u}_i)$. What does it mean for the mobility for scientists?
 Suppose two institutions A and B. They have many influx from other institutions for different reasons:
 (i) A is indeed an attractive institution which everyone on the planet wants to go but isolated from other institutions;
 (ii) B is not attractive but close to many attractive institutions (e.g., small universities in a big city) and thus gain many influx from surrounding institutions.
