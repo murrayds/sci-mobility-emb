@@ -45,15 +45,33 @@
 %\newcommand{\lemref}[1]{Lemma~\ref{#1}}
 %\newcommand{\ptyref}[1]{Property~\ref{#1}}
 
+% comment out when submitting
 % for quick author comments 
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{soul}
+\usepackage{ulem}
 \definecolor{light-gray}{gray}{0.8}
 \definecolor{light-blue}{RGB}{33,150,243}
 \definecolor{light-green}{RGB}{76, 175, 80}
-\def\del#1{ {\color{light-gray}{#1}} }
+%\def\del#1{ {\color{light-gray}{#1}} }
 \def\yy#1{\footnote{\color{red}\textbf{yy: #1}} }
 \def\sada#1{\footnote{\color{light-blue}\textbf{sk: #1}} }
 \def\jisung#1{\footnote{\color{light-green}\textbf{js: #1}} }
+
+% Track Changes
+\definecolor{myblue}{RGB}{33,150,243}
+\definecolor{mygreen}{RGB}{76, 175, 80}
+\definecolor{purple}{RGB}{170, 0, 255}
+
+
+\newcommand{\add}[1]{{\leavevmode\color{blue}#1}}
+\newcommand{\del}[1]{{\leavevmode\color{red}\sout{#1}}}
+\newcommand{\change}[3][]{{\del{#2}\add{#3}$^{\textcolor{blue}{\text{#1}}}$}}
+\newcommand{\comment}[1]{
+    \begin{enumerate}[label*=(\arabic*)]
+    #1
+    \end{enumerate}
+}
 
 %}}}
 
@@ -79,7 +97,7 @@ Denote by $d(\vec{u},\vec{u}')$ the distance between the in-vectors, i.e.,
     d(\vec{u},\vec{u}'):= \sqrt{\sum_{k=1}^K \left(u_{k} - u'_{k}\right)^2}.
 \end{align}
 We assume that the in-vectors are equal to the out-vectors, i.e., $\vec{v}_j = \vec{u}_j$.
-Then, the dot similarity for $\vec{u}_i$ and $\vec{v}_j$ is given by 
+Exploiting $d^2 (\vec{u},\vec{u}')=||\vec{u}||^2 + ||\vec{u}'||^2 - 2\vec{u} ^\top \vec{u}'$, the dot similarity for $\vec{u}_i$ and $\vec{v}_j$ is given by 
 \begin{align}
     \label{eq:dotsim}
     \vec{u}_i ^\top \vec{v}_j = \frac{1}{2}\left[ ||\vec{u}_i||^2 + ||\vec{u}_j||^2 - d\left(\vec{u}_i, \vec{u}_j\right)^2 \right],
@@ -109,8 +127,10 @@ The gravity model generates the flow from $i$ to $j$ by
 where $M_i$ ($M_i>0$) is the mass for the gravity model, $f$ is a function for the distance, and 
 $G$ is the constant analogous to the gravitational constant in physics.  
 
-In migration study, $M_i$ is often fixed to the number of people at a point $i$ (e.g., city and country), which is a restricted version of the gravity model.
-We show that the word2vec is free from the restriction and automatically learns the mass $M_i$ from data, which may not be equal to the number of people at a point.
+How should $M_i$ be chosen? The choice of $M_i$ is entirely unconstrained.
+In migration study, one sets $M_i$ to exogenous variables such as population at the point in priori and then estimates other parameters, e.g., $G$.
+We show that the word2vec automatically estimates the mass $M_i$ from data without exogenous variables. 
+The estimated $M_i$ may not be equal to the number of people at a point.
 
 We regard $P_{\text{W2V}}(j \vert i)$ as the transition probability from $i$ to $j$ in a Markov process.
 Denote by $\pi_i$ the number of scientists in institution who may move to different institutions, i.e., mobile scientists.
@@ -146,20 +166,26 @@ Pulling force $s_i$ corresponds to the mass in the gravity model but does not ha
 \section{Population, pulling force and gravitational potential}
 
 What is pulling force $s_i$? Is it related to the mobile population $\pi_i$ in each point?
-To answer the questions, we rewrite $\pi_i$ as a function of $s_i$ as follows. 
+To answer the questions, we rewrite $\pi_i$ as a function of $s_i$ as follows.
 With Eq.~\eqref{eq:const}, we rewrite $\pi_i$ as 
 \begin{align}
     \pi_i &= G' Z_i \nonumber \\
-        &= G' s_i \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u}_i,\vec{u}_\ell\right)\right) \nonumber \\ 
-        &= G' s_i ^2 - s_i \Phi(\vec{u}_i), \label{eq:flow_gravity_model_2} %\nonumber \\ 
+        &= G' s_i \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u}_i,\vec{u}_\ell\right)\right)\\
+        &= -G' s_i \Phi(\vec{u}_i), \label{eq:flow_gravity_model_2} \\ %\nonumber \\ 
 \end{align}
-where $\Phi(\vec{u})$ is the potential given by 
+where we have defined $\Phi(\vec{u})$ by 
 \begin{align}
-    \Phi(\vec{u}):=-G' \sum_{\ell=1, \vec{u}\neq \vec{u}_\ell}^N s_\ell f\left(d\left(\vec{u},\vec{u}_\ell\right)\right).
+    \Phi(\vec{u}):=-G' \sum_{\ell=1}^N s_\ell f\left(d\left(\vec{u},\vec{u}_\ell\right)\right).
 \end{align}
-Potential $\Phi(\vec{u})$ is analogous to the gravitational potential, i.e., $-GM/d$, where $M$ is the mass and $d$ is the distance from the mass.
-In other words,  $\Phi(\vec{u})$ is the gravitational potential for the field, where 
-each point $\ell$ has a mass $s_{\ell}$ and is away from $\vec{u}$ with distance $d(\vec{u},\vec{u}_\ell)$, and the effect of the mass decays by the factor of $\exp\left[d(\vec{u},\vec{u}_\ell) ^2 /2\right]$.
+In other words, $\pi_i$ is proportional to the product of $s_i$ and $\Phi(\vec{u})$.
+Therefore, points with a large $\pi_i$ tend to have a large $s_i$ value.
+What does $\Phi(\vec{u})$ represent? 
+Variable $\Phi(\vec{u})$ is analogous to the gravitational potential in mechanical physics, which takes form $-GM/d$, where $M$ is the mass and $d$ is the distance from the mass.
+%In other words,  $\Phi(\vec{u})$ can be seen as the gravitational potential for the field, where 
+%each point $\ell$ has a mass $s_{\ell}$ and is away from $\vec{u}$ with distance $d(\vec{u},\vec{u}_\ell)$, and the effect of the mass decays by the factor of $\exp\left[d(\vec{u},\vec{u}_\ell) ^2 /2\right]$.
+Point $\vec{u}$ has a large $\Phi(\vec{u})$ if there are many points $\ell$ around $\vec{u}$ that have a large $\vec{s}_\ell$.
+Potential $\Phi(\vec{u})$ is similar to the eigen centrality for networks that assigns a large centrality score for the node with many neighbors with a large centrality scores.
+
 
 Population $\pi_i$ is given by $-s_i\Phi(\vec{u}_i)$. What does it mean for the mobility for scientists?
 Suppose two institutions A and B. They have many influx from other institutions for different reasons:
