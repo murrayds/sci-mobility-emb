@@ -19,3 +19,11 @@ rule plot_pulling_vs_potential:
     shell:
         "Rscript scripts/PlotFactors/PlotPullingVsPotential.R \
         --input {input} --output {output}"
+
+rule plot_pulling_vs_size:
+    input: rules.decompose_word2vec_model.output,
+    params: ORG_SIZES
+    output: PULLING_VS_SIZE_PLOT
+    shell:
+        "Rscript scripts/PlotFactors/PlotPullingVsSize.R \
+        --input {input} --sizes {params} --output {output}"
