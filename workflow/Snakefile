@@ -117,12 +117,18 @@ ORGS_TO_EXCLUDE = osjoin(ADDITIONAL_DATA_DIR, 'orgs_not_government.csv')
 ###############################################################################
 # Visualization files
 ###############################################################################
+
+# UMAP PLOTS
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dimensions}', 'data', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_data.csv')
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dimensions}', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
+
+# GRAVITY PLOTS
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', '{traj}', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
 DOT_COSINE_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Math', '{traj}', 'd{dimensions}', 'd{dimensions}_ws{window}_dot_cosine.pdf')
 PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', '{model}', 'd{dimensions}', '{distance}', '{traj}_{model}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
 PREDICTED_VS_ACTUAL_PLOT_FILT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', '{model}', 'filtered', 'd{dimensions}', '{distance}', '{traj}_{model}_{geo_constraint_filt}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
+
+# DESCRIPTIVE PLOTS
 PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'pubs_over_time_plot.pdf')
 PROP_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_over_time_plot.pdf')
 PUBS_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'pubs_over_time_by_discipline_plot.pdf')
@@ -132,7 +138,8 @@ PROP_MOBILE_BY_COUNTRY = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_mobility_by
 PROP_ORG_COUNTRY_MOBILITY = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_org_country_mobility.pdf')
 COUNTRY_MOBILITY_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_country_mobility_ecdf.pdf')
 COUNTRY_MOBILITY_DISTRIBUTION = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_country_mobility_distribution.pdf')
-HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
+
+# SEMAXIS PLOTS
 SEMAXIS_1D_COASTS_PLOT = osjoin(SEMAXIS_FIG_DIR, 'coasts', '{traj}', 'd{dimensions}', 'coasts_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_1D_PRESTIGE_PLOT = osjoin(SEMAXIS_FIG_DIR, 'prestige', '{traj}', 'd{dimensions}', '{ranking}_rank_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_2D_COASTS_PRESTIGE_OVERALL_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'overall_coasts_{ranking}_rank_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
@@ -142,6 +149,8 @@ SEMAXIS_RANK_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{d
 TIMES_LEIDEN_COMPARE_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'times_leiden_compare.pdf')
 RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correlation.pdf')
 
+# MISC PLOTS
+HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
 ###############################################################################
 # MISC files
 ###############################################################################
