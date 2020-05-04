@@ -12,3 +12,10 @@ rule plot_pulling_force_comparison:
     shell:
         "Rscript scripts/PlotFactors/PlotPullingForceComparison.R \
         --input {input} --output {output}"
+
+rule plot_pulling_vs_potential:
+    input: rules.decompose_word2vec_model.output
+    output: PULLING_VS_POTENTIAL_PLOT
+    shell:
+        "Rscript scripts/PlotFactors/PlotPullingVsPotential.R \
+        --input {input} --output {output}"
