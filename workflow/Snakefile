@@ -75,6 +75,7 @@ FLOWS_NETWORK = osjoin(NETWORK_DATA_DIR, 'flows_edgelist.csv')
 WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, '{traj}', 'word2vec_d{dimensions}_ws{window}_model.bin')
 ORG_W2V_COS_SIMS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', 'cos_{traj}_d{dimensions}_ws{window}_sim.csv')
 ORG_W2V_DOT_SIMS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', 'dot_{traj}_d{dimensions}_ws{window}_sim.csv')
+ORG_W2V_FACTORS = osjoin(EMBEDDINGS_DIR, '{traj}', 'factors', 'd{dimensions}_ws{window}_{traj}_w2vfactors.csv')
 
 ##############
 # Stat       #
@@ -215,6 +216,12 @@ include: 'Snakefile_Gravity.smk'
 ###############################################################################
 rule all:
     input:
+        # W2V Factor files
+        expand(ORG_W2V_FACTORS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+
         # UMAP projections
         expand(UMAP_VISUALIZATIONS_ORG,
                traj = TRAJECTORIES,

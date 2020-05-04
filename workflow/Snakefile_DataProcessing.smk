@@ -93,6 +93,13 @@ rule train_word2vec_model:
                 --minfrequency {params.wf} --numworkers {params.nw} \
                 --iterations {params.niter} --output {output}"
 
+rule decompose_word2vec_model:
+    input: rules.train_word2vec_model.output
+    output: ORG_W2V_FACTORS
+    shell:
+        "python scripts/calculate_word2vec_decomposition.py --model {input} \
+        --output {output}"
+
 ###############################################################################
 # RESEARCHER METADATA
 ###############################################################################
