@@ -84,4 +84,4 @@ df = pd.DataFrame({
 })
 
 # Write the output
-df.to_csv(args.output)
+df.to_csv(args.output, index = False)
