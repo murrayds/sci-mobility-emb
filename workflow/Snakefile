@@ -125,11 +125,15 @@ UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dime
 
 # MATH PLOTS
 PULLING_FORCE_COMPARE_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
-                                '{traj}_d{dimensions}_ws{window}_pulling_compare.pdf')
+                                'd{dimensions}_ws{window}_{traj}_pulling_compare.pdf')
 PULLING_VS_POTENTIAL_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
-                                '{traj}_d{dimensions}_ws{window}_pulling_potential.pdf')
+                                'd{dimensions}_ws{window}_{traj}_pulling_potential.pdf')
 PULLING_VS_SIZE_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
-                                '{traj}_d{dimensions}_ws{window}_pulling_orgsize.pdf')
+                                'd{dimensions}_ws{window}_{traj}_pulling_orgsize.pdf')
+POTENTIAL_VS_PI_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
+                                'd{dimensions}_ws{window}_{traj}_potential_pi.pdf')
+PULLING_VS_PI_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
+                                'd{dimensions}_ws{window}_{traj}_pulling_pi.pdf')
 
 # GRAVITY PLOTS
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', '{traj}', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
@@ -263,6 +267,14 @@ rule all:
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
         expand(PULLING_VS_SIZE_PLOT,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(POTENTIAL_VS_PI_PLOT,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(PULLING_VS_PI_PLOT,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),

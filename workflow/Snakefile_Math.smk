@@ -27,3 +27,20 @@ rule plot_pulling_vs_size:
     shell:
         "Rscript scripts/PlotFactors/PlotPullingVsSize.R \
         --input {input} --sizes {params} --output {output}"
+
+rule plot_pulling_vs_pi:
+    input: rules.decompose_word2vec_model.output,
+    params: ORG_SIZES
+    output: PULLING_VS_PI_PLOT
+    shell:
+        "Rscript scripts/PlotFactors/PlotPullingVsPi.R \
+        --input {input} --output {output}"
+
+
+rule plot_potential_vs_pi:
+    input: rules.decompose_word2vec_model.output,
+    params: ORG_SIZES
+    output: POTENTIAL_VS_PI_PLOT
+    shell:
+        "Rscript scripts/PlotFactors/PlotPotentialVsPi.R \
+        --input {input} --output {output}"
