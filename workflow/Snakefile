@@ -136,7 +136,7 @@ POTENTIAL_VS_PI_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
                                 'd{dimensions}_ws{window}_{traj}_potential_pi.pdf')
 PULLING_VS_PI_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
                                 'd{dimensions}_ws{window}_{traj}_pulling_pi.pdf')
-FACTORS_ALL_META_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
+FACTORS_ALL_CONTINUOUS_META_PLOT = osjoin(MATH_FIGURE_DIR, 'meta',
                                '{factor}_d{dimensions}_ws{window}_{traj}_allmeta.pdf')
 
 # GRAVITY PLOTS
@@ -286,7 +286,7 @@ rule all:
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
-        expand(FACTORS_ALL_META_PLOT,
+        expand(FACTORS_ALL_CONTINUOUS_META_PLOT,
                factor = FACTORS,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,

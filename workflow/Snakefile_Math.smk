@@ -54,7 +54,7 @@ rule plot_factors_all_meta:
         carnegie = CARNEGIE_INFO,
         cw = UNI_CROSSWALK,
         sizes = ORG_SIZES
-    output: FACTORS_ALL_META_PLOT
+    output: FACTORS_ALL_CONTINUOUS_META_PLOT
     shell:
         "Rscript scripts/PlotFactors/PlotContinuousFactorsByMeta.R \
         --input {input.factors} --lookup {input.lookup} \
