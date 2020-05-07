@@ -57,7 +57,7 @@ cw <- read_csv(opt$unicw, col_types = cols())
 leiden <- read_csv(opt$leiden, col_types = cols())
 
 # Load the organization sizes
-inst_sizes = readr::read_delim(opt$sizes, delim = "\t") %>%
+inst_sizes = readr::read_delim(opt$sizes, delim = "\t", col_types = cols()) %>%
   group_by(cwts_org_no) %>%
   summarize(
     count = mean(person_count)
@@ -104,10 +104,19 @@ if (opt$toplot == "pull") {
 count <- 0
 breaks_fun <- function(x) {
   count <<- count + 1L
-  switch(
-    count,
+
+  # Setup indices that are different between the
+  # plotting variables
+  if (opt$toplot == "pull") {
+    index.1 = c(0, 6)
+  } else {
+    index.1 = c(1, 7)
+  }
+
+  to_return <- switch(
+    floor((count + 1) / 2),
     c(1, 4),
-    ifelse(opt$toplot == "pull", c(0, 6), c(1, 7)),
+    index.1,
     c(1, 400),
     c(0, 120),
     c(0, 2e+06),
@@ -119,12 +128,20 @@ breaks_fun <- function(x) {
     c(0, 150),
     c(0, 250)
   )
+  print(x)
+  print(paste0("Count = ", count, "To Return: ", paste0(to_return, collapse = "_")))
+  return(to_return)
 }
 
 # Build the plot
-plot <- factors.ext %>%
+plotdata <- factors.ext %>%
   rename(measure = var.yaxis,
          to.compare = var.compare) %>%
+  # Select only variables that we will be plotting
+  select(count, leiden_rank, FALLENR17, GRFTF17, GRCIP4PR,
+         HUM_RSD, OTHER_RSD, STEM_RSD, SOCSC_RSD,
+         `S&ER&D`, `NONS&ER&D`, measure, to.compare) %>%
+  na.omit() %>% # remove NA values
   tidyr::gather(key, value,
                 count, leiden_rank, FALLENR17, GRFTF17, GRCIP4PR,
                 HUM_RSD, OTHER_RSD, STEM_RSD, SOCSC_RSD,
@@ -138,7 +155,11 @@ plot <- factors.ext %>%
                             "S&E $ (1000's)", "Non S&E $ (1000's)", "Total Enrollment", "Graduate Enrollment",
                             "#STEM PhDs", "#Soc. Sci. PhDs", "#Humanities PhDs", "#Other PhDs")
                 )
-  ) %>%
+  )
+
+
+print(table(plotdata$key))
+plot <- plotdata %>%
   ggplot(aes(x = value, y = measure)) +
   geom_point(alpha = 0.75, size = 1) +
   facet_wrap(~key, scale = "free_x", nrow = 3) +
