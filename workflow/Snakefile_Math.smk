@@ -44,3 +44,20 @@ rule plot_potential_vs_pi:
     shell:
         "Rscript scripts/PlotFactors/PlotPotentialVsPi.R \
         --input {input} --output {output}"
+
+rule plot_factors_all_meta:
+    input:
+        factors = rules.decompose_word2vec_model.output,
+        lookup = ancient(rules.add_state_to_lookup.output)
+    params:
+        ranking = ORG_RANKINGS.format(ranking = "leiden"),
+        carnegie = CARNEGIE_INFO,
+        cw = UNI_CROSSWALK,
+        sizes = ORG_SIZES
+    output: FACTORS_ALL_META_PLOT
+    shell:
+        "Rscript scripts/PlotFactors/PlotContinuousFactorsByMeta.R \
+        --input {input.factors} --lookup {input.lookup} \
+        --carnegie {params.carnegie} --unicw {params.cw} \
+        --leiden {params.ranking} --sizes {params.sizes} \
+        --toplot {wildcards.factor} --output {output}"

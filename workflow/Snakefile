@@ -114,6 +114,8 @@ ORG_PPR_COS_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_cosine_with_0_9.
 ORG_PPR_JSD_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_jsd_with_0_9.csv')
 ORG_TYPES = osjoin(ADDITIONAL_DATA_DIR, 'org_types.csv')
 ORGS_TO_EXCLUDE = osjoin(ADDITIONAL_DATA_DIR, 'orgs_not_government.csv')
+CARNEGIE_INFO = osjoin(ADDITIONAL_DATA_DIR, 'CCIHE2018-PublicData.xlsx')
+UNI_CROSSWALK = osjoin(ADDITIONAL_DATA_DIR, 'carnegie_cwts_us_uni_crosswalk.csv')
 
 ###############################################################################
 # Visualization files
@@ -134,6 +136,8 @@ POTENTIAL_VS_PI_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
                                 'd{dimensions}_ws{window}_{traj}_potential_pi.pdf')
 PULLING_VS_PI_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
                                 'd{dimensions}_ws{window}_{traj}_pulling_pi.pdf')
+FACTORS_ALL_META_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
+                               '{factor}_d{dimensions}_ws{window}_{traj}_allmeta.pdf')
 
 # GRAVITY PLOTS
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', '{traj}', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
@@ -164,6 +168,7 @@ RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correla
 
 # MISC PLOTS
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
+
 ###############################################################################
 # MISC files
 ###############################################################################
@@ -189,6 +194,9 @@ W2V_WINDOW_SIZE = [1]
 W2V_MIN_WORD_FREQ = 20
 W2V_NUM_WORKERS = 4
 W2V_ITERATIONS = 5
+
+# MATH File parameters
+FACTORS = ["pull", "potential"]
 
 # UMAP parameters
 COUNTRIES = ['all']
@@ -275,6 +283,11 @@ rule all:
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
         expand(PULLING_VS_PI_PLOT,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(FACTORS_ALL_META_PLOT,
+               factor = FACTORS,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
