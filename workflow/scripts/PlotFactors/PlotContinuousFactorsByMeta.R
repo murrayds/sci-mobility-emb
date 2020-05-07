@@ -3,7 +3,7 @@
 #
 # author: Dakota Murray
 #
-# Plot all continuous
+# Plot factors against continuous univeristy characteristics
 #
 
 # Plotting options
