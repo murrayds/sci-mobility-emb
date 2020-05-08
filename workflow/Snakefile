@@ -29,6 +29,7 @@ EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 STAT_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Stat')
 NETWORK_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Network')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
+MATH_FIGURE_DIR = osjoin(FIGURE_DIR, 'Math')
 DESCRIPTIVE_FIG_DIR = osjoin(FIGURE_DIR, 'Descriptive')
 AXES_DATA_DIR = osjoin(ADDITIONAL_DATA_DIR, 'OrgAxes')
 SEMAXIS_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'SemAxis')
@@ -75,6 +76,7 @@ FLOWS_NETWORK = osjoin(NETWORK_DATA_DIR, 'flows_edgelist.csv')
 WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, '{traj}', 'word2vec_d{dimensions}_ws{window}_model.bin')
 ORG_W2V_COS_SIMS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', 'cos_{traj}_d{dimensions}_ws{window}_sim.csv')
 ORG_W2V_DOT_SIMS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', 'dot_{traj}_d{dimensions}_ws{window}_sim.csv')
+ORG_W2V_FACTORS = osjoin(EMBEDDINGS_DIR, '{traj}', 'factors', 'd{dimensions}_ws{window}_{traj}_w2vfactors.csv')
 
 ##############
 # Stat       #
@@ -112,16 +114,38 @@ ORG_PPR_COS_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_cosine_with_0_9.
 ORG_PPR_JSD_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_jsd_with_0_9.csv')
 ORG_TYPES = osjoin(ADDITIONAL_DATA_DIR, 'org_types.csv')
 ORGS_TO_EXCLUDE = osjoin(ADDITIONAL_DATA_DIR, 'orgs_not_government.csv')
+CARNEGIE_INFO = osjoin(ADDITIONAL_DATA_DIR, 'CCIHE2018-PublicData.xlsx')
+UNI_CROSSWALK = osjoin(ADDITIONAL_DATA_DIR, 'carnegie_cwts_us_uni_crosswalk.csv')
 
 ###############################################################################
 # Visualization files
 ###############################################################################
+
+# UMAP PLOTS
 UMAP_DATA = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dimensions}', 'data', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_data.csv')
 UMAP_VISUALIZATIONS_ORG = osjoin(UMAP_FIGURE_DIR, '{traj}', '{country}', 'd{dimensions}', '{country}_umap_d{dimensions}_ws{window}_{metric}_neighbors{neighbors}_vis.{ext}')
+
+# MATH PLOTS
+PULLING_FORCE_COMPARE_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
+                                'd{dimensions}_ws{window}_{traj}_pulling_compare.pdf')
+PULLING_VS_POTENTIAL_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
+                                'd{dimensions}_ws{window}_{traj}_pulling_potential.pdf')
+PULLING_VS_SIZE_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
+                                'd{dimensions}_ws{window}_{traj}_pulling_orgsize.pdf')
+POTENTIAL_VS_PI_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
+                                'd{dimensions}_ws{window}_{traj}_potential_pi.pdf')
+PULLING_VS_PI_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
+                                'd{dimensions}_ws{window}_{traj}_pulling_pi.pdf')
+FACTORS_ALL_CONTINUOUS_META_PLOT = osjoin(MATH_FIGURE_DIR, 'meta',
+                               '{factor}_d{dimensions}_ws{window}_{traj}_allmeta.pdf')
+
+# GRAVITY PLOTS
 GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', '{traj}', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_{to_filter}.pdf')
 DOT_COSINE_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Math', '{traj}', 'd{dimensions}', 'd{dimensions}_ws{window}_dot_cosine.pdf')
 PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', '{model}', 'd{dimensions}', '{distance}', '{traj}_{model}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
 PREDICTED_VS_ACTUAL_PLOT_FILT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', '{model}', 'filtered', 'd{dimensions}', '{distance}', '{traj}_{model}_{geo_constraint_filt}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}.pdf')
+
+# DESCRIPTIVE PLOTS
 PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'pubs_over_time_plot.pdf')
 PROP_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_over_time_plot.pdf')
 PUBS_DISC_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'pubs_over_time_by_discipline_plot.pdf')
@@ -131,7 +155,8 @@ PROP_MOBILE_BY_COUNTRY = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_mobility_by
 PROP_ORG_COUNTRY_MOBILITY = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_org_country_mobility.pdf')
 COUNTRY_MOBILITY_ECDF = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_country_mobility_ecdf.pdf')
 COUNTRY_MOBILITY_DISTRIBUTION = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'prop_country_mobility_distribution.pdf')
-HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
+
+# SEMAXIS PLOTS
 SEMAXIS_1D_COASTS_PLOT = osjoin(SEMAXIS_FIG_DIR, 'coasts', '{traj}', 'd{dimensions}', 'coasts_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_1D_PRESTIGE_PLOT = osjoin(SEMAXIS_FIG_DIR, 'prestige', '{traj}', 'd{dimensions}', '{ranking}_rank_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_2D_COASTS_PRESTIGE_OVERALL_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'overall_coasts_{ranking}_rank_1Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
@@ -140,6 +165,9 @@ SEMAXIS_2D_COASTS_PRESTIGE_SECTOR_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}',
 SEMAXIS_RANK_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'n{numorgs}_{ranking}_semcompare_d{dimensions}_ws{window}.pdf')
 TIMES_LEIDEN_COMPARE_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'times_leiden_compare.pdf')
 RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correlation.pdf')
+
+# MISC PLOTS
+HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
 
 ###############################################################################
 # MISC files
@@ -161,11 +189,14 @@ NUMORGS = list(range(5, 61, 5))
 NUMORGS.extend([1, 2, 3, 4])
 
 # WORD2VEC parameters
-W2V_DIMENSIONS = [100, 200, 300]
-W2V_WINDOW_SIZE = [1, 2, 3]
+W2V_DIMENSIONS = [300]
+W2V_WINDOW_SIZE = [1]
 W2V_MIN_WORD_FREQ = 20
 W2V_NUM_WORKERS = 4
 W2V_ITERATIONS = 5
+
+# MATH File parameters
+FACTORS = ["pull", "potential"]
 
 # UMAP parameters
 COUNTRIES = ['all']
@@ -210,11 +241,20 @@ include: 'Snakefile_Descriptive.smk'
 # Rules relating to gravity law, predictions, etc.
 include: 'Snakefile_Gravity.smk'
 
+# Rules relating to the math.
+include: 'Snakefile_Math.smk'
+
 ###############################################################################
 # TARGET RULE
 ###############################################################################
 rule all:
     input:
+        # W2V Factor files
+        expand(ORG_W2V_FACTORS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+
         # UMAP projections
         expand(UMAP_VISUALIZATIONS_ORG,
                traj = TRAJECTORIES,
@@ -224,6 +264,33 @@ rule all:
                window = W2V_WINDOW_SIZE,
                country = 'all',
                ext = FIG_EXTS),
+
+        # Math Plots
+        expand(PULLING_FORCE_COMPARE_PLOT,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(PULLING_VS_POTENTIAL_PLOT,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(PULLING_VS_SIZE_PLOT,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(POTENTIAL_VS_PI_PLOT,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(PULLING_VS_PI_PLOT,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(FACTORS_ALL_CONTINUOUS_META_PLOT,
+               factor = FACTORS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
 
         # Gravity Law Plots
         expand(GRAVITY_RELATIONSHIP_PLOT,
