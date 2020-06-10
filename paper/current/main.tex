@@ -166,9 +166,9 @@ We argue that the performance of a distance measure can be observed from its abi
 %
 % Subsection: Embedding performance
 %
-\subsection*{Embeddings estimate the effective distance between organizations}
+\subsection*{Embeddings provide a functional distance between organizations}
 
-The effective distance estimated by our embedding model explains and predicts scientific mobility best.
+The functional distance derived from the  embedding model explains and predicts scientific mobility best.
 The amount of variance explained by embedding distance ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) is more than twice that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
 This pattern holds for the variance of only domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig.~\ref{fig:supp:gravity_correlation}d).
 After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c--d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e--f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g--h).
@@ -294,7 +294,7 @@ This proportionality relationship is consistent with findings from our model, an
 %
 \subsection*{Embeddings capture global structure of mobility}
 
-Given that embeddings capture effective distance between organizations, we can now examine the global structure of scientific mobility.
+Given that embeddings capture a functional distance between organizations, we can now examine the global structure of scientific mobility.
 Because the embeddings are defined in a high-dimensional space, we apply a widely-used dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) to visualize the overall structure (Fig.~\ref{fig:projection}a).
 Globally, the effect of geography is conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors. 
 At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network visualizations (Fig.~\ref{fig:supp:network_vis}). 
