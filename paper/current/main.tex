@@ -369,24 +369,19 @@ This suggests that geography, then language, are important factors contributing 
 %
 % Subsection - hierarchy
 %
-\subsection*{Embeddings capture latent geography and hierarchy}
+\subsection*{Embeddings capture latent prestige hierarchy}
 
-The results demonstrating embeddings' ability to capture various features governing mobility raise the question of whether they can also capture semantic axes analogously to word embeddings. 
-For instance, does the mobility embedding encode information about the prestige or universities?
-We show that, in addition to encoding national characteristics, the embedding also encodes domestic geography and latent hierarchy.
-
-By treating organizations analogously to words and trajectories to sentences, we embed organizations in a way that preserves \textit{semantic} relationships, meaning organizations that share similar co-affiliation \textit{contexts} will in turn be similar (see Data and Methods). 
-Leveraging these unique semantic properties, we employ the SemAxis approach~\autocite{an2018semaxis} and define two axes.
-The first is the California--Massachusetts axis defined by the mean vector of universities in California on one end, and in Massachusetts on the other. 
-The second axis is the low- to high- prestige axis;
-the elite end of the axis is defined as the top 20 U.S. universities according to the Times Ranking of World Universities, whereas the non-elite axis is defined as bottom-ranked and geographically matched (by U.S. census region) set of universities.
-A university projected onto the axis corresponds to their relative nearness to the mean vector defining each pole (Fig.~\ref{fig:semaxis}a).
-
-Generally, universities in Western states, such as Arizona (Fig.~\ref{fig:supp:semaxis_states}b) are nearer to the California end of the axis, whereas states in the Northeast such as New York (Fig.~\ref{fig:supp:semaxis_states}f) and Connecticut (Fig.~\ref{fig:supp:semaxis_states}e) are nearer the Massachusetts end.
-Universities geographically distant from both California and Massachusetts are less aligned with either, such as Texas (Fig.~\ref{fig:supp:semaxis_states}g)s and Florida (Fig.~\ref{fig:supp:semaxis_states}i).
+Prestige hierarchies underpin the dynamics of scientific mobility~\autocite{deville2014career, clauset2015hierarchy}, but are these hierarchies captured in the embedding space?
+We test this by exploting the geometric properties of the embedding space with the technique SemAxis~\autocite{an2018semaxis}, an approach originally designed for word embeddings but that is equally applicable here. 
+SemAxis assumes the existence of an a user-defined axis, defined as the vector formed by the distance of some two vectors in the embedding space.
+The choice of the axis should represent a meaningful and coherent concept.
+Organization vectors are then projected onto this axis, and their position estimates their similarity to the concepts embodied by either end of the axis. 
+We define prestige using the Times Ranking of World Universities, including all ranked universities in the United States;
+the elite end is defined as the mean vector of the top five U.S. universities according to the rankings, whereas the non-elite axis is defined using the five bottom-ranked and geographically matched (by U.S. census region) universities.
+A geographic axis is also added to aid the visualization and reinforce the importance of geography, defined as the mean vector of all universities in California and then Massachusetts. 
 
 Universities hiring and mobility networks are known to exhbit latent pretige hierarchies ~\autocite{deville2014career, clauset2015hierarchy} that should be encoded in the embedding space.
-Accordingly, prestigious universities such as Stanford, Colombia, MIT, Harvard, and NYU, group towards the top of the axis.
+Accordingly, prestigious universities such as Stanford, Colombia, MIT, Harvard, and NYU, group towards the top of the axis (Fig.~\ref{fig:semaxis}a).
 Universities at the bottom of this axis tend to be regional universities with lower national profiles.
 By considering mobility between all organization types, organization embeddings offer a new means of reasoning about the prestige of organizations typically excluded from rankings such as government organizatioss (Fig.~\ref{fig:supp:semaxis_sectors}a), research institutes (Fig.~\ref{fig:supp:semaxis_sectors}b), and teaching colleges (Fig.~\ref{fig:supp:semaxis_sectors}c).
 
@@ -398,24 +393,24 @@ By considering mobility between all organization types, organization embeddings 
 	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
 	\caption{
 		\textbf{Embedding captures latent geography and prestige hierarchy.}
-		\textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top).
+		\textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top five and geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top).
 		Points correspond to organizations, and a sample of individual states are highlighted.
 		Full organization names listed in Table~\ref{table:supp:orglabels}.
 		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the \textit{Elite} end of the axis prestige axis \textit{a}.
-		White points are those top and bottom 5 universities aggregated to define the ends of the axis.
-		The grey box corresponds to the top 5 and bottom 5 ranks.
-	  		  	Even when considering only a total of ten organization vectors, the estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.73 (n = 145).
+		White points are those top and bottom five universities aggregated to define the ends of the axis.
+		The grey box corresponds to the top five and bottom five ranks.
+	  	Even when considering only a total of ten organization vectors, the estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.73 (n = 145).
 	}
 	\label{fig:semaxis}
 \end{figure}
 
-In addition to capturing geography, the word embedding also encodes the well-known latent prestige hierarchies of academic mobility~\autocite{deville2014career, clauset2015hierarchy}.
+The embedding space captures prestige hierarchies to such a high resoltuion that they can be used to reconstruct academic rankings. 
 We derive a ranking using the prestige axis that we call \textit{SemRank}, and compare them to traditional university rankings.
 SemRank is defined from the position of organizations along the prestige axis, with the top ranked being the furthest towards the \textit{Elite} end of the axis.
-We find that SemRank derived is highly correlated with the Times ranking ($\rho = 0.81$, Fig.~\ref{fig:semaxis}b).
+We find that SemRank derived is highly correlated with the Times ranking ($\rho = 0.73$, Fig.~\ref{fig:semaxis}b).
 This correlation is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities is strongly correlated with the Times Ranking ($\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
-For reference, SemRank achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically informed university ranking ($\rho = 0.87$, Fig.~\ref{fig:supp:times_vs_leiden}).
-This suggests that word embeddings, in addition to learning the latent geography of mobility, also capture more nuanced characteristics such as latent hierarchy in the axis of the embedding, which is a unique and fascinating characteristic of this approach.
+For reference, SemRank achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically-informed university ranking ($\rho = 0.87$, Fig.~\ref{fig:supp:times_vs_leiden}).
+This suggests that the organization embedding captures the latent prestige hierarchy inherent to academic mobility with a high degree of resolution and reliability. 
 
 
 %
