@@ -79,7 +79,7 @@
 
 \begin{document} %{{{
 
-\title{Unsupervised embeddings of organizations capture latent structure of scientific mobility} %{{{
+\title{Unsupervised embeddings of organizations capture the latent structure of scientific mobility} %{{{
 \date{\today}
 \maketitle %}}}
 
@@ -89,16 +89,18 @@
 
 \begin{abstract}
 
-Scientific mobility drives innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}.
+
+Human mobility and migration drives countless social phenomenon including the growth and evolution of cities~\autocite{bettencourt2007cities, bettencourt2013cities, wef2017migration, curiel2018citygravity},  epidemics~\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity, hufnagel2004epidemics, eubank2004outbreaks}, economies~\autocite{kaluza2010cargo, kerr2011immigration, taylor2016refugees, pappalardo2015mobility}, innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation, liu2010spillovers},  and scientific research~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}. 
 Common models of mobility, such as the Gravity Model~\autocite{zipf1946gravity, xia2005measlesgravity, jung2008highwaygravity, barbosa2018human, curiel2018citygravity, lewer2008immigrationgravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity, simini2012universal}, describes mobility using the \textit{distance} between places.
-However, amid a globalizing scientific enterprise~\autocite{czaika2018globalisation}, geographic distance is losing its relevance for understanding mobility, whereas other abstract notions of distance~\autocite{boschma2005proximity} pose practical and theoretical challenges.
-%Accordingly, the complexity of factors shaping global scientific mobility~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics} necessitates simplified models for reasoning about and crafting effective policy.
-Leveraging the neural embedding model~\autocite{mikolov2013word2vec}, we demonstrate a data-driven approach for learning a vector-space representation that encodes an effective distance between places and captures the latent and multi-faceted structure of mobility.
-We train scientific mobility embedding using the organizational trajectories derived from the publications of disambiguated authors from the Web of Science database between 2008 and 2019.
-Distance between vectors in the learned embedding space explains and predicts mobility between organizations better than  geographic distance or network distance. We argue that such power emerges from an underlying connection between the neural embedding model and the gravity model.
-In addition to geography, these embeddings also capture latent religious, cultural, social, and linguistic, and even prestige of organizations at multiple levels of granularity.
+However, amid a globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization}, geographic distance has less relevance for understanding mobility, whereas other abstract notions of distance~\autocite{boschma2005proximity} pose practical and theoretical challenges.
+Using the case of scientific mobility, we leveragethe neural embedding model~\autocite{mikolov2013word2vec} to demonstrate a data-driven approach for learning a vector-space embedding that encodes a functional distance~\autocite{brown1970migration, brown1970functional, kim2018functional} between places and captures the latent and multi-faceted structure of human mobility.
+We train embeddings of scientific organizations using mobility trajectories derived from the publications of disambiguated authors from the Web of Science database between 2008 and 2019.
+Distance between vectors in the learned embedding space explains and predicts real mobility between organizations better than  geographic distance. 
+We argue that this explanatory power emerges from an underlying connection between the neural embedding model and the gravity model.
+In addition to geography, the embedding also captures latent factors related to culture, language, and prestige of organizations at multiple levels of granularity.
 With this approach, we can learn scalable, dense, and meaningful vector representations of scientific mobility directly from the data using a methodology that can be easily applied to all kinds of mobility data.
 \end{abstract}
+
 
 %
 % INTRODUCTION
