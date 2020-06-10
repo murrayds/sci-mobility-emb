@@ -296,21 +296,24 @@ This proportionality relationship is consistent with findings from our model, an
 %
 \subsection*{Embeddings capture global structure of mobility}
 
-Given that embeddings capture a functional distance between organizations, we can now examine the global structure of scientific mobility.
-Because the embeddings are defined in a high-dimensional space, we apply a widely-used dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) to visualize the overall structure (Fig.~\ref{fig:projection}a).
-Globally, the effect of geography is conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors. 
-At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network visualizations (Fig.~\ref{fig:supp:network_vis}). 
+What kind of information is encoded in the embedding that allows embedding distance to outperform geographic distance?
+To explore the structure of the embedding space, we use a common dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) to visualize it in two dimensions (Fig.~\ref{fig:projection}a).
+This projection constitutes the largest and highest resolution ``map'' of scientific mobility to date.
 
-By learning and leveraging the embedding space, these complex national and regional relationships can be quantified and visualized.  
-For example, by re-projecting or \textit{zooming into} organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries from majority-Muslim countries in the Middle East to South Asian countries of Pakistan, Bangladesh, and Indonesia, and finally towards Southeast-Asian nations with different religious majorities such as Vietnam, the Philippines, and Thailand.
+Globally, the effect of geography is conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors. 
+At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network representations (Fig.~\ref{fig:supp:network_vis}) that have dominated studies of scientific mobility~\autocite{chinchilla2018global, czaika2018globalisation}.
+
+An advantage of the embedding space is the ability to \textit{zoom in} on subsets of counties and re-project them in order to reveal more local relationships. 
+For example, re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries ranging from Egypt to Phillipines that correponds to both geography but also cultural factors, such as the majority relitigion of each country;
+for example, the cluster for Malaysia, a majority-Muslim country, is nearer to other Middle Eastern nations than Thailand, a country that is geographically-nearer though with very different religious demographics. 
 Linguistic and historical ties are also important.
 For example, we observe that Spanish-speaking post-colonial Latin American nations (Mexico, Chile, Peru, etc.) are positioned near Spain, whereas Brazil is nearer to Portugal (Fig.~\ref{fig:projection}c).
 Similarly, Algeria and Morocco are near the French cluster (Fig.~\ref{fig:projection}a).
 Comparable structural patterns exist even within a single country.
-For example, organizations within Quebec in Canada are located near the French cluster rather than the rest of Canada.
+For example, at the global level (Fig~\ref{fig:projection}a), organizations within Quebec in Canada are located near the French cluster rather than the rest of Canada.
 
-Just as the global embedding captures national-level geographic structure, so does a projection of organizations in the United States reflect organizational structure based on states (Fig.~\ref{fig:projection}d).
-By re-projecting at the state-level for Massachusetts (Fig.~\ref{fig:projection}e), we observe structure between urban Centers (Boston vs. Worcester), but also based on organization type (e.g., hospitals vs. universities) and university systems.
+Just as the global embedding captures national-level geographic structure, so does a projection of organizations in the United States reflect organizational structure based on states and regions (Fig.~\ref{fig:projection}d).
+By re-projecting at the state-level for Massachusetts (Fig.~\ref{fig:projection}e), we observe structure between urban centers (Boston vs. Worcester), but also based on organization type (e.g., hospitals vs. universities) and university systems.
 Even though UMass Boston is located in Boston, it clusters near other universities in the UMass System rather than the typically more elite and research-focused universities in Boston, reflecting a relative lack of mobility between the two systems, even within the same state.
 Similar structures can be observed in other states such as among New York's CUNY and SUNY systems (Fig.~\ref{fig:supp:proj_newyork}), Pennsylvania's state system (Fig.~\ref{fig:supp:proj_pennsylvania}), Texas's Agricultural and Mechanical universities(Fig.~\ref{fig:supp:proj_texas}), and between the University of California and State University of California systems (Fig.~\ref{fig:supp:proj_california}). 
 
@@ -331,13 +334,14 @@ Similar structures can be observed in other states such as among New York's CUNY
 	\label{fig:projection}
 \end{figure}
 
-We can also examine high-level structure by estimating aggregate embeddings of countries. 
+Just as the embedding space makes it possible to "zoom in" on subsets of organizations, it is possible to "zoom out" to a higher level by aggregating organizational vectors. 
+For example, we can examine high-level structure by estimating the aggregate embeddings of countries. 
 Namely, we calculate the representative vector of each country by averaging organization vectors within the given country.
 We then perform hierarchical clustering of nations that have at least 25 organizations represented in the embedding space, excluding the United States which has high similarity with most other countries (see Fig. \ref{fig:clustering}a). 
-The identified six clusters roughly correspond to: East-Asian (orange), Scandinavian (dark purple), British Commonwealth (light purple), Central and Eastern European countries (light blue), and then two cluster diverse clusters with a mix of European, Latin American, and Mediterranean countries.
-Countries are either grouped geographically or by linguistic or historical ties. 
+The six identified clusters roughly correspond to: East-Asian (orange), Scandinavian (dark purple), British Commonwealth (light purple), Central and Eastern European countries (light blue), and then two cluster diverse clusters with a mix of European, Latin American, and Mediterranean countries.
+These clusters demonstrate the importance of not only geography, but also linguistic ties between countries.
 
-We investigate the extent to which geography and language dictate the formation of clusters using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
+We quantify the relative importance of geography (by continent), and language (by majority language of each country) using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
 If $r$ is high, the similarity is based on the lower levels of the dendrogram, whereas when $r$ is low, similarity is based on higher levels.
 Fig. \ref{fig:clustering}b demonstrates that continent plays a major role at higher levels of clustering process (low $r$), and language (family) explain the clustering more at the lower levels (high $r$).
 This suggests that geography, then language, are important factors contributing to the structure of international scientific mobility.
