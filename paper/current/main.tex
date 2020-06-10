@@ -166,15 +166,17 @@ We argue that the performance of a distance measure can be observed from its abi
 %
 % Subsection: Embedding performance
 %
+% TODO: remove the subsection label?
+%
 \subsection*{Embeddings provide a functional distance between organizations}
 
-The functional distance derived from the  embedding model explains and predicts scientific mobility best.
+The functional distance derived from the embedding explains and predicts scientific mobility better than geographic distance.
 The amount of variance explained by embedding distance ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) is more than twice that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
-This pattern holds for the variance of only domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and international mobility flows (Fig.~\ref{fig:supp:gravity_correlation}d).
-After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance globally (Fig.~\ref{fig:gravity_performance}c--d) and for domestic (Fig.~\ref{fig:supp:gravity_correlation}e--f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g--h).
-We also examine gravity model with dot product in the embedding space, the amount of variance explain ($R^{2} = 0.34$) by dot product outperforms that of geographic distance (Fig.~\ref{fig:supp:gravity_dot}).
-Similarly, embedding distance outperforms ``diffusion''  distances such as those derived from calculating personalized-page rank scores (see supporting materials) on the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-Geographic distance alone is a poor perspective for understanding international scientific mobility---rather, by learning a distance directly from the data, it is possible to better explain, and better predict flux between organizations.
+This pattern holds when considering the subset of only domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (Fig.~\ref{fig:supp:gravity_correlation}d).
+After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance (Fig.~\ref{fig:gravity_performance}c--d), which also holds for the subsets of only domestic (Fig.~\ref{fig:supp:gravity_correlation}e--f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g--h).
+The embedding distance defined from the cosine distnace between vectors also outperforms that defined from their dot product ($R^{2} = 0.34$, Fig.~\ref{fig:supp:gravity_dot}).
+The embedding distance also out-performs alternative ``diffusion'' measures such as the personalized-page rank scores (see supporting materials) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
+Geographic distance alone is a poor perspective for understanding international scientific mobility---rather, by learning a functional distance directly from the data, it is possible to better explain, and better predict flux between organizations.
 
 %
 % Figure - Gravity law performance
