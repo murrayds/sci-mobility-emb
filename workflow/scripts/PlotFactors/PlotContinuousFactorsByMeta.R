@@ -128,13 +128,11 @@ breaks_fun <- function(x) {
     c(0, 150),
     c(0, 250)
   )
-  print(x)
-  print(paste0("Count = ", count, "To Return: ", paste0(to_return, collapse = "_")))
   return(to_return)
 }
 
 # Build the plot
-plotdata <- factors.ext %>%
+plot <- factors.ext %>%
   rename(measure = var.yaxis,
          to.compare = var.compare) %>%
   # Select only variables that we will be plotting
@@ -155,11 +153,7 @@ plotdata <- factors.ext %>%
                             "S&E $ (1000's)", "Non S&E $ (1000's)", "Total Enrollment", "Graduate Enrollment",
                             "#STEM PhDs", "#Soc. Sci. PhDs", "#Humanities PhDs", "#Other PhDs")
                 )
-  )
-
-
-print(table(plotdata$key))
-plot <- plotdata %>%
+  ) %>%
   ggplot(aes(x = value, y = measure)) +
   geom_point(alpha = 0.75, size = 1) +
   facet_wrap(~key, scale = "free_x", nrow = 3) +
