@@ -26,6 +26,10 @@
 \DeclareMathAlphabet{\mathpzc}{T1}{pzc}{m}{it}
 \DeclareMathOperator*{\argmin}{\arg\!\min}
 \DeclareMathOperator*{\argmax}{\arg\!\max}
+\usepackage{bm}
+\def\tnull{{\text{null}}}
+\def\vec#1{{\bm #1}}
+\def\mat#1{\mathbf{#1}}
 
 
 % abbreviations
@@ -211,84 +215,76 @@ Geographic distance alone is a poor perspective for understanding international 
 \subsection*{Mathematical connection between gravity model and neural embedding }
 
 Why does the word embedding model, originally designed for natural language processing, produce a reasonable distance that models gravity relationships between organizations?
-We find evidence of a theoretical connection between the two models, one that makes the neural embedding model applicable to embedding many forms of mobility trajectories. For this section, we relax the cosine similarity as a dot product for simplicity.
+We find evidence of a theoretical connection between the two models, one that makes the neural embedding model applicable to embedding many forms of mobility trajectories. 
 
-According to our observation on the embedding space from Eq.\ref{eq:linear_flux_emb},
-
-\begin{equation}
+The gravity model generates the flow from $i$ to $j$ by 
+\begin{align}
     \label{eq:gravity_model}
-    \frac{T_{ij}}{M_{i} M_{j}} \propto \exp(-d_{ij}) =  \exp(- (-v_i \cdot v_j) \propto \exp(v_i \cdot v_j) 
-\end{equation}
+    T_{ij}:= G M_i M_j f\left(d_{ij}\right),
+\end{align}
+where $M_i$ is the mass for the gravity model, $f\left(d_{ij}\right)$ is a function of the distance, and 
+$G$ is the constant analogous to the gravitational constant in physics. In migration study, any quantity that proportion to sum of flow from $i$ can be used as $M_i$, often population at a point $i$ (e.g., city and country) is popular choice. For the $d_{ij}$, geographical distance is often used. In other words, the gravity model inference most appropriate  $f\left(d_{ij}\right)$ with given $M_i, M_j, T_{ij},$ and $d_{ij}$. Here, we are going to show that \textit{word2vec} can be interpreted as generalized version of the gravity model, which preserved the original information into the scalable and meaningful embedding vector.
 
-where $T_{ij}$ represents the \textbf{flux}, the number of people who moved between organizations $i$ and $j$,  $M_{i}$ and $M_{j}$ represent the size of an organization,  $d_{ij} = - v_{i}, v_{j}$ is the embedding distance.  In the case of scientific co-affiliation, we assume all movements are without direction (symmetric), meaning that  $T_{ij} = T_{ji}$. 
-
-
-To rewrite  Eq.\ref{eq:gravity_model} in terms of $T_{ij}$, we replace  $M_i$ with $\mu_{i}$, the total flux to or from $i$ which can be written as
-
-\begin{equation}
-	\label{eq:approxi_mass_term}
-    \mu_{i} = \sum_{k \in N} T_{ik} \propto M_i,
-\end{equation}
-where $N$ as set of organizations in the data. It can be checked in Fig.\ref{fig:math_part}. With this approximation, we can rewrite Eq.~\ref{eq:gravity_model} as,
-\begin{equation}
-   \frac{T_{ij}}{\mu_{i} \mu_{j}} \propto \exp(v_i,v_j).
-\end{equation}
-
-
-
-%
-% Figure - Conditional Probability
-%
-\begin{figure}
-    \centering
-    \includegraphics[width=0.4\columnwidth]{\figdir/Math/m_and_M.pdf}
-    \caption{
-    Relationship between $M_i$ and $\mu_i$.}.
-    \label{fig:math_part}
-\end{figure}
-
-This mathematical form relates to the objective function of the neural embedding model. The model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
+Word embedding model \textit{word2vec} attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
 
 \begin{equation}
     \label{eq:skipgram_log_prob_condensed}
     \frac{1}{T}\sum_{t=1}^{T} \sum_{-c \le j \le c, j \neq 0} \log p(w_{t+j}|w_t),
 \end{equation}
-where the conditional probability of observing one word, $w_{O}$, given another, $w_{I}$, is defined as,
+where the conditional probability of observing one word $i$, given word, $j$, is defined as,
 
-\begin{equation}
-    \label{eq:skipgram_conditional_expanded}
-    p(w_O|w_I) = \frac{\exp(v'_{w_O} \cdot v_{w_I})}{\sum_{w=1}^{W} \exp(v'_w \cdot v_{w_I})},
-\end{equation}
-where $v_w$ and $v'_w$ are ``input'' and ``output'' vector representations of each word in the vocabulary.  We use Skip-gram negative sampling model, and following the work by Levy and Goldberg \autocite{levy2014neural}, consider the model as implicitly performing matrix factorization as shown below,
+\begin{align}
+  \label{eq:model_node2vec}
+    P \left(j \mid i\right) = \frac{1}{Z_i}\exp\left(\vec{u} ^\top _{i} \vec{v}_{j}\right), 
+\end{align}
+where $u_i$ and $v_j$ are ``in-vector'' and ``out-vector'' respectively, which is K-dimensional vector representations of each word in the vocabulary.  Variable $Z_i$ is the normalization constant or the partition function, i.e., $Z_i:= \sum_{\ell=1}^N \exp\left(\vec{u} ^\top _{i} \vec{v}_{\ell}\right)$.  By the definition of the euclidean distance between the in-vectors,
+\begin{align}
+    \label{eq:distance}
+    d(\vec{u},\vec{u}'):= \sqrt{\sum_{k=1}^K \left(u_{k} - u'_{k}\right)^2}.
+\end{align}
 
-\begin{equation}
-    \label{eq:sgns_relation}
-    A = \left(a_{ij}\right)_{W*W} = \log \left(\frac{N(i, j) |D|}{N(i) N(j)} \right) - \log k,
-\end{equation}
+For simplicity, we assume that the $\vec{v}_j = \vec{u}_j$, it can be different practically. Exploiting $d^2 (\vec{u},\vec{u}')=||\vec{u}||^2 + ||\vec{u}'||^2 - 2\vec{u} ^\top \vec{u}'$, the dot similarity for $\vec{u}_i$ and $\vec{v}_j$ is given by 
+\begin{align}
+    \label{eq:dotsim}
+    \vec{u}_i ^\top \vec{v}_j = \frac{1}{2}\left[ ||\vec{u}_i||^2 + ||\vec{u}_j||^2 - d\left(\vec{u}_i, \vec{u}_j\right)^2 \right],
+\end{align}
+which leads 
+\begin{align}
+    \exp\left( \vec{u}_i ^\top \vec{v}_j \right) &= \frac{\exp\left( ||\vec{u}_i||^2/2 + ||\vec{u}_j||^2/2 \right)}{\exp\left[ d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]} \nonumber \\
+                                                 &= \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2\right]}, \label{eq:exp_distance_form}
+\end{align}
+where $s_i:=\exp(||\vec{u} _i||^2/2)$. Substituting Eq.~\eqref{eq:exp_distance_form} into Eq.~\eqref{eq:model_node2vec} yields
+\begin{align}
+    \label{eq:model_node2vec_distance}
+    P \left(j \mid i\right) &:= \frac{1}{Z_i}\cdot \frac{s_is_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2/2\right]}. 
+\end{align}
 
-where $N(i)\text{, } N(j) \text{ and } N(i,j)$ denotes the number of times word $i$, $j$, and word-context-pair ($i$, $j$) in the corpus respectively. Variable $k$ is the number of negative samples and $|D|$ is the size of the corpus. From Matrix Eq.\ref{eq:sgns_relation}, we can get embedding vector with rank-d approximation by SVD. The rank-d SVD factorize matrix A into product of three matrices  $L_d \Sigma R_d^T$, where $L_d$ and $R_d$ is $n \times d$ real matrices, and $\Sigma$ is    $d \times d$ diagonal matrix.
+If we consider a stable Markov process with the transition probability from $i$ to $j$, $P_(j \vert i)$ and consider the stationary distribution for the Markov process  $\pi$, i.e., mobile scientists. Then, the flow from $i$ to $j$  in one step is given by 
+\begin{align}
+    \label{eq:flow}
+    T_{ij}:= \pi_i P(j \vert i).
+\end{align}
+According to detailed balanced condition of Markov process, 
+\begin{align}
+    \pi_i P\left(j \vert i \right) = \pi_j P\left(i \vert j \right),
+\end{align}
+\begin{align}
+    \label{eq:detailed_balanced}
+    &\frac{\pi_i}{Z_i}\cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2\right]} = \frac{\pi_j}{Z_j}\cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]} \\
+    &\iff \frac{\pi_i}{Z_i} = \frac{\pi_j}{Z_j} =: G', \label{eq:const}
+\end{align}
+where $G'$ is a constant. 
+Substituting Eq.~\eqref{eq:model_node2vec_distance} into Eq.~\eqref{eq:flow} and exploiting Eq.~\eqref{eq:const} yield 
+\begin{align}
+    \label{eq:flow_gravity_model}
+    T_{ij} &= \pi_i P\left(j \vert i \right)\nonumber \\
+           &= \frac{\pi_i}{Z_i} \cdot \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]}\nonumber \\ 
+           &= G' \frac{s_i s_j}{\exp\left[d\left(\vec{u}_i, \vec{u}_j\right)^2 / 2 \right]}. 
+\end{align}
 
-Mathematically, the maximization of the objective function of the model yields $A_d = L_d \Sigma R_d^T$ such that $A_d = \arg \ \min_{Rank(A')=d} \Vert A' - A  \Vert$, which is the best approximate of the original matrix $A$. If we set, $V=L_d \Sigma$ and $V'=R_d$, then dot product between the rows of $V$ are equal to the dot products between rows of $A_d$ because $V$ is orthogonal real matrix  \autocite{levy2014neural}. With this relationship, we can rewrite the equation in terms of $V$.  For a specific word pair $(i,j)$,
+Remind that $T_{ij}:= G M_i M_j f\left(d_{ij}\right)$ in the gravity model.
+Thus, the word2vec is the generalized version of the gravity model with $M_i=s_i$ and $f\left(d_{ij} \right) = \exp\left[ - d\left(\vec{u}_i,\vec{u}_j\right) ^ 2 /2\right]$, which automatically learns the mass $M_i$ and map each entity into more abundant vector space with only given $T_{ij}$. Hence, the neural embedding model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility.
 
-\begin{equation}
-    \label{eq:sgns_relation_w,i, w_j}
-    v_{i} \cdot v_{j} =  \log \left(\frac{N(i, j) |D|}{N(i) N(j)} \right) - \log k,
-\end{equation}
-where $|D|$ and $k$ are constants, such that the functional form can be re-written as,
-
-\begin{equation}
-    \label{eq:sgns_relation_w,i, w_j}
-     \frac{N(i, j)}{N(i) N(j)}  \propto  \exp(v_{i} \cdot v_{j} ).
-\end{equation}
-
-In our model, $N(i)$ and $N(j)$ are total flux $M_i$ and $M_j$ respectively,  and $N(i,j)$ is just  $T_{ij}$, flux between $i$ and $j$. Then, we have the same expression with gravity model,
-
-\begin{equation}
-    \label{eq:sgns_relation_w,i, w_j_combining}
-     \frac{T_{ij}}{\mu_{i} \mu_{j}}  \propto  \exp(v_{i} \cdot v_{j} ).
-\end{equation}
-
-This proportionality relationship is consistent with findings from our model, and so we can say that there is a mathematical link between the neural embedding model and the gravity model. Hence, the neural embedding model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility.
 
 
 %
