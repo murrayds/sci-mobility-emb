@@ -227,8 +227,7 @@ We find evidence of a theoretical connection between the two models, one that ma
 where $M_i$ and $M_j$ are the masses of of the entities, $f\left(d_{ij}\right)$ is a function of the distance, and $G$ is the constant analogous to the gravitational constant in physics. 
 In mobility studies, any quantity proportional to the sum of flows from $i$ can be used as $M_i$; a common choice is the population at a point $i$ (e.g., city and country).
 For $d_{ij}$, geographical distance is often used. 
-We argue that the neural embedding model
-Here, we show that the neural embedding model can be interpreted as generalized version of the gravity model that efficiently encodes a functional distance into the dense, continuous, and meaningful embedding vector.
+Here, we show that the neural embedding model can be interpreted as a generalized version of the gravity model that efficiently encodes a functional distance into the dense, continuous, and meaningful embedding vector.
 
 In the case of language, the neural embedding model attempts to maximize the average log probability of observing a target word in a sentence, $w_{t}$, given the words in the surrounding context window, $w_{t + k}$. 
 This can be written as follows, where $c$ is the size of the context window and $T$ iterates through possible target words:
@@ -306,8 +305,8 @@ Substituting Eq.~\eqref{eq:model_node2vec_distance} into Eq.~\eqref{eq:flow} and
 \end{align}
 
 The form of Eq.~\ref{eq:flow_gravity_model} maps to the gravity model $T_{ij}:= G M_i M_j f\left(d_{ij}\right)$.
-Therefore, we argue that the nerual embedding model is a generalized version of the gravity model with $M_i=s_i$ and $f\left(d_{ij} \right) = \exp\left[ - d\left(\vec{u}_i,\vec{u}_j\right) ^ 2 /2\right]$.
-Given flows $T_{ij}$ derived from mobility trajectories, this model attempts to learn the mass $M_i$ and map each entity into more abundant vector space . 
+Therefore, we argue that the nerual embedding model can be interpreted as a generalized version of the gravity model with $M_i=s_i$ and $f\left(d_{ij} \right) = \exp\left[ - d\left(\vec{u}_i,\vec{u}_j\right) ^ 2 /2\right]$.
+Given flows $T_{ij}$ derived from mobility trajectories, neural embedding model attempts to learn the mass $M_i$, map each entity, and encode the functional distance into more abundant vector space . 
 Hence, the neural embedding model can be an effective model for investigating any kind of mobility trajectory data, stemming from the mathematical relationship between it and the gravity model of mobility.
 
 %
