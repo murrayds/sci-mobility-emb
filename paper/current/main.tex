@@ -83,7 +83,7 @@
 
 \begin{document} %{{{
 
-\title{Unsupervised embeddings of organizations capture the latent structure of scientific mobility} %{{{
+\title{Unsupervised embeddings of organizations capture the latent structure of global scientific mobility} %{{{
 \date{\today}
 \maketitle %}}}
 
@@ -97,11 +97,11 @@
 Human mobility and migration drives major social phenomenon such as the growth and evolution of cities~\autocite{bettencourt2007cities, bettencourt2013cities, wef2017migration, curiel2018citygravity},  epidemics~\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity, hufnagel2004epidemics, eubank2004outbreaks}, economies~\autocite{kaluza2010cargo, kerr2011immigration, taylor2016refugees, pappalardo2015mobility}, innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation, liu2010spillovers},  and scientific research~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}. 
 Common models of mobility, such as the Gravity Model~\autocite{zipf1946gravity, xia2005measlesgravity, jung2008highwaygravity, barbosa2018human, curiel2018citygravity, lewer2008immigrationgravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity, simini2012universal}, describes mobility using the \textit{distance} between places.
 However, amid a globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization}, geographic distance has less relevance for understanding mobility, whereas other abstract notions of distance~\autocite{boschma2005proximity} pose practical and theoretical challenges.
-Using the case of scientific mobility, we leverage the neural embedding model~\autocite{mikolov2013word2vec} to demonstrate a data-driven approach for learning a vector-space embedding that encodes a functional distance~\autocite{brown1970migration, brown1970functional, kim2018functional} between places and captures the latent and multi-faceted structure of human mobility.
-We train embeddings of scientific organizations using mobility trajectories derived from the publications of disambiguated authors from the Web of Science database between 2008 and 2019.
-Distance between vectors in the learned embedding space explains and predicts real mobility between organizations better than  geographic distance, emerging from an underlying connection between the neural embedding model and the gravity model.
+Using the case of scientific mobility, we leverage the neural embedding model~\autocite{mikolov2013word2vec} to demonstrate a data-driven approach for learning a vector-space embedding that encodes a functional distance~\autocite{brown1970migration, brown1970functional, kim2018functional} between organizations and captures the latent and multi-faceted structure of human mobility.
+We train neural embeddings of scientific organizations using mobility trajectories derived from the papers published between 2008 and 2019 of disambiguated authors from the Web of Science database.
+Functional distnace is derived as the cosine distance between vectors in the resulting embedding, and is shown to better explain and predict real mobility between organizations than geographic distance. 
 Exploiting their unique properties, we interpret the embedding space and observe how it captures latent factors related to culture, language, and prestige of organizations at multiple levels of granularity.
-With this approach, we can learn scalable, dense, and meaningful vector representations of scientific mobility directly from the data using a methodology that can be easily applied to all kinds of mobility data.
+This approach can  learn scalable, dense, and meaningful vector representations of scientific mobility directly from the data, and can easily be generalized to other mobility data.
 \end{abstract}
 
 
@@ -114,27 +114,30 @@ With this approach, we can learn scalable, dense, and meaningful vector represen
 
 How far apart are two places?
 The question is surprisingly hard to answer when it involves human mobility.
-While geographic distance may have driven human movements in past eras, it holds less importance to a world connected by rapid transport, complex international relations, and global trade.
-For example, a person currently living in Australia is more likely to migrate to the United Kingdom, a country with similar language and culture, than to much closer and more populous countries like Indonesia and the Philippines. 
-Similarly, a prospective student living in South Korea is more likely to attend university in Canada rather than the much closer though diplomatically isolated North Korea. 
-Despite its complexity, the ubiquitious models of human mobility such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} model continue to predict mobility as a function of geographic distance.
-Although alternatives exist to quantify \textit{functional} distances not based on geography~\autocite{boschma2005proximity, brown1970functional, brown1970migration, kim2018functional}, geographic distance remains the unambiguous and foundational quantity for modeling mobility. 
+While geographic distance may have driven human movements in past eras, it holds less importance to a world connected by rapid transit, complex international relations, and global trade.
+For example, a person currently living in Australia is more likely to migrate to the United Kingdom, a country with similar language and culture, than to closer and more populous countries like Indonesia. 
+Similarly, a prospective student living in South Korea is more likely to attend university in Canada rather than the closer though diplomatically isolated North Korea. 
+Despite its complexity, ubiquitious models of human mobility such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} model continue to predict mobility as a function of geographic distance.
+Although alternatives exist to quantify \textit{functional} distances based on factors other than geography~\autocite{boschma2005proximity, brown1970functional, brown1970migration, kim2018functional}, geographic distance remains the unambiguous and foundational quantity for modeling mobility. 
 
-Here, we propose a neural embedding model that uses real-world mobility trajectories to encode the complex structure of mobility into a dense, continuous, and meaningful vector-space representation, from which a \textit{functional distance} between places can be derived.
-This approach, origionally designed to create embeddings of words~\autocite{mikolov2013word2vec} has been used to reveal insights in texts~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic}, documents~\autocite{le2014doc2vec, nakandala2016twitch}, and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
-In addition to providing a data-driven functional distance, this approach is computationally efficient, scalable for large datasets, robust to noise, and are readily interpretable using an array of unique techniques based on simple vector arithmetic.
-
+Here, we propose a neural embedding model that uses real-world mobility trajectories to encode the complex landscape of global mobility into a dense, continuous, and meaningful vector-space representation, from which a \textit{functional distance} between places can be derived.
+This approach, origionally designed for learning language models~\autocite{mikolov2013word2vec} has been used to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, e2014doc2vec, nakandala2016twitch} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
+In addition to providing a data-driven functional distance, this approach is computationally efficient, scalable for large datasets, robust to noise, and is readily interpretable through the application of simple vector arithmetic. 
 
 We use scientific mobility (scientific co-affiliation) as a case study to demonstrate the neural embedding approach. 
-Scientific mobility has become increasingly globalized over time~\autocite{czaika2018globalisation}, and has been shown to drive innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}.
-However,  given its complexity~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}, new approaches are needed to make sense of landscape of global scientific mobility. 
+Scientific mobility is a central aspect of the increasingly-globalized scientific system~\autocite{czaika2018globalisation}, being strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}.
+For nations and organizations hoping to win in the global competition for talent~\autocite{box2008competition}, understanding the landscape of global scientific mobility is essential. 
+However, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}.
+Neural embedding offers a means of capturing the complex global structure of scientific mobility in a dense and coherent representation that supports modeling and predicting mobility flows, mapping  patterns of mobility at multiple scales, and quantifying abstract notions such as academic prestige. 
 
-As scientist's careers progress, they move between organizations or pick up additional simultaneous affiliations forming co-affiliation or \textit{mobility trajectories}.
+The most fine-grained geographical unit of scientific production is the organization, such as an university, research institute, business, or government agency.
+As a scientist's careers progress, they move between organizations or pick up additional simultaneous affiliations forming co-affiliation or \textit{mobility trajectories}.
 These mobility trajectories, represented as ordered lists of organizations, can be derived from affiliations listed on researcher's publication histories~\autocite{robinson2019mobility, sugimoto2017mostimpact} (Fig.~\ref{fig:methods:mobility_sentence}).
 We use the trajectories of the three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
-A vector-space embedding or organizations is learned by using mobility trajectories as input to the standard skip-gram negative sampling, or \textit{word2vec} neural-network architecture.
-In the resulting embedding, each organization corresponds to a vector, and vectors relate to one another based on the likelihood of organizations appearing near one another in the provided mobility trajectories. 
-We calculate the pairwise \textit{embedding distance} between organization as the cosine distance between their correponding vectors in the embedding.
+A vector-space embedding of organizations is learned by using mobility trajectories as input to the standard skip-gram with negative sampling, or \textit{word2vec} neural-network architecture.
+In the resulting embedding, each organization corresponds to a vector, and vectors relate to one another based on the likelihood of organizations appearing near together in the mobility trajectory data. 
+The functional distance between two organizations is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}
+
 
 %
 % Figure - Example of mobility sentences
@@ -162,8 +165,8 @@ The Gravity Model, taking inspiration from Newton's law of gravity, is one of th
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij})
 \end{equation}
 
-Where the \textit{expected flux}, $\hat{T_{ij}}$, or expected number of authors co-affiliated with a pair organizations during the time period is proportional to the organization's sizes (both mobile and non-mobile authors, see Data and Methods), $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
-The distance function is defined in terms of either the geographic distance between organizations orthe embedding distance. 
+Where the \textit{expected flux}, $\hat{T_{ij}}$, or expected number of authors co-affiliated with a pair organizations during the time period is proportional to the organization's sizes (the sum of both mobile and non-mobile authors, see Data and Methods), $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
+The distance function is defined in terms of either the geographic distance between organizations or the embedding distance. 
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
 We argue that the performance of a distance measure can be observed from its ability to explain expected mobility between organizations and to make predictions using the gravity model.
 
