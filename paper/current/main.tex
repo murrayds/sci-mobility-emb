@@ -138,7 +138,7 @@ As a scientist's careers progress, they move between organizations or pick up ad
 These mobility trajectories, represented as ordered lists of organizations, can be derived from affiliations listed on the researcher's publication histories~\autocite{robinson2019mobility, sugimoto2017mostimpact} (Fig.~\ref{fig:methods:mobility_sentence}).
 We use the trajectories of the three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
 A vector-space embedding of organizations is learned by using mobility trajectories as input to the standard skip-gram with negative sampling, or \textit{word2vec} neural-network architecture.
-In the resulting embedding, each organization corresponds to a vector, and vectors relate to one another based on the likelihood of organizations appearing near together in the mobility trajectory data. 
+In the resulting embedding, each organization corresponds to a single vector, and vectors relate to one another based on the likelihood of organizations appearing near together in the mobility trajectory data. 
 The functional distance between two organizations is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}.
 
 
@@ -345,19 +345,20 @@ For example, axes could similarly be defined between teaching- and research-focu
 %
 \section*{Conclusion}
 
-Mobility and migration are central to the human experience~\autocite{shah2020migration}, but recent events threaten to upend patterns of human mobility that defined recent decades. 
-Within science, mobility has grown increasingly global~\autocite{czaika2018globalisation}, though the travel restrictions in the U.S. and U.K. brought by Brexit and the Trump administration~\autocite{chinchilla2018travelban}, and the rise of new scientific powers such as China~\autocite{tollefson2018china, cao2020returning} may lead to reorientation in who goes where.  
-Similarly, the COVID19 pandemic threatens drastic change to travel and migration by tightening borders  and halting travel. 
+Mobility and migration are central to the human experience~\autocite{shah2020migration}, but recent events threaten to upend patterns of human mobility that defined in recent decades. 
+Within science, mobility has grown increasingly global~\autocite{czaika2018globalisation}, though the travel restrictions in the U.S. and U.K. brought by Brexit and the Trump administration~\autocite{chinchilla2018travelban}, and the rise of new scientific powers such as China~\autocite{tollefson2018china, cao2020returning} may lead to a reorientation in who goes where.  
+Similarly, the COVID19 pandemic threatens drastic change to travel and migration by tightening borders and halting travel. 
 Now, more than ever, new tools and approaches are needed to understanding human mobility in order to inform sensible, effective, humane Immigration and Science and Technology policy.
 
 Neural embeddings offer a natural approach for learning an effective and robust functional distance between places based on mobility trajectory data. 
 Here, we demonstrated how the embedding space encodes complex aspects of scientific mobility, such as global and regional geography, national similarity, and organizational prestige.
 While scientific mobility is used as a case study, this approach can be broadly applied to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
-Moreover, this approach can be used to learn a functional distance between entities when no such analog to geographic distance exists, such as a functional distance between occupational categories based individual's career trajectories. 
-In addition to providing a functional distance that supports modeling and predicting mobility patterns, the unique structure of neural embedding also allow for a range of methodological applications.
-For example, projecting the embedding space onto two dimensions using UMAP allows for the visualization of the complex structure of scientific mobility at high resolution and at multiple scales. 
-Other techniques, such as SemAxis, allow the the potential to quantify abstract notions in mobility such as academic prestige. 
-Neural embedding open the door for new approaches for representing and understanding patterns of global human mobility. 
+Moreover, this approach can be used to learn a functional distance between entities when no such analog to geographic distance exists, such as a functional distance between occupational categories based on individual's career trajectories. 
+In addition to providing a functional distance that supports modeling and predicting mobility patterns, the unique structure of neural embedding also allows for a range of methodological applications.
+For instance, projecting the embedding space onto two dimensions using UMAP allows for the visualization of the complex structure of scientific mobility at high resolution and at multiple scales. 
+Other techniques, such as SemAxis, allow the potential to quantify abstract notions in mobility such as academic prestige. 
+Neural embedding opens the door for new approaches for representing and understanding patterns of global human mobility.
+ 
 
 
 %
