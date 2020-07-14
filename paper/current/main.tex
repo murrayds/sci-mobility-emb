@@ -184,8 +184,8 @@ The amount of variance explained by embedding distance ($R^{2} = 0.46$, Fig.~\re
 This pattern holds when considering the subset of only domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (Fig.~\ref{fig:supp:gravity_correlation}d).
 After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance (Fig.~\ref{fig:gravity_performance}c--d), which also holds for the subsets of only domestic (Fig.~\ref{fig:supp:gravity_correlation}e--f) and international mobility(Fig.~\ref{fig:supp:gravity_correlation}g--h).
 The embedding distance defined from the cosine distnace between vectors also outperforms that defined from their dot product ($R^{2} = 0.34$, Fig.~\ref{fig:supp:gravity_dot}).
-The embedding distance also out-performs alternative ``diffusion'' measures such as the personalized-page rank scores (see supporting materials) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-Geographic distance alone is a poor perspective for understanding international scientific mobility---rather, by learning a functional distance directly from the data, it is possible to better explain, and better predict the flow of scientific mobility between organizations.
+The embedding distance also out-performs alternative ``diffusion'' network distance measures such as the personalized-page rank scores (see supporting materials) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
+Our results unequivecolly argue that the distance learned by the embedding method better capture actual mobility patterns than does geographic distance. 
 We speculate that this results from an underlying mathematical connection between the neural embedding architecture and the gravity model of mobility. 
 
 %
@@ -197,14 +197,14 @@ We speculate that this results from an underlying mathematical connection betwee
 	\caption{
 		\textbf{Embedding distance outperforms geographic distance.}
 		\textbf{a.} embedding distance (cosine distance between organization vectors) explains more of the expected flux between organization pairs than does geographic distance (\textbf{b}).
-		Red line is line of best fit.
+		The red line is the line of best fit.
 		Black dots are mean flux across binned distances.
 		Error bars are 99\% confidence intervals.
 		Color indicates the frequency of organization pairs within each hex bin.
 		\textbf{c-d.} Predictions of flux between organization pairs made using embedding distance outperform those made using geographic distance.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		``Err'' is calculated as the root-mean-squared error between the actual and predicted values.
+		``RMSE'' is calculated as the root-mean-squared error between the actual and predicted values.
 		\textbf{e-f.} Predictions made using model parameters learned from a subset of domestic (within-country) organization pairs.
 		Embedding distance outperforms those made for geographic distance.
 		\textbf{g-h.} Embedding distance also outperforms geographic distance when predicting flux using model parameters estimated from only international mobility (across-country organization pairs).
@@ -217,18 +217,18 @@ We speculate that this results from an underlying mathematical connection betwee
 
 \subsection*{Embeddings capture global structure of mobility}
 
-What information is encoded in the embedding that allows embedding distance to outperform geographic distance?
-To explore the structure of the embedding space, we use a common dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) to visualize it in two dimensions (Fig.~\ref{fig:projection}a).
+By encoding the complex landscape in a dense representation, embeddings also allow us to create informative visualizations of global scientific mobility.
+To explore the embedding, we use a common dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) to obtain a two-dimensional representation of the embedding (Fig.~\ref{fig:projection}a).
 By showing relationships between individual organizations, rather than aggregates such as nations or cities, this projection constitutes the largest and highest resolution ``map'' of scientific mobility to date.
 
 Globally, the effect of geography is conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors. 
 At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network representations (Fig.~\ref{fig:supp:network_vis}) that have dominated studies of scientific mobility~\autocite{chinchilla2018global, czaika2018globalisation}.
 
-An advantage of the embedding space is the ability to \textit{zoom in} on subsets of counties and re-project them in order to reveal more local relationships. 
+The embedding space also allows us to to \textit{zoom in} on subsets of counties and re-project them in order to reveal more local relationships. 
 For example, re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries ranging from Egypt to Phillipines that corresponds to both geography but also cultural factors, such as the majority religion of each country;
-for example, the cluster for Malaysia, a majority-Muslim country, is nearer to other Middle Eastern nations than Thailand, a country that is geographically-nearer though with very different religious demographics. 
-Linguistic and historical ties are also important.
-For example, we observe that Spanish-speaking post-colonial Latin American nations (Mexico, Chile, Peru, etc.) are positioned near Spain, whereas Brazil is nearer to Portugal (Fig.~\ref{fig:projection}c).
+for example, the cluster for Malaysia, a majority-Muslim country, is nearer to other Middle Eastern nations than Thailand, a country that is geographically-nearer but religiously-distant. 
+Linguistic and historical ties are also conspicuous.
+For example, we observe that Spanish-speaking post-colonial Latin American nations (Mexico, Chile, Peru, etc.) are positioned near Spain, whereas Brazil is nearer to Portugal (Fig.~\ref{fig:projection}c) reflecting the role of language, culture, and colonial history that shapes scientific mobility.
 Similarly, Algeria and Morocco are near the French cluster (Fig.~\ref{fig:projection}a).
 Comparable structural patterns exist even within a single country.
 For example, at the global level (Fig~\ref{fig:projection}a), organizations within Quebec in Canada are located near the French cluster rather than the rest of Canada.
@@ -255,11 +255,11 @@ Similar structures can be observed in other states such as among New York's CUNY
 	\label{fig:projection}
 \end{figure}
 
-Just as the embedding space makes it possible to "zoom in" on subsets of organizations, it is possible to "zoom out" to a higher level by aggregating organizational vectors. 
+Just as the embedding space makes it possible to ``zoom in'' on subsets of organizations, it is possible to ``zoom out'' to a higher level by aggregating organizational vectors. 
 For example, we can examine high-level structure by estimating the aggregate embeddings of countries. 
 Namely, we calculate the representative vector of each country by averaging organization vectors within the given country.
 We then perform hierarchical clustering of nations that have at least 25 organizations represented in the embedding space, excluding the United States which has high similarity with most other countries (see Fig. \ref{fig:clustering}a). 
-The six identified clusters roughly correspond to: East-Asian (orange), Scandinavian (dark purple), British Commonwealth (light purple), Central and Eastern European countries (light blue), and then two cluster diverse clusters with a mix of European, Latin American, and Mediterranean countries.
+The six identified clusters roughly correspond to: East-Asian (orange), Scandinavian (dark purple), British Commonwealth (light purple), Central and Eastern European countries (light blue), and then two remaining diverse clusters that contain a mix of European, Latin American, and Mediterranean countries.
 These clusters demonstrate the importance of not only geography, but also linguistic ties between countries.
 
 We quantify the relative importance of geography (by continent), and language (by majority language of each country) using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
@@ -279,7 +279,7 @@ This suggests that geography, then language, are important factors contributing 
 		Color of matrix cells corresponds to similarity between country vectors.
 		Color of country names corresponds to their cluster.
 		Color of three cell rows separated from the matrix correspond to, from left to right, the continent of the country, the language family~\autocite{ethnologue}, and the individual language.
-		\textbf{b.}	\textit{CluSim} \autocite{gates2019element} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$.
+		\textbf{b.}	Element-centric cluster similarity~\autocite{gates2019element} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$.
 		Continent better explains the grouping of country vectors at higher levels of the clustering processes.
 		Language family, and then majority spoken language, better explain the grouping of countries at more granular.
 	}
@@ -293,19 +293,15 @@ This suggests that geography, then language, are important factors contributing 
 \subsection*{Embeddings capture latent prestige hierarchy}
 
 Prestige hierarchies underpin the dynamics of scientific mobility~\autocite{deville2014career, clauset2015hierarchy}, but are these hierarchies captured in the embedding space?
-We test this by exploting the geometric properties of the embedding space with the technique SemAxis~\autocite{an2018semaxis}, an approach originally designed for characterize the semantics of words in language embeddings, but is equally applicable here. 
-In the context of organization vectors, this approach leverages the unique properties of the embedding space in order to quantify the nearness of an organization to the ends of some meaningful axis. 
-The axis is defined by the user and should represent some meaningful  and coherent concept. 
-Organization vectors are then projected onto this axis, and their position estimates their similarity to the concepts embodied by either end of the axis. 
+We test this by exploiting the geometric properties of the embedding space with the technique SemAxis~\autocite{an2018semaxis}, an approach originally designed for characterize the semantics of words in language embeddings.
 Here, we use SemAxis to operationalize the abstract notion of academic prestige, defining each end of the axis using known high- and low-ranked universities. 
 We define prestige using the Times Ranking of World Universities, including all ranked universities in the United States;
 the elite end is defined as the mean vector of the top five U.S. universities according to the rankings, whereas the non-elite axis is defined using the five bottom-ranked and geographically matched (by U.S. census region) universities.
 A geographic axis is also added to aid the visualization and reinforce the importance of geography, defined as the mean vector of all universities in California and then Massachusetts. 
 
-Universities hiring and mobility networks are known to exhbit latent pretige hierarchies ~\autocite{deville2014career, clauset2015hierarchy} that should be encoded in the embedding space.
-Accordingly, prestigious universities such as Stanford, Colombia, MIT, Harvard, and NYU are positioned towards the top of the axis (Fig.~\ref{fig:semaxis}a).
-Universities at the bottom of this axis tend to be regional universities with lower national profiles.
-By considering mobility between all organization types, SemAxis applied to embeddings offers a new means of reasoning about the prestige of organizations typically excluded from rankings such as government organizatioss (Fig.~\ref{fig:supp:semaxis_sectors}a), research institutes (Fig.~\ref{fig:supp:semaxis_sectors}b), and teaching colleges (Fig.~\ref{fig:supp:semaxis_sectors}c).
+Prestigious universities such as Stanford, Colombia, MIT, Harvard, and NYU are positioned towards the top of the axis (Fig.~\ref{fig:semaxis}a).
+Universities at the bottom of this axis tend to be regional universities with lower national profiles (yet still ranked by Times Higher Education).
+SemAxis also offers a new means of reasoning about the prestige of organizations typically excluded from rankings such as government organizatioss (Fig.~\ref{fig:supp:semaxis_sectors}a), research institutes (Fig.~\ref{fig:supp:semaxis_sectors}b), and teaching colleges (Fig.~\ref{fig:supp:semaxis_sectors}c).
 
 %
 % Figure - SemAxis results
@@ -315,27 +311,27 @@ By considering mobility between all organization types, SemAxis applied to embed
 	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
 	\caption{
 		\textbf{Embedding captures latent geography and prestige hierarchy.}
-		\textbf{a.} illustrates SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top five and geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top).
-		Points correspond to organizations, and a sample of individual states are highlighted.
+		\textbf{a.} Illustrates SemAxis projection along two axes,California and Massachusetts and for the top five-to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities.
+		Points correspond to organizations, and a sample of states are highlighted.
 		Full organization names listed in Table~\ref{table:supp:orglabels}.
 		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the \textit{Elite} end of the axis prestige axis \textit{a}.
-		White points are those top and bottom five universities aggregated to define the ends of the axis.
-		The grey box corresponds to the top five and bottom five ranks.
-	  	Even when considering only a total of ten organization vectors, the estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.73 (n = 145).
+		White points are those top and bottom five universities used to define the poles of the axis.
+	  	Even when considering only a total of ten organization vectors, the estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.73 (n = 145), and increases if controlling for the number of top-and-bottom ranked universities (Fig.~\ref{fig:supp:semaxis_compare}).
 	}
 	\label{fig:semaxis}
 \end{figure}
 
-The embedding space captures prestige hierarchies to such a high resolution that they can be used to reconstruct academic rankings. 
-We derive a ranking using the prestige axis that we call \textit{SemRank}, and compare them to traditional university rankings.
-SemRank is defined from the position of organizations along the prestige axis, with the top ranked being the furthest towards the \textit{Elite} end of the axis.
-We find that SemRank derived is highly correlated with the Times ranking ($\rho = 0.73$, Fig.~\ref{fig:semaxis}b).
-This correlation is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities is strongly correlated with the Times Ranking ($\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
-For reference, SemRank achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically-informed university ranking ($\rho = 0.87$, Fig.~\ref{fig:supp:times_vs_leiden}).
-This suggests that the organization embedding captures the latent prestige hierarchy inherent to academic mobility with a high degree of resolution and reliability. 
 
-While we use SemAxis to operationalize notions of prestige and geography, the approach can be easily generalized to other concepts so long as they can be meaningfully represented as an axis in the vector space. 
-For example, axes could similarly be defined between teaching- and research-focused universities, between companies and government agencies, or between organizations in the U.S. and in China. 
+The embedding space captures prestige hierarchies can be used to reconstruct academic rankings. 
+We derive a ranking using the SemAxis prestige axis in Fig.~\ref{fig:semaxis}.a and compare them to traditional university rankings.
+The SemAxis ranking is defined from the position of organizations along the prestige axis, with the top ranked being the furthest towards the \textit{Elite} end of the axis.
+We find that the SemAxis ranking is highly correlated with the Times ranking (Spearman's $\rho = 0.73$, Fig.~\ref{fig:semaxis}b).
+The strongest outliers are universities that were ranked more highly in the Times Ranking than the SemAxis ranking and tended to be large universities such as Arizona State University and  University of Florida;
+Those ranked higher in the SemAxis ranking tended to be relatively-smaller universities such as the University of San Francisco and University of Maryland Baltimore County.
+
+The correlation between SemAxis and the Times ranking is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities is strongly correlated with the Times Ranking (Spearman's $\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
+For reference, SemRank achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically-informed university ranking (Spearman's $\rho = 0.87$, Fig.~\ref{fig:supp:times_vs_leiden}).
+This suggests that the organization embedding surprisingly captures the latent prestige hierarchy inherent to academic mobility with a high degree of resolution and reliability~\autocite{deville2014career, clauset2015hierarchy}. 
 
 
 %
@@ -343,20 +339,31 @@ For example, axes could similarly be defined between teaching- and research-focu
 %
 \section*{Conclusion}
 
-Mobility and migration are central to the human experience~\autocite{shah2020migration}, but recent events threaten to upend patterns of human mobility that defined in recent decades. 
-Within science, mobility has grown increasingly global~\autocite{czaika2018globalisation}, though the travel restrictions in the U.S. and U.K. brought by Brexit and the Trump administration~\autocite{chinchilla2018travelban}, and the rise of new scientific powers such as China~\autocite{tollefson2018china, cao2020returning} may lead to a reorientation in who goes where.  
-Similarly, the COVID19 pandemic threatens drastic change to travel and migration by tightening borders and halting travel. 
-Now, more than ever, new tools and approaches are needed to understanding human mobility in order to inform sensible, effective, humane Immigration and Science and Technology policy.
-
 Neural embeddings offer a natural approach for learning an effective and robust functional distance between places based on mobility trajectory data. 
 Here, we demonstrated how the embedding space encodes complex aspects of scientific mobility, such as global and regional geography, national similarity, and organizational prestige.
 While scientific mobility is used as a case study, this approach can be broadly applied to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
 Moreover, this approach can be used to learn a functional distance between entities when no such analog to geographic distance exists, such as a functional distance between occupational categories based on individual's career trajectories. 
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, the unique structure of neural embedding also allows for a range of methodological applications.
-For instance, projecting the embedding space onto two dimensions using UMAP allows for the visualization of the complex structure of scientific mobility at high resolution and at multiple scales. 
-Other techniques, such as SemAxis, allow the potential to quantify abstract notions in mobility such as academic prestige. 
+For instance, projecting the embedding space onto two dimensions using UMAP allows for the visualization of the complex structure of scientific mobility at high resolution and at multiple scales, which has implications. 
+Other techniques, such as SemAxis, allow the potential to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
 Neural embedding opens the door for new approaches for representing and understanding patterns of global human mobility.
  
+
+In spire of its promise, this approach and analysis presents several limitations. 
+First, the standard neural embedding model non-directional, meaning that embedding will be less effective at capturing mobility for which directional is critical.
+Second, the neural embedding approach is most useful in cases of mobility between discrete geographic entities such as between countries, cities, and businesses; this approach is less useful in the case of mobility between arbitrary locations represented in geographic coordinates, such as in the modeling of animal movements. 
+Neither of these methodological limitations are insurmountable, and future work can aim to incorporate directionality and identify meaningful representations of continuous mobility data. 
+Finally, the case of scientific mobility presents domain-specific limitations. 
+Reliance on bibliometric metadata means that we capture only long-term mobility such as migration, rather than the array or more frequent short-term mobility such as conference travel and temporary visits. 
+The kinds of mobility we do capture—asynchronous migration and synchronous co-affiliation, are treated identically by our model even though they are qualitatively different.
+Scientific mobility is complex, and its study continues to pose challenges; neural embeddings do not solve many of these issues, but they create opportunities for new analyses and understanding
+Future work should aim to 
+
+Mobility and migration is a core asepct of human nature and history~\autocite{shah2020migration}, driving social phenomena as diverse as epidemics\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity} and science and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}. 
+Within science, mobility has grown increasingly global~\autocite{czaika2018globalisation}, though the travel restrictions in the U.S. and U.K. brought by Brexit and the Trump administration~\autocite{chinchilla2018travelban}, and the rise of new scientific powers such as China~\autocite{tollefson2018china, cao2020returning} may lead to a reorientation in who goes where.  
+Similarly, the COVID19 pandemic threatens drastic change to travel and migration by tightening borders and halting travel. 
+Now, more than ever, new tools and approaches are needed to understanding human mobility in order to inform sensible, effective, humane Immigration and Science and Technology policy.
+
 
 
 %
