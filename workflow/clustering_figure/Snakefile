@@ -14,7 +14,7 @@ CLUSTERING_FIGURE_DIR = osjoin(FIGURE_DIR, 'Clustering')
 FONT_PATH = osjoin(ASSET_DIR, 'Helvetica.ttf')
 BOLD_FONT_PATH = osjoin(ASSET_DIR, 'helvetica-bold.ttf')
 
-# Meta_info_files 
+# Meta_info_files
 EMBEDDING_FILE_DIR = osjoin(EMBEDDINGS_DIR, "2008-2019_word2vec_d200_ws2_model.bin")
 INST_LOOK_UP_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "institution_lookup_with_states.txt")
 COUNTRY_META_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "country_metadata.csv")
@@ -33,7 +33,7 @@ rule all:
         DENDROGRAM_FILES,
         HEATMAP_FILES,
         CLUSIM_FILES
-        
+
 rule draw_cluster_result_country:
     input:
         EMBEDDING_FILE_DIR,
@@ -42,6 +42,7 @@ rule draw_cluster_result_country:
         FONT_PATH,
         BOLD_FONT_PATH
     output:
+        osjoin(DERIVED_DATA_DIR, 'CountryPairwise', 'country_pairwise_distances.csv'),
         osjoin(CLUSTERING_FIGURE_DIR, 'clustering_country_dendrogram_part.pdf'),
         osjoin(CLUSTERING_FIGURE_DIR, 'clustering_country_heatmap_part.pdf'),
         osjoin(CLUSTERING_FIGURE_DIR, 'clustering_country_clusim_part.pdf')

@@ -22,6 +22,7 @@ def draw_figure(
     COUNTRY_META_INFO_FILE,
     FONT_PATH,
     BOLD_FONT_PATH,
+    DISTANCE_DATA_PATH,
     DENDROGRAM_PART_PATH,
     HEATMAP_PART_PATH,
     CLUSIM_PART_PATH,
@@ -172,6 +173,15 @@ def draw_figure(
     bold_prop = font_manager.FontProperties(fname=BOLD_FONT_PATH, size=22)
     small_prop = font_manager.FontProperties(fname=FONT_PATH, size=20)
     tick_prop = font_manager.FontProperties(fname=FONT_PATH, size=16)
+
+    # Save the pairwise distances to a file
+    sim_df = pd.DataFrame(sim_mtx)
+    sim_df.columns = target_countries
+    sim_df.index = target_countries
+    upper_tri = sim_df.where(np.triu(np.ones(sim_df.shape)).astype(np.bool))
+    upper_tri = upper_tri.stack().reset_index()
+
+    upper_tri.to_csv(DISTANCE_DATA_PATH, index = False)
 
     # Draw heatmap part
     g = sns.clustermap(
@@ -366,9 +376,10 @@ if __name__ == "__main__":
     COUNTRY_META_INFO_FILE = sys.argv[3]
     FONT_PATH = sys.argv[4] if sys.argv[4] != "None" else None
     BOLD_FONT_PATH = sys.argv[5] if sys.argv[5] != "None" else None
-    DENDROGRAM_PART_PATH = sys.argv[6]
-    HEATMAP_PART_PATH = sys.argv[7]
-    CLUSIM_PART_PATH = sys.argv[8]
+    DISTANCE_DATA_PATH = sys.argv[6]
+    DENDROGRAM_PART_PATH = sys.argv[7]
+    HEATMAP_PART_PATH = sys.argv[8]
+    CLUSIM_PART_PATH = sys.argv[9]
 
     draw_figure(
         INPUT_EMBEDDING_FILE,
@@ -376,6 +387,7 @@ if __name__ == "__main__":
         COUNTRY_META_INFO_FILE,
         FONT_PATH,
         BOLD_FONT_PATH,
+        DISTANCE_DATA_PATH,
         DENDROGRAM_PART_PATH,
         HEATMAP_PART_PATH,
         CLUSIM_PART_PATH,
