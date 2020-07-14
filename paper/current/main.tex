@@ -133,12 +133,12 @@ One roadblock is the lack of a meaningful measure of functional distance between
 
 Here, scientific mobility is operationalized using researcher's organizational affiliations derived from their publication histories indexed in a large-scale bibliographic database. 
 The most fine-grained geographical unit in this data is the organization, such as an university, research institute, business, or government agency.
-As a scientist's careers progress, they move between organizations or pick up additional (simultaneous) affiliations forming \textit{affiliation trajectories} (Fig.~\ref{fig:methods:mobility_sentence}.
+As a scientist's careers progress, they move between organizations or pick up additional (simultaneous) affiliations forming \textit{affiliation trajectories} (Fig.~\ref{fig:methods:mobility_sentence}).
 These trajectories encodie both asynchronous migration, and synchronous mobility---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, markova2016synchronous, sugimoto2017mostimpact} (see Supplementary Materials).
 We use the trajectories of the three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
 
-A vector-space embedding of organizations is learned by using mobility trajectories as input to the standard skip-gram with negative sampling, or \textit{word2vec} neural-network architecture.
-In the resulting embedding, each organization corresponds to a single vector, and vectors relate to one another based on the likelihood of organizations appearing near together in the mobility trajectory data. 
+A vector-space embedding of organizations is learned by using affiliation trajectories as input to the standard skip-gram with negative sampling, or \textit{word2vec} neural-network architecture.
+In the resulting embedding, each organization corresponds to a single vector, and vectors relate to one another based on the likelihood of organizations appearing near together in the affiliation trajectory data. 
 The functional distance between two organizations is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}.
 
 %
@@ -148,10 +148,10 @@ The functional distance between two organizations is calculated as the cosine di
     \centering
     \includegraphics[width=\textwidth]{\figdir/mobility_example_combined.pdf}
     \caption{
-        \textbf{Construction of mobility trajectories from publication records}
+        \textbf{Construction of affiliation trajectories from publication records}
         \textbf{a.}
         An author published five papers across five time periods, with only one affiliation listed in the byline of each paper.
-        To each organization, a unique identifier is assigned, and they are assembled into a mobility trajectory ordered by year of publication.
+        To each organization, a unique identifier is assigned, and they are assembled into a affiliation trajectory ordered by year of publication.
         \textbf{b.}
         In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$. 
         In the case where multiple organizations are listed within the same year, then organization IDs within a single year are randomized across each training iteration or "epoch" of the \textit{word2vec} model (for more detail, see Supporting Materials). 
@@ -339,7 +339,7 @@ This suggests that the organization embedding surprisingly captures the latent p
 %
 \section*{Conclusion}
 
-Neural embeddings offer a natural approach for learning an effective and robust functional distance between places based on mobility trajectory data. 
+Neural embeddings offer a natural approach for learning an effective and robust functional distance between places based on affiliation trajectory data. 
 Here, we demonstrated how the embedding space encodes complex aspects of scientific mobility, such as global and regional geography, national similarity, and organizational prestige.
 While scientific mobility is used as a case study, this approach can be broadly applied to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
 Moreover, this approach can be used to learn a functional distance between entities when no such analog to geographic distance exists, such as a functional distance between occupational categories based on individual's career trajectories. 
@@ -558,20 +558,20 @@ Moreover, this assumption has the practical advantage of matching the data forma
 % S3 TEXT
 \paragraph*{S3 Text}
 \label{si:text:mobility_traj}
-{\bf Building mobility trajectories.}
+{\bf Building affiliation trajectories.}
 
-We adopt a data-driven approach to constructing mobility trajectories, making as little adjustment to the raw bibliometric data as possible. 
-For each mobile researcher (having at least two distinct affiliations), we construct a mobility trajectory based on the affiliations listed on their published papers indexed in the Web of Science database between 2008 and 2019. 
+We adopt a data-driven approach to constructing affiliation trajectories, making as little adjustment to the raw bibliometric data as possible. 
+For each mobile researcher (having at least two distinct affiliations), we construct an affiliation trajectory based on the affiliations listed on their published papers indexed in the Web of Science database between 2008 and 2019. 
 An author is considered mobile if they published with at least two distinct affiliations during the time period of study. 
 Affiliations map to disambiguated organizations, each of which matches to a unique identifier. 
 Affiliations in a trajectory are first ordered by year of publication.
-For example, if an author published with affiliation $A$ in $t_{0}$, affiliation $B$ in $t_{1}$, and $A$ again in $t_{2}$, then their ordered mobility trajectory would be $\{A, B, C\}$. 
+For example, if an author published with affiliation $A$ in $t_{0}$, affiliation $B$ in $t_{1}$, and $A$ again in $t_{2}$, then their ordered affiliation trajectory would be $\{A, B, C\}$. 
 
 In the case that multiple affiliations are used within a single year, affiliations listed on publications published in that year are shuffled between each stage of the \textit{word2vec} training process (each epoch). 
 For example, an author who published with affiliation $A$ in $t_{0}$, and affiliations $B, C$ in $t_{1}$ could appear as one of $\{A, B, C\}$ or $\{A, C, B\}$ in each training iteration. 
 This effectively removes the effect of order within a year, as order cannot be meaningfully established based on co-affiliations in a single paper, or on different affiliations listed on separate papers, publication of which is not necessarily representative of the actual completion of the project. 
 
-Other than restricting to only mobile researchers, we do not perform any filtering or reductions to mobility trajectories.
+Other than restricting to only mobile researchers, we do not perform any filtering or reductions to affiliation trajectories.
 For example, in the case than an author publishes with organization $A$ four times in $t_{0}$, and affiliation $B$ two times in $t_{1}$, then their trajectory will be $\{A, A, A, A, B, B\}$. 
 This means that mobile authors who publish more papers will have longer trajectories.
 However, \textit{word2vec} will skip duplicate consecutive organization IDs, effectively eliminating the impact of these long repetitive trajectories. 
