@@ -55,6 +55,28 @@ def draw_figure(
     target_countries = [
         k for k, v in Counter(country_list).items() if v >= 25 and k != "United States"
     ]
+
+    # First, get all pairwise distances and save to a file
+    representative_vector_all = [
+        embedding_list[country_list == country].mean(axis=0)
+        for country in country_list
+    ]
+    sim_mtx_all = mt.pairwise.cosine_similarity(representative_vector_all)
+
+    # Save the pairwise distances to a file
+    sim_df = pd.DataFrame(sim_mtx_all)
+
+    # set column names
+    sim_df.columns = country_list
+    sim_df.index = country_list
+
+    upper_tri = sim_df.where(np.triu(np.ones(sim_df.shape)).astype(np.bool))
+    upper_tri = upper_tri.stack().reset_index().drop_duplicates()
+
+    # save the file
+    upper_tri.to_csv(DISTANCE_DATA_PATH, index = False)
+
+    # Now shift to only the target countires
     representative_vector = [
         embedding_list[country_list == country].mean(axis=0)
         for country in target_countries
@@ -173,15 +195,6 @@ def draw_figure(
     bold_prop = font_manager.FontProperties(fname=BOLD_FONT_PATH, size=22)
     small_prop = font_manager.FontProperties(fname=FONT_PATH, size=20)
     tick_prop = font_manager.FontProperties(fname=FONT_PATH, size=16)
-
-    # Save the pairwise distances to a file
-    sim_df = pd.DataFrame(sim_mtx)
-    sim_df.columns = target_countries
-    sim_df.index = target_countries
-    upper_tri = sim_df.where(np.triu(np.ones(sim_df.shape)).astype(np.bool))
-    upper_tri = upper_tri.stack().reset_index()
-
-    upper_tri.to_csv(DISTANCE_DATA_PATH, index = False)
 
     # Draw heatmap part
     g = sns.clustermap(

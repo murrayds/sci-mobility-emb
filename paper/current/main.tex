@@ -225,18 +225,18 @@ Globally, the effect of geography is conspicuous; organizations tend to form clu
 At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network representations (Fig.~\ref{fig:supp:network_vis}) that have dominated studies of scientific mobility~\autocite{chinchilla2018global, czaika2018globalisation}.
 
 The embedding space also allows us to to \textit{zoom in} on subsets of counties and re-project them in order to reveal more local relationships. 
-For example, re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries ranging from Egypt to Phillipines that corresponds to both geography but also cultural factors, such as the majority religion of each country;
-for example, the cluster for Malaysia, a majority-Muslim country, is nearer to other Middle Eastern nations than Thailand, a country that is geographically-nearer but religiously-distant. 
+For example, re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries ranging from Egypt to Philippines that corresponds largely to geography, but with some peculiar exceptions. 
+For example, countries like Iraq are nearer to some southeast-Asian countries like Malaysia, with a cosine distance between the nation's aggregate vectors of $d = 0.29$, than to nearer and more religiously-similar nations like Saudi Arabia ($d = 0.50$ and Qatar ($d = 0.51$). 
 Linguistic and historical ties are also conspicuous.
-For example, we observe that Spanish-speaking post-colonial Latin American nations (Mexico, Chile, Peru, etc.) are positioned near Spain, whereas Brazil is nearer to Portugal (Fig.~\ref{fig:projection}c) reflecting the role of language, culture, and colonial history that shapes scientific mobility.
-Similarly, Algeria and Morocco are near the French cluster (Fig.~\ref{fig:projection}a).
+For example, we observe that Spanish-speaking post-colonial Latin American nations are positioned near Spain (Fig.~\ref{fig:projection}c), such as Mexico ($d = 0.34$) and Chile ($d = 0.39$) morose than to nearby Portuguese-speaking Brazil ($d = 0.52$ for Mexico and $d = 0.49$ for Chile).
+Similarly, North-African countries that were once under French rule such as Morocco are nearer to France ($d =0.35$) than to similarly-distant European countries as Spain ($d = 0.40$) and Italy ($d = 0.53$). 
 Comparable structural patterns exist even within a single country.
-For example, at the global level (Fig~\ref{fig:projection}a), organizations within Quebec in Canada are located near the French cluster rather than the rest of Canada.
+For example, at the global level (Fig~\ref{fig:projection}a), organizations within Quebec in Canada are located nearer the French cluster ($d = 0.65$) than the rest of the Canadian universities Canada ($d = 0.88$).
 
 The geographic structure of the global embedding is mirrored in re-projection of the United States, wherein organizations are largely organized according to regions and states (Fig.~\ref{fig:projection}d).
 By re-projecting at the state-level for Massachusetts (Fig.~\ref{fig:projection}e), we observe structure between urban centers (Boston vs. Worcester), but also based on organization type (e.g., hospitals vs. universities) and university systems.
-Even though UMass Boston is located in Boston, it clusters near other universities in the UMass System rather than the typically more elite and research-focused universities in Boston, reflecting a relative lack of mobility between the two systems, even within the same state.
-Similar structures can be observed in other states such as among New York's CUNY and SUNY systems (Fig.~\ref{fig:supp:proj_newyork}), Pennsylvania's state system (Fig.~\ref{fig:supp:proj_pennsylvania}), Texas's Agricultural and Mechanical universities(Fig.~\ref{fig:supp:proj_texas}), and between the University of California and State University of California systems (Fig.~\ref{fig:supp:proj_california}). 
+For example, even though UMass Boston is located in Boston, it clusters near other universities in the UMass System ($d = 0.34$) rather than the other typically more elite and research-focused universities in Boston ($d = 0.41$), reflecting a relative lack of mobility between the two systems, even within the same state.
+Similar structures can be observed in other states such as among New York's CUNY and SUNY systems (Fig.~\ref{fig:supp:proj_newyork}), Pennsylvania's state system (Fig.~\ref{fig:supp:proj_pennsylvania}), Texas's Agricultural and Mechanical universities (Fig.~\ref{fig:supp:proj_texas}), and between the University of California and State University of California systems (Fig.~\ref{fig:supp:proj_california}). 
 
 \begin{figure}[hp!]
 	\centering
