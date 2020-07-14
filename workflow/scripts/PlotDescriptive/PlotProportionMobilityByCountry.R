@@ -1,10 +1,9 @@
 #
-# PlotCountryMobilityDistribution.R
+# PlotProportionMobilityByCountry.R
 #
 # author: Dakota Murray
 #
-# Plot the distirbution of country's based on their contribution to
-# global mobility
+# Plot the proportion of mobile vs. nonmobile researchers by country
 #
 
 # Plot dimensions
@@ -39,13 +38,17 @@ lookup <- read_delim(opt$lookup, delim = "\t", col_types = readr::cols()) %>%
 researchers <- read_delim(opt$researchers, delim = "\t", col_types = readr::cols()) %>%
   select(cluster_id, org_mobile, country_mobile)
 
-# Load the flows and aggregate
+# Calculate the expected mobility, or the world proportion of org-mobile researchers
+expected.mobility <- sum(researchers$org_mobile) / dim(researchers)[1]
+
+# Load the dataframe of all transitions, merge in other metainfo, and
+# aggregate across countries and organization mobility status
 flows <- read_delim(opt$flows, delim = "\t", col_types = readr::cols())
 
 nonmobile <- read_delim(opt$nonmobile, delim = "\t", col_types = readr::cols())
 
 # Merge with nonmobile individuals
-flows <- data.table::rbindlist(list(flows, nonmobile))
+flows <- data.table::rbindlist(list(flows, nonmobile), fill = T)
 
 flows <- flows %>%
   select(-LR_main_field_no, -pub_year) %>%
@@ -56,46 +59,56 @@ flows <- flows %>%
     count = length(unique(cluster_id))
   )
 
-# Build data for the plot
+print(head(flows), 10)
+
+# Remove unecessary dataframes
+remove(researchers, lookup)
+
+# construct the data for the plot
 plotdata <- flows %>%
-  filter(org_mobile) %>%
-  ungroup() %>%
+  # spread the count of org_mobile across two columns
+  tidyr::spread(org_mobile, count) %>%
+  rename(mobile = `TRUE`, nonmobile = `FALSE`) %>%
   mutate(
-    prop = count / sum(count, na.rm = T),
-    country_iso_alpha = reorder(country_iso_alpha, desc(prop))
+    mobile = ifelse(is.na(mobile), 0, mobile),
+    total = mobile + nonmobile,
+    prop = mobile / total
   ) %>%
-  arrange(desc(prop)) %>%
-  mutate(
-    index = row_number(),
-    cumulative = cumsum(prop)
-  )
+  filter(country_iso_alpha != "NULL" & total > 100) %>%
+  arrange(desc(prop)) %>% # Arrange in descending order by proportion mobile
+  ungroup() %>%
+  mutate(index = row_number()) # Index used for the x-axis
 
-# Get dataframe of labels for the plot
-labels = plotdata %>%
-  top_n(10, prop) %>%
-  mutate(
-    text = country_iso_alpha
-  )
+print(head(plotdata, 10))
+# Label the top 8 and bottom 8 bars in the chart.
+# Construct as separate dataframes
+labels_top <- plotdata %>%
+  top_n(8, prop)
 
-# Build the plot
+labels_bot <- plotdata %>%
+  filter(!is.na(prop)) %>%
+  top_n(8, rev(prop))
+
+# Construct the plot
 plot <- plotdata %>%
   ggplot(aes(x = index, y = prop)) +
-  geom_bar(stat = "identity") +
-  ggrepel::geom_label_repel(data = labels, aes(label = country_iso_alpha), nudge_x = 5, size = 3, force = 2, direction = "y") +
-  theme_minimal() +
-  theme(
-    text = element_text(family = "Helvetica"),
-    axis.title = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 11),
-    panel.grid.major = element_blank()
-  ) +
-  xlab("Rank") +
-  ylab("Proportion of global mobile researchers")
-
+    geom_bar(stat = "identity", size = 0) +
+    geom_hline(yintercept = expected.mobility, linetype = "dashed") +
+    ggrepel::geom_label_repel(data = labels_top, aes(label = country_iso_alpha), size = 3, direction = "y", nudge_x = 5) +
+    ggrepel::geom_label_repel(data = labels_bot, aes(label = country_iso_alpha), size = 3, direction = "y", nudge_x = -5) +
+    scale_x_continuous(expand = c(0, 0)) +
+    theme_minimal() +
+    theme(
+      panel.grid.major = element_blank(),
+      text = element_text(family = "Helvetica"),
+      axis.title = element_text(size = 12, face = "bold"),
+      axis.text = element_text(size = 11),
+    ) +
+    xlab("Rank") +
+    ylab("Proportion mobile")
 
 p <- egg::set_panel_size(plot,
                          width  = unit(FIG_WIDTH, "in"),
                          height = unit(FIG_HEIGHT, "in"))
-
 # Save the plot
 ggsave(opt$output, p, width = FIG_WIDTH + 1, height = FIG_HEIGHT + 1)

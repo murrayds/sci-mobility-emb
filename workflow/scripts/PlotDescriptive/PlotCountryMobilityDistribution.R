@@ -1,9 +1,10 @@
 #
-# PlotProportionMobilityByCountry.R
+# PlotCountryMobilityDistribution.R
 #
 # author: Dakota Murray
 #
-# Plot the proportion of mobile vs. nonmobile researchers by country
+# Plot the distirbution of country's based on their contribution to
+# global mobility
 #
 
 # Plot dimensions
@@ -44,7 +45,7 @@ flows <- read_delim(opt$flows, delim = "\t", col_types = readr::cols())
 nonmobile <- read_delim(opt$nonmobile, delim = "\t", col_types = readr::cols())
 
 # Merge with nonmobile individuals
-flows <- data.table::rbindlist(list(flows, nonmobile))
+flows <- data.table::rbindlist(list(flows, nonmobile), fill = T)
 
 flows <- flows %>%
   select(-LR_main_field_no, -pub_year) %>%
@@ -69,36 +70,28 @@ plotdata <- flows %>%
     cumulative = cumsum(prop)
   )
 
-# Build separete dataframe for the labels
+# Get dataframe of labels for the plot
 labels = plotdata %>%
-  top_n(5, prop) %>%
+  top_n(10, prop) %>%
   mutate(
-    text = ifelse(country_iso_alpha == "USA", "USA", paste0("+", country_iso_alpha))
+    text = country_iso_alpha
   )
 
 # Build the plot
 plot <- plotdata %>%
-  ggplot(aes(x = index, y = cumulative)) +
-    geom_step() +
-    scale_x_continuous(breaks = c(0, 5, 10, 15, 20, 25, 30, 50), expand = c(0, 0)) +
-    scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.7, 0.8, 0.9, 1.0), expand = c(0, 0)) +
-    geom_segment(x = 0, xend = 10, y = 0.80, yend = 0.80, linetype = "dashed", color = "darkgrey") +
-    geom_segment(x = 10, xend = 10, y = 0, yend = 0.80, linetype = "dashed", color = "darkgrey") +
-    geom_segment(x = 0, xend = 17, y = 0.90, yend = 0.90, linetype = "dashed", color = "darkgrey") +
-    geom_segment(x = 17, xend = 17, y = 0.0, yend = 0.90, linetype = "dashed", color = "darkgrey") +
-    geom_segment(x = 0, xend = 30, y = 0.964, yend = 0.965, linetype = "dashed", color = "darkgrey") +
-    geom_segment(x = 30, xend = 30, y = 0.0, yend = 0.964, linetype = "dashed", color = "darkgrey") +
-    geom_label(data = labels, aes(x = index, y = cumulative, label = text), size = 3, nudge_x = 6) +
-    theme_minimal() +
-    theme(
-      text = element_text(family = "Helvetica"),
-      axis.title = element_text(face = "bold", size = 12),
-      axis.text = element_text(size = 11),
-      axis.text.y = element_text(face = c(rep("plain", 9), "bold", "bold", "plain")),
-      panel.grid.major = element_blank()
-    ) +
-    xlab("Rank") +
-    ylab("Cumulative proportion")
+  ggplot(aes(x = index, y = prop)) +
+  geom_bar(stat = "identity") +
+  ggrepel::geom_label_repel(data = labels, aes(label = country_iso_alpha), nudge_x = 5, size = 3, force = 2, direction = "y") +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica"),
+    axis.title = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 11),
+    panel.grid.major = element_blank()
+  ) +
+  xlab("Rank") +
+  ylab("Proportion of global mobile researchers")
+
 
 p <- egg::set_panel_size(plot,
                          width  = unit(FIG_WIDTH, "in"),
