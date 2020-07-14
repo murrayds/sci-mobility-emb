@@ -96,7 +96,7 @@ labels <- sims %>%
     diff = abs(sim_rank - rank)
   ) %>%
   filter(rank < 130 & sim_rank < 130) %>%
-  top_n(10, diff) %>%
+  top_n(8, diff) %>%
   # Wrap the text when its too long
   mutate(
     label = gsub('University', 'Univ', full_name),
@@ -147,7 +147,7 @@ plot <- sims %>%
     expand = c(0, 1)
   ) +
   scale_y_continuous(
-    limits = c(0, max_val + 1),
+    limits = c(0, max_val + 5),
     breaks = c(1, 50, 100, max_val),
     labels = c(as.character(max_val), "100", "50", "1"),
     expand = c(0, 1)
@@ -162,8 +162,8 @@ plot <- sims %>%
     panel.grid.minor = element_blank(),
   ) +
   # Add the Spearman's Rho to the plot
-  annotate("text", x = 25, y = 140,
-           label = paste("PCC = ", round(cor$estimate, 2)),
+  annotate("text", x = 45, y = 145,
+           label = paste("Spearman's Rho = ", round(cor$estimate, 2)),
            size = 7,
            fontface = 2) +
   ylab(axis_title) +

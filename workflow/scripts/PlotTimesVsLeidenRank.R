@@ -57,7 +57,7 @@ print(head(ranks))
 # Define which organizations will be labeled
 labels <- ranks %>%
   mutate(diff = abs(leiden_rank - times_rank)) %>%
-  top_n(10, diff) %>%
+  top_n(12, diff) %>%
   # Wrap the text when its too long
   mutate(
     label = gsub('University', 'Univ', full_name),
@@ -90,7 +90,7 @@ plot <- ranks %>%
     size = 3.5) +
   # Add a fake top axis title, just to ensure that its the same size as the 2d fig
   scale_x_continuous(limits = c(0, max_val), sec.axis = dup_axis(name = "")) +
-  scale_y_continuous(limits = c(0, max_val)) +
+  scale_y_continuous(limits = c(0, max_val + 10)) +
   guides(shape = F) +
   theme_minimal() +
   theme(
@@ -100,8 +100,8 @@ plot <- ranks %>%
     panel.grid.minor = element_blank(),
   ) +
   # Add the Spearman's Rho to the plot
-  annotate("text", x = 20, y = 120,
-           label = paste("PCC = ", round(cor$estimate, 2)),
+  annotate("text", x = 34, y = 132,
+           label = paste("Spearman's Rho = ", round(cor$estimate, 2)),
            size = 7,
            fontface = 2) +
   ylab("Times Rank") +
