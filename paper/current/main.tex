@@ -316,7 +316,7 @@ SemAxis also offers a new means of reasoning about the prestige of organizations
 		Full organization names listed in Table~\ref{table:supp:orglabels}.
 		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the \textit{Elite} end of the axis prestige axis \textit{a}.
 		White points are those top and bottom five universities used to define the poles of the axis.
-	  	Even when considering only a total of ten organization vectors, the estimate of the spearman rank correlation between the SemAxis and Times ranking is 0.73 (n = 145), and increases if controlling for the number of top-and-bottom ranked universities (Fig.~\ref{fig:supp:semaxis_compare}).
+	  	Even when considering only a total of ten organization vectors, the estimate of the Spearman's rank correlation between the SemAxis and Times ranking is 0.73 (n = 145), and increases if controlling for the number of top-and-bottom ranked universities (Fig.~\ref{fig:supp:semaxis_compare}).
 	}
 	\label{fig:semaxis}
 \end{figure}
@@ -391,8 +391,9 @@ Mobile authors were associated with, on average, 2.5 distinct organizational aff
 Rates of mobility tended to differ across country.
 For example, France, Qatar, the USA, Iraq, and Luxembourg had the most mobile authors (Fig.~\ref{fig:supp:descriptives}c).
 However, due to their size, the USA, accounted for nearly 40 percent of all mobile authors worldwide (Fig.~\ref{fig:supp:descriptives}a), with 10 countries accounting for 80 percent of all mobility (Fig.~\ref{fig:supp:descriptives}b).
-In most cases, countries with a high degree inter-organization mobility also had a high degree of international mobility;
-however, the USA and France had a high degree of inter-organization mobility with the corresponding international mobility (Fig.~\ref{fig:supp:descriptives}c).
+The countries with the highest proportion of mobile scientists are France, Qatar, the United States, and Iraq, whereas those with the lowest are Jamaica, Serbia, Bosnia \& Herzegovina, and North Macedonia\ref{fig:supp:descriptives}.c).
+In most cases, countries with a high degree of inter-organization mobility also have a high degree of international mobility, indicating a high proportion of their total mobility being international (Fig.~\ref{fig:supp:descriptives}.d);
+However, some countries such as France and the United States seem to have more domestic mobility than international mobility. 
 While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (Fig.~\ref{fig:supp:pubs_over_time}).
 
 
@@ -400,15 +401,15 @@ While the number of publications has increased year-to-year, the mobility and di
 \subsection*{Embedding}
 %% Mobility sentences
 We embed co-affiliation trajectories by treating them analogously to sentences, and organizations analogously to words.
-The trajectories of mobile authors were converted to ''mobility sentences`` by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}.a.
+The trajectories of mobile authors were converted to ``affiliation trajectories'' by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}.a.
 In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple affiliations in the same year, the order is randomized within that year, as shown in  Fig.~\ref{fig:methods:mobility_sentence}.b.
 
 %% word2vec
-These mobility sentences are used as input to the standard skip-gram negative sampling model, for word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec} .
+These affiliation trajectories are used as input to the standard skip-gram negative sampling model, for word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec} .
 In natural-language processing, word embeddings are used to construct dense vector-space representations of words and phrases, in which distance relationships between words correspond to a notion of semantic distance.
-By embedding co-affiliation trajectories, we aim to learn a dense vector for every organization where distance between vectors relates to the tendency for two organizations to co-occur in a token window around the target term in the same career trajectory.
+By embedding affiliation trajectories, we aim to learn a dense vector for every organization where distance between vectors relates to the tendency for two organizations to co-occur in a token window around the target organization token in the same career trajectory.
 Vectors are learned by training a neural network to optimize the prediction of the so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory.
-The hidden layer of the trained neural network is used as the
+The hidden layer of the trained neural network is used as the final representation. 
 
 %% Word2vec parameters and training procedure
 The skip-gram model has several tunable hyper-parameters, including the size of the learned vectors, the size of the token window  considered when training, the minimum frequency threshold for including an organization, and the number of iterations.
@@ -419,11 +420,8 @@ We iterate the skip-gram training for five epochs over all mobility sentences.
 All word embeddings are trained using the \textit{gensim} python implementation of the skip-gram \textit{word2vec} model.
 We visualize embeddings by projecting into two dimensions using UMAP~\autocite{mcinnes2018umap}.
 
-
 Results are reported for embeddings with a dimensionality of 300 and a window size of one, which were the parameters that produced  that best explained the flux between organizations (Fig. SI~\ref{fig:supp:hyperparams}).
 We note that this performance and the outcomes of analysis was robust to hyperparemeters settings.
-
-In embedding space, we can consider two proximity measures: cosine similarity and dot product. Cosine similarity only consider about angle difference of two embedding vectors, while dot product cares about angle and magnitude at the same time. If vectors are normalized, they are the same. In general, which measure is good depends on the task. If the task is desirable to ignore the magnitude, then cosine similarity is better, otherwise, the dot product is better.
 
 
 
@@ -441,7 +439,6 @@ The geographic distance, $g_{ij}$, is the pairwise geographic distance between o
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations.
 When less than one kilometer, a distance of one is imputed.
 The embedding distance with the cosine similarity, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = 1 - \frac{v_{i} \cdot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
-Additionally, the embedding distance with the dot product, we use  $d_{ij} =  -v_{i} \cdot v_{j}$.
 
 %
 % SUBSECTION: GRAVITY LAW
@@ -462,18 +459,18 @@ where $m_{i}$ and $m_{j}$ are the organization masses, or the yearly-average cou
 
 We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
 For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{-\alpha}_{ij}$, where $\alpha$ is estimated from the data.
-For embedding distance , we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$, where $\beta$ is estimated from the data.
+For embedding distance, we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$, where $\beta$ is estimated from the data.
 To estimate parameters $C$, $\alpha$ and $\beta$ are estimated by log-transforming each variant of \ref{eq:gravity_basic}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression.
 
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
-	\ln(\frac{T_{ij}}{m_im_j}) = \ln(C)  - \alpha \ln(g_{ij})
+	\ln\frac{T_{ij}}{m_im_j} = \ln(C)  - \alpha \ln(g_{ij})
 \end{equation}
 
 \begin{equation}
 	\label{eq:linear_flux_emb}
-	\ln(\frac{T_{ij}}{m_im_j}) = \ln(C) - \beta d_{ij}
+	\ln\frac{T_{ij}}{m_im_j} = \ln(C) - \beta d_{ij}
 \end{equation}
 
 where $T_{ij}$ is the real flux from dataset. The gravity law of mobility is known to be sensitive to the case where $T_{ij} = 0$, or zero movement between organizations.
@@ -486,23 +483,23 @@ We follow standard practice and exclude from our analysis zero flows.
 % SUBSECTION: SEMAXIS
 %
 \subsection*{SemAxis}
-By constructing semantic embeddings from mobility trajectories, we allow for unique methodology for understanding the embedding space, such as SemAxis.
 SemAxis~\autocite{an2018semaxis} is a technique that leverages the latent semantic characteristics of word embeddings to represent the position of terms along a conceptual axis, reflecting the relationship of these term to the concept.
-The precise axis is an antonym pair defined \textit{ad-hoc} for the specific use case.
-In the case of language, the ends of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''. It is shown that projection of words to given specific axis fit well with widely shared cultural connotation from surveyed
-responses and labeled historical data \autocite{kozlowski2018geometry}.
-
-In this analysis, we embed organization identifiers and trajectories, rather than words and sentences, however mobility can be thought of semantically, just like language. 
-Under this view, organizations can be thought of as similar when they have similar \textit{contexts}--that is, authors affiliated with that organization also tend to co-affiliate the same set of other organizations.
+Each axis is an antonym pair defined for each specific use case.
+In the case of language, the poles of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''. 
 By treating organizations analogously to words and trajectories analogously to sentences, we can use SemAxis to leverage the semantic properties of the resulting embedding vectors to operationalize abstract relationships between organizations. 
 
-Here, we apply SemAxis to U.S. universities by defining two axes, one of geography and one of academic prestige.
+Given vectors representing the positive and negative poles of an axis, $v^{+}$ and $v^{-}$, the axis is defined as.$v_{\text{axis}} = v^{+} - v^{-}$. For each organization in the embedding space, $w$, a score is calculated relating the term to to the positive, $v^{+}$ or negative, $v^{-}$ pole, calculated as the cosine similarity of the organization's vector with the axis, 
+
+$$
+score(w)v_{\text{axis}} = \cos(u_{w}, v_{\text{axis}})
+$$
+
+We apply SemAxis to U.S. universities by defining two axes, one of geography and one of academic prestige.
 The poles of the geographic axis are defined as the mean vector of all vectors corresponding to organizations in California, and then the mean of all vectors of organizations in Massachusetts.
 For the prestige axis, we define a subset of top-ranked universities according to either the Times World University Rankings or based on the mean normalized research impact sourced from the Leiden Rankings.
 The other end of the prestige axis is the geographically-matched (according to census region) set of universities ranked at the bottom of these rankings.
 For example, if 20 universities top-ranked universities are selected and six of them are in the Northeastern United States, then the bottom six universities according to the same ranking will be included in the low-ranked subset.
-From the prestige axis we also derive what we call \textit{SemRank}, a university ranking based on the nearness of universities to the \textit{Elite} end of the axis.
-We compare the SemAxis ranking to the traditional university rankings using Spearman rank correlations.
+From the prestige axis we derive a ranking of universities that we then compare to other formal university rankings using Spearman rank correlation. 
 
 
 \clearpage
@@ -604,7 +601,7 @@ where $v_i$ is a vector with 1 in the ith entry, whose length is the N, the numb
 
 \begin{equation}
 	\label{eq:KL}
-	D_{KL} = \sum p(x)\log(\frac{p(x)}{q(x)})
+	D_{KL} = \sum p(x)\log\frac{p(x)}{q(x)}
 \end{equation}
 
 where $M=\frac{1}{2}(P+Q)$. We report the both results, PPR with cosine distance (Fig. \ref{fig:supp:gravity_pprcos}) and (Fig. \ref{fig:supp:gravity_pprjsd}). In both cases, the performance is under the performance of the model with geographical distance. Even though the length of the PPR vectors is extremely larger than the length of our embedding vectors, our result on the embedding outperforms than network approach. Moreover, it is also computationally efficient and salable for large dataset.
@@ -1092,7 +1089,7 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		\textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by number of universities used to define the poles (n).
 		White points are those top and bottom 20 universities aggregated to define the ends of the axis.
 		The grey box corresponds to the top 20 and bottom 20 ranks.
-	  	PCC details the estimate from Spearman correlation between the two rankings.
+	  	Spearman's rho details the estimate from Spearman correlation between the two rankings using all universities, including those used to define the ends of each axis. 
 	}
 	\label{fig:supp:semaxis_compare}
 \end{figure}
