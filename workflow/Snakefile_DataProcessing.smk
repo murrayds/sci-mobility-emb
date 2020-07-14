@@ -35,7 +35,7 @@ rule add_state_to_lookup:
 # MOBILITY TRAJECTORY FILES
 ###############################################################################
 rule filter_to_mobile:
-    input: MOBILITY_RAW
+    input: ancient(MOBILITY_RAW)
     output: MOBILE_RESEARCHERS
     shell:
         "Rscript scripts/FilterRawByMobilityStatus.R --input {input} \
