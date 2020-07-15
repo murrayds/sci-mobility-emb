@@ -340,25 +340,27 @@ This suggests that the organization embedding surprisingly captures the latent p
 %
 \section*{Conclusion}
 
-Neural embeddings offer a natural approach for learning an effective and robust functional distance between places based on affiliation trajectory data. 
+Neural embeddings offer a novel approach for learning an effective and robust functional distance between places based on affiliation trajectory data. 
 Here, we demonstrated how the embedding space encodes complex aspects of scientific mobility, such as global and regional geography, national similarity, and organizational prestige.
 While scientific mobility is used as a case study, this approach can be broadly applied to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
 Moreover, this approach can be used to learn a functional distance between entities when no such analog to geographic distance exists, such as a functional distance between occupational categories based on individual's career trajectories. 
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, the unique structure of neural embedding also allows for a range of methodological applications.
-For instance, projecting the embedding space onto two dimensions using UMAP allows for the visualization of the complex structure of scientific mobility at high resolution and at multiple scales, which has implications. 
-Other techniques, such as SemAxis, allow the potential to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
+As we shown, projecting the embedding space onto two dimensions using UMAP allows for the visualization of the complex structure of scientific mobility at high resolution and at multiple scales, which has implications in practice. 
+Other techniques, such as SemAxis, also allow the potential to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
 Neural embedding opens the door for new approaches for representing and understanding patterns of global human mobility.
  
 
-In spire of its promise, this approach and analysis presents several limitations. 
-First, the standard neural embedding model non-directional, meaning that embedding will be less effective at capturing mobility for which directional is critical.
-Second, the neural embedding approach is most useful in cases of mobility between discrete geographic entities such as between countries, cities, and businesses; this approach is less useful in the case of mobility between arbitrary locations represented in geographic coordinates, such as in the modeling of animal movements. 
-Neither of these methodological limitations are insurmountable, and future work can aim to incorporate directionality and identify meaningful representations of continuous mobility data. 
+In spite of its promise, this approach and analysis present several limitations. 
+First, the \textit{skip-gram word2vec} model can not encode directional information, meaning that embedding will be less effective at capturing mobility for which directional is critical.
+Second, the neural embedding approach is most useful in cases of mobility between discrete geographic units such as between countries, cities, and businesses; this approach is less useful in the case of mobility between arbitrary locations represented in geographic coordinates, such as in the modeling of animal movements. 
+Neither of these methodological limitations is insurmountable, and future work can aim to incorporate directionality and identify meaningful representations of continuous mobility data. 
 Finally, the case of scientific mobility presents domain-specific limitations. 
 Reliance on bibliometric metadata means that we capture only long-term mobility such as migration, rather than the array or more frequent short-term mobility such as conference travel and temporary visits. 
 The kinds of mobility we do capture—asynchronous migration and synchronous co-affiliation, are treated identically by our model even though they are qualitatively different.
+Also, our data can possess survivorship bias. Researchers at prestige organization tend to have more publications, inducing appear more in the mobility sentence.
 Scientific mobility is complex, and its study continues to pose challenges; neural embeddings do not solve many of these issues, but they create opportunities for new analyses and understanding
-Future work should aim to 
+future work should aim to 
+
 
 Mobility and migration is a core asepct of human nature and history~\autocite{shah2020migration}, driving social phenomena as diverse as epidemics\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity} and science and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}. 
 Within science, mobility has grown increasingly global~\autocite{czaika2018globalisation}, though the travel restrictions in the U.S. and U.K. brought by Brexit and the Trump administration~\autocite{chinchilla2018travelban}, and the rise of new scientific powers such as China~\autocite{tollefson2018china, cao2020returning} may lead to a reorientation in who goes where.  
