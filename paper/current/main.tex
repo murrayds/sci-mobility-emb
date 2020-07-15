@@ -198,14 +198,14 @@ We speculate that this results from an underlying mathematical connection betwee
 	\caption{
 		\textbf{Embedding distance outperforms geographic distance.}
 		\textbf{a.} embedding distance (cosine distance between organization vectors) explains more of the expected flux between organization pairs than does geographic distance (\textbf{b}).
-		The red line is the line of best fit.
+		The red line is the line of the best fit.
 		Black dots are mean flux across binned distances.
 		Error bars are 99\% confidence intervals.
 		Color indicates the frequency of organization pairs within each hex bin.
 		\textbf{c-d.} Predictions of flux between organization pairs made using embedding distance outperform those made using geographic distance.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		``RMSE'' is calculated as the root-mean-squared error between the actual and predicted values.
+		``RMSE'' is root-mean-squared error between the actual and predicted values.
 		\textbf{e-f.} Predictions made using model parameters learned from a subset of domestic (within-country) organization pairs.
 		Embedding distance outperforms those made for geographic distance.
 		\textbf{g-h.} Embedding distance also outperforms geographic distance when predicting flux using model parameters estimated from only international mobility (across-country organization pairs).
@@ -219,17 +219,17 @@ We speculate that this results from an underlying mathematical connection betwee
 \subsection*{Embeddings capture global structure of mobility}
 
 By encoding the complex landscape in a dense representation, embeddings also allow us to create informative visualizations of global scientific mobility.
-To explore the embedding, we use a common dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) to obtain a two-dimensional representation of the embedding (Fig.~\ref{fig:projection}a).
+To explore the topological structure of the embedding, we use a common dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) to obtain a two-dimensional representation of the embedding (Fig.~\ref{fig:projection}a).
 By showing relationships between individual organizations, rather than aggregates such as nations or cities, this projection constitutes the largest and highest resolution ``map'' of scientific mobility to date.
 
 Globally, the effect of geography is conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors. 
-At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network representations (Fig.~\ref{fig:supp:network_vis}) that have dominated studies of scientific mobility~\autocite{chinchilla2018global, czaika2018globalisation}.
+At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network representations (Fig.~\ref{fig:supp:network_vis}) that have been dominating studies of scientific mobility~\autocite{chinchilla2018global, czaika2018globalisation}.
 
 The embedding space also allows us to to \textit{zoom in} on subsets of counties and re-project them in order to reveal more local relationships. 
 For example, re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries ranging from Egypt to Philippines that corresponds largely to geography, but with some peculiar exceptions. 
 For example, countries like Iraq are nearer to some southeast-Asian countries like Malaysia, with a cosine distance between the nation's aggregate vectors of $d = 0.29$, than to nearer and more religiously-similar nations like Saudi Arabia ($d = 0.50$ and Qatar ($d = 0.51$). 
 Linguistic and historical ties are also conspicuous.
-For example, we observe that Spanish-speaking post-colonial Latin American nations are positioned near Spain (Fig.~\ref{fig:projection}c), such as Mexico ($d = 0.34$) and Chile ($d = 0.39$) morose than to nearby Portuguese-speaking Brazil ($d = 0.52$ for Mexico and $d = 0.49$ for Chile).
+For example, we observe that Spanish-speaking post-colonial Latin American nations are positioned near Spain (Fig.~\ref{fig:projection}c), such as Mexico ($d = 0.34$) and Chile ($d = 0.39$) morose than to nearby Portuguese-speaking nation ($d = 0.52$ for Mexico and $d = 0.49$ for Chile) reflecting language and culture constructed the nature of scientific mobility.
 Similarly, North-African countries that were once under French rule such as Morocco are nearer to France ($d =0.35$) than to similarly-distant European countries as Spain ($d = 0.40$) and Italy ($d = 0.53$). 
 Comparable structural patterns exist even within a single country.
 For example, at the global level (Fig~\ref{fig:projection}a), organizations within Quebec in Canada are located nearer the French cluster ($d = 0.65$) than the rest of the Canadian universities Canada ($d = 0.88$).
