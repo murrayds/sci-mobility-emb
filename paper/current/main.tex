@@ -538,15 +538,16 @@ From the prestige axis, we derive a ranking of universities that we then compare
 \label{si:text:mobility_science}
 {\bf Mobility and science.}
 
-As scholars move, they bring their knowledge, their skills, and their social connections with them--collectively the movements of researchers shapes the structure and direction of the global scientific enterprise.
+As scholars move, they bring their knowledge, their skills, and their social connections with them--collectively the movements of researchers shape the structure and direction of the global scientific enterprise.
 For example, prestige-driven mobility between doctoral-granting and employing institution is highly unequal~\autocite{clauset2015hierarchy, deville2014career}, which impacts the diffusion of ideas across academia~\autocite{morgan2018prestige}. 
-By placing researchers in new social settings, mobility can lead to the formation of new collaborative relationships~\autocite{rodrigues2016mobility}, which in turn spur the further diffusion of knoweldge and new innovations~\autocite{braunerhjelm2020labor, azoulay2011diffusion, kaiser2018innovation, armano2017innovation}. 
+By placing researchers in new social settings, mobility can lead to the formation of new collaborative relationships~\autocite{rodrigues2016mobility}, which in turn spur the further diffusion of knowledge and new innovations~\autocite{braunerhjelm2020labor, azoulay2011diffusion, kaiser2018innovation, armano2017innovation}. 
 Perhaps resulting from the selection effects of who gets to move, or the reconfiguring of social and epistemic networks, movement is associated with increased scientific impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}. 
 At the national level, the understanding of mobility has progressed beyond simplistic narratives of brain drain and brain gain, and instead adopts a new perspective of \textit{flows} of talent~\autocite{meyer2001network, ioannidis2014braindrain, gaillard1998circulation}.
-Under this flow model, a mobile researcher is viewed as contributing to both their origin and destincation countries, a perspective that fosters that is evidenced by the strong science of open countires~\autocite{wagner2017open}. 
+Under this flow model, a mobile researcher is viewed as contributing to both their origin and destination countries, a perspective that fosters that is evidenced by the strong science of open countires~\autocite{wagner2017open}. 
 Perhaps because of these individual and national benefits, policy-makers have come to recognize the importance of global mobility~\autocite{box2008competition, oecd2010innovation}. 
 Movement is a key mechanism that has clear impacts on the composition and direction of the global scientific workforce and our collective scientific understanding. 
 Understanding the structure and dynamics of mobility is thus essential for understanding global science.
+
 
 %
 % S2 Text
@@ -556,26 +557,28 @@ Understanding the structure and dynamics of mobility is thus essential for under
 
 There are many ways of modeling scientific mobility from bibliographic data, the first consideration being the unit of analysis. 
 Most studies of mobility have focused on \textit{country-level} mobility--the flows of researchers across nations~\autocite{sugimoto2017mostimpact, scellato2015migrant, robinson-garcia2018indicators, franzoni2012foreign-born}.
-Practically, country-level analyses benefit from higher reliability, such that such that idiosyncrasies and errors inherent to bibliographic databases are mitigated by this higher level of aggregation.
-Epistemically, country-level analysis is useful for national science governance who aim to understand the status of their country in the global landscape and make informed policy decisions. 
+Practically, country-level analyses benefit from higher reliability, such that idiosyncrasies and errors inherent to bibliographic databases are mitigated by this higher level of aggregation.
+Epistemically, country-level analysis is useful for national science governance who aims to understand the status of their country in the global landscape and make informed policy decisions. 
 Analyses at lower levels of analysis are far less common. 
 \textit{Regional}-level scientific mobility--the flow of researchers between regions or cities within or across countries, has been only minimally studied~\autocite{vaccario2019mobility}, possibly due to lack of reliable long-term data and lack of policy relevance to national-level lawmakers. 
-\textit{Organization}-level mobility has potential to inform institutional policy and for understand the composition of mobility within a single country or region, especially as it relates to organization performance, prestige, and inequality~\autocite{albarran2017topeconomic, deville2014career, morgan2018prestige, clauset2015hierarchy}.
-However, affiliation disambiguation and noise in bibliometric data has makes large-scale organization-level analysis challenging.
+\textit{Organization}-level mobility has the potential to inform institutional policy and to understand the composition of mobility within a single country or region, especially as it relates to organization performance, prestige, and inequality~\autocite{albarran2017topeconomic, deville2014career, morgan2018prestige, clauset2015hierarchy}.
+However, affiliation disambiguation and noise in bibliometric data have makes large-scale organization-level analysis challenging.
 Here, we learn neural-network embeddings of scientific mobility at the level of organizations using a curated bibliographic database.
 These embeddings are robust to noise, and so are capable of representing clear structure even amid issues with organizational disambiguation. 
 In doing so, embeddings also capture a more detailed understanding of mobility than has been previously studied. 
 
-Another consideration when analyzing scientific mobility are what kinds of mobility to study. 
+
+Another consideration when analyzing scientific mobility is what kinds of mobility to study. 
 Typical understandings of mobility are directional, meaning that movement is always \textit{from} one place and \textit{to} another. 
 Scientific mobility, however, is more complicated.
 For example, scientists often hold multiple affiliations at a time~\autocite{markova2016synchronous}, listing them as co-affiliations on a single paper, or even choosing a subset of affiliations to use for multiple simultaneous projects~\autocite{robinson2019mobility}.
-Even clearly-directional migration to another institution is complex--researchers may continue to publish with an old affiliation for projects that began before their move, and they may maintain social and organizational links  to their old institution (e.g., collaborators, projects, graduate students) such that there is no clear breakage after migrating. 
-There are also a whole range of short-term scientific mobility, such as visiting scholarships and short-term visits that are only visible through intensive efforts such as manual extraction from CVs~\autocite{woolley2009cv, sandstrom2009cv, canibano2011temporary}.
+Even clearly-directional migration to another institution is complex--researchers may continue to publish with an old affiliation for projects that began before their move, and they may maintain social and organizational links to their old institution (e.g., collaborators, projects, graduate students) such that there is no clear breakage after migrating. 
+There is also a whole range of short-term scientific mobility, such as visiting scholarships and short-term visits that are only visible through intensive efforts such as manual extraction from CVs~\autocite{woolley2009cv, sandstrom2009cv, canibano2011temporary}.
 Here, we focus on more long-term mobility that can be derived from bibliographic data. 
-Due to the complexity of scientific mobility, we make the simplifying assumption that all scientific mobility is \textit{symmetric} or without direction such that any move from organization $A$ to organization $B$ is equivalent to a move from $B$ to $A$. 
-By assuming non-directional mobility, all mobility events are commensurate, meaning that they can be treated identically in our analysis--this allows us to represent the complexity of mobility without making decisions for individual researcher's about the directional of their mobility or which is their main affiliation.
+Due to the complexity of scientific mobility, we make the simplifying assumption that all scientific mobility is \textit{symmetric} or without direction such that any move from an organization $A$ to organization $B$ is equivalent to a move from $B$ to $A$. 
+By assuming non-directional mobility, all mobility events are commensurate, meaning that they can be treated identically in our analysis--this allows us to represent the complexity of mobility without making decisions about the directional of their mobility or which is their main affiliation.
 Moreover, this assumption has the practical advantage of matching the data format expected by the \textit{word2vec} model, as well as the theoretical advantage of adhering to the symmetricity assumption of the gravity model of mobility. 
+
 
 
 %
@@ -584,7 +587,7 @@ Moreover, this assumption has the practical advantage of matching the data forma
 \label{si:text:mobility_traj}
 {\bf Building affiliation trajectories.}
 
-We adopt a data-driven approach to constructing affiliation trajectories, making as little adjustment to the raw bibliometric data as possible. 
+We adopt a data-driven approach to constructing affiliation trajectories, making an as little adjustment to the raw bibliometric data as possible. 
 For each mobile researcher (having at least two distinct affiliations), we construct an affiliation trajectory based on the affiliations listed on their published papers indexed in the Web of Science database between 2008 and 2019. 
 An author is considered mobile if they published with at least two distinct affiliations during the time period of study. 
 Affiliations map to disambiguated organizations, each of which matches to a unique identifier. 
@@ -593,12 +596,13 @@ For example, if an author published with affiliation $A$ in $t_{0}$, affiliation
 
 In the case that multiple affiliations are used within a single year, affiliations listed on publications published in that year are shuffled between each stage of the \textit{word2vec} training process (each epoch). 
 For example, an author who published with affiliation $A$ in $t_{0}$, and affiliations $B, C$ in $t_{1}$ could appear as one of $\{A, B, C\}$ or $\{A, C, B\}$ in each training iteration. 
-This effectively removes the effect of order within a year, as order cannot be meaningfully established based on co-affiliations in a single paper, or on different affiliations listed on separate papers, publication of which is not necessarily representative of the actual completion of the project. 
+This effectively removes the effect of order within a year, as the order cannot be meaningfully established based on co-affiliations in a single paper, or on different affiliations listed on separate papers, the publication of which is not necessarily representative of the actual completion of the project. 
 
 Other than restricting to only mobile researchers, we do not perform any filtering or reductions to affiliation trajectories.
 For example, in the case than an author publishes with organization $A$ four times in $t_{0}$, and affiliation $B$ two times in $t_{1}$, then their trajectory will be $\{A, A, A, A, B, B\}$. 
 This means that mobile authors who publish more papers will have longer trajectories.
 However, \textit{word2vec} will skip duplicate consecutive organization IDs, effectively eliminating the impact of these long repetitive trajectories. 
+
 
 
 
@@ -628,7 +632,8 @@ where $v_i$ is a vector with 1 in the ith entry, whose length is the N, the numb
 	D_{KL} = \sum p(x)\log\frac{p(x)}{q(x)}
 \end{equation}
 
-where $M=\frac{1}{2}(P+Q)$. We report the both results, PPR with cosine distance (Fig. \ref{fig:supp:gravity_pprcos}) and (Fig. \ref{fig:supp:gravity_pprjsd}). In both cases, the performance is under the performance of the model with geographical distance. Even though the length of the PPR vectors is extremely larger than the length of our embedding vectors, our result on the embedding outperforms than network approach. Moreover, it is also computationally efficient and salable for large dataset.
+where $M=\frac{1}{2}(P+Q)$. We report the both results, PPR with cosine distance (Fig. \ref{fig:supp:gravity_pprcos}) and (Fig. \ref{fig:supp:gravity_pprjsd}). In both cases, the performance is under the performance of the model with geographical distance. Even though the length of the PPR vectors is extremely larger than the length of our embedding vectors, our result on the embedding outperforms than network approach. Moreover, it is also computationally efficient and salable for large datasets.
+
 
 
 %
@@ -637,24 +642,26 @@ where $M=\frac{1}{2}(P+Q)$. We report the both results, PPR with cosine distance
 \label{si:text:organizations}
 {\bf Organization disambiguation and metadata.}
 
-Affiliations mapped to one of 8,661 organizations, disambiguated following that origionally designed for the Leiden Rankings of World Universities~\autocite{waltman2012leidenrankings}.
+Affiliations mapped to one of 8,661 organizations, disambiguated following that originally designed for the Leiden Rankings of World Universities~\autocite{waltman2012leidenrankings}.
 Organizational records were associated with a full name, a type indicating the sector (e.g., University, Government, Industry), and an identifier for the country and city of the organization.
 Sixteen different sector types were included in the analysis, which we aggregated to a four high-level codes: \textit{University}, \textit{Hospital}, \textit{Government}, and \textit{Other}.
-Each record was also associated with a latitude and longitude, however for many organizations these were missing or incorrect. We manually updated the coordinates of 2,267 organizations by searching the institution name and city on Google Maps;
+Each record was also associated with a latitude and longitude, however, for many organizations, these were missing or incorrect. We manually updated the coordinates of 2,267 organizations by searching the institution name and city on Google Maps;
 in cases where a precise location of the organization could not be identified, we used the coordinates returned when searching the name of the city.
 The data was further enriched with country-level information, including continent, majority language spoken, and language family of the majority language (e.g., the language family of \textit{Spanish} is \textit{Italic}).
-State/province level  information were added using the reverse geocoding service LocationIQ using each organization's latitude and longitude as input.
+State/province-level information was added using the reverse geocoding service LocationIQ using each organization's latitude and longitude as input.
 Regional census classifications were also added for states in the United States.
-For each organization, we also calculated a size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
+For each organization, we also calculated size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
 in the case that authors publish with multiple affiliations in a single year, they are counted towards each.
+
 
 As a result of our disambiguation procedure, some affiliations are mapped to two organizations, one specific, and one more general.
 For example, any author affiliated with ``Indiana University Bloomington'' will also be listed as being affiliated with the ``Indiana University System'', a more general designation for all public universities in Indiana.
 However, a more general organization may not always occur alongside the more specific one.
 For example, a researcher affiliated with the smaller regional school ``Indiana University South Bend'' will be listed as affiliated with only the ``Indiana University System''.
-We identify all specific organizations that always co-occur along a more general one.
+We identify all specific organizations that always co-occur along with a more general one.
 For every career trajectory that includes one of these specific organizations, we remove all occurrences of the more general organization;
 trajectories containing only a general designation are not altered.
+
 
 
 %
@@ -767,20 +774,21 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		\textbf{Publications over time.}
 		\textbf{a.}
 		The number of papers published by mobile authors has been steadily increasing from 2008 to 2017, with a small decrease in 2018,  likely an artifact of the Web of Science indexing process.
-		Lines corresponds to publications by mobile authors (org, purple), by authors with affiliations in at least two cities (blue), at least two regions (green), and at least two countries (yellow).
-		There is no evidence of major changes in publication patterns of mobile authors during this time period.
+		Lines correspond to publications by mobile authors (org, purple), by authors with affiliations in at least two cities (blue), at least two regions (green), and at least two countries (yellow).
+		There is no evidence of major changes in the publication patterns of mobile authors during this time period.
 		\textbf{b.}
 		Lines correspond to the proportion of publications classified as Biology and Health (black), Physics and Engineering (purple), Life and Earth Science (magenta), Social Science and Humanities (orange), and Math and Computer Science (yellow).
 		The rate of publication in Biology and Health has leveled since about 2013, whereas the rate of publication in other fields has steadily increased.
 		\textbf{c.}
 		Despite increasing absolute counts, the percentage of mobile scholars, and those with at least two city, regional, or country affiliations, as a proportion of all publications, has decreased over time.
 		\textbf{d.}
-		The proportion of authors publications across fields has largely remained steady.
-		Biology and Health Science has comprised the majority of publications across nearly all years, but has steadily declined in proportion.
+		The proportion of authors' publications across fields has largely remained steady.
+		Biology and Health Science has comprised the majority of publications across nearly all years but has steadily declined in proportion.
 		However, the proportion of Social Science and Humanities publications has been steadily increasing.
 	}
 	\label{fig:supp:pubs_over_time}
 \end{figure}
+
 
 
 %
@@ -792,17 +800,19 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 	\caption{
 		\textbf{Extent and nature of mobility by country.}
 		\textbf{a.}
-		Proportion of researchers in each country classified as mobile, meaning that they have at least two organization affiliations within the period of study.
+		The proportion of researchers in each country classified as mobile, meaning that they have at least two organization affiliations within the period of study.
 		The countries with the most mobile researchers are the United States, China, France, Great Britain, and Germany.
 		\textbf{b.}
 		The same information, arranged into a cumulative distribution.
-		The five countires with the highest mobility account for approximately 70 percent of all mobility.
+		The five countries with the highest mobility account for approximately 70 percent of all mobility.
 		\textbf{c.} The proportion of researchers labeled as mobile by country.
 		\textbf{d.} First two principal components of four variables: proportion in each country mobile across organizations, proportion mobile across cities, proportion mobile across regions, and proportion mobile across countries.
-		First component captures overall degree of mobile, whereas the second compares within-country against across-country mobility.
+		The first component captures the overall degree of mobile, whereas the second compares within-country against across-country mobility.
 	}
 	\label{fig:supp:descriptives}
 \end{figure}
+
+
 
 
 \newpage
@@ -815,7 +825,7 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 	\caption{
 		\textbf{Reverse cumulative-distribution function of mobile authors by geographic scale.}
 		\textbf{a.}
-		Proportion of mobile authors by how many organizations are represented 	in their career trajectories.
+		The proportion of mobile authors by how many organizations are represented in their career trajectories.
 		For example, for mobile authors, 100 percent of authors held an affiliation with at least two organizations, whereas about 35 percent were affiliated with 3 ore more organizations between 2008 and 2019.
 		Mobile authors are defined as those with at least two distinct organizational affiliations represented in our data.
 		\textbf{b.} 68 percent of mobile authors have at least two cities represented in their career trajectories.
@@ -824,6 +834,7 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 	}
 	\label{fig:supp:rcdf_by_scale}
 \end{figure}
+
 
 
 
@@ -954,7 +965,7 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 	\centering
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_dot.pdf}
 	\caption{
-		\textbf{Personalized page rank with cosine distance.}
+		\textbf{Examine gravity model with dot product on the embedding space.}
 		Performance of dot product similarities in explaining and predicting mobility.
 		Similarity scores are calculated as the pairwise dot product between organizational vectors. 
 		Dot product similarity performs better than geographic distance, though worse than cosine similarity in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
@@ -1109,14 +1120,15 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		\textbf{SemRank hierarchy is robust.}
 		\textbf{a.} Spearman correlation (n = 143) between Times prestige rank and SemAxis rank, by the number of high and bottom-ranked (geographically matched) universities aggregated to form the poles.
 		Black points show spearman correlation using all organizations; white points show correlation using only universalizes not aggregated in the poles. 
-		More universities improves performance, but quickly saturates after around five universities.
-		\textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by number of universities used to define the poles (n).
+		Including more universities improves performance, but quickly saturates after around five universities.
+		\textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by the number of universities used to define the poles (n).
 		White points are those top and bottom 20 universities aggregated to define the ends of the axis.
 		The grey box corresponds to the top 20 and bottom 20 ranks.
 	  	Spearman's rho details the estimate from Spearman correlation between the two rankings using all universities, including those used to define the ends of each axis. 
 	}
 	\label{fig:supp:semaxis_compare}
 \end{figure}
+
 
 
 %
@@ -1129,10 +1141,11 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		\textbf{Correlation between Times and Leiden Ranking.}
 		Comparison between the Times and Leiden rankings of universities.
 		Here, the Leiden Ranking is operationalized as the mean normalized fractional citation impact for each university~\autocite{waltman2012leidenrankings}. 
-	  	PCC details the estimate from Spearman correlation between the two rankings.
+	  	PCC details the estimate from the Spearman correlation between the two rankings.
 	}
 	\label{fig:supp:times_vs_leiden}
 \end{figure}
+
 
 
 
