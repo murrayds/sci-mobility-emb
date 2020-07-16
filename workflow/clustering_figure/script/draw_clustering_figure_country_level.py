@@ -366,8 +366,8 @@ def draw_figure(
         sim.element_sim(hierarchical_clu, language_family_clu, r=r) for r in r_list
     ]
     
-    prop = font_manager.FontProperties(fname=FONT_PATH, size=30)
-    small_prop = font_manager.FontProperties(fname=FONT_PATH, size=25)
+    
+    prop = font_manager.FontProperties(fname=FONT_PATH, size=40)
     sns.set_style("white")
     fig, ax = plt.subplots(1, figsize=(10, 6))
     ax.plot(r_list, similiarties_continent, "-", label="Region")
@@ -375,12 +375,12 @@ def draw_figure(
     ax.plot(r_list, similiarties_language, "-", label="Language")
     ax.set_xlabel("r, Scaling parameter", fontproperties=prop)
     ax.set_ylabel("Similarity", fontproperties=prop)
-    ax.legend(bbox_to_anchor=(0.53, 0.61), prop=small_prop, frameon=False)
+    ax.set_yticks([.1, .3, .5, .7])
 
     for label in ax.get_xticklabels():
-        label.set_fontproperties(small_prop)
+        label.set_fontproperties(prop)
     for label in ax.get_yticklabels():
-        label.set_fontproperties(small_prop)
+        label.set_fontproperties(prop)
 
     plt.savefig(CLUSIM_PART_PATH, bbox_inches="tight")
 
