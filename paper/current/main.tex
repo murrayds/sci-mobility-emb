@@ -250,7 +250,7 @@ Similar structures can be observed in other states such as among New York's CUNY
 		\textbf{a.}
 		UMAP projection \autocite{mcinnes2018umap} of the embedding space reveals strong country-level clustering.
 		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019. 
-		Color indicates the continent.
+		Color indicates the region.
 		\textbf{b.} Zooming into (re-projecting) the area containing countries in the Middle East and South and Southeast Asia shows a geographic and cultural gradient of country clusters. 
 		\textbf{c.} Similarly, zooming into the area organizations in Spain, Portugal, South, and Central America show clustering by majority language group--Spanish and Portuguese.
 		\textbf{d.} Doing the same for organizations in the United States reveals geographic clustering based on state, roughly grouped by Census Bureau-designated regions,
@@ -267,9 +267,9 @@ We then perform hierarchical clustering of nations that have at least 25 organiz
 The six identified clusters roughly correspond to East-Asian (orange), Scandinavian (dark purple), British Commonwealth (light purple), Central and Eastern European countries (light blue), and then two remaining diverse clusters that contain a mix of European, Latin American, and Mediterranean countries.
 These clusters demonstrate the importance of not only geography but also linguistic ties between countries.
 
-We quantify the relative importance of geography (by continent), and language (by majority language of each country) using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
+We quantify the relative importance of geography (by region), and language (by majority language of each country) using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
 If $r$ is high, the similarity is based on the lower levels of the dendrogram, whereas when $r$ is low, the similarity is based on higher levels.
-Fig. \ref{fig:clustering}b demonstrates that the continent plays a major role at higher levels of the clustering process (low $r$), and language (family) explains the clustering more at the lower levels (high $r$).
+Fig. \ref{fig:clustering}b demonstrates that the region plays a major role at higher levels of the clustering process (low $r$), and language (family) explains the clustering more at the lower levels (high $r$).
 This suggests that geography, then language, are important factors contributing to the structure of international scientific mobility.
 
 
