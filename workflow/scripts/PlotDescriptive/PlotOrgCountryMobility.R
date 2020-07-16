@@ -43,9 +43,11 @@ researchers <- read_delim(opt$researchers, delim = "\t", col_types = readr::cols
 exp.org <- sum(researchers$org_mobile) / dim(researchers)[1]
 exp.country <- sum(researchers$country_mobile) / dim(researchers)[1]
 
-flows <- read_delim(opt$flows, delim = "\t", col_types = readr::cols())
+flows <- read_delim(opt$flows, delim = "\t", col_types = readr::cols()) %>%
+          select(-LR_main_field_no, -pub_year)
 
-nonmobile <- read_delim(opt$nonmobile, delim = "\t", col_types = readr::cols())
+nonmobile <- read_delim(opt$nonmobile, delim = "\t", col_types = readr::cols()) %>%
+             select(-ut, -LR_main_field_no, -pub_year)
 
 # Merge with nonmobile individuals
 flows <- data.table::rbindlist(list(flows, nonmobile))
@@ -53,7 +55,6 @@ flows <- data.table::rbindlist(list(flows, nonmobile))
 # Load the dataframe of all transitions, merge in other metainfo, and
 # aggregate across countries and organization mobility status
 flows <- flows %>%
-  select(-LR_main_field_no, -pub_year) %>%
   left_join(researchers, by = "cluster_id") %>%
   left_join(lookup, by = "cwts_org_no") %>%
   filter(!is.na(country_iso_alpha) & country_iso_alpha != "NULL") %>%

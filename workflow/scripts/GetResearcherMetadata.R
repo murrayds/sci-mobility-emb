@@ -40,7 +40,7 @@ nonmobile <- readr::read_delim(opt$nonmobile,
                                  delim = "\t",
                                  col_types = readr::cols())
 
-mobility.raw <- data.table::rbindlist(list(mobile, nonmobile))
+mobility.raw <- data.table::rbindlist(list(mobile, nonmobile), fill = T)
 
 org.lookup <- readr::read_delim(opt$lookup,
                                delim = "\t",
