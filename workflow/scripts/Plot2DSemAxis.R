@@ -244,14 +244,14 @@ if (opt$overall) {
     plotlabel <- opt$sector
   }
 
-  plot <- plot +
-    annotate(geom = "text",
-             x = 0.28,
-             y = -0.4,
-             label = plotlabel,
-             size = 7,
-             fontface = 2
-           )
+  # plot <- plot +
+  #   annotate(geom = "text",
+  #            x = 0.28,
+  #            y = -0.4,
+  #            label = plotlabel,
+  #            size = 7,
+  #            fontface = 2
+  #          )
 }
 
 # Save the plot

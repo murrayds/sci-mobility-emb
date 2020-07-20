@@ -309,36 +309,36 @@ A geographic axis is also added to aid the visualization and reinforce the impor
 
 Prestigious universities such as Colombia, Stanford, MIT, Harvard, and Rockefeller are positioned towards the top of the axis (Fig.~\ref{fig:semaxis}a).
 Universities at the bottom of this axis tend to be regional universities with lower national profiles (yet still ranked by Times Higher Education) and with more emphesis on teaching, such as Barry Univeristy and California State University at Long Beach.
-SemAxis also offers a new means of reasoning about the prestige of organizations typically excluded from rankings such as government organizations (Fig.~\ref{fig:supp:semaxis_sectors}a), research institutes (Fig.~\ref{fig:supp:semaxis_sectors}b), and teaching colleges (Fig.~\ref{fig:supp:semaxis_sectors}c).
+SemAxis also offers a new means of reasoning about the prestige of organizations typically excluded from rankings such as government organizations (Fig.~\ref{fig:semaxis}b), research institutes (Fig.~\ref{fig:semaxis}c), and teaching colleges (Fig.~\ref{fig:semaxis}d).
 
 %
 % Figure - SemAxis results
 %
 \begin{figure}[hp!]
 	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
+	\includegraphics[width=0.7\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
 	\caption{
 		\textbf{Embedding captures latent geography and prestige hierarchy.}
-		\textbf{a.} Illustration of SemAxis projection along two axes;  \textit{latent geographical axis}, from California to Massachusetts (left to right) and \textit{prestige axis}, from the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (top to bottom).
-		Points correspond to organizations, and a sample of states are highlighted.
+		\textbf{a-d.} Illustration of SemAxis projection along two axes;  \textit{latent geographical axis}, from California to Massachusetts (left to right) and \textit{prestige axis}, from the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (top to bottom).
+		Shown for U.S. Universities (\textbf{a}), Teaching colleges (\textbf{b}), Research institutes (\textbf{c}), and Government organizations (\textbf{d}).
 		Full organization names listed in Table~\ref{table:supp:orglabels}.
-		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity high-ranked end of the axis prestige axis \textit{a}.
+		\textbf{e.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity high-ranked end of the axis prestige axis \textit{a}.
 		White points are those top and bottom five universities used to define the poles of the axis.
 	  	Even when considering only a total of ten organization vectors, the estimate of the Spearman's rank correlation between the SemAxis and Times ranking is $\rho = 0.73$ (n = 145), and it increases if we include more top-and-bottom ranked universities (Fig.~\ref{fig:supp:semaxis_compare}).
+	  	\textbf{f.} Times ranking is correlated with Leiden Ranking of U.S. universities with Spearman's $\rho = 0.87$
 	}
 	\label{fig:semaxis}
 \end{figure}
 
-
 The embedding space captures prestige hierarchies that can be used to reconstruct academic rankings. 
-We derive a ranking using the SemAxis prestige axis in Fig.~\ref{fig:semaxis}a and compare them to traditional university rankings.
+We derive a ranking for universities using the SemAxis prestige axis in Fig.~\ref{fig:semaxis}a and compare them to traditional university rankings.
 The SemAxis ranking is defined from the position of organizations along the prestige axis, with the top-ranked being the furthest towards the high-ranked end of the axis.
-We find that the SemAxis ranking is correlated with the Times ranking (Spearman's $\rho = 0.73$, Fig.~\ref{fig:semaxis}b).
+We find that the SemAxis ranking is correlated with the Times ranking (Spearman's $\rho = 0.73$, Fig.~\ref{fig:semaxis}e).
 The strongest outliers that were ranked more highly in the Times Ranking than the SemAxis ranking tend to be large state universities such as Arizona State University and  University of Florida;
 Those ranked higher in the SemAxis ranking tend to be relatively-smaller universities such as the University of San Francisco and University of Maryland Baltimore County that are close to other prestigious universities.
 
 The correlation between SemAxis and the Times ranking is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities are significantly correlated with the Times Ranking (Spearman's $\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
-For reference, the SemAxis-derived ranking achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically-informed university ranking (Spearman's $\rho = 0.87$, Fig.~\ref{fig:supp:times_vs_leiden}).
+For reference, the SemAxis-derived ranking achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically-informed university ranking (Spearman's $\rho = 0.87$, Fig.~\ref{fig:semaxis}f).
 This suggests that the organization embedding captures the latent prestige hierarchy inherent to academic mobility, even without providing any explicit information on prestige, with a high degree of resolution and reliability~\autocite{deville2014career, clauset2015hierarchy}. 
 
 
@@ -1127,17 +1127,17 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 %
 % Figure - Times Ranking vs. Leiden Ranking
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/times_leiden_compare.pdf}
-	\caption{
-		\textbf{Correlation between Times and Leiden Ranking.}
-		Comparison between the Times and Leiden rankings of universities.
-		Here, the Leiden Ranking is operationalized as the mean normalized fractional citation impact for each university~\autocite{waltman2012leidenrankings}. 
-	  	PCC details the estimate from the Spearman correlation between the two rankings.
-	}
-	\label{fig:supp:times_vs_leiden}
-\end{figure}
+%\begin{figure}[hp!]
+%	\centering
+%	\includegraphics[width=\textwidth]{\figdir/SemAxis/times_leiden_compare.pdf}
+%	\caption{
+%		\textbf{Correlation between Times and Leiden Ranking.}
+%		Comparison between the Times and Leiden rankings of universities.
+%		Here, the Leiden Ranking is operationalized as the mean normalized fractional citation impact for each university~\autocite{waltman2012leidenrankings}. 
+%	  	PCC details the estimate from the Spearman correlation between the two rankings.
+%	}
+%	\label{fig:supp:times_vs_leiden}
+%\end{figure}
 
 
 
@@ -1162,18 +1162,18 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 %
 % Figure - SemAxis By Sector
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_sectors_fig.pdf}
-	\caption{
-		\textbf{Geography and prestige SemAxis in U.S. by Sector.}
-		SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top).
-		Points correspond to organizations labeled as Government (\textbf{a}), Institute (\textbf{b}), and Teaching (\textbf{c}), corresponding to government organizations, research institutes, and teaching organizations, respectively.
-		Grey points correspond to all U.S. universities.
-	    	Full organization names listed in Table~\ref{table:supp:orglabels}.
-	}
-	\label{fig:supp:semaxis_sectors}
-\end{figure}
+%\begin{figure}[hp!]
+%	\centering
+%	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_sectors_fig.pdf}
+%	\caption{
+%		\textbf{Geography and prestige SemAxis in U.S. by Sector.}
+%		SemAxis projection along two axes, comparing California to Massachusetts universities (left to r%ight), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 %Times Higher Education ranking of U.S. Universities (bottom to top).
+%		Points correspond to organizations labeled as Government (\textbf{a}), Institute (\textbf{b}), and %Teaching (\textbf{c}), corresponding to government organizations, research institutes, and teaching o%rganizations, respectively.
+%		Grey points correspond to all U.S. universities.
+%	    	Full organization names listed in Table~\ref{table:supp:orglabels}.
+%	}
+%	\label{fig:supp:semaxis_sectors}
+%\end{figure}
 
 
 
