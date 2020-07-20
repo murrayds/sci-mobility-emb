@@ -70,7 +70,7 @@ plot <- corr %>%
     legend.title = element_blank()
   ) +
   xlab("Num orgs in axis") +
-  ylab("Spearman's Rho")
+  ylab(latex2exp::TeX("Spearman's $\\rho"))
 
 # Save the plot
 ggsave(opt$output, plot, width = FIG_WIDTH, height = FIG_HEIGHT)

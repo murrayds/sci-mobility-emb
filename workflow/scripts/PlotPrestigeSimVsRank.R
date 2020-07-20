@@ -162,8 +162,8 @@ plot <- sims %>%
     panel.grid.minor = element_blank(),
   ) +
   # Add the Spearman's Rho to the plot
-  annotate("text", x = 45, y = 145,
-           label = paste("Spearman's Rho = ", round(cor$estimate, 2)),
+  annotate("text", x = 40, y = 145,
+           label = latex2exp::TeX(paste("Spearman's $\\rho = ", round(cor$estimate, 2))),
            size = 7,
            fontface = 2) +
   ylab(axis_title) +
