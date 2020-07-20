@@ -132,7 +132,7 @@ plot <- data %>%
                      expand = c(0, 0)) +
   coord_fixed() +
   annotate(geom = "text",
-           x = 1.4,
+           x = 1.6,
            y = 6.2,
            label = paste0("RMSE = ", sprintf("%.2f", round(error,3))),
            size = 7
