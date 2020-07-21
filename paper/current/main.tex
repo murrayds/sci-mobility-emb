@@ -342,6 +342,27 @@ For reference, the SemAxis-derived ranking achieves correlation with the Times R
 This suggests that the organization embedding captures the latent prestige hierarchy inherent to academic mobility, even without providing any explicit information on prestige, with a high degree of resolution and reliability~\autocite{deville2014career, clauset2015hierarchy}. 
 
 
+%
+% Figure - SemAxis results
+%
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/boomerang.pdf}
+	\caption{
+		\textbf{Lengh of organization vectors captures the reach of organizations.}
+		\textbf{a} L2 norm of organization vectors compared to their number of researchers for U.S. universities.
+		The L2 norm corresponds to the distance to the origin of the vector space.
+		Color indicates the rank of the university from the Times ranking, with 1 being the highest rank university.
+		Uncolored points are universities without a times rank.
+		A "boomerang"-shape emerges, wherein larger universities are more distant from the origin (large L2 norm), however the more prestigious the university, the closer it is to the origin (small L2 norm). 
+		\textbf{b} This boomerang pattern repeats globally for all organizations across all countries, shown for the United States, Germany, China, and others (loess regression line shown). 
+		The L2 norm is correlated weakly with the expected reach or organizations, that is, the number of total flows an organization has with others given its size ($R^{2} = 0.17$, \textbf{inset});
+		The red line is the line of best fit.
+	}
+	\label{fig:semaxis}
+\end{figure}
+
+
 
 %
 % SECTION: CONCLUSION
