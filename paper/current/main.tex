@@ -96,12 +96,13 @@
 
 Human mobility and migration drives major social phenomenon such as the growth and evolution of cities~\autocite{wef2017migration, curiel2018citygravity},  epidemics~\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity}, economies~\autocite{kaluza2010cargo, kerr2011immigration}, innovation~\autocite{kaiser2018innovation, armano2017innovation},  and scientific research~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}. 
 Common models of mobility, such as the Gravity Model~\autocite{zipf1946gravity, xia2005measlesgravity, jung2008highwaygravity, barbosa2018human, curiel2018citygravity, lewer2008immigrationgravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity}, often successfully capture mobility between places using their population and the \textit{distance} between them.
-However, geographic distance is less relevant in the increasingly-globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization, altbach2004globalization} where the physical distance barrier shrinks while the impact of linguistic, economic, cultural, and historical similarity increases.
-Alternative notions of functional distance~\autocite{brown1970migration, brown1970functional, kim2018functional} attempt to re-define distance by using some of the aforementioned factor~\autocite{boschma2005proximity,  brown1970functional, brown1970migration, kim2018functional} but suffer from practical and theoretical challenges. 
+However, geographic distance is less relevant in the increasingly-globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization, altbach2004globalization} wherein the physical distance barrier shrinks while the impact of inter-related linguistic, economic, cultural, and historical similarities increases.
+Alternative notions of functional distance~\autocite{brown1970migration, brown1970functional, kim2018functional} attempt to re-define distance by using some of the aforementioned factor~\autocite{boschma2005proximity,  brown1970functional, brown1970migration, kim2018functional} but are often low resolution, arbitrary, and consider only single isolated facets of mobility. 
 Here, using a rich dataset of scientific mobility, we demonstrate that a data-driven neural embedding approach~\autocite{mikolov2013word2vec} can successfully encodes a functional distance between organizations and captures the latent and multi-faceted structure of scientist's mobility.
 We demonstrate that the cosine distance between organization embedding vectors, constructed using the affiliation trajectories of scientists in the Web of Science database, better explain and predict real mobility than geographic distance. 
-Exploiting their unique properties, we interpret the embedding space and observe how it captures latent factors related to culture, language, and prestige of organizations at multiple levels of granularity.
-The ability to learn scalable, dense, and meaningful vector representations of mobility directly from the data can open up a new avenue of studying human mobility.
+Exploiting their unique properties, we interpret the embedding space and observe that it captures not only geographic relations between organizations, but also relations based on culture, language, and academic prestige at multiple levels of granularity.
+Also encoded in the embedding space is a universal pattern capturing the relationship between organization's size and their connectedness.
+The ability to learn scalable, dense, and meaningful high-resolution vector representations of mobility directly from the data can open up a new avenue of studying human mobility.
 
 \end{abstract}
 
@@ -120,15 +121,19 @@ While geographic distance may have driven human movements in the past, it holds 
 For instance, a person living in Australia is more likely to migrate to the United Kingdom, a country with similar language and culture, than to closer and more populous countries like Indonesia. 
 Similarly, a prospective student living in South Korea is more likely to attend universities in Canada than those in North Korea. 
 While geographic distance is still used as the basis for the most prominent models of mobility such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} model, so-called \textit{functional distances}~\autocite{boschma2005proximity, brown1970functional, brown1970migration, kim2018functional} have been proposed to learn alternative notions of distance from real-world data or \textit{a priori} relationships between geographic entities. 
-Yet, limitations of the existing functional distance measure have yet to be overcome. 
+Yet, functional distances are often low-resolution and rely on somewhat arbitrary decisions about what factors are most important.
+Moreover, functional distances typically only focus on one facet of mobility at a time, whereas real-world mobility is multi-faceted, influenced simultaneously by geography, language, culture, history, and economic opportunity. 
+Mobility is complex, and so new approaches are needed to merge its many facets into a single high-resolution measure of functional distance.
+
 
 Here, we propose a neural embedding model that uses real-world mobility trajectories to encode the complex landscape of global mobility into a dense, continuous, and meaningful vector-space representation, from which a \textit{functional distance} between places can be derived.
-This approach, originally designed for learning language models~\autocite{mikolov2013word2vec} has been used to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
-Neural embedding is also computationally efficient, scalable for large datasets, robust to noise, and can extract rich relationship between the entities through the application of simple vector arithmetic~\autocite{levy2014neural}. 
+This approach, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been used to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
+Neural embedding is also computationally efficient, scalable for large datasets, robust to noise, and can extract rich relationships between the entities through the application of simple vector arithmetic~\autocite{levy2014neural}. 
 
 
 We use scientific mobility, inferred from affiliations, to demonstrate the effectiveness of our approach.
 Scientific mobility is a central aspect of the increasingly-globalized scientific system~\autocite{czaika2018globalisation, altbach2004globalization}, being strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}.
+Moreover, scientific mobility has known structure, such as the centrality of the United States and the United Kingdom, and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career} that should be captured in a representation.
 For nations and organizations hoping to win in the global competition for talent~\autocite{box2008competition}, understanding the landscape of global scientific mobility is essential. 
 However, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}.
 Underlying these challenges is the lack of a meaningful functional distance measure between countries, cities, and organizations. 
@@ -180,7 +185,7 @@ For geographic distance, we define $f(r_{ij})$ as the standard power-law functio
 %
 % TODO: remove the subsection label?
 %
-\subsection*{Embeddings provide a functional distance between organizations}
+\subsection*{Embeddings provide both geographical and functional distance between organizations}
 
 The functional distance derived from the embedding explains and predicts scientific mobility better than geographic distance.
 The amount of variance explained by embedding distance ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) is more than twice that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
@@ -242,7 +247,6 @@ By re-projecting Massachusetts (Fig.~\ref{fig:projection}e), we observe structur
 For example, even though UMass Boston is located in Boston, it clusters with  other universities in the UMass System ($d = 0.34$) rather than the other typically more highly-ranked and research-focused universities in Boston ($d = 0.41$), reflecting a relative lack of mobility between the two systems, even within the same state.
 Similar structures can be observed in other states such as among New York's CUNY and SUNY systems (Fig.~\ref{fig:supp:proj_newyork}), Pennsylvania's state system (Fig.~\ref{fig:supp:proj_pennsylvania}), Texas's Agricultural and Mechanical universities (Fig.~\ref{fig:supp:proj_texas}), and between the University of California and State University of California systems (Fig.~\ref{fig:supp:proj_california}). 
 
-
 \begin{figure}[hp!]
 	\centering
 	\includegraphics[width=\textwidth]{\figdir/Projection/big_embedding_picture.pdf}
@@ -271,7 +275,7 @@ These clusters demonstrate the importance of not only geography but also linguis
 We quantify the relative importance of geography (by region), and language (by majority language of each country) using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
 If $r$ is high, the similarity is based on the lower levels of the dendrogram, whereas when $r$ is low, the similarity is based on higher levels.
 Fig. \ref{fig:clustering}b demonstrates that the region plays a major role at higher levels of the clustering process (low $r$), and language (family) explains the clustering more at the lower levels (high $r$).
-This suggests that geography, then language, are important factors contributing to the structure of international scientific mobility.
+This suggests that the embedding space captures a hierarchy of facets of mobility---at the highest level, geography defines the  embedding space, followed then by language.
 
 
 %
@@ -300,7 +304,7 @@ This suggests that geography, then language, are important factors contributing 
 %
 \subsection*{Embeddings capture latent prestige hierarchy}
 
-Prestige hierarchies underpin the dynamics of scientific mobility~\autocite{deville2014career, clauset2015hierarchy}, but are these hierarchies captured in the embedding space, to which no explicit information on the prestige is given?
+Prestige hierarchies underpin the dynamics of scientific mobility~\autocite{deville2014career, clauset2015hierarchy}, but are these hierarchies captured in the embedding space, to which no explicit information on prestige is given?
 We test this by exploiting the geometric properties of the embedding space with SemAxis~\autocite{an2018semaxis}, an approach originally designed to characterize the semantics of words in word embeddings.
 Here, we use SemAxis to operationalize the abstract notion of academic prestige, defining each pole of the axis using known high- and low-ranked universities. 
 We define prestige using the Times Ranking of World Universities (and using research impact from the Leiden Rankings~\autocite{waltman2012leidenrankings} in Supplementary Materials), including all ranked universities in the United States;
@@ -341,10 +345,21 @@ The correlation between SemAxis and the Times ranking is robust with the number 
 For reference, the SemAxis-derived ranking achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically-informed university ranking (Spearman's $\rho = 0.87$, Fig.~\ref{fig:semaxis}f).
 This suggests that the organization embedding captures the latent prestige hierarchy inherent to academic mobility, even without providing any explicit information on prestige, with a high degree of resolution and reliability~\autocite{deville2014career, clauset2015hierarchy}. 
 
+What is it about the organization embedding that captures prestige so effectively?
+We find that the length of organization vectors--- the distance from the origin of the vector space---provides insight into the characteristics of organizations. 
+Up to a point, the length of U.S. organization's vectors tends to increase proportional to its number of researchers (both mobile and non-mobile) who published with that organization;
+these organizations are primarily teaching-focused institutions, agencies, and hospitals that either are not ranked or have a low ranking. 
+However, at around 1,000 researchers, the length of the vector decreases with increment in the number of researchers;
+organizations here are primarily research-intensive and prestigious universities with higher rankings, research outputs, R\&D funding, and doctoral students (Fig.~\ref{fig:supp:length_vs_metaInfo}).
+This same convex-curve repeats irrespective of countries, such as China and Germany, though the curve may be shifted based on the typical size and vector length of their organizations (Fig.~\ref{fig:length}b). 
 
-Also, we take one step further and find that the length of the organization vector, distance from the origin of the vector space, provides additional insight into the characteristics of the organization. The length of the vector tends to increase proportion to the number of unique researchers in the organization and it decreases after a certain point, yield ``boomerang" -shape curve (Fig.~\ref{fig:length}a).  Almost the prestigious university vector is close to the origin compared to the number of the researcher and this pattern is consistent for all organizations (Fig.~\ref{fig:length}b). This pattern also observed in natural language suggesting the length of the vector represents the word significance~\autocite{schakel2015measuring}.
+This pattern has been observed in applications of neural embedding on natural language, wherein the length of word vectors was found to represent the word "significance"~\autocite{schakel2015measuring}
+Here, interpret the vector length instead as a measure of an organization's connectedness to other organizations given its size, where a connection is defined as a non-zero flow between organizations.
+for example, organizations with a small L2 norm tend to also have a lower number of connections given their size (Fig.~\ref{fig:length}b, inset, $R^{2} = 0.17$). 
+Large and prestigious universities can be considered as having a shorter vector length than expected given their size, reflecting their ability to attract researchers from many places, to place graduates in positions around the world, and the capacity to encourage mobility by offering temporary and visiting researcher positions. 
+At the national level, the relative position of the convex-curves can reveal characteristics of their scientific organization. For instance, Chinese organizations have a longer average and typical vector length ($\overline{l}=4.81 $, Fig.~\ref{fig:length}b) compared to organizations in United States ($\overline{l}=4.21$), reflecting lower overall connectedness in the embedding space. 
+Prestige is a key component of academic mobility—by encoding information relating to prestige, neural embeddings offer a means of better representing the functional distance between organizations and capturing the global landscape of mobility. 
 
-We find that the length of the vector captures the connection diversity of the organization compare to its size. The length of the vector is correlated with the number of connections to other organizations divided by the number of researchers, which can be interpreted as connection diversity compared to their size (Fig.~\ref{fig:length}b, inset). This suggests that researchers in the organization with a long vector have less freedom to move to other organizations compare to their size while researchers in the organization with short vector have more freedom to move. This observation can also be related to the organization's strategy. Most prestigious universities have policies that can enhance their collaboration with other organizations such as visiting program, giving additional affiliation to the researcher. We also show a correlation between the length of the vector and various organization-level factors such as diverse rankings,  amount of the funding, number of doctorates granted (Fig.~\ref{fig:supp:length_vs_metaInfo}), indicating the length of the organization vector capture diverse characteristics of the organization.
 
 
 %
@@ -357,10 +372,11 @@ We find that the length of the vector captures the connection diversity of the o
 		\textbf{Length of organization vectors captures connection diversity of organizations.}
 		\textbf{a.} L2 norm of organization vectors compared to their number of researchers for U.S. universities.
 		The L2 norm corresponds to the distance from the origin of the vector space.
-		Color indicates the rank of the university from the Times ranking, with 1 being the highest rank university.
-		Uncolored points are universities not listed on a times rank.
-		A "boomerang"-shape emerges, wherein larger universities tend to more distant from the origin (large L2 norm), however the more prestigious the university, the closer it is to the origin (small L2 norm). 
-		\textbf{b.} This boomerang pattern repeats globally for all organizations across all countries, shown for the United States, Germany, China, and others (loess regression line shown). 
+		Color indicates the rank of the university from the Times ranking, with 1 being the highest ranked university.
+		Uncolored points are universities not listed on a Times ranking.
+		A convex-shape emerges, wherein larger universities tend to more distant from the origin (large L2 norm), however the more prestigious the university, the closer it is to the origin (small L2 norm). 
+		\textbf{b.} This convex pattern repeats globally for all organizations across all countries, shown for the United States, Germany, China, and others,
+		The loess regression lines are shown for each selected country, and for the aggregate of remaining countries. 
 		The L2 norm is correlated weakly with the number of connection divided by the number of researchers in organization, which can be interpreted diversity of the connection compared to their size ($R^{2} = 0.17$, \textbf{inset}).
 		The red line is the line of the best fit.
 	}
@@ -368,22 +384,21 @@ We find that the length of the vector captures the connection diversity of the o
 \end{figure}
 
 
-
 %
 % SECTION: CONCLUSION
 %
 \section*{Conclusion}
 
-Neural embeddings offer a novel approach for learning an effective and robust functional distance between places based on affiliation trajectory data. 
-Here, we demonstrated how the embedding space encodes complex aspects of scientific mobility, such as global and regional geography, national similarity, and organizational prestige.
+Neural embeddings offer a novel approach for learning an effective and robust functional distance between places based on affiliation trajectory data that captures the complex and multi-faceted nature of mobility. 
+Here, we demonstrated how the embedding space encodes aspects scientific mobility, such as the  global and regional geography, national shared languages, and the hierarchy of organizational prestige. 
 While scientific mobility is used as a case study, this approach can be broadly applied to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
-Moreover, this approach can be used to learn a functional distance between entities when no such analog to geographic distance exists, such as a functional distance between occupational categories based on individual's career trajectories. 
-In addition to providing a functional distance that supports modeling and predicting mobility patterns, the unique structure of neural embedding also allows for a range of methodological applications.
-As we have shown, projecting the embedding space onto two dimensions using UMAP allows for the visualization of the complex structure of scientific mobility at high resolution and at multiple scales, which has implications in practice. 
-Other techniques, such as SemAxis, also allow the potential to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
-Neural embedding opens the door for new approaches for representing and understanding patterns of global human mobility.
+Moreover, this approach can be used to learn a functional distance between entities for which no geographic analog exists, such as between occupational categories based on individual's career trajectories. 
+In addition to providing a functional distance that supports modeling and predicting mobility patterns, the unique structure of the neural embedding space is amenable to a range of unique applications for studying mobility. 
+As we have shown, projecting the embedding space onto two dimensions using UMAP~\autocite{mcinnes2018umap} allows for the visualization of the complex structure of scientific mobility at high resolution and at multiple scales, providing the largest and most detailed map of global scientific mobility to date. 
+Other techniques, such as SemAxis~\autocite{an2018semaxis}, also allow the potential to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
+Investigation of the structure of the embedding space, such as the vector length, reveals unique and universal patterns based on organization's size and connectedness, and could contribute to deeper understandings of scientific mobility. 
+Neural embedding opens the door for new approaches to represent and study scientific mobility, and also mobility more generally. 
 
- 
 
 In spite of its promise, this approach and analysis present several limitations. 
 First, the current \textit{skip-gram word2vec} model can not encode directional information, meaning that embedding will be less effective at capturing mobility for which directional is critical.
@@ -397,10 +412,10 @@ Also, our data can possess survivorship bias: researchers at prestigious organiz
 
 Mobility and migration is a core asepct of human nature and history~\autocite{shah2020migration}, driving social phenomena as diverse as epidemics\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity} and science and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}.
 However, the paradigm of scientific migration may be changing.
-Traditional hubs of migration have enacted many politially-motivated policy changes that affect scientific mobility, such as travel restrictions in the U.S. and U.K. brought by Brexit and the Trump administration~\autocite{chinchilla2018travelban}.
+Traditional hubs of migration have enacted many politially-motivated policy changes that affect scientific mobility, such as travel restrictions in the U.S. and U.K. brought by Trump administration and enacted as part of Brexit~\autocite{chinchilla2018travelban}.
 Other nations, such as China, are growing into major scientific powers and attractors of talent~\autocite{tollefson2018china, cao2020returning}.
 Global crises such as COVID19 pandemic threaten drastic change to travel and migration by tightening borders and halting travel. 
-Now, more than ever, new tools and approaches are needed to understanding human mobility in order to inform sensible, effective, and humane Immigration and Science and Technology policy.
+The paradigm of global mobility is changing, and now, more than ever, new tools and approaches are needed to understanding human mobility in order to inform sensible, effective, and humane Immigration and Science and Technology policy.
 
 
 %
@@ -1185,28 +1200,6 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 \end{figure}
 
 
-
-%
-% Figure - s_i by factors
-%
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Math/si_factors.pdf}
-	\caption{
-		\textbf{Factors relating to $s_{i}$ among universities}
-		Correlation between various organization-level factors for U.S. universities and the value $s_{i}$.
-		Dots correspond to organizations.	
-		The red line is the line of  the best fit. 
-		Red text is the regression estimate.
-		Number of authors is the average annual count of unique mobile and non-mobile authors.
-		Rankings are derived from the Times Ranking of World Universities, and the Leiden Rankings of Universities. 
-		Remaining variables come from the Carnegie Classification of Higher Education Institutions.
-		The factors that best explain $s_i$ are the number of authors, the rank, the amount of Science and Engineering (S\&E) funding, and the number of doctorates granted. 
-	}
-	\label{fig:supp:length_vs_metaInfo}
-\end{figure}
-
-
 %
 % Figure - SemAxis By Sector
 %
@@ -1223,6 +1216,27 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 %	\label{fig:supp:semaxis_sectors}
 %\end{figure}
 
+
+
+%
+% Figure - length by factors
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/si_factors.pdf}
+	\caption{
+		\textbf{Factors relating to the L2 norm of vectors for U.S. universities}
+		Correlation between the L2 norm of organization embedding vectors of U.S. universities and characteristics of U.S. universities. 
+		Dots correspond to organizations.	
+		The red line is the line of  the best fit. 
+		Red text is the regression estimate.
+		Number of authors is the average annual count of unique mobile and non-mobile authors.
+		Rankings are derived from the Times Ranking of World Universities, and the Leiden Rankings of Universities. 
+		Remaining variables come from the Carnegie Classification of Higher Education Institutions.
+		The factors that best explain $s_i$ are the number of authors, the rank, the amount of Science and Engineering (S\&E) funding, and the number of doctorates granted. 
+	}
+	\label{fig:supp:length_vs_metaInfo}
+\end{figure}
 
 
 

@@ -79,6 +79,7 @@ factors.ext <- factors %>%
   mutate(
     # Log transform some of the main continuous variables
     s_i = log10(s_i),
+    #l2norm = log10(l2norm),
     pubs = log10(impact_frac_p),
     gravity_potential = log10(gravity_potential),
     count = log10(count),
@@ -108,6 +109,11 @@ if (opt$toplot == "pull") {
   varname.yaxis <- "Log10(gravity potential)"
   var.compare <- "s_i"
   varname.compare <- latex2exp::TeX("$\\log_{10}(s_{i})")
+} else if (opt$toplot == "l2") {
+  var.yaxis <- "l2norm"
+  varname.yaxis <- "L2 norm"
+  var.compare <- "gravity_potential"
+  varname.compare <- "Log10(gravity potential)"
 }
 
 print(factors.ext %>% select(full_name, times_rank, leiden_rank))
@@ -127,9 +133,9 @@ breaks_fun <- function(x) {
   to_return <- switch(
     floor((count + 1) / 2),
     c(1, 4),
-    c(1, 400),
-    c(1, 400),
-    c(0, 400),
+    c(1, 120),
+    c(1, 120),
+    c(0, 100),
     c(0, 2e+06),
     c(0, 1e+05),
     c(0, 6e+4),
@@ -149,7 +155,7 @@ plot <- factors.ext %>%
   # Select only variables that we will be plotting
   select(count, leiden_rank, times_rank, FALLENR17, GRFTF17, GRCIP4PR,
          HUM_RSD, OTHER_RSD, STEM_RSD, SOCSC_RSD,
-         `S&ER&D`, `NONS&ER&D`, measure) %>%
+         `S&ER&D`, `NONS&ER&D`, measure, full_name) %>%
   na.omit() %>% # remove NA values
   tidyr::gather(key, value,
                 count, leiden_rank, times_rank, FALLENR17, GRFTF17, GRCIP4PR,
@@ -192,10 +198,10 @@ plot <- factors.ext %>%
     breaks = breaks_fun,
     expand = c(0.1, 0)
   ) +
-  scale_y_continuous(
-    breaks = c(0, 4, 8),
-    labels = function(x) { parse(text=paste0("10^", x)) },
-  ) +
+  # scale_y_continuous(
+  #   breaks = c(0, 4, 8),
+  #   labels = function(x) { parse(text=paste0("10^", x)) },
+  # ) +
   theme_minimal() +
   theme(
     text = element_text(family = "Helvetica", size = 12),
