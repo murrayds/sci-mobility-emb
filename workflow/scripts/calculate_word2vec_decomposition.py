@@ -47,6 +47,8 @@ out_emb = {word: model.syn1neg[index] for index, word in enumerate(vocab_list_)}
 in_si = [np.exp(np.power(np.linalg.norm(embedding_dict[vocab]), 2) / 2) for vocab in vocab_list]
 out_si = [np.exp(np.power(np.linalg.norm(out_emb[vocab]), 2) / 2) for vocab in vocab_list]
 
+l2norm = [np.linalg.norm(embedding_dict[vocab]) for vocab in vocab_list]
+
 # Calculate the gravitation potential, defined as the product of the
 # pulling force and the distance between the embedding vectors
 matrix_for_potential = np.zeros((len(vocab_list), len(vocab_list)))
@@ -77,6 +79,7 @@ partition_function_array = dot_product_matrix.sum(axis=1)
 # construct a dataframe from the w2v factors
 df = pd.DataFrame({
     'cwts_org_no': list(vocab_list),
+    'l2norm': list(l2norm),
     'gravity_potential': list(negative_gravity_potential),
     's_i': list(in_si),
     's_j': list(out_si),

@@ -196,7 +196,7 @@ W2V_NUM_WORKERS = 4
 W2V_ITERATIONS = 5
 
 # MATH File parameters
-FACTORS = ["pull", "potential"]
+FACTORS = ["pull", "potential", "l2"]
 
 # UMAP parameters
 COUNTRIES = ['all']
