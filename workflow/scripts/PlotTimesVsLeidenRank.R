@@ -100,8 +100,8 @@ plot <- ranks %>%
     panel.grid.minor = element_blank(),
   ) +
   # Add the Spearman's Rho to the plot
-  annotate("text", x = 34, y = 132,
-           label = paste("Spearman's Rho = ", round(cor$estimate, 2)),
+  annotate("text", x = 30, y = 132,
+           label = latex2exp::TeX(paste("Spearman's $\\rho = ", round(cor$estimate, 2))),
            size = 7,
            fontface = 2) +
   ylab("Times Rank") +

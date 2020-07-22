@@ -15,8 +15,8 @@ NOT_HIGHLIGHTED_ALPHA = 0.9
 
 MASS_LABEL = "Massachusetts"
 CALI_LABEL = "California"
-TOP_LABEL = "Elite"
-BOT_LABEL = "Non elite"
+TOP_LABEL = "High-ranked"
+BOT_LABEL = "Low-ranked"
 
 STATES_TO_PLOT <- c("Connecticut", "New York", "Arizona", "California", "Massachusetts", "Florida")
 STATE_COLORS <- c("#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f")
@@ -181,8 +181,8 @@ y_floor <- floor(min(unis$sim.y) * 50) / 50
 
 plot <- plotdata %>%
   ggplot() +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
   geom_point(aes(x = sim.x, y = sim.y),
              size = 3.5,
              shape = 16,
@@ -244,14 +244,14 @@ if (opt$overall) {
     plotlabel <- opt$sector
   }
 
-  plot <- plot +
-    annotate(geom = "text",
-             x = 0.28,
-             y = -0.4,
-             label = plotlabel,
-             size = 7,
-             fontface = 2
-           )
+  # plot <- plot +
+  #   annotate(geom = "text",
+  #            x = 0.28,
+  #            y = -0.4,
+  #            label = plotlabel,
+  #            size = 7,
+  #            fontface = 2
+  #          )
 }
 
 # Save the plot

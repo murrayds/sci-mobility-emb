@@ -51,13 +51,14 @@ rule plot_factors_all_meta:
         lookup = ancient(rules.add_state_to_lookup.output)
     params:
         ranking = ORG_RANKINGS.format(ranking = "leiden"),
+        times = ORG_RANKINGS.format(ranking = "times"),
         carnegie = CARNEGIE_INFO,
         cw = UNI_CROSSWALK,
         sizes = ORG_SIZES
     output: FACTORS_ALL_CONTINUOUS_META_PLOT
     shell:
         "Rscript scripts/PlotFactors/PlotContinuousFactorsByMeta.R \
-        --input {input.factors} --lookup {input.lookup} \
+        --input {input.factors} --lookup {input.lookup} --times {params.times} \
         --carnegie {params.carnegie} --unicw {params.cw} \
         --leiden {params.ranking} --sizes {params.sizes} \
         --toplot {wildcards.factor} --output {output}"

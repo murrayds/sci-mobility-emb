@@ -282,14 +282,14 @@ def draw_figure(
     ]
     continent_legend = plt.legend(
         handles=handles,
-        bbox_to_anchor=(0.5, 1.74),
+        bbox_to_anchor=(-0.2, 1.74),
         prop=prop,
         frameon=False,
         ncol=6,
         handlelength=0,
         handletextpad=1,
     )
-    plt.text(-11.2, 1.07, "Continent", fontproperties=bold_prop)
+    plt.text(-11.2, 1.07, "Region", fontproperties=bold_prop)
 
     lp = lambda i: plt.plot(
         [],
@@ -365,20 +365,22 @@ def draw_figure(
     similiarties_language_family = [
         sim.element_sim(hierarchical_clu, language_family_clu, r=r) for r in r_list
     ]
-
+    
+    
+    prop = font_manager.FontProperties(fname=FONT_PATH, size=40)
     sns.set_style("white")
     fig, ax = plt.subplots(1, figsize=(10, 6))
-    ax.plot(r_list, similiarties_continent, "-", label="Continent")
+    ax.plot(r_list, similiarties_continent, "-", label="Region")
     ax.plot(r_list, similiarties_language_family, "-", label="Language Family")
     ax.plot(r_list, similiarties_language, "-", label="Language")
     ax.set_xlabel("r, Scaling parameter", fontproperties=prop)
     ax.set_ylabel("Similarity", fontproperties=prop)
-    ax.legend(bbox_to_anchor=(0.43, 0.68), prop=small_prop, frameon=False)
+    ax.set_yticks([.1, .3, .5, .7])
 
     for label in ax.get_xticklabels():
-        label.set_fontproperties(tick_prop)
+        label.set_fontproperties(prop)
     for label in ax.get_yticklabels():
-        label.set_fontproperties(tick_prop)
+        label.set_fontproperties(prop)
 
     plt.savefig(CLUSIM_PART_PATH, bbox_inches="tight")
 

@@ -1,0 +1,277 @@
+---
+title: "Mobility Boomerang Plots"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(readr)
+
+
+df <- read_csv("/Users/dakotamurray/Desktop/l2-norm_vs_size.csv")
+meta <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t")
+types <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/org_types.csv")
+
+country <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/country_metadata.csv")
+leiden <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/leiden_ranking.csv")
+times <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/times_ranking.csv")
+head(df)
+
+```
+
+
+```{r}
+
+df %>%
+  left_join(meta, by = c("name" = "full_name")) %>%
+  left_join(leiden, by = c("cwts_org_no")) 
+
+
+```
+
+
+```{r}
+plotdata <- df %>%
+  filter(country == "United States") %>%
+  left_join(types) %>%
+  filter(org_type_simplified %in% c("University", "Government", "Institute", "Teaching")) %>%
+  mutate(
+    org_type_simplified = factor(org_type_simplified,
+                                 levels = c("University", "Teaching", "Institute", "Government"))
+  ) 
+
+
+plotdata %>%
+  ggplot(aes(x = size, y = `l2-norm`, color = org_type_simplified, shape = org_type_simplified, label = name)) +
+  geom_point() +
+  scale_x_log10(
+    breaks = scales::trans_breaks("log10", function(x) 10^x),
+    labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) +
+  scale_shape_manual(values = c(16, 1, 1, 1)) +
+  #scale_color_manual(values = c(""))
+  scale_color_manual(values = c("#2c3e50", "#c0392b", "#8e44ad", "#27ae60")) +
+  theme_minimal() +
+  theme(
+    text = element_text(size = 12, family = "Helvetica"),
+    panel.grid.minor = element_blank()
+  ) +
+  annotation_logticks(sides = "b") +
+  xlab("Organization size") +
+  ylab("L2 Norm")
+
+
+plotly::ggplotly()
+```
+
+
+
+
+```{r}
+
+labels <- c("Harvard University", "University of Alaska, Fairbanks", "Reykjavik University",
+            "University of Oxford", "Princeton University", "Shanghai Jiao Tong University", "Novosibirsk State University", "University of Louisville",  "University of Tennessee, Knoxville", "Barry University", "Appalachian State University", "University of Michigan-Flint", "New York Medical College")
+
+plotdata <- df %>%
+  filter(country == "United States") %>%
+  filter(org_type == "University") %>%
+  left_join(meta, by = c("name" = "full_name")) %>%
+  #left_join(leiden, by = c("cwts_org_no"))
+  left_join(times, by = c("cwts_org_no")) %>%
+  arrange(desc(total_score)) %>%
+  mutate(
+    rank = ifelse(!is.na(total_score), row_number(), NA)
+  )
+
+
+set.seed(117)
+plotlabs <- plotdata %>%
+  filter(name %in% labels) %>%
+  mutate(
+    label = gsub('University', 'Univ', name),
+    label = gsub('(.{1,24})(\\s|$)', '\\1\n', label),
+    label = trimws(label)
+  )
+  
+plot <- plotdata %>%
+  ggplot(aes(x = size, y = `l2-norm`, color = rank, shape = is.na(rank), label = name)) +
+  geom_point() +
+  scale_x_log10(
+    breaks = scales::trans_breaks("log10", function(x) 10^x),
+    labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) +
+  scale_y_continuous(
+    limits = c(0, 7),
+    breaks = c(2, 4, 6)
+  ) +
+  viridis::scale_color_viridis(
+    name = "Times Rank", 
+    option = "C",
+    breaks = c(1, 50, 100)) +
+  scale_shape_manual(values = c(16, 1)) +
+  #ggrepel::geom_label_repel(
+  #  data = plotlabs,
+  #  aes(label = label),
+  #  color = "black",
+  #  force = 50,
+  #  min.segment.length = 0.1,
+  #  alpha = 0.9,
+  #  size = 3.5
+  #) +
+  guides(shape = F) +
+  theme_minimal() +
+  annotate(geom = "label", x = 1.5e4, y = 3.5, label = "Harvard", size = 3.5) +
+  annotate(geom = "label", x = 1.6e3, y = 3.69, label = "Princeton", size = 3.5) +
+  annotate(geom = "label", x = 8.5e3, y = 5.9, label = "Univ Tennessee\nKnoxville", size = 3.5) +
+  annotate(geom = "label", x = 4.9e2, y = 2.15, label = "Univ Alaska\nFairbanks", size = 3.5) +
+  annotate(geom = "label", x = 4e2, y = 5.75, label = "NY Medical College", size = 3.5) +
+  annotate(geom = "label", x = 2e1, y = 4.6, label = "Univ Michigan\nFlint", size = 3.4) +
+  annotate(geom = "label", x = 6.4e1, y = 2.48, label = "Barry University", size = 3.5) +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    axis.title.x = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
+    axis.text.x.top = element_blank(),
+    axis.title.y = element_text(angle = 90, size = 14, face = "bold"),
+    axis.title.y.right = element_text(angle = 90, size = 14, face = "bold"),
+    axis.text.y.right = element_blank(),
+    legend.text = element_text(size = 12),
+    legend.position = c(0.85, 0.20),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    axis.line = element_line(color="black", size = 0.3),
+    legend.box.background = element_rect(color="black", size=0.1, fill = "white")
+  ) +
+  annotation_logticks(sides = "b") +
+  xlab("# Researchers") +
+  ylab("L2 Norm")
+
+plot
+
+ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_ranking_times.pdf", plot, width = 6, height = 6)
+```
+
+
+
+```{r}
+plot <- df %>%
+  mutate(
+    highlight = ifelse(country %in% c("China", "United States", "Germany"), country, "Other"),
+    highlight = factor(highlight, levels = c("United States", "China", "Germany", "Other"))
+  ) %>%
+  ggplot(aes(x = size, y = `l2-norm`, label = name, alpha = highlight, shape = highlight, color = highlight)) +
+  geom_point(alpha = 0.5) +
+  stat_smooth(
+    method = "loess",
+    size = 1.25,
+    se = F
+  ) +
+  scale_shape_manual(values = c(16, 16, 16, 1)) +
+  scale_color_manual(values = c("#66c2a5", "#fc8d62", "#8da0cb", "darkgrey")) +
+  scale_fill_manual(values = c("#66c2a5", "#fc8d62", "#8da0cb", "grey")) +
+  scale_alpha_manual(values = c(1, 1, 1,  0.6)) +
+  scale_x_log10(
+    breaks = scales::trans_breaks("log10", function(x) 10^x),
+    labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) +
+  scale_y_continuous(
+    limits = c(0, 7),
+    breaks = c(2, 4, 6)
+  ) +
+  guides(shape = F) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    axis.title.x = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
+    axis.text.x.top = element_blank(),
+    axis.title.y = element_text(angle = 90, size = 14, face = "bold"),
+    axis.title.y.right = element_text(angle = 90, size = 14, face = "bold"),
+    axis.text.y.right = element_blank(),
+    legend.text = element_text(size = 10),
+    legend.position = c(0.14, 0.82),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    legend.title = element_blank(),
+    axis.line = element_line(color="black", size = 0.3),
+    legend.box.background = element_rect(color="black", size=0.1, fill = "white")
+  ) +
+  annotation_logticks(sides = "b") +
+  xlab("# Researchers") +
+  ylab("L2 Norm")
+
+
+plot 
+
+ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_global.pdf", plot, width = 6, height = 6)
+```
+
+
+
+```{r}
+ratio <- read_csv("/Users/dakotamurray/Desktop/data_with_ratio.csv")
+plot <- ratio %>%
+  mutate(ratio = log10(ratio)) %>%
+  ggplot(aes(x = ratio, y = `l2-norm`)) +
+  geom_hex(
+    aes(fill = stat(log10(count)))
+  ) +
+  # Draw a regression line
+  stat_smooth(method = "lm",
+              formula = y ~ x,
+              color = "#c0392b",
+              alpha = 0.6,
+              se = T,
+              level = 0.99,
+              size = 1.5,
+              fullrange = T)  +
+  # Add the r-squared coefficient to the plot
+  ggpmisc::stat_poly_eq(formula = y ~ x,
+                        geom = "text_npc",
+                        aes(label = paste(..rr.label.., sep = "~~~")),
+                        parse=TRUE,
+                        label.x.npc = 0.95,
+                        label.y.npc = 0.96,
+                        rr.digits = 2,
+                        size = 7
+  ) +
+  scale_fill_gradientn(colours=c("white", "#7f8c8d"),
+                         name = "Freq",
+                         breaks = c(0, 1, 2),
+                         limits = c(0, 2),
+                         labels = function(x) { parse(text=paste0("10^", x)) },
+                         na.value=NA
+    ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    axis.title.x = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
+    axis.text.x.top = element_blank(),
+    axis.title.y = element_text(angle = 90, size = 14, face = "bold"),
+    axis.title.y.right = element_text(angle = 90, size = 14, face = "bold"),
+    axis.text.y.right = element_blank(),
+    legend.text = element_text(size = 12),
+    #legend.position = c(0.16, 0.35),
+    legend.position = "right",
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_rect(size = 0.5, color = "black", fill = NA),
+    legend.title = element_text(face = "bold"),
+    legend.box.background = element_rect(color="black", size=0.1, fill = "white")
+  ) +
+  annotation_logticks(sides = "b") +
+  xlab("Expexted reach") +
+  ylab("L2 Norm")
+
+plot 
+ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/ratio_l2.png", plot, width = 4, height = 3)
+```
+
+
+
+```{r}
+leiden
+
+
+```

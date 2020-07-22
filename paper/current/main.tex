@@ -95,13 +95,13 @@
 
 
 Human mobility and migration drives major social phenomenon such as the growth and evolution of cities~\autocite{wef2017migration, curiel2018citygravity},  epidemics~\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity}, economies~\autocite{kaluza2010cargo, kerr2011immigration}, innovation~\autocite{kaiser2018innovation, armano2017innovation},  and scientific research~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}. 
-Common models of mobility, such as the Gravity Model~\autocite{zipf1946gravity, xia2005measlesgravity, jung2008highwaygravity, barbosa2018human, curiel2018citygravity, lewer2008immigrationgravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity}, describes mobility using the \textit{distance} between places.
-However, geographic distance is less relevant in the increasingly-globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization}, in which mobility is dependent less on geography than linguistic, economic, cultural, and historical similarity. 
-Alternative and abstract notions of distance attempt to capture the latent landscape of mobility~\autocite{boschma2005proximity,  brown1970functional, brown1970migration, kim2018functional} but pose practical and theoretical challenges. 
-Here, using the case of scientific mobility, we leverage the neural embedding model~\autocite{mikolov2013word2vec} to demonstrate a data-driven approach for learning a vector-space embedding that encodes a functional distance~\autocite{brown1970migration, brown1970functional, kim2018functional} between organizations and captures the latent and multi-faceted structure of scientist's mobility.
-We demonstrate that the cosine distance between organization vectors in the embedding, constructed using the affiliation trajectories of scientists in the Web of Science database, better explain and predict real mobility than geographic distance. 
+Common models of mobility, such as the Gravity Model~\autocite{zipf1946gravity, xia2005measlesgravity, jung2008highwaygravity, barbosa2018human, curiel2018citygravity, lewer2008immigrationgravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity}, often successfully capture mobility between places using their population and the \textit{distance} between them.
+However, geographic distance is less relevant in the increasingly-globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization, altbach2004globalization} where the physical distance barrier shrinks while the impact of linguistic, economic, cultural, and historical similarity increases.
+Alternative notions of functional distance~\autocite{brown1970migration, brown1970functional, kim2018functional} attempt to re-define distance by using some of the aforementioned factor~\autocite{boschma2005proximity,  brown1970functional, brown1970migration, kim2018functional} but suffer from practical and theoretical challenges. 
+Here, using a rich dataset of scientific mobility, we demonstrate that a data-driven neural embedding approach~\autocite{mikolov2013word2vec} can successfully encodes a functional distance between organizations and captures the latent and multi-faceted structure of scientist's mobility.
+We demonstrate that the cosine distance between organization embedding vectors, constructed using the affiliation trajectories of scientists in the Web of Science database, better explain and predict real mobility than geographic distance. 
 Exploiting their unique properties, we interpret the embedding space and observe how it captures latent factors related to culture, language, and prestige of organizations at multiple levels of granularity.
-This approach can learn scalable, dense, and meaningful vector representations of scientific mobility directly from the data, and can easily be generalized to other mobility data.
+The ability to learn scalable, dense, and meaningful vector representations of mobility directly from the data can open up a new avenue of studying human mobility.
 
 \end{abstract}
 
@@ -116,28 +116,28 @@ This approach can learn scalable, dense, and meaningful vector representations o
 
 How far apart are two places?
 The question is surprisingly hard to answer when it involves human mobility.
-While geographic distance may have driven human movements in past eras, it holds less importance to a world connected by rapid transit, complex international relations, and dense airline networks.
-For instance, a person currently living in Australia is more likely to migrate to the United Kingdom, a country with similar language and culture, than to closer and more populous countries like Indonesia. 
-Similarly, a prospective student living in South Korea is more likely to attend university in Canada rather than the closer though diplomatically isolated North Korea. 
-Despite its complexity, geographic distance is used as the basis for the most prominent models of mobility such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal}.
-So-called \textit{functional distances}~\autocite{boschma2005proximity, brown1970functional, brown1970migration, kim2018functional} have been proposed that attempt to learn alternative notions of distance from real-world data or \textit{a priori} relationships between geographic entities. 
+While geographic distance may have driven human movements in the past, it holds less importance to a world connected by rapid transit, complex international relations, and dense airline networks.
+For instance, a person living in Australia is more likely to migrate to the United Kingdom, a country with similar language and culture, than to closer and more populous countries like Indonesia. 
+Similarly, a prospective student living in South Korea is more likely to attend universities in Canada than those in North Korea. 
+While geographic distance is still used as the basis for the most prominent models of mobility such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} model, so-called \textit{functional distances}~\autocite{boschma2005proximity, brown1970functional, brown1970migration, kim2018functional} have been proposed to learn alternative notions of distance from real-world data or \textit{a priori} relationships between geographic entities. 
+Yet, limitations of the existing functional distance measure have yet to be overcome. 
 
 Here, we propose a neural embedding model that uses real-world mobility trajectories to encode the complex landscape of global mobility into a dense, continuous, and meaningful vector-space representation, from which a \textit{functional distance} between places can be derived.
 This approach, originally designed for learning language models~\autocite{mikolov2013word2vec} has been used to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
-Neural embedding is also computationally efficient, scalable for large datasets, robust to noise, and is readily interpretable through the application of simple vector arithmetic. 
+Neural embedding is also computationally efficient, scalable for large datasets, robust to noise, and can extract rich relationship between the entities through the application of simple vector arithmetic~\autocite{levy2014neural}. 
 
 
-We use scientific mobility, inferred from affiliations, to demonstrate the neural embedding approach. 
+We use scientific mobility, inferred from affiliations, to demonstrate the effectiveness of our approach.
 Scientific mobility is a central aspect of the increasingly-globalized scientific system~\autocite{czaika2018globalisation, altbach2004globalization}, being strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}.
 For nations and organizations hoping to win in the global competition for talent~\autocite{box2008competition}, understanding the landscape of global scientific mobility is essential. 
 However, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}.
-One roadblock is the lack of a meaningful measure of the functional distance between countries, cities, and organizations. 
+Underlying these challenges is the lack of a meaningful functional distance measure between countries, cities, and organizations. 
 
-Here, scientific mobility is operationalized using researcher's organizational affiliations derived from their publication histories indexed in a large-scale bibliographic database. 
+Here, scientific mobility is operationalized using researcher's organizational affiliations derived from their publication histories indexed in a comprehensive bibliographic database. 
 The most fine-grained geographical unit in this data is the organization, such as a university, research institute, business, or government agency.
 As a scientist's careers progress, they move between organizations or pick up additional (simultaneous) affiliations forming \textit{affiliation trajectories} (Fig.~\ref{fig:methods:mobility_sentence}).
 These trajectories encode both asynchronous migration, and synchronous mobility---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, markova2016synchronous, sugimoto2017mostimpact} (see Supplementary Materials).
-We use the trajectories of the three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
+We use the trajectories of more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
 
 
 A vector-space embedding of organizations is learned by using affiliation trajectories as input to the standard skip-gram with negative sampling, or \textit{word2vec} neural-network architecture.
@@ -173,7 +173,7 @@ The Gravity Model, taking inspiration from Newton's law of gravity, is one of th
 where the \textit{expected flux}, $\hat{T_{ij}}$, or expected number of authors who were affiliated with both organizations during the time period is proportional to the organization's sizes (the sum of both mobile and non-mobile authors, see Data and Methods), $m_{i}$ and $m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
 The distance function is defined in terms of either the geographic distance between organizations or the embedding distance. 
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
-We argue that the performance of a distance measure can be observed from its ability to explain expected mobility between organizations and to make predictions using the gravity model.
+
 
 %
 % Subsection: Embedding performance
@@ -189,7 +189,6 @@ After fitting model parameters from the data, the embedding distance produces be
 The embedding distance defined from the cosine distnace between vectors also outperforms that defined from their dot product ($R^{2} = 0.34$, Fig.~\ref{fig:supp:gravity_dot}).
 The embedding distance also out-performs alternative ``diffusion-based'' network distance measures such as the personalized-page rank scores (see supporting materials) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
 Our results unequivocally argue that the distance learned by the embedding method better captures actual mobility patterns than does geographic distance. 
-We speculate that this results from an underlying mathematical connection between the neural embedding architecture and the gravity model of mobility. 
 
 
 %
@@ -221,26 +220,26 @@ We speculate that this results from an underlying mathematical connection betwee
 
 \subsection*{Embeddings capture global structure of mobility}
 
-By encoding the complex landscape in a dense representation, embeddings also allow us to create informative visualizations of global scientific mobility.
-To explore the topological structure of the embedding, we use a common dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) to obtain a two-dimensional representation of the embedding (Fig.~\ref{fig:projection}a).
+The embedding also allows us to create informative visualizations of global scientific mobility.
+To explore the topological structure of the embedding, we use a standard dimensionality reduction technique (UMAP~\autocite{mcinnes2018umap}) for embedding to obtain a two-dimensional representation of the embedding (Fig.~\ref{fig:projection}a).
 By showing relationships between individual organizations, rather than aggregates such as nations or cities, this projection constitutes the largest and highest resolution ``map'' of scientific mobility to date.
 
-Globally, the effect of geography is conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors. 
+Globally, the geographical constraints are conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors. 
 At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network representations (Fig.~\ref{fig:supp:network_vis}) that have been dominating studies of scientific mobility~\autocite{chinchilla2018global, czaika2018globalisation}.
 
 The embedding space also allows us to \textit{zoom in} on subsets of counties and re-project them in order to reveal more local relationships. 
 For example, re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries ranging from Egypt to Philippines that corresponds largely to geography, but with some peculiar exceptions. 
-For example, countries like Iraq are nearer to some southeast-Asian countries like Malaysia, with a cosine distance between the nation's aggregate vectors of $d = 0.29$, than to nearer and more religiously-similar nations like Saudi Arabia ($d = 0.50$ and Qatar ($d = 0.51$). 
+For example, countries like Iraq are nearer to some southeast-Asian countries like Malaysia, with a cosine distance between the nation's aggregate vectors of $d = 0.29$, than to nearer and more religiously-similar nations like Saudi Arabia ($d = 0.50$) and Qatar ($d = 0.51$). 
 Linguistic and historical ties are also conspicuous.
-For example, we observe that Spanish-speaking post-colonial Latin American nations are positioned near Spain (Fig.~\ref{fig:projection}c), such as Mexico ($d = 0.34$) and Chile ($d = 0.39$) morose than to nearby Portuguese-speaking nation ($d = 0.52$ for Mexico and $d = 0.49$ for Chile) reflecting language and culture constructed the nature of scientific mobility.
+For example, we observe that Spanish-speaking post-colonial Latin American nations are positioned near Spain (Fig.~\ref{fig:projection}c), such as Mexico ($d = 0.34$) and Chile ($d = 0.39$) more than to nearby Portuguese-speaking nation ($d = 0.52$ for Mexico and $d = 0.49$ for Chile) reflecting linguistic and cultural constraints.
 Similarly, North-African countries that were once under French rule such as Morocco are nearer to France ($d =0.35$) than to similarly-distant European countries as Spain ($d = 0.40$) and Italy ($d = 0.53$). 
 Comparable structural patterns exist even within a single country.
-For example, at the global level (Fig~\ref{fig:projection}a), organizations within Quebec in Canada are located nearer the French cluster ($d = 0.65$) than the rest of the Canadian universities Canada ($d = 0.88$).
+For example, at the global level (Fig~\ref{fig:projection}a), organizations within Quebec in Canada are located nearer the French cluster ($d = 0.65$) than the rest of the Canadian universities ($d = 0.88$).
 
 
 The geographic structure of the global embedding is mirrored in the re-projection of the United States, wherein organizations are largely organized according to regions and states (Fig.~\ref{fig:projection}d).
-By re-projecting at the state-level for Massachusetts (Fig.~\ref{fig:projection}e), we observe structure between urban centers (Boston vs. Worcester) but also based on organization type (e.g., hospitals vs. universities) and university systems.
-For example, even though UMass Boston is located in Boston, it clusters near other universities in the UMass System ($d = 0.34$) rather than the other typically more elite and research-focused universities in Boston ($d = 0.41$), reflecting a relative lack of mobility between the two systems, even within the same state.
+By re-projecting Massachusetts (Fig.~\ref{fig:projection}e), we observe structure based on urban centers (Boston vs. Worcester) as well as on organization type (e.g., hospitals vs. universities) and university systems.
+For example, even though UMass Boston is located in Boston, it clusters with  other universities in the UMass System ($d = 0.34$) rather than the other typically more highly-ranked and research-focused universities in Boston ($d = 0.41$), reflecting a relative lack of mobility between the two systems, even within the same state.
 Similar structures can be observed in other states such as among New York's CUNY and SUNY systems (Fig.~\ref{fig:supp:proj_newyork}), Pennsylvania's state system (Fig.~\ref{fig:supp:proj_pennsylvania}), Texas's Agricultural and Mechanical universities (Fig.~\ref{fig:supp:proj_texas}), and between the University of California and State University of California systems (Fig.~\ref{fig:supp:proj_california}). 
 
 
@@ -252,7 +251,7 @@ Similar structures can be observed in other states such as among New York's CUNY
 		\textbf{a.}
 		UMAP projection \autocite{mcinnes2018umap} of the embedding space reveals strong country-level clustering.
 		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019. 
-		Color indicates the continent.
+		Color indicates the region.
 		\textbf{b.} Zooming into (re-projecting) the area containing countries in the Middle East and South and Southeast Asia shows a geographic and cultural gradient of country clusters. 
 		\textbf{c.} Similarly, zooming into the area organizations in Spain, Portugal, South, and Central America show clustering by majority language group--Spanish and Portuguese.
 		\textbf{d.} Doing the same for organizations in the United States reveals geographic clustering based on state, roughly grouped by Census Bureau-designated regions,
@@ -262,16 +261,16 @@ Similar structures can be observed in other states such as among New York's CUNY
 \end{figure}
 
 
-Just as the embedding space makes it possible to ``zoom in'' on subsets of organizations, it is possible to ``zoom out'' to a higher level by aggregating organizational vectors. 
+Just as the embedding space makes it possible to ``zoom in'' on subsets of organizations, it is also possible to ``zoom out'' to a higher level by aggregating organizational vectors. 
 For example, we can examine the high-level structure by estimating the aggregate embeddings of countries. 
-Namely, we calculate the representative vector of each country by averaging organization vectors within the given country.
-We then perform hierarchical clustering of nations that have at least 25 organizations represented in the embedding space, excluding the United States which has high similarity with most other countries (see Fig. \ref{fig:clustering}a). 
-The six identified clusters roughly correspond to East-Asian (orange), Scandinavian (dark purple), British Commonwealth (light purple), Central and Eastern European countries (light blue), and then two remaining diverse clusters that contain a mix of European, Latin American, and Mediterranean countries.
+Namely, we calculate the representative vector of each country as the average of their organizational vectors.
+We then perform hierarchical clustering of nations that have at least 25 organizations represented in the embedding space, excluding the United States which is a dominant hub well connected to most other countries (see Fig. \ref{fig:clustering}a). 
+The six identified clusters roughly correspond to countries in East-Asia (orange), Scandinavia (dark purple), the British Commonwealth (light purple), and Central and Eastern Europe (light blue), and then two remaining diverse clusters contain a mix of European, Latin American, and Mediterranean countries.
 These clusters demonstrate the importance of not only geography but also linguistic ties between countries.
 
-We quantify the relative importance of geography (by continent), and language (by majority language of each country) using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
+We quantify the relative importance of geography (by region), and language (by majority language of each country) using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
 If $r$ is high, the similarity is based on the lower levels of the dendrogram, whereas when $r$ is low, the similarity is based on higher levels.
-Fig. \ref{fig:clustering}b demonstrates that the continent plays a major role at higher levels of the clustering process (low $r$), and language (family) explains the clustering more at the lower levels (high $r$).
+Fig. \ref{fig:clustering}b demonstrates that the region plays a major role at higher levels of the clustering process (low $r$), and language (family) explains the clustering more at the lower levels (high $r$).
 This suggests that geography, then language, are important factors contributing to the structure of international scientific mobility.
 
 
@@ -286,9 +285,9 @@ This suggests that geography, then language, are important factors contributing 
 		\textbf{a.} Hierarchically clustered similarity matrix of country vectors, aggregated as the mean of all organization vectors within the country that has more than 25 organizations, excluding the United States.
 		Color of matrix cells corresponds to the similarity between country vectors.
 		Color of country names corresponds to their cluster.
-		Color of three cell rows separated from the matrix correspond to, from left to right, the continent of the country, the language family~\autocite{ethnologue}, and the individual language.
+		Color of three cell rows separated from the matrix correspond to, from left to right, the region of the country, the language family~\autocite{ethnologue}, and the individual language.
 		\textbf{b.}	Element-centric cluster similarity~\autocite{gates2019element} results demonstrating the factors dictating hierarchical clustering, varying by scaling parameter, $r$.
-		Continent better explains the grouping of country vectors at higher levels of the clustering processes.
+		Region better explains the grouping of country vectors at higher levels of the clustering processes.
 		Language family, and then majority spoken language, better explain the grouping of countries at more granular.
 	}
 	\label{fig:clustering}
@@ -301,46 +300,72 @@ This suggests that geography, then language, are important factors contributing 
 %
 \subsection*{Embeddings capture latent prestige hierarchy}
 
-Prestige hierarchies underpin the dynamics of scientific mobility~\autocite{deville2014career, clauset2015hierarchy}, but are these hierarchies captured in the embedding space?
-We test this by exploiting the geometric properties of the embedding space with the technique SemAxis~\autocite{an2018semaxis}, an approach originally designed to characterize the semantics of words in language embeddings.
-Here, we use SemAxis to operationalize the abstract notion of academic prestige, defining each end of the axis using known high- and low-ranked universities. 
-We define prestige using the Times Ranking of World Universities, including all ranked universities in the United States;
-the elite end is defined as the mean vector of the top five U.S. universities according to the rankings, whereas the non-elite axis is defined using the five bottom-ranked and geographically matched (by U.S. census region) universities.
+Prestige hierarchies underpin the dynamics of scientific mobility~\autocite{deville2014career, clauset2015hierarchy}, but are these hierarchies captured in the embedding space, to which no explicit information on the prestige is given?
+We test this by exploiting the geometric properties of the embedding space with SemAxis~\autocite{an2018semaxis}, an approach originally designed to characterize the semantics of words in word embeddings.
+Here, we use SemAxis to operationalize the abstract notion of academic prestige, defining each pole of the axis using known high- and low-ranked universities. 
+We define prestige using the Times Ranking of World Universities (and using research impact from the Leiden Rankings~\autocite{waltman2012leidenrankings} in Supplementary Materials), including all ranked universities in the United States;
+the high-ranked pole is defined as the mean vector of the top five U.S. universities according to the rankings, whereas the low-ranked pole is defined using the five bottom-ranked and geographically matched (by U.S. census region) universities.
 A geographic axis is also added to aid the visualization and reinforce the importance of geography, defined as the mean vector of all universities in California and then Massachusetts. 
 
-Prestigious universities such as Stanford, Colombia, MIT, Harvard, and NYU are positioned towards the top of the axis (Fig.~\ref{fig:semaxis}a).
-Universities at the bottom of this axis tend to be regional universities with lower national profiles (yet still ranked by Times Higher Education).
-SemAxis also offers a new means of reasoning about the prestige of organizations typically excluded from rankings such as government organizatioss (Fig.~\ref{fig:supp:semaxis_sectors}a), research institutes (Fig.~\ref{fig:supp:semaxis_sectors}b), and teaching colleges (Fig.~\ref{fig:supp:semaxis_sectors}c).
+Prestigious universities such as Colombia, Stanford, MIT, Harvard, and Rockefeller are positioned towards the top of the axis (Fig.~\ref{fig:semaxis}a).
+Universities at the bottom of this axis tend to be regional universities with lower national profiles (yet still ranked by Times Higher Education) and with more emphesis on teaching, such as Barry Univeristy and California State University at Long Beach.
+SemAxis also offers a new means of reasoning about the prestige of organizations typically excluded from rankings such as government organizations (Fig.~\ref{fig:semaxis}b), research institutes (Fig.~\ref{fig:semaxis}c), and teaching colleges (Fig.~\ref{fig:semaxis}d).
 
 %
 % Figure - SemAxis results
 %
 \begin{figure}[hp!]
 	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
+	\includegraphics[width=0.7\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
 	\caption{
 		\textbf{Embedding captures latent geography and prestige hierarchy.}
-		\textbf{a.} Illustration of SemAxis projection along two axes;  \textit{latent geographical axis}, from California to Massachusetts (left to right) and \textit{prestige axis}, from the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (top to bottom).
-		Points correspond to organizations, and a sample of states are highlighted.
+		\textbf{a-d.} Illustration of SemAxis projection along two axes;  \textit{latent geographical axis}, from California to Massachusetts (left to right) and \textit{prestige axis}, from the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (top to bottom).
+		Shown for U.S. Universities (\textbf{a}), Teaching colleges (\textbf{b}), Research institutes (\textbf{c}), and Government organizations (\textbf{d}).
 		Full organization names listed in Table~\ref{table:supp:orglabels}.
-		\textbf{b.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity to the \textit{Elite} end of the axis prestige axis \textit{a}.
+		\textbf{e.} Comparison between the ranking of organizations by their rank in the Times ranking and the SemAxis rank derived from the similarity high-ranked end of the axis prestige axis \textit{a}.
 		White points are those top and bottom five universities used to define the poles of the axis.
-	  	Even when considering only a total of ten organization vectors, the estimate of the Spearman's rank correlation between the SemAxis and Times ranking is 0.73 (n = 145), and it increases if we include more top-and-bottom ranked universities (Fig.~\ref{fig:supp:semaxis_compare}).
+	  	Even when considering only a total of ten organization vectors, the estimate of the Spearman's rank correlation between the SemAxis and Times ranking is $\rho = 0.73$ (n = 145), and it increases if we include more top-and-bottom ranked universities (Fig.~\ref{fig:supp:semaxis_compare}).
+	  	\textbf{f.} Times ranking is correlated with Leiden Ranking of U.S. universities with Spearman's $\rho = 0.87$
 	}
 	\label{fig:semaxis}
 \end{figure}
 
-
 The embedding space captures prestige hierarchies that can be used to reconstruct academic rankings. 
-We derive a ranking using the SemAxis prestige axis in Fig.~\ref{fig:semaxis}.a and compare them to traditional university rankings.
-The SemAxis ranking is defined from the position of organizations along the prestige axis, with the top-ranked being the furthest towards the \textit{Elite} end of the axis.
-We find that the SemAxis ranking is highly correlated with the Times ranking (Spearman's $\rho = 0.73$, Fig.~\ref{fig:semaxis}b).
-The strongest outliers are universities that were ranked more highly in the Times Ranking than the SemAxis ranking and tended to be large universities such as Arizona State University and  University of Florida;
-Those ranked higher in the SemAxis ranking tended to be relatively-smaller universities such as the University of San Francisco and University of Maryland Baltimore County.
+We derive a ranking for universities using the SemAxis prestige axis in Fig.~\ref{fig:semaxis}a and compare them to traditional university rankings.
+The SemAxis ranking is defined from the position of organizations along the prestige axis, with the top-ranked being the furthest towards the high-ranked end of the axis.
+We find that the SemAxis ranking is correlated with the Times ranking (Spearman's $\rho = 0.73$, Fig.~\ref{fig:semaxis}e).
+The strongest outliers that were ranked more highly in the Times Ranking than the SemAxis ranking tend to be large state universities such as Arizona State University and  University of Florida;
+Those ranked higher in the SemAxis ranking tend to be relatively-smaller universities such as the University of San Francisco and University of Maryland Baltimore County that are close to other prestigious universities.
 
-The correlation between SemAxis and the Times ranking is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities are strongly correlated with the Times Ranking (Spearman's $\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
-For reference, SemRank achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically-informed university ranking (Spearman's $\rho = 0.87$, Fig.~\ref{fig:supp:times_vs_leiden}).
-This suggests that the organization embedding surprisingly captures the latent prestige hierarchy inherent to academic mobility with a high degree of resolution and reliability~\autocite{deville2014career, clauset2015hierarchy}. 
+The correlation between SemAxis and the Times ranking is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities are significantly correlated with the Times Ranking (Spearman's $\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
+For reference, the SemAxis-derived ranking achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically-informed university ranking (Spearman's $\rho = 0.87$, Fig.~\ref{fig:semaxis}f).
+This suggests that the organization embedding captures the latent prestige hierarchy inherent to academic mobility, even without providing any explicit information on prestige, with a high degree of resolution and reliability~\autocite{deville2014career, clauset2015hierarchy}. 
+
+
+Also, we take one step further and find that the length of the organization vector, distance from the origin of the vector space, provides additional insight into the characteristics of the organization. The length of the vector tends to increase proportion to the number of unique researchers in the organization and it decreases after a certain point, yield ``boomerang" -shape curve (Fig.~\ref{fig:length}a).  Almost the prestigious university vector is close to the origin compared to the number of the researcher and this pattern is consistent for all organizations (Fig.~\ref{fig:length}b). This pattern also observed in natural language suggesting the length of the vector represents the word significance~\autocite{schakel2015measuring}.
+
+We find that the length of the vector captures the connection diversity of the organization compare to its size. The length of the vector is correlated with the number of connections to other organizations divided by the number of researchers, which can be interpreted as connection diversity compared to their size (Fig.~\ref{fig:length}b, inset). This suggests that researchers in the organization with a long vector have less freedom to move to other organizations compare to their size while researchers in the organization with short vector have more freedom to move. This observation can also be related to the organization's strategy. Most prestigious universities have policies that can enhance their collaboration with other organizations such as visiting program, giving additional affiliation to the researcher. We also show a correlation between the length of the vector and various organization-level factors such as diverse rankings,  amount of the funding, number of doctorates granted (Fig.~\ref{fig:supp:length_vs_metaInfo}), indicating the length of the organization vector capture diverse characteristics of the organization.
+
+
+%
+% Figure - SemAxis results
+%
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/boomerang.pdf}
+	\caption{
+		\textbf{Length of organization vectors captures connection diversity of organizations.}
+		\textbf{a.} L2 norm of organization vectors compared to their number of researchers for U.S. universities.
+		The L2 norm corresponds to the distance from the origin of the vector space.
+		Color indicates the rank of the university from the Times ranking, with 1 being the highest rank university.
+		Uncolored points are universities not listed on a times rank.
+		A "boomerang"-shape emerges, wherein larger universities tend to more distant from the origin (large L2 norm), however the more prestigious the university, the closer it is to the origin (small L2 norm). 
+		\textbf{b.} This boomerang pattern repeats globally for all organizations across all countries, shown for the United States, Germany, China, and others (loess regression line shown). 
+		The L2 norm is correlated weakly with the number of connection divided by the number of researchers in organization, which can be interpreted diversity of the connection compared to their size ($R^{2} = 0.17$, \textbf{inset}).
+		The red line is the line of the best fit.
+	}
+	\label{fig:length}
+\end{figure}
 
 
 
@@ -361,23 +386,21 @@ Neural embedding opens the door for new approaches for representing and understa
  
 
 In spite of its promise, this approach and analysis present several limitations. 
-First, the \textit{skip-gram word2vec} model can not encode directional information, meaning that embedding will be less effective at capturing mobility for which directional is critical.
+First, the current \textit{skip-gram word2vec} model can not encode directional information, meaning that embedding will be less effective at capturing mobility for which directional is critical.
 Second, the neural embedding approach is most useful in cases of mobility between discrete geographic units such as between countries, cities, and businesses; this approach is less useful in the case of mobility between arbitrary locations represented in geographic coordinates, such as in the modeling of animal movements. 
 Neither of these methodological limitations is insurmountable, and future work can aim to incorporate directionality and identify meaningful representations of continuous mobility data. 
 Finally, the case of scientific mobility presents domain-specific limitations. 
 Reliance on bibliometric metadata means that we capture only long-term mobility such as migration, rather than the array or more frequent short-term mobility such as conference travel and temporary visits. 
 The kinds of mobility we do capture—asynchronous migration and synchronous co-affiliation, are treated identically by our model even though they are qualitatively different.
-Also, our data can possess survivorship bias. Researchers at prestigious organizations tend to have more publications, inducing appear more in the mobility sentence.
-Scientific mobility is complex, and its study continues to pose challenges; neural embeddings do not solve many of these issues, but they create opportunities for new analyses and understanding
-future work should aim to 
+Also, our data can possess survivorship bias: researchers at prestigious organizations tend to have more publications, inducing these organizations appear more in the mobility sentence.
 
 
-
-Mobility and migration is a core asepct of human nature and history~\autocite{shah2020migration}, driving social phenomena as diverse as epidemics\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity} and science and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}. 
-Within science, mobility has grown increasingly global~\autocite{czaika2018globalisation}, though the travel restrictions in the U.S. and U.K. brought by Brexit and the Trump administration~\autocite{chinchilla2018travelban}, and the rise of new scientific powers such as China~\autocite{tollefson2018china, cao2020returning} may lead to a reorientation in who goes where.  
-Similarly, the COVID19 pandemic threatens drastic change to travel and migration by tightening borders and halting travel. 
-Now, more than ever, new tools and approaches are needed to understanding human mobility in order to inform sensible, effective, humane Immigration and Science and Technology policy.
-
+Mobility and migration is a core asepct of human nature and history~\autocite{shah2020migration}, driving social phenomena as diverse as epidemics\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity} and science and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}.
+However, the paradigm of scientific migration may be changing.
+Traditional hubs of migration have enacted many politially-motivated policy changes that affect scientific mobility, such as travel restrictions in the U.S. and U.K. brought by Brexit and the Trump administration~\autocite{chinchilla2018travelban}.
+Other nations, such as China, are growing into major scientific powers and attractors of talent~\autocite{tollefson2018china, cao2020returning}.
+Global crises such as COVID19 pandemic threaten drastic change to travel and migration by tightening borders and halting travel. 
+Now, more than ever, new tools and approaches are needed to understanding human mobility in order to inform sensible, effective, and humane Immigration and Science and Technology policy.
 
 
 %
@@ -400,13 +423,13 @@ Trajectories are represented as the list of author-affiliation combinations, ord
 
 
 Scientific mobility is complex and can be defined in many possible ways~\autocite{robinson2019mobility} and at multiple levels of analysis.
-Here, authors are classified as mobile when they have at least two distinct organization ids in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
+Here, authors are classified as mobile when they have at least two distinct organization IDs in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
 Under this definition, mobile authors constitute 3,007,192 or 23.2 percent of all authors and 17,700,095 author-affiliation combinations.
 Mobile authors were associated with, on average, 2.5 distinct organizational affiliations.
 Rates of mobility tended to differ across countries.
 For example, France, Qatar, the USA, Iraq, and Luxembourg had the most mobile authors (Fig.~\ref{fig:supp:descriptives}c).
 However, due to their size, the USA, accounted for nearly 40 percent of all mobile authors worldwide (Fig.~\ref{fig:supp:descriptives}a), with 10 countries accounting for 80 percent of all mobility (Fig.~\ref{fig:supp:descriptives}b).
-The countries with the highest proportion of mobile scientists are France, Qatar, the United States, and Iraq, whereas those with the lowest are Jamaica, Serbia, Bosnia \& Herzegovina, and North Macedonia\ref{fig:supp:descriptives}.c).
+The countries with the highest proportion of mobile scientists are France, Qatar, the United States, and Iraq, whereas those with the lowest are Jamaica, Serbia, Bosnia \& Herzegovina, and North Macedonia Fig.~\ref{fig:supp:descriptives}.c).
 In most cases, countries with a high degree of inter-organization mobility also have a high degree of international mobility, indicating a high proportion of their total mobility being international (Fig.~\ref{fig:supp:descriptives}.d);
 However, some countries such as France and the United States seem to have more domestic mobility than international mobility. 
 While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (Fig.~\ref{fig:supp:pubs_over_time}).
@@ -482,12 +505,12 @@ To estimate parameters $C$, $\alpha$ and $\beta$ are estimated by log-transformi
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
-	\ln\frac{T_{ij}}{m_im_j} = \ln(C)  - \alpha \ln(g_{ij})
+	\ln\frac{T_{ij}}{m_im_j} = \ln C  - \alpha \ln g_{ij}
 \end{equation}
 
 \begin{equation}
 	\label{eq:linear_flux_emb}
-	\ln\frac{T_{ij}}{m_im_j} = \ln(C) - \beta d_{ij}
+	\ln\frac{T_{ij}}{m_im_j} = \ln C - \beta d_{ij}
 \end{equation}
 
 where $T_{ij}$ is the real flux from the dataset. The gravity law of mobility is known to be sensitive to the case where $T_{ij} = 0$, or zero movement between organizations.
@@ -643,7 +666,7 @@ Organizational records were associated with a full name, a type indicating the s
 Sixteen different sector types were included in the analysis, which we aggregated to a four high-level codes: \textit{University}, \textit{Hospital}, \textit{Government}, and \textit{Other}.
 Each record was also associated with a latitude and longitude, however, for many organizations, these were missing or incorrect. We manually updated the coordinates of 2,267 organizations by searching the institution name and city on Google Maps;
 in cases where a precise location of the organization could not be identified, we used the coordinates returned when searching the name of the city.
-The data was further enriched with country-level information, including continent, majority language spoken, and language family of the majority language (e.g., the language family of \textit{Spanish} is \textit{Italic}).
+The data was further enriched with country-level information, including region, majority language spoken, and language family of the majority language (e.g., the language family of \textit{Spanish} is \textit{Italic}).
 State/province-level information was added using the reverse geocoding service LocationIQ using each organization's latitude and longitude as input.
 Regional census classifications were also added for states in the United States.
 For each organization, we also calculated size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
@@ -1120,7 +1143,7 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		\textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by the number of universities used to define the poles (n).
 		White points are those top and bottom 20 universities aggregated to define the ends of the axis.
 		The grey box corresponds to the top 20 and bottom 20 ranks.
-	  	Spearman's rho details the estimate from Spearman correlation between the two rankings using all universities, including those used to define the ends of each axis. 
+	  	Spearman's $\rho$ details the estimate from Spearman correlation between the two rankings using all universities, including those used to define the ends of each axis. 
 	}
 	\label{fig:supp:semaxis_compare}
 \end{figure}
@@ -1130,17 +1153,17 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 %
 % Figure - Times Ranking vs. Leiden Ranking
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/times_leiden_compare.pdf}
-	\caption{
-		\textbf{Correlation between Times and Leiden Ranking.}
-		Comparison between the Times and Leiden rankings of universities.
-		Here, the Leiden Ranking is operationalized as the mean normalized fractional citation impact for each university~\autocite{waltman2012leidenrankings}. 
-	  	PCC details the estimate from the Spearman correlation between the two rankings.
-	}
-	\label{fig:supp:times_vs_leiden}
-\end{figure}
+%\begin{figure}[hp!]
+%	\centering
+%	\includegraphics[width=\textwidth]{\figdir/SemAxis/times_leiden_compare.pdf}
+%	\caption{
+%		\textbf{Correlation between Times and Leiden Ranking.}
+%		Comparison between the Times and Leiden rankings of universities.
+%		Here, the Leiden Ranking is operationalized as the mean normalized fractional citation impact for each university~\autocite{waltman2012leidenrankings}. 
+%	  	PCC details the estimate from the Spearman correlation between the two rankings.
+%	}
+%	\label{fig:supp:times_vs_leiden}
+%\end{figure}
 
 
 
@@ -1162,21 +1185,43 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 \end{figure}
 
 
+
 %
-% Figure - SemAxis By Sector
+% Figure - s_i by factors
 %
 \begin{figure}[hp!]
 	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_sectors_fig.pdf}
+	\includegraphics[width=\textwidth]{\figdir/Math/si_factors.pdf}
 	\caption{
-		\textbf{Geography and prestige SemAxis in U.S. by Sector.}
-		SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top).
-		Points correspond to organizations labeled as Government (\textbf{a}), Institute (\textbf{b}), and Teaching (\textbf{c}), corresponding to government organizations, research institutes, and teaching organizations, respectively.
-		Grey points correspond to all U.S. universities.
-	    	Full organization names listed in Table~\ref{table:supp:orglabels}.
+		\textbf{Factors relating to $s_{i}$ among universities}
+		Correlation between various organization-level factors for U.S. universities and the value $s_{i}$.
+		Dots correspond to organizations.	
+		The red line is the line of  the best fit. 
+		Red text is the regression estimate.
+		Number of authors is the average annual count of unique mobile and non-mobile authors.
+		Rankings are derived from the Times Ranking of World Universities, and the Leiden Rankings of Universities. 
+		Remaining variables come from the Carnegie Classification of Higher Education Institutions.
+		The factors that best explain $s_i$ are the number of authors, the rank, the amount of Science and Engineering (S\&E) funding, and the number of doctorates granted. 
 	}
-	\label{fig:supp:semaxis_sectors}
+	\label{fig:supp:length_vs_metaInfo}
 \end{figure}
+
+
+%
+% Figure - SemAxis By Sector
+%
+%\begin{figure}[hp!]
+%	\centering
+%	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_sectors_fig.pdf}
+%	\caption{
+%		\textbf{Geography and prestige SemAxis in U.S. by Sector.}
+%		SemAxis projection along two axes, comparing California to Massachusetts universities (left to r%ight), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 %Times Higher Education ranking of U.S. Universities (bottom to top).
+%		Points correspond to organizations labeled as Government (\textbf{a}), Institute (\textbf{b}), and %Teaching (\textbf{c}), corresponding to government organizations, research institutes, and teaching o%rganizations, respectively.
+%		Grey points correspond to all U.S. universities.
+%	    	Full organization names listed in Table~\ref{table:supp:orglabels}.
+%	}
+%	\label{fig:supp:semaxis_sectors}
+%\end{figure}
 
 
 
