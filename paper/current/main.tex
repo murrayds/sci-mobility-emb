@@ -127,7 +127,7 @@ Mobility is complex, and so new approaches are needed to merge its many facets i
 
 
 Here, we propose a neural embedding model that uses real-world mobility trajectories to encode the complex landscape of global mobility into a dense, continuous, and meaningful vector-space representation, from which a \textit{functional distance} between places can be derived.
-This approach, originally designed for learning language models~\autocite{mikolov2013word2vec} has been used to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
+This approach, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been used to reveal insights in text~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
 Neural embedding is also computationally efficient, scalable for large datasets, robust to noise, and can extract rich relationships between the entities through the application of simple vector arithmetic~\autocite{levy2014neural}. 
 
 
@@ -357,7 +357,7 @@ This pattern has been observed in applications of neural embedding on natural la
 Here, interpret the vector length instead as a measure of an organization's connectedness to other organizations given its size, where a connection is defined as a non-zero flow between organizations.
 for example, organizations with a small L2 norm tend to also have a lower number of connections given their size (Fig.~\ref{fig:length}b, inset, $R^{2} = 0.17$). 
 Large and prestigious universities can be considered as having a shorter vector length than expected given their size, reflecting their ability to attract researchers from many places, to place graduates in positions around the world, and the capacity to encourage mobility by offering temporary and visiting researcher positions. 
-At the national level, the relative position of the convex-curves can reveal characteristics of their scientific organizations—for example, Chinese organizations have a longer average and typical vector length ($\overline{l}=4.81 $, Fig.~\ref{fig:length}b) compared to organizations in United States ($\overline{l}=4.21$), reflecting lower overall connectedness in the embedding space. 
+At the national level, the relative position of the convex-curves can reveal characteristics of their scientific organization. For instance, Chinese organizations have a longer average and typical vector length ($\overline{l}=4.81 $, Fig.~\ref{fig:length}b) compared to organizations in United States ($\overline{l}=4.21$), reflecting lower overall connectedness in the embedding space. 
 Prestige is a key component of academic mobility—by encoding information relating to prestige, neural embeddings offer a means of better representing the functional distance between organizations and capturing the global landscape of mobility. 
 
 
