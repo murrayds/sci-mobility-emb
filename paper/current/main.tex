@@ -342,6 +342,11 @@ For reference, the SemAxis-derived ranking achieves correlation with the Times R
 This suggests that the organization embedding captures the latent prestige hierarchy inherent to academic mobility, even without providing any explicit information on prestige, with a high degree of resolution and reliability~\autocite{deville2014career, clauset2015hierarchy}. 
 
 
+Also, we take one step further and find that the length of the organization vector, distance from the origin of the vector space, provides additional insight into the characteristics of the organization. The length of the vector tends to increase proportion to the number of unique researchers in the organization and it decreases after a certain point, yield ``boomerang" -shape curve (Fig.~\ref{fig:length}a).  Almost the prestigious university vector is close to the origin compared to the number of the researcher and this pattern is consistent for all organizations (Fig.~\ref{fig:length}b). This pattern also observed in natural language suggesting the length of the vector represents the word significance~\autocite{schakel2015measuring}.
+
+We find that the length of the vector captures the connection diversity of the organization compare to its size. The length of the vector is correlated with the number of connections to other organizations divided by the number of researchers, which can be interpreted as connection diversity compared to their size. This suggests that researchers in the organization with a long vector have less freedom to move to other organizations compare to their size while researchers in the organization with short vector have more freedom to move. This observation can also be related to the organization's strategy. Most prestigious universities have policies that can enhance their collaboration with other organizations such as visiting program, giving additional affiliation to the researcher. We also show a correlation between the length of the vector and various organization-level factors such as diverse rankings,  amount of the funding, number of doctorates granted (Fig.~\ref{fig:supp:length_vs_metaInfo}), indicating the length of the organization vector capture diverse characteristics of the organization.
+
+
 %
 % Figure - SemAxis results
 %
@@ -349,18 +354,17 @@ This suggests that the organization embedding captures the latent prestige hiera
 	\centering
 	\includegraphics[width=\textwidth]{\figdir/Math/boomerang.pdf}
 	\caption{
-		\textbf{Length of organization vectors captures a connection diversity of organizations.}
-		\textbf{a} L2 norm of organization vectors compared to their number of researchers for U.S. universities.
+		\textbf{Length of organization vectors captures connection diversity of organizations.}
+		\textbf{a.} L2 norm of organization vectors compared to their number of researchers for U.S. universities.
 		The L2 norm corresponds to the distance from the origin of the vector space.
 		Color indicates the rank of the university from the Times ranking, with 1 being the highest rank university.
 		Uncolored points are universities not listed on a times rank.
 		A "boomerang"-shape emerges, wherein larger universities tend to more distant from the origin (large L2 norm), however the more prestigious the university, the closer it is to the origin (small L2 norm). 
-		\textbf{b} This boomerang pattern repeats globally for all organizations across all countries, shown for the United States, Germany, China, and others (loess regression line shown). 
-		The L2 norm is correlated weakly with the number of connections divided by the number of researchers in the organization, which can be interpreted diversity of the connection compared to their size ($R^{2} = 0.17$, \textbf{inset}).
+		\textbf{b.} This boomerang pattern repeats globally for all organizations across all countries, shown for the United States, Germany, China, and others (loess regression line shown). 
+		The L2 norm is correlated weakly with the number of connection divided by the number of researchers in organization, which can be interpreted diversity of the connection compared to their size ($R^{2} = 0.17$, \textbf{inset}).
 		The red line is the line of the best fit.
-
 	}
-	\label{fig:semaxis}
+	\label{fig:length}
 \end{figure}
 
 
@@ -425,7 +429,7 @@ Mobile authors were associated with, on average, 2.5 distinct organizational aff
 Rates of mobility tended to differ across countries.
 For example, France, Qatar, the USA, Iraq, and Luxembourg had the most mobile authors (Fig.~\ref{fig:supp:descriptives}c).
 However, due to their size, the USA, accounted for nearly 40 percent of all mobile authors worldwide (Fig.~\ref{fig:supp:descriptives}a), with 10 countries accounting for 80 percent of all mobility (Fig.~\ref{fig:supp:descriptives}b).
-The countries with the highest proportion of mobile scientists are France, Qatar, the United States, and Iraq, whereas those with the lowest are Jamaica, Serbia, Bosnia \& Herzegovina, and North Macedonia\ref{fig:supp:descriptives}.c).
+The countries with the highest proportion of mobile scientists are France, Qatar, the United States, and Iraq, whereas those with the lowest are Jamaica, Serbia, Bosnia \& Herzegovina, and North Macedonia Fig.~\ref{fig:supp:descriptives}.c).
 In most cases, countries with a high degree of inter-organization mobility also have a high degree of international mobility, indicating a high proportion of their total mobility being international (Fig.~\ref{fig:supp:descriptives}.d);
 However, some countries such as France and the United States seem to have more domestic mobility than international mobility. 
 While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (Fig.~\ref{fig:supp:pubs_over_time}).
@@ -1199,7 +1203,7 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		Remaining variables come from the Carnegie Classification of Higher Education Institutions.
 		The factors that best explain $s_i$ are the number of authors, the rank, the amount of Science and Engineering (S\&E) funding, and the number of doctorates granted. 
 	}
-	\label{fig:supp:semaxis_states}
+	\label{fig:supp:length_vs_metaInfo}
 \end{figure}
 
 
