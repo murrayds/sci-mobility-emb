@@ -341,10 +341,20 @@ The correlation between SemAxis and the Times ranking is robust with the number 
 For reference, the SemAxis-derived ranking achieves correlation with the Times Ranking comparable to that between the Times ranking and the Leiden Ranking~\autocite{waltman2012leidenrankings}, a common and bibliometrically-informed university ranking (Spearman's $\rho = 0.87$, Fig.~\ref{fig:semaxis}f).
 This suggests that the organization embedding captures the latent prestige hierarchy inherent to academic mobility, even without providing any explicit information on prestige, with a high degree of resolution and reliability~\autocite{deville2014career, clauset2015hierarchy}. 
 
+What is it about the organization embedding that captures prestige so effectively?
+We find that the length of organization vectors---that is, the distance from the origin of the vector space---provides provides insight into the characteristics of organizations. 
+Up to a point, the length of U.S. organization's vectors tends to increase proportional to its number of researchers (both mobile and non-mobile) who published with that organization;
+these organizations are primarily teaching-focused institutions, agencies, and hospitals that either are not ranked or have a low ranking. 
+However, at around 1,000 researchers, the length of the vector decreases with increase in the number of researchers;
+organizations here are primarily research-intensive and prestigious universities with higher rankings, research outputs, R\&D funding, and doctoral students (Fig.~\ref{fig:supp:length_vs_metaInfo}).
+This same convex-curve repeats irrespective of country, such as China and Germany, though the curve may be shifted based on the typical size and vector length of their organizations (Fig.~\ref{fig:length}b). 
 
-Also, we take one step further and find that the length of the organization vector, distance from the origin of the vector space, provides additional insight into the characteristics of the organization. The length of the vector tends to increase proportion to the number of unique researchers in the organization and it decreases after a certain point, yield ``boomerang" -shape curve (Fig.~\ref{fig:length}a).  Almost the prestigious university vector is close to the origin compared to the number of the researcher and this pattern is consistent for all organizations (Fig.~\ref{fig:length}b). This pattern also observed in natural language suggesting the length of the vector represents the word significance~\autocite{schakel2015measuring}.
-
-We find that the length of the vector captures the connection diversity of the organization compare to its size. The length of the vector is correlated with the number of connections to other organizations divided by the number of researchers, which can be interpreted as connection diversity compared to their size (Fig.~\ref{fig:length}b, inset). This suggests that researchers in the organization with a long vector have less freedom to move to other organizations compare to their size while researchers in the organization with short vector have more freedom to move. This observation can also be related to the organization's strategy. Most prestigious universities have policies that can enhance their collaboration with other organizations such as visiting program, giving additional affiliation to the researcher. We also show a correlation between the length of the vector and various organization-level factors such as diverse rankings,  amount of the funding, number of doctorates granted (Fig.~\ref{fig:supp:length_vs_metaInfo}), indicating the length of the organization vector capture diverse characteristics of the organization.
+This pattern has been observed in applications of neural embedding to natural language, wherein the length of word vectors were found to represent word "significance"~\autocite{schakel2015measuring
+Here, interpret the vector length instead as a measure of an organization's connectedness to other organizations given its size, where a connection is defined as a non-zero flow between organizations.
+for example, organizations with a small L2 norm tend to also have a lower number of connections given their size (Fig.~\ref{fig:length}b, inset, $R^{2} = 0.17$). 
+Large and prestigious universities can be considered as having a shorter vector length than expected given their size, reflecting their ability to attract researchers from many places, to place graduates in positions around the world, and the capacity to encourage mobility by offering temporary and visiting researcher positions. 
+At the national level, the relative position of the convex-curves can reveal characteristics of their scientific organizations—for example, compared to the United States, Chinese organizations have a longer typical vector length (Fig.~\ref{fig:length}b) reflecting lower overall connectedness in the embedding space. 
+Prestige is a key component academic mobility—by encoding information relating to prestige, neural embeddings offer a means of better representing functional distance between organizations and capturing the global landscape of mobility. 
 
 
 %
@@ -357,16 +367,15 @@ We find that the length of the vector captures the connection diversity of the o
 		\textbf{Length of organization vectors captures connection diversity of organizations.}
 		\textbf{a.} L2 norm of organization vectors compared to their number of researchers for U.S. universities.
 		The L2 norm corresponds to the distance from the origin of the vector space.
-		Color indicates the rank of the university from the Times ranking, with 1 being the highest rank university.
-		Uncolored points are universities not listed on a times rank.
-		A "boomerang"-shape emerges, wherein larger universities tend to more distant from the origin (large L2 norm), however the more prestigious the university, the closer it is to the origin (small L2 norm). 
-		\textbf{b.} This boomerang pattern repeats globally for all organizations across all countries, shown for the United States, Germany, China, and others (loess regression line shown). 
+		Color indicates the rank of the university from the Times ranking, with 1 being the highest ranked university.
+		Uncolored points are universities not listed on a Times ranking.
+		A convex-shape emerges, wherein larger universities tend to more distant from the origin (large L2 norm), however the more prestigious the university, the closer it is to the origin (small L2 norm). 
+		\textbf{b.} This convex pattern repeats globally for all organizations across all countries, shown for the United States, Germany, China, and others (loess regression line shown). 
 		The L2 norm is correlated weakly with the number of connection divided by the number of researchers in organization, which can be interpreted diversity of the connection compared to their size ($R^{2} = 0.17$, \textbf{inset}).
 		The red line is the line of the best fit.
 	}
 	\label{fig:length}
 \end{figure}
-
 
 
 %
@@ -383,7 +392,6 @@ As we have shown, projecting the embedding space onto two dimensions using UMAP 
 Other techniques, such as SemAxis, also allow the potential to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
 Neural embedding opens the door for new approaches for representing and understanding patterns of global human mobility.
 
- 
 
 In spite of its promise, this approach and analysis present several limitations. 
 First, the current \textit{skip-gram word2vec} model can not encode directional information, meaning that embedding will be less effective at capturing mobility for which directional is critical.
@@ -1185,28 +1193,6 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 \end{figure}
 
 
-
-%
-% Figure - s_i by factors
-%
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Math/si_factors.pdf}
-	\caption{
-		\textbf{Factors relating to $s_{i}$ among universities}
-		Correlation between various organization-level factors for U.S. universities and the value $s_{i}$.
-		Dots correspond to organizations.	
-		The red line is the line of  the best fit. 
-		Red text is the regression estimate.
-		Number of authors is the average annual count of unique mobile and non-mobile authors.
-		Rankings are derived from the Times Ranking of World Universities, and the Leiden Rankings of Universities. 
-		Remaining variables come from the Carnegie Classification of Higher Education Institutions.
-		The factors that best explain $s_i$ are the number of authors, the rank, the amount of Science and Engineering (S\&E) funding, and the number of doctorates granted. 
-	}
-	\label{fig:supp:length_vs_metaInfo}
-\end{figure}
-
-
 %
 % Figure - SemAxis By Sector
 %
@@ -1223,6 +1209,27 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 %	\label{fig:supp:semaxis_sectors}
 %\end{figure}
 
+
+
+%
+% Figure - length by factors
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/si_factors.pdf}
+	\caption{
+		\textbf{Factors relating to the L2 norm of vectors for U.S. universities}
+		Correlation between the L2 norm of organization embedding vectors of U.S. universities and characteristics of U.S. universities. 
+		Dots correspond to organizations.	
+		The red line is the line of  the best fit. 
+		Red text is the regression estimate.
+		Number of authors is the average annual count of unique mobile and non-mobile authors.
+		Rankings are derived from the Times Ranking of World Universities, and the Leiden Rankings of Universities. 
+		Remaining variables come from the Carnegie Classification of Higher Education Institutions.
+		The factors that best explain $s_i$ are the number of authors, the rank, the amount of Science and Engineering (S\&E) funding, and the number of doctorates granted. 
+	}
+	\label{fig:supp:length_vs_metaInfo}
+\end{figure}
 
 
 
