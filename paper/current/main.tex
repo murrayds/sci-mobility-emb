@@ -350,26 +350,21 @@ Up to a point, the size of U.S. organization's vectors tends to increase proport
 these organizations are primarily teaching-focused institutions, agencies, and hospitals that either are not ranked or have a low ranking. 
 However, at around 1,000 researchers, the size of the vector decreases as the number of researchers increases;
 organizations here are primarily research-intensive and prestigious universities with higher rankings, research outputs, R\&D funding, and doctoral students (Fig.~\ref{fig:supp:length_vs_metaInfo}).
-A similar pattern has been observed in applications of neural embedding to natural language, wherein the length of word vectors were found to represent word "significance"~\autocite{schakel2015measuring}.
+A similar pattern has been observed in applications of neural embedding to natural language, wherein the size of word vectors were found to represent word ``significance''~\autocite{schakel2015measuring}.
 If a word appears frequently in a specific context, the norm of the word vector is likely to be large, because a large norm is associated with how predictably the word occurs given a context.
 However, if the word in question is universal, appearing frequently in many different contexts, it cannot have a large norm as it lacks a strong association with a particular context. 
-Likewise, an organization such as Harvard with a small norm appears in many contexts, that is, alongside many different organizations in affiliation trajectories. 
+Likewise, an organization such as Harvard with a small norm appears in many contexts, alongside many different organizations in affiliation trajectories. 
 The concavity emerges in part from the relationship between the size of the vector and the expected connectedness of the organization given its size (Fig.~\ref{fig:length}a, inset, $R^{2} = 0.17$).
 Large, prestigious, and well-funded research universities such as Princeton and Harvard have smaller vector sizes because they appear in many different contexts compared to more teaching-focused organizations such as NY Medical College, and University of Michigan at Flint. 
 Some universities, such as the University of Alaska at Fairbanks, have surprisingly small vectors, perhaps as a result of its remote location and unique circumstances. 
 
 
-This same convex-curve repeats irrespective of country, such as China and Germany, though the curve may be shifted based on the typical size and vector length of their organizations (Fig.~\ref{fig:length}b). 
-The relative position of these curves can reveal characteristics about the scientific systems in each country. 
-For example, 
-
-This 
-Here, interpret the vector length instead as a measure of an organization's connectedness to other organizations given its size, where a connection is defined as a non-zero flow between organizations.
-for example, organizations with a small L2 norm tend to also have a lower number of connections given their size (Fig.~\ref{fig:length}b, inset, $R^{2} = 0.17$). 
-Large and prestigious universities can be considered as having a shorter vector length than expected given their size, reflecting their ability to attract researchers from many places, to place graduates in positions around the world, and the capacity to encourage mobility by offering temporary and visiting researcher positions. 
-At the national level, the relative position of the convex-curves can reveal characteristics of their scientific organizations—for example, compared to the United States, Chinese organizations have a longer typical vector length (Fig.~\ref{fig:length}b) reflecting lower overall connectedness in the embedding space. 
-Prestige is a key component academic mobility—by encoding information relating to prestige, neural embeddings offer a means of better representing functional distance between organizations and capturing the global landscape of mobility. 
-
+This same convex-curve repeats across many countries, though with variations that can reveal characteristics about the scientific systems of each country (Fig.~\ref{fig:length}b). 
+For example, Chinese organizations have a longer average embedding vector length ($\bar{l} = 4.81$) than organizations in the United States ($\bar{l} = 0.421$), reflecting the tendency for organizations in the United States to appear more frequently in more different contexts than Chinese organizations. 
+Smaller but scientifically advanced countries such as Sweden, and other large populous countries like Brazil exhibit curves similar to the United States (Fig.~\ref{fig:length}b, inset), a pattern repeated across most of the 20 countries with the most researchers (Fig.~\ref{fig:concave20}). 
+Other nations exhibit different curves, such as Egypt which has an "S"-shaped curve---their largest organizations do not have smaller vectors, as in many other countries. 
+Other nations such as Poland and Turkey demonstrate a linear relationship between an organization's number of researchers and the vector size, indicating that their largest organizations belong to very specific contexts (Fig.~\ref{fig:concave20}).
+By encoding whether an organization will appear in specific or many different contexts, organization embeddings offer a way to characterize universal and particularistic patterns of mobility across countries. 
 
 %
 % Figure - SemAxis results
@@ -386,7 +381,8 @@ Prestige is a key component academic mobility—by encoding information relating
 		The L2 norm is correlated weakly with the number of connection divided by the number of researchers in organization, which can be interpreted diversity of the connection compared to their size ($R^{2} = 0.17$, \textbf{inset}).
 		The red line is the line of the best fit, and 99\% confidence intervals are shown. 
 		\textbf{b.} This convex pattern repeats globally for all organizations across all countries, shown for the United States, China, and others,
-		The loess regression lines are shown for each selected country, and for the aggregate of remaining countries. 
+		The loess regression lines are shown for each selected country, and for the aggregate of remaining countries, with 99\% confidence intervals. 
+		Loess lines are also shown for organizations in Sweden, Brazil, and Egypt (inset).
 	}
 	\label{fig:length}
 \end{figure}
@@ -1236,14 +1232,32 @@ Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
 		\textbf{Factors relating to the L2 norm of vectors for U.S. universities}
 		Correlation between the L2 norm of organization embedding vectors of U.S. universities and characteristics of U.S. universities. 
 		Dots correspond to organizations.	
-		The red line is the line of  the best fit. 
+		The red line is the line of  the best fit with corresponding 99\% confidence intervals. 
 		Red text is the regression estimate.
+		The blue line is the loess regression line with 99\% confidence intervals.
 		Number of authors is the average annual count of unique mobile and non-mobile authors.
 		Rankings are derived from the Times Ranking of World Universities, and the Leiden Rankings of Universities. 
 		Remaining variables come from the Carnegie Classification of Higher Education Institutions.
 		The factors that best explain $s_i$ are the number of authors, the rank, the amount of Science and Engineering (S\&E) funding, and the number of doctorates granted. 
 	}
 	\label{fig:supp:length_vs_metaInfo}
+\end{figure}
+
+
+
+%
+% Figure - Concave-curves countries
+%
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/boomerang_20_countries.pdf}
+	\caption{
+		\textbf{Concave-curve repeats across most of 20 countries with most researchers.}
+		Size (L2 norm) of organization embedding vectors compared to their number of researchers for U.S. universities.
+		Loess regression line is shown for each country with 99\% confidence intervals. 
+		Countries shown are the top 20 countries with the largest number of total unique researchers, as derived from our bibliographic data. 
+	}
+	\label{fig:concave20}
 \end{figure}
 
 

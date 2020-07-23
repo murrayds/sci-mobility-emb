@@ -107,7 +107,8 @@ plot <- plotdata %>%
   viridis::scale_color_viridis(
     name = "Times Rank", 
     option = "C",
-    breaks = c(1, 50, 100)) +
+    breaks = c(1, 50, 100)
+  ) +
   scale_shape_manual(values = c(16, 1)) +
   #ggrepel::geom_label_repel(
   #  data = plotlabs,
@@ -118,15 +119,16 @@ plot <- plotdata %>%
   #  alpha = 0.9,
   #  size = 3.5
   #) +
-  guides(shape = F) +
+  guides(shape = F,
+         color = guide_colorbar(reverse = T)) +
   theme_minimal() +
-  annotate(geom = "label", x = 1.5e4, y = 3.5, label = "Harvard", size = 3.5) +
-  annotate(geom = "label", x = 1.6e3, y = 3.69, label = "Princeton", size = 3.5) +
+  annotate(geom = "label", x = 1.5e4, y = 3.6, label = "Harvard", size = 3.5) +
+  annotate(geom = "label", x = 1.6e3, y = 3.65, label = "Princeton", size = 3.5) +
   annotate(geom = "label", x = 8.5e3, y = 5.9, label = "Univ Tennessee\nKnoxville", size = 3.5) +
-  annotate(geom = "label", x = 4.9e2, y = 2.15, label = "Univ Alaska\nFairbanks", size = 3.5) +
-  annotate(geom = "label", x = 4e2, y = 5.75, label = "NY Medical College", size = 3.5) +
+  annotate(geom = "label", x = 1.8e2, y = 1.55, label = "Univ Alaska\nFairbanks", size = 3.5) +
+  annotate(geom = "label", x = 4e2, y = 6.2, label = "NY Medical College", size = 3.5) +
   annotate(geom = "label", x = 2e1, y = 4.6, label = "Univ Michigan\nFlint", size = 3.4) +
-  annotate(geom = "label", x = 6.4e1, y = 2.48, label = "Barry University", size = 3.5) +
+  annotate(geom = "label", x = 6.8e1, y = 2.48, label = "Barry University", size = 3.5) +
   theme(
     text = element_text(family = "Helvetica", size = 12),
     axis.title.x = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
@@ -136,7 +138,8 @@ plot <- plotdata %>%
     axis.title.y.right = element_text(angle = 90, size = 14, face = "bold"),
     axis.text.y.right = element_blank(),
     legend.text = element_text(size = 12),
-    legend.position = c(0.85, 0.20),
+    legend.title = element_text(face = "bold"),
+    legend.position = c(0.11, 0.852),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
     axis.line = element_line(color="black", size = 0.3),
@@ -156,20 +159,22 @@ ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_ranking_times.
 ```{r}
 plot <- df %>%
   mutate(
-    highlight = ifelse(country %in% c("China", "United States", "Germany"), country, "Other"),
-    highlight = factor(highlight, levels = c("United States", "China", "Germany", "Other"))
+    highlight = ifelse(country %in% c("China", "United States"), country, "Other"),
+    highlight = factor(highlight, levels = c("United States", "China", "Other"))
   ) %>%
-  ggplot(aes(x = size, y = `l2-norm`, label = name, alpha = highlight, shape = highlight, color = highlight)) +
-  geom_point(alpha = 0.5) +
+  ggplot(aes(x = size, y = `l2-norm`, fill = highlight, shape = highlight, color = highlight, linetype = highlight)) +
+  geom_point(alpha = 0.2) +
   stat_smooth(
     method = "loess",
-    size = 1.25,
-    se = F
+    size = 1.5,
+    level = 0.99,
+    se = T,
+    alpha = 0.6
   ) +
-  scale_shape_manual(values = c(16, 16, 16, 1)) +
-  scale_color_manual(values = c("#66c2a5", "#fc8d62", "#8da0cb", "darkgrey")) +
-  scale_fill_manual(values = c("#66c2a5", "#fc8d62", "#8da0cb", "grey")) +
-  scale_alpha_manual(values = c(1, 1, 1,  0.6)) +
+  scale_shape_manual(values = c(16, 16, 1)) +
+  scale_color_manual(values = c("#d35400", "#2980b9", "darkgrey")) +
+  scale_linetype_manual(values = c(2, 2, 1)) +
+  scale_fill_manual(values = c("#d35400", "#2980b9", "grey")) +
   scale_x_log10(
     breaks = scales::trans_breaks("log10", function(x) 10^x),
     labels = scales::trans_format("log10", scales::math_format(10^.x))
@@ -188,8 +193,8 @@ plot <- df %>%
     axis.title.y = element_text(angle = 90, size = 14, face = "bold"),
     axis.title.y.right = element_text(angle = 90, size = 14, face = "bold"),
     axis.text.y.right = element_blank(),
-    legend.text = element_text(size = 10),
-    legend.position = c(0.14, 0.82),
+    legend.text = element_text(size = 12, face = "bold"),
+    legend.position = c(0.15, 0.912),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
     legend.title = element_blank(),
@@ -206,6 +211,225 @@ plot
 ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_global.pdf", plot, width = 6, height = 6)
 ```
 
+```{r}
+plot <- df %>%
+  mutate(
+    highlight = ifelse(country %in% c("Brazil", "United States"), country, "Other"),
+    highlight = factor(highlight, levels = c("United States", "Brazil", "Other"))
+  ) %>%
+  filter(highlight != "Other") %>%
+  ggplot(aes(x = size, y = `l2-norm`, label = name, fill = highlight, color = highlight, linetype = highlight)) +
+  stat_smooth(
+    method = "loess",
+    size = 2,
+    level = 0.99,
+    se = T,
+    alpha = 0.6
+  ) +
+  scale_color_manual(values = c("#d35400", "#27ae60")) +
+  scale_fill_manual(values = c("#d35400", "#27ae60")) +
+  scale_linetype_manual(values = c(2, 1)) +
+  scale_x_log10(
+    breaks = scales::trans_breaks("log10", function(x) 10^x),
+    labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) +
+  scale_y_continuous(
+    limits = c(0, 7),
+    breaks = c(2, 4, 6)
+  ) +
+  guides(shape = F) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 14),
+    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.text.x.top = element_blank(),
+    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
+    axis.title.y.right = element_text(angle = 90, size = 16, face = "bold"),
+    axis.text.y.right = element_blank(),
+    legend.text = element_text(size = 16, face = "bold"),
+    legend.position = c(0.5, 0.2),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.background = element_rect(size = 0.5),
+    legend.title = element_blank(),
+    axis.line = element_line(color="black", size = 0.3),
+    legend.box.background = element_rect(color=NA, fill = NA)
+  ) +
+  annotation_logticks(sides = "b") +
+  xlab("# Researchers") +
+  ylab("L2 Norm")
+
+plot 
+
+ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_brazil.pdf", plot, width = 3, height = 3)
+```
+
+
+```{r}
+plot <- df %>%
+  mutate(
+    highlight = ifelse(country %in% c("Sweden", "United States"), country, "Other"),
+    highlight = factor(highlight, levels = c("United States", "Sweden", "Other"))
+  ) %>%
+  filter(highlight != "Other") %>%
+  ggplot(aes(x = size, y = `l2-norm`, label = name, fill = highlight, color = highlight, linetype = highlight)) +
+  stat_smooth(
+    method = "loess",
+    alpha = 0.6,
+    level = 0.99,
+    size = 2,
+    se = T
+  ) +
+  scale_color_manual(values = c("#d35400", "#8e44ad")) +
+  scale_fill_manual(values = c("#d35400", "#8e44ad")) +
+  scale_linetype_manual(values = c(2, 1)) +
+  scale_x_log10(
+    breaks = scales::trans_breaks("log10", function(x) 10^x),
+    labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) +
+  scale_y_continuous(
+    limits = c(0, 7),
+    breaks = c(2, 4, 6)
+  ) +
+  guides(shape = F) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 14),
+    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.text.x.top = element_blank(),
+    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
+    axis.title.y.right = element_text(angle = 90, size = 16, face = "bold"),
+    axis.text.y.right = element_blank(),
+    legend.text = element_text(size = 16, face = "bold"),
+    legend.position = c(0.5, 0.2),
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(size = 0.5),
+    panel.grid.major = element_blank(),
+    legend.title = element_blank(),
+    axis.line = element_line(color="black", size = 0.3),
+    legend.box.background = element_rect(color=NA, fill = NA)
+  ) +
+  annotation_logticks(sides = "b") +
+  xlab("# Researchers") +
+  ylab("L2 Norm")
+
+plot 
+
+ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_sweden.pdf", plot, width = 3, height = 3)
+```
+
+
+```{r}
+plot <- df %>%
+  mutate(
+    highlight = ifelse(country %in% c("Egypt", "United States"), country, "Other"),
+    highlight = factor(highlight, levels = c("United States", "Egypt", "Other"))
+  ) %>%
+  filter(highlight != "Other") %>%
+  ggplot(aes(x = size, y = `l2-norm`, label = name, fill = highlight, color = highlight, linetype = highlight)) +
+  stat_smooth(
+    method = "loess",
+    size = 2,
+    level = 0.99,
+    fill = "lightgrey",
+    alpha = 0.6,
+    se = T
+  ) +
+  scale_color_manual(values = c("#d35400", "black")) +
+  scale_linetype_manual(values = c(2, 1)) +
+  scale_x_log10(
+    breaks = scales::trans_breaks("log10", function(x) 10^x),
+    labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) +
+  scale_y_continuous(
+    limits = c(0, 7),
+    breaks = c(2, 4, 6)
+  ) +
+  guides(shape = F) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 14),
+    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.text.x.top = element_blank(),
+    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
+    axis.title.y.right = element_text(angle = 90, size = 16, face = "bold"),
+    axis.text.y.right = element_blank(),
+    legend.text = element_text(size = 16, face = "bold"),
+    legend.position = c(0.5, 0.2),
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(size = 0.5),
+    panel.grid.major = element_blank(),
+    legend.title = element_blank(),
+    axis.line = element_line(color="black", size = 0.3),
+    legend.box.background = element_rect(color=NA, fill = NA)
+  ) +
+  annotation_logticks(sides = "b") +
+  xlab("# Researchers") +
+  ylab("L2 Norm")
+
+plot 
+
+ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_egypt.pdf", plot, width = 3, height = 3)
+```
+
+
+```{r}
+selected <- (df %>%
+  group_by(country) %>%
+  summarize(total = sum(size)) %>%
+  top_n(20, total))$country
+
+
+plot <- df %>%
+  filter(!is.na(`l2-norm`)) %>%
+  filter(country %in% c(selected)) %>%
+  ggplot(aes(x = size, y = `l2-norm`)) +
+  stat_smooth(
+    method = "loess",
+    size = 2,
+    se = T,
+    level = 0.99,
+    color = "black",
+    fill = "black",
+    alpha = 0.4,
+    
+  ) +
+  scale_x_log10(
+    breaks = scales::trans_breaks("log10", function(x) 10^x),
+    labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) +
+  scale_y_continuous(
+    limits = c(0, 7),
+    breaks = c(2, 4, 6)
+  ) +
+  facet_wrap(~country) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 14),
+    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.text.x.top = element_blank(),
+    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
+    axis.title.y.right = element_text(angle = 90, size = 16, face = "bold"),
+    axis.text.y.right = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(size = 0.5),
+    panel.grid.major = element_blank(),
+    strip.text = element_text(face = "bold"),
+    axis.line = element_line(color="black", size = 0.3),
+  ) +
+  annotation_logticks(sides = "b") +
+  xlab("# Researchers") +
+  ylab("L2 Norm")
+
+plot 
+
+ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_20_countries.pdf", plot, width = 7, height = 7)
+```
+
 
 
 ```{r}
@@ -219,11 +443,12 @@ plot <- ratio %>%
   # Draw a regression line
   stat_smooth(method = "lm",
               formula = y ~ x,
-              color = "#c0392b",
-              alpha = 0.6,
+              color = "darkred",
+              alpha = 0.4,
+              fill = "darkred",
               se = T,
               level = 0.99,
-              size = 1.5,
+              size = 0.75,
               fullrange = T)  +
   # Add the r-squared coefficient to the plot
   ggpmisc::stat_poly_eq(formula = y ~ x,
@@ -242,16 +467,17 @@ plot <- ratio %>%
                          labels = function(x) { parse(text=paste0("10^", x)) },
                          na.value=NA
     ) +
+  scale_x_continuous(breaks = c(-1.5, 0, 1)) +
   theme_minimal() +
   theme(
-    text = element_text(family = "Helvetica", size = 12),
-    axis.title.x = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
-    axis.title.x.top = element_text(angle = 0, size = 14, face = "bold", vjust = 0.5),
+    text = element_text(family = "Helvetica", size = 14),
+    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
     axis.text.x.top = element_blank(),
-    axis.title.y = element_text(angle = 90, size = 14, face = "bold"),
-    axis.title.y.right = element_text(angle = 90, size = 14, face = "bold"),
+    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
+    axis.title.y.right = element_text(angle = 90, size = 16, face = "bold"),
     axis.text.y.right = element_blank(),
-    legend.text = element_text(size = 12),
+    legend.text = element_text(size = 14),
     #legend.position = c(0.16, 0.35),
     legend.position = "right",
     panel.grid.minor = element_blank(),
@@ -261,11 +487,11 @@ plot <- ratio %>%
     legend.box.background = element_rect(color="black", size=0.1, fill = "white")
   ) +
   annotation_logticks(sides = "b") +
-  xlab("Expexted reach") +
+  xlab("# connections / # researchers") +
   ylab("L2 Norm")
 
 plot 
-ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/ratio_l2.png", plot, width = 4, height = 3)
+ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/ratio_l2.pdf", plot, width = 4, height = 3)
 ```
 
 
