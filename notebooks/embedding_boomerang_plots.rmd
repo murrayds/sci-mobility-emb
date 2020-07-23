@@ -387,13 +387,14 @@ plot <- df %>%
   filter(!is.na(`l2-norm`)) %>%
   filter(country %in% c(selected)) %>%
   ggplot(aes(x = size, y = `l2-norm`)) +
+  geom_point(alpha = 0.3) +
   stat_smooth(
     method = "loess",
-    size = 2,
+    size = 1,
     se = T,
     level = 0.99,
-    color = "black",
-    fill = "black",
+    color = "#2980b9",
+    fill = "#2980b9",
     alpha = 0.4,
     
   ) +
