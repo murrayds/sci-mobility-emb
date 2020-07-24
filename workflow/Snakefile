@@ -168,6 +168,7 @@ RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correla
 
 # MISC PLOTS
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
+BOOMERANG_COMPARE_PLOT = osjoin(MATH_FIGURE_DIR, 'boomerang', 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{country}_usa_{traj}_d{dimensions}_ws{window}_boomerang_compare.pdf')
 
 ###############################################################################
 # MISC files
@@ -221,6 +222,13 @@ GEO_CONSTRAINTS_FILT = ['same-country',
                         'different-country']
 
 GRAVITY_MODEL_TYPES = ['exp', 'power']
+
+# A set of around 30 of the largest countries to plot specifics for, most others
+# are too small to give reasonable or useful results
+COUNTRY_LIST = ["AUS", "AUT", "BEL", "BRA", "CAN", "CHE", "CHN", "CZE",
+                "DEU", "DNK", "ESP", "FIN", "FRA", "GBR", "GRC", "IND",
+                "IRN", "ISR", "ITA", "JPN", "KOR", "NLD", "NOR", "POL",
+                "PRT", "RUS", "SWE", "TUR", "TWN", "USA", "EGY"]
 
 ###############################################################################
 # Includes
@@ -288,6 +296,13 @@ rule all:
                window = W2V_WINDOW_SIZE),
         expand(FACTORS_ALL_CONTINUOUS_META_PLOT,
                factor = FACTORS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+
+        # Boomerang plots
+        expand(BOOMERANG_COMPARE_PLOT,
+               country = COUNTRY_LIST,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),

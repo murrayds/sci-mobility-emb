@@ -62,3 +62,15 @@ rule plot_factors_all_meta:
         --carnegie {params.carnegie} --unicw {params.cw} \
         --leiden {params.ranking} --sizes {params.sizes} \
         --toplot {wildcards.factor} --output {output}"
+
+rule plot_boomerang_compare_to_usa:
+    input:
+        factors = rules.decompose_word2vec_model.output,
+        lookup = ancient(rules.add_state_to_lookup.output)
+    params:
+        size = ORG_SIZES
+    output: BOOMERANG_COMPARE_PLOT
+    shell:
+        "Rscript scripts/PlotBoomerangCompare.R --input {input.factors} \
+        --lookup {input.lookup} --size {params.size} \
+        --country1 USA --country2 {wildcards.country} --output {output}"
