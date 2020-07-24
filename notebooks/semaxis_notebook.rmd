@@ -1,0 +1,242 @@
+---
+title: "SemAxis plotting"
+output: html_notebook
+---
+
+
+```{r}
+org_types <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/org_types.csv")
+lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  filter(country_iso_alpha == "USA") %>%
+  left_join(org_types, by = c("org_type")) %>%
+  filter(org_type_simplified == "Government") %>%
+  select(cwts_org_no, org_type, full_name)
+
+lookup %>%
+  filter(org_type == "Funding Organisation")
+```
+
+
+
+```{r}
+library(readr)
+library(tidyverse)
+org_types <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/org_types.csv")
+# Load organization meta-info
+lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  filter(country_iso_alpha == "USA") %>% # select only the specified country
+  select(cwts_org_no, country_iso_alpha, region, org_type, org_type_code, full_name) %>%
+  left_join(org_types, by = "org_type")
+  #filter(org_type_simplified == "Institute") # select only universities
+  #filter(org_type_simplified == "Institute" | org_type_simplified == "Government") # select only universities
+
+
+axis2 <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/SemAxis/precedence/prestige/times_d300_ws1_n20_precedence_semaxis.csv", col_types = readr::cols())
+
+# Load the axis data and filter to only specified countries
+sims <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/SemAxis/precedence/geography/coasts_d300_ws1_n20_semaxis.csv", col_types = readr::cols()) %>%
+  inner_join(lookup, by = "cwts_org_no") %>%
+  inner_join(axis2, by = "cwts_org_no")
+
+```
+
+
+```{r}
+plotdata <- sims
+library(plotly)
+
+plotdata %>%
+  filter(org_type_simplified == "Institute") %>%
+  top_n(-1, sim.y)
+
+p <- plotdata %>%
+  ggplot() +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_point(aes(x = sim.x, y = sim.y, label1 = full_name, label2 = cwts_org_no),
+             size = 3.5,
+             shape = 16,
+             fill = "lightgrey",
+             alpha = 0.2,
+             data = subset(plotdata, org_type_simplified == "Government")
+           ) +
+  #geom_point(aes(x = sim.x, y = sim.y, label = full_name),
+  #           size = 3.5,
+  #           shape = 21,
+  #           fill = "#f39c12",
+  #           alpha = 1.0,
+  #           data = subset(plotdata, org_type_simplified == "Government")
+  #         ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 11),
+    axis.title.x = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.y = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.y.right = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    legend.text = element_text(size = 12),
+    legend.title = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+p
+
+widget <- ggplotly(p, tooltip = c("full_name", "cwts_org_no", "region", "city"))
+widget
+```
+
+
+
+```{r}
+# Load organization meta-info
+lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  filter(country_iso_alpha == "GBR" & org_type_code == "U") %>% # select only the specified country
+  select(cwts_org_no, country_iso_alpha, region, org_type, org_type_code, full_name)
+
+
+axis2 <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/SemAxis/precedence/prestige/leiden_d300_ws1_n20_precedence_semaxis.csv", col_types = readr::cols())
+
+# Load the axis data and filter to only specified countries
+sims <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/SemAxis/precedence/geography/coasts_d300_ws1_n20_semaxis.csv", col_types = readr::cols()) %>%
+  inner_join(lookup, by = "cwts_org_no") %>%
+  inner_join(axis2, by = "cwts_org_no")
+
+```
+
+
+```{r}
+plotdata <- sims
+library(plotly)
+
+p <- plotdata %>%
+  ggplot() +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_point(aes(x = sim.x, y = sim.y, label = full_name),
+             size = 3.5,
+             shape = 16,
+             fill = "lightgrey",
+             alpha = 0.2,
+             #data = subset(plotdata, org_type_simplified == "Institute")
+           ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 11),
+    axis.title.x = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.y = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.y.right = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    legend.text = element_text(size = 12),
+    legend.title = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+p
+
+widget <- ggplotly(p, tooltip = c("full_name", "region", "city"))
+widget
+```
+
+
+```{r}
+# Load organization meta-info
+lookup <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  filter(country_iso_alpha %in% c("GBR", "JPN") & org_type_code == "U") %>% # select only the specified country
+  select(cwts_org_no, country_iso_alpha, region, org_type, org_type_code, full_name)
+
+
+axis2 <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/SemAxis/precedence/prestige/leiden_d100_ws1_n1_precedence_semaxis.csv", col_types = readr::cols())
+
+# Load the axis data and filter to only specified countries
+sims <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/SemAxis/precedence/geography/coasts_d100_ws1_n20_semaxis.csv", col_types = readr::cols()) %>%
+  inner_join(lookup, by = "cwts_org_no") %>%
+  inner_join(axis2, by = "cwts_org_no")
+
+```
+
+
+```{r}
+plotdata <- sims
+library(plotly)
+
+p <- plotdata %>%
+  ggplot() +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_point(aes(x = sim.x, y = sim.y, label = full_name, fill = country_iso_alpha),
+             size = 3.5,
+             shape = 21,
+             #fill = "lightgrey",
+             alpha = 0.8,
+             #data = subset(plotdata, org_type_simplified == "Institute")
+           ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 11),
+    axis.title.x = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.x.top = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.y = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    axis.title.y.right = element_text(angle = 0, size = 12, face = "bold", vjust = 0.5),
+    legend.text = element_text(size = 12),
+    legend.title = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+p
+
+widget <- ggplotly(p, tooltip = c("full_name", "region", "city"))
+widget
+```
+
+
+
+```{r}
+
+times <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/times_ranking.csv")
+leiden <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/leiden_ranking.csv")
+
+lookups <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt")
+
+sims <- lookup %>%
+  filter(country_iso_alpha == "USA") %>%
+  left_join(times, by = c("cwts_org_no")) %>%
+  inner_join(leiden, by = c("cwts_org_no")) %>%
+  select(full_name, cwts_org_no, total_score, impact_frac_mncs) %>%
+  arrange(desc(total_score)) %>%
+  mutate(
+    times_rank = row_number()
+  ) %>%
+  arrange(desc(impact_frac_mncs)) %>%
+  mutate(
+    leiden_rank = row_number()
+  )
+
+
+
+# Build the plot
+plot <- sims %>%
+  ggplot(aes(x = times_rank, y = leiden_rank)) +
+  geom_abline() +
+  geom_point(size = 3.5, stroke = 0.5) +
+  # Add a fake top axis title, just to ensure that its the same size as the 2d fig
+  scale_x_continuous(limits = c(0, 150), sec.axis = dup_axis(name = "")) +
+  scale_y_continuous(limits = c(0, 150)) +
+  scale_shape_manual(values = c(1, 16)) +
+  guides(shape = F) +
+  theme_minimal() +
+  theme(
+    text = element_text(size = 12, family = "Helvetica"),
+    axis.text.x.top = element_blank(),
+    axis.title = element_text(size = 14, face = "bold"),
+    panel.grid.minor = element_blank(),
+  ) +
+  ylab("") +
+  xlab("SemAxis Rank")
+
+plot
+
+
+```
