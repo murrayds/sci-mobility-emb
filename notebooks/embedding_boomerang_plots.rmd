@@ -8,10 +8,25 @@ library(tidyverse)
 library(readr)
 
 
-df <- read_csv("/Users/dakotamurray/Desktop/l2-norm_vs_size.csv")
+#df <- read_csv("/Users/dakotamurray/Desktop/l2-norm_vs_size.csv")
+
 meta <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t")
+
+df <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Embeddings/precedence/factors/d300_ws1_precedence_w2vfactors.csv") %>%
+  select(cwts_org_no, l2norm) %>%
+  left_join(meta, by = "cwts_org_no")
+
+
 types <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/org_types.csv")
 
+
+sizes <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/raw/2008-2019_inst_sizes.txt", delim = "\t") %>%
+  group_by(cwts_org_no) %>%
+  summarize(
+    size = mean(person_count)
+  )
+  
+df <- df %>% left_join(sizes, by = "cwts_org_no")
 country <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/country_metadata.csv")
 leiden <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/leiden_ranking.csv")
 times <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/times_ranking.csv")
@@ -19,50 +34,6 @@ head(df)
 
 ```
 
-
-```{r}
-
-df %>%
-  left_join(meta, by = c("name" = "full_name")) %>%
-  left_join(leiden, by = c("cwts_org_no")) 
-
-
-```
-
-
-```{r}
-plotdata <- df %>%
-  filter(country == "United States") %>%
-  left_join(types) %>%
-  filter(org_type_simplified %in% c("University", "Government", "Institute", "Teaching")) %>%
-  mutate(
-    org_type_simplified = factor(org_type_simplified,
-                                 levels = c("University", "Teaching", "Institute", "Government"))
-  ) 
-
-
-plotdata %>%
-  ggplot(aes(x = size, y = `l2-norm`, color = org_type_simplified, shape = org_type_simplified, label = name)) +
-  geom_point() +
-  scale_x_log10(
-    breaks = scales::trans_breaks("log10", function(x) 10^x),
-    labels = scales::trans_format("log10", scales::math_format(10^.x))
-  ) +
-  scale_shape_manual(values = c(16, 1, 1, 1)) +
-  #scale_color_manual(values = c(""))
-  scale_color_manual(values = c("#2c3e50", "#c0392b", "#8e44ad", "#27ae60")) +
-  theme_minimal() +
-  theme(
-    text = element_text(size = 12, family = "Helvetica"),
-    panel.grid.minor = element_blank()
-  ) +
-  annotation_logticks(sides = "b") +
-  xlab("Organization size") +
-  ylab("L2 Norm")
-
-
-plotly::ggplotly()
-```
 
 
 
@@ -73,28 +44,27 @@ labels <- c("Harvard University", "University of Alaska, Fairbanks", "Reykjavik 
             "University of Oxford", "Princeton University", "Shanghai Jiao Tong University", "Novosibirsk State University", "University of Louisville",  "University of Tennessee, Knoxville", "Barry University", "Appalachian State University", "University of Michigan-Flint", "New York Medical College")
 
 plotdata <- df %>%
-  filter(country == "United States") %>%
+  filter(country_iso_alpha == "USA") %>%
   filter(org_type == "University") %>%
-  left_join(meta, by = c("name" = "full_name")) %>%
+  #left_join(meta, by = c("name" = "full_name")) %>%
   #left_join(leiden, by = c("cwts_org_no"))
   left_join(times, by = c("cwts_org_no")) %>%
   arrange(desc(total_score)) %>%
   mutate(
     rank = ifelse(!is.na(total_score), row_number(), NA)
-  )
-
+  ) 
 
 set.seed(117)
 plotlabs <- plotdata %>%
-  filter(name %in% labels) %>%
+  filter(full_name %in% labels) %>%
   mutate(
-    label = gsub('University', 'Univ', name),
+    label = gsub('University', 'Univ', full_name),
     label = gsub('(.{1,24})(\\s|$)', '\\1\n', label),
     label = trimws(label)
   )
   
 plot <- plotdata %>%
-  ggplot(aes(x = size, y = `l2-norm`, color = rank, shape = is.na(rank), label = name)) +
+  ggplot(aes(x = size, y = l2norm, color = rank, shape = is.na(rank), label = full_name)) +
   geom_point() +
   scale_x_log10(
     breaks = scales::trans_breaks("log10", function(x) 10^x),
@@ -159,10 +129,10 @@ ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_ranking_times.
 ```{r}
 plot <- df %>%
   mutate(
-    highlight = ifelse(country %in% c("China", "United States"), country, "Other"),
+    highlight = ifelse(country_iso_name %in% c("China", "United States"), country_iso_name, "Other"),
     highlight = factor(highlight, levels = c("United States", "China", "Other"))
   ) %>%
-  ggplot(aes(x = size, y = `l2-norm`, fill = highlight, shape = highlight, color = highlight, linetype = highlight)) +
+  ggplot(aes(x = size, y = l2norm, fill = highlight, shape = highlight, color = highlight, linetype = highlight)) +
   geom_point(alpha = 0.2) +
   stat_smooth(
     method = "loess",
@@ -209,226 +179,6 @@ plot <- df %>%
 plot 
 
 ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_global.pdf", plot, width = 6, height = 6)
-```
-
-```{r}
-plot <- df %>%
-  mutate(
-    highlight = ifelse(country %in% c("Brazil", "United States"), country, "Other"),
-    highlight = factor(highlight, levels = c("United States", "Brazil", "Other"))
-  ) %>%
-  filter(highlight != "Other") %>%
-  ggplot(aes(x = size, y = `l2-norm`, label = name, fill = highlight, color = highlight, linetype = highlight)) +
-  stat_smooth(
-    method = "loess",
-    size = 2,
-    level = 0.99,
-    se = T,
-    alpha = 0.6
-  ) +
-  scale_color_manual(values = c("#d35400", "#27ae60")) +
-  scale_fill_manual(values = c("#d35400", "#27ae60")) +
-  scale_linetype_manual(values = c(2, 1)) +
-  scale_x_log10(
-    breaks = scales::trans_breaks("log10", function(x) 10^x),
-    labels = scales::trans_format("log10", scales::math_format(10^.x))
-  ) +
-  scale_y_continuous(
-    limits = c(0, 7),
-    breaks = c(2, 4, 6)
-  ) +
-  guides(shape = F) +
-  theme_minimal() +
-  theme(
-    text = element_text(family = "Helvetica", size = 14),
-    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
-    axis.title.x.top = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
-    axis.text.x.top = element_blank(),
-    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
-    axis.title.y.right = element_text(angle = 90, size = 16, face = "bold"),
-    axis.text.y.right = element_blank(),
-    legend.text = element_text(size = 16, face = "bold"),
-    legend.position = c(0.5, 0.2),
-    panel.grid.minor = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.background = element_rect(size = 0.5),
-    legend.title = element_blank(),
-    axis.line = element_line(color="black", size = 0.3),
-    legend.box.background = element_rect(color=NA, fill = NA)
-  ) +
-  annotation_logticks(sides = "b") +
-  xlab("# Researchers") +
-  ylab("L2 Norm")
-
-plot 
-
-ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_brazil.pdf", plot, width = 3, height = 3)
-```
-
-
-```{r}
-plot <- df %>%
-  mutate(
-    highlight = ifelse(country %in% c("Sweden", "United States"), country, "Other"),
-    highlight = factor(highlight, levels = c("United States", "Sweden", "Other"))
-  ) %>%
-  filter(highlight != "Other") %>%
-  ggplot(aes(x = size, y = `l2-norm`, label = name, fill = highlight, color = highlight, linetype = highlight)) +
-  stat_smooth(
-    method = "loess",
-    alpha = 0.6,
-    level = 0.99,
-    size = 2,
-    se = T
-  ) +
-  scale_color_manual(values = c("#d35400", "#8e44ad")) +
-  scale_fill_manual(values = c("#d35400", "#8e44ad")) +
-  scale_linetype_manual(values = c(2, 1)) +
-  scale_x_log10(
-    breaks = scales::trans_breaks("log10", function(x) 10^x),
-    labels = scales::trans_format("log10", scales::math_format(10^.x))
-  ) +
-  scale_y_continuous(
-    limits = c(0, 7),
-    breaks = c(2, 4, 6)
-  ) +
-  guides(shape = F) +
-  theme_minimal() +
-  theme(
-    text = element_text(family = "Helvetica", size = 14),
-    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
-    axis.title.x.top = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
-    axis.text.x.top = element_blank(),
-    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
-    axis.title.y.right = element_text(angle = 90, size = 16, face = "bold"),
-    axis.text.y.right = element_blank(),
-    legend.text = element_text(size = 16, face = "bold"),
-    legend.position = c(0.5, 0.2),
-    panel.grid.minor = element_blank(),
-    panel.background = element_rect(size = 0.5),
-    panel.grid.major = element_blank(),
-    legend.title = element_blank(),
-    axis.line = element_line(color="black", size = 0.3),
-    legend.box.background = element_rect(color=NA, fill = NA)
-  ) +
-  annotation_logticks(sides = "b") +
-  xlab("# Researchers") +
-  ylab("L2 Norm")
-
-plot 
-
-ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_sweden.pdf", plot, width = 3, height = 3)
-```
-
-
-```{r}
-plot <- df %>%
-  mutate(
-    highlight = ifelse(country %in% c("Egypt", "United States"), country, "Other"),
-    highlight = factor(highlight, levels = c("United States", "Egypt", "Other"))
-  ) %>%
-  filter(highlight != "Other") %>%
-  ggplot(aes(x = size, y = `l2-norm`, label = name, fill = highlight, color = highlight, linetype = highlight)) +
-  stat_smooth(
-    method = "loess",
-    size = 2,
-    level = 0.99,
-    fill = "lightgrey",
-    alpha = 0.6,
-    se = T
-  ) +
-  scale_color_manual(values = c("#d35400", "black")) +
-  scale_linetype_manual(values = c(2, 1)) +
-  scale_x_log10(
-    breaks = scales::trans_breaks("log10", function(x) 10^x),
-    labels = scales::trans_format("log10", scales::math_format(10^.x))
-  ) +
-  scale_y_continuous(
-    limits = c(0, 7),
-    breaks = c(2, 4, 6)
-  ) +
-  guides(shape = F) +
-  theme_minimal() +
-  theme(
-    text = element_text(family = "Helvetica", size = 14),
-    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
-    axis.title.x.top = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
-    axis.text.x.top = element_blank(),
-    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
-    axis.title.y.right = element_text(angle = 90, size = 16, face = "bold"),
-    axis.text.y.right = element_blank(),
-    legend.text = element_text(size = 16, face = "bold"),
-    legend.position = c(0.5, 0.2),
-    panel.grid.minor = element_blank(),
-    panel.background = element_rect(size = 0.5),
-    panel.grid.major = element_blank(),
-    legend.title = element_blank(),
-    axis.line = element_line(color="black", size = 0.3),
-    legend.box.background = element_rect(color=NA, fill = NA)
-  ) +
-  annotation_logticks(sides = "b") +
-  xlab("# Researchers") +
-  ylab("L2 Norm")
-
-plot 
-
-ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_egypt.pdf", plot, width = 3, height = 3)
-```
-
-
-```{r}
-selected <- (df %>%
-  group_by(country) %>%
-  summarize(total = sum(size)) %>%
-  top_n(20, total))$country
-
-
-plot <- df %>%
-  filter(!is.na(`l2-norm`)) %>%
-  filter(country %in% c(selected)) %>%
-  ggplot(aes(x = size, y = `l2-norm`)) +
-  geom_point(alpha = 0.3) +
-  stat_smooth(
-    method = "loess",
-    size = 1,
-    se = T,
-    level = 0.99,
-    color = "#2980b9",
-    fill = "#2980b9",
-    alpha = 0.4,
-    
-  ) +
-  scale_x_log10(
-    breaks = scales::trans_breaks("log10", function(x) 10^x),
-    labels = scales::trans_format("log10", scales::math_format(10^.x))
-  ) +
-  scale_y_continuous(
-    limits = c(0, 7),
-    breaks = c(2, 4, 6)
-  ) +
-  facet_wrap(~country) +
-  theme_minimal() +
-  theme(
-    text = element_text(family = "Helvetica", size = 14),
-    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
-    axis.title.x.top = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
-    axis.text.x.top = element_blank(),
-    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
-    axis.title.y.right = element_text(angle = 90, size = 16, face = "bold"),
-    axis.text.y.right = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.background = element_rect(size = 0.5),
-    panel.grid.major = element_blank(),
-    strip.text = element_text(face = "bold"),
-    axis.line = element_line(color="black", size = 0.3),
-  ) +
-  annotation_logticks(sides = "b") +
-  xlab("# Researchers") +
-  ylab("L2 Norm")
-
-plot 
-
-ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/boomerang_20_countries.pdf", plot, width = 7, height = 7)
 ```
 
 
@@ -498,7 +248,24 @@ ggsave("/Users/dakotamurray/Dropbox/SME-dropbox/Figures/ratio_l2.pdf", plot, wid
 
 
 ```{r}
-leiden
+selected <- (df %>%
+  group_by(country_iso_alpha) %>%
+  summarize(total = sum(size)) %>%
+  top_n(30, total))$country_iso_alpha
 
 
+tab <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Embeddings/precedence/norm/d300_ws1_precedence_norm_by_country.csv")
+
+
+tab <- tab %>%
+  filter(country %in% selected) %>%
+  mutate(
+    country = ifelse(country == "Russian Federation", "Russia", country),
+    country = ifelse(country == "Korea, Republic of", "South Korea", country),
+    country = ifelse(country == "Taiwan, Province of China", "Taiwan", country),
+    country = ifelse(country == "Iran, Islamic Republic of", "Iran", country),
+  ) %>%
+  arrange((l2norm)) 
+
+write_csv(tab, "~/Desktop/norm_by_country.csv")
 ```
