@@ -77,6 +77,7 @@ WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, '{traj}', 'word2vec_d{dimensions}_w
 ORG_W2V_COS_SIMS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', 'cos_{traj}_d{dimensions}_ws{window}_sim.csv')
 ORG_W2V_DOT_SIMS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', 'dot_{traj}_d{dimensions}_ws{window}_sim.csv')
 ORG_W2V_FACTORS = osjoin(EMBEDDINGS_DIR, '{traj}', 'factors', 'd{dimensions}_ws{window}_{traj}_w2vfactors.csv')
+NORM_BY_COUNTRY = osjoin(EMBEDDINGS_DIR, '{traj}', 'norm', 'd{dimensions}_ws{window}_{traj}_norm_by_country.csv')
 
 ##############
 # Stat       #
@@ -296,6 +297,10 @@ rule all:
                window = W2V_WINDOW_SIZE),
         expand(FACTORS_ALL_CONTINUOUS_META_PLOT,
                factor = FACTORS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(NORM_BY_COUNTRY,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
