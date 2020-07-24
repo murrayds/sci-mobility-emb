@@ -123,7 +123,7 @@ Similarly, a student in South Korea is more likely to attend universities in Can
 Although geographic distance has still been used as the basis for the most prominent models of mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} model,  \textit{functional distances}~\autocite{boschma2005proximity, brown1970functional, brown1970migration, kim2018functional} have been proposed to learn alternative notions of distance from real-world data or \textit{a priori} relationships between geographic entities. 
 Yet, functional distances are often low-resolution and rely on somewhat arbitrary decisions about the importance of each factor.
 Moreover, functional distances typically only focus on a single facet of mobility at a time, whereas real-world mobility is multi-faceted, influenced simultaneously by geography, language, culture, history, and economic opportunity. 
-To capture the complexity of human mobility, and so new approaches are needed to incorporate its many facets into a single high-resolution measure of functional distance.
+To capture such complexity of human mobility, new approaches are needed to incorporate its many facets into a single high-resolution functional distance.
 
 
 Here, we propose a neural embedding model that uses real-world mobility trajectories to encode the complex landscape of global mobility into a dense, continuous, and meaningful vector-space representation, from which a \textit{functional distance} between places can be derived.
@@ -134,8 +134,7 @@ Neural embedding is also computationally efficient, scalable for large datasets,
 We use scientific mobility, inferred from affiliations, to demonstrate the effectiveness of our approach.
 Scientific mobility is a central driver of the increasingly-globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition}, being strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}.
 Moreover, scientific mobility has known structure, such as the centrality of the United States and the United Kingdom, and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career} that should be captured in a representation.
-However, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}.
-Underlying these challenges is the diminishing role of geography and geographic distance in shaping the landscape of scientific mobility.
+However, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics} and one of the underlying these challenges is the diminishing role of geography in shaping the landscape of scientific mobility.
 
 Here, scientific mobility is operationalized using researcher's organizational affiliations derived from their publication histories indexed in a comprehensive bibliographic database. 
 The most fine-grained geographical unit in this data is the organization, such as a university, research institute, business, or government agency.
@@ -459,13 +458,13 @@ While the number of publications has increased year-to-year, the mobility and di
 
 \subsection*{Embedding}
 %% Mobility sentences
-We embed co-affiliation trajectories by treating them analogously to sentences, and organizations analogously to words.
+We embed co-affiliation trajectories by treating them analogously to sentences and organizations analogously to words.
 The trajectories of mobile authors were converted to ``affiliation trajectories'' by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}.a.
 In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple affiliations in the same year, the order is randomized within that year, as shown in  Fig.~\ref{fig:methods:mobility_sentence}.b.
 
 %% word2vec
-These affiliation trajectories are used as input to the standard skip-gram negative sampling model, for word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec} .
-In natural-language processing, word embeddings are used to construct dense vector-space representations of words and phrases, in which distance relationships between words correspond to a notion of semantic distance.
+These affiliation trajectories are used as input to the standard skip-gram negative sampling word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec} .
+\textit{word2vec} constructs dense vector representations of words and phrases, in which distance relationships between words correspond to a notion of semantic distance. There are two types of embedding vectors in the model; in-vector and out-vector. In-vector is usually mainly used as a representation vector of each word \autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch} and we also used in-vector in this study.
 By embedding affiliation trajectories, we aim to learn a dense vector for every organization where the distance between vectors relates to the tendency for two organizations to co-occur in a token window around the target organization token in the same career trajectory.
 Vectors are learned by training a neural network to optimize the prediction of the so-called context term given a target, in our case using one organization to predict the others appearing in the same co-affiliation trajectory.
 The hidden layer of the trained neural network is used as the final representation. 
