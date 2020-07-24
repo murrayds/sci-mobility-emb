@@ -167,7 +167,7 @@ plot <- sims %>%
            size = 7,
            fontface = 2) +
   ylab(axis_title) +
-  xlab("SemAxis Rank")
+  xlab("Embedding Rank")
 
 
 # p <- egg::set_panel_size(plot,
