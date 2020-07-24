@@ -254,6 +254,70 @@ selected <- (df %>%
   top_n(30, total))$country_iso_alpha
 
 
+
+df %>%
+  filter(country_iso_alpha %in% selected) %>%
+  group_by(country_iso_name) %>%
+  summarize(
+    mu = mean(l2norm)
+  ) %>%
+  arrange(mu)
+
+
+
+plotdata <- df %>%
+  filter(country_iso_name != "NULL") %>%
+  filter(country_iso_alpha %in% selected) %>%
+  rename(country = country_iso_name) %>%
+  mutate(
+    country = ifelse(country == "Russian Federation", "Russia", country),
+    country = ifelse(country == "Korea, Republic of", "South Korea", country),
+    country = ifelse(country == "Taiwan, Province of China", "Taiwan", country),
+    country = ifelse(country == "Iran, Islamic Republic of", "Iran", country),
+  ) 
+
+
+mu <- plotdata %>%
+  group_by(country) %>%
+  summarize(
+    mu = mean(l2norm)
+  )
+  
+plotdata %>%
+  left_join(mu, by = "country") %>%
+  ggplot(aes(l2norm, group = country)) +
+  geom_histogram(aes(y=(..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) +
+  geom_vline(aes(xintercept = mu)) +
+  geom_text(
+    data = mu,
+    aes(label = paste0("mu==", round(mu, 1))), 
+    parse = T,
+    x = 1.5, 
+    y = 0.18, 
+    size = 3
+  ) +
+  facet_wrap(~country) +
+  scale_y_continuous(breaks = c(0, 0.2)) +
+  theme_minimal() +
+  theme(
+      text = element_text(family = "Helvetica", size = 14),
+      axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+      axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.border = element_rect(size = 0.5, color = "black", fill = NA),
+  ) +
+  xlab("L2 Norm of Organization Vectors by Country") +
+  ylab("Proportion")
+  
+
+
+```
+
+
+
+
+```{r}
 tab <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Embeddings/precedence/norm/d300_ws1_precedence_norm_by_country.csv")
 
 
@@ -267,5 +331,6 @@ tab <- tab %>%
   ) %>%
   arrange((l2norm)) 
 
+tab
 write_csv(tab, "~/Desktop/norm_by_country.csv")
 ```
