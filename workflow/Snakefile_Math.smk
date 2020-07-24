@@ -74,3 +74,14 @@ rule plot_boomerang_compare_to_usa:
         "Rscript scripts/PlotBoomerangCompare.R --input {input.factors} \
         --lookup {input.lookup} --size {params.size} \
         --country1 USA --country2 {wildcards.country} --output {output}"
+
+rule plot_boomerang_all_countries:
+    input:
+        factors = rules.decompose_word2vec_model.output,
+        lookup = ancient(rules.add_state_to_lookup.output)
+    params:
+        size = ORG_SIZES
+    output: BOOMERANG_ALL_COUNTRIES
+    shell:
+        "Rscript scripts/PlotBoomerangAllCountries.R --input {input.factors} \
+        --lookup {input.lookup} --size {params.size} --output {output}"

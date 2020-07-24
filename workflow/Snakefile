@@ -170,6 +170,7 @@ RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correla
 # MISC PLOTS
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
 BOOMERANG_COMPARE_PLOT = osjoin(MATH_FIGURE_DIR, 'boomerang', 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{country}_usa_{traj}_d{dimensions}_ws{window}_boomerang_compare.pdf')
+BOOMERANG_ALL_COUNTRIES = osjoin(MATH_FIGURE_DIR, 'boomerang', 'aggregate', '{traj}_d{dimensions}_ws{window}_boomerang_all.pdf')
 
 ###############################################################################
 # MISC files
@@ -308,6 +309,10 @@ rule all:
         # Boomerang plots
         expand(BOOMERANG_COMPARE_PLOT,
                country = COUNTRY_LIST,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(BOOMERANG_ALL_COUNTRIES,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
