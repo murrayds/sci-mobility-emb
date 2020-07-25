@@ -134,10 +134,10 @@ Neural embedding is also computationally efficient, scalable for large datasets,
 We use scientific mobility, inferred from affiliations, to demonstrate the effectiveness of our approach.
 Scientific mobility is a central driver of the increasingly-globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition}, being strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}.
 Moreover, scientific mobility has known structure, such as the centrality of the United States and the United Kingdom, and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career} that should be captured in a representation.
-However, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics} and one of the underlying these challenges is the diminishing role of geography in shaping the landscape of scientific mobility.
+However, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}, and one of the underlying these challenges is the diminishing role of geography in shaping the landscape of scientific mobility.
 
 Here, scientific mobility is operationalized using researcher's organizational affiliations derived from their publication histories indexed in a comprehensive bibliographic database.
-The most fine-grained geographical unit in this data is the organization, such as a university, research institute, business, or government agency.
+The most fine-grained geographical unit in this data is the organization, such as a ``university'', ``research institute'', ``business'', or ``government agency''.
 As a scientist's career progresses, they move between organizations or pick up additional (simultaneous) affiliations forming \textit{affiliation trajectories} (Fig.~\ref{fig:methods:mobility_sentence}).
 These trajectories encode both asynchronous migration, and synchronous mobility---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, markova2016synchronous, sugimoto2017mostimpact} (see Supplementary Materials).
 We use the trajectories of more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
@@ -302,7 +302,7 @@ This suggests that the embedding space captures the hierarchical structure of mo
 %
 \subsection*{Embeddings capture latent prestige hierarchy}
 
-Prestige hierarchy is known to underpin the dynamics of scientific mobility~\autocite{deville2014career, clauset2015hierarchy}, but can the hierarchy be encoded in the embedding space, to which no explicit information on prestige is given?
+Prestige hierarchy is known to underpin the dynamics of scientific mobility~\autocite{deville2014career, clauset2015hierarchy}, but can the hierarchy be encoded in the embedding space, to which no explicit information on prestige is given and for which the direction of mobility not known?
 We test this by exploiting the geometric properties of the embedding space with SemAxis~\autocite{an2018semaxis}, an approach originally designed to characterize the semantics of words in word embeddings.
 Here, we use SemAxis to operationalize the abstract notion of academic prestige, defining each pole of the axis using high- and low-ranked universities.
 We define prestige using the Times Ranking of World Universities (and using research impact from the Leiden Rankings~\autocite{waltman2012leidenrankings} in Supplementary Materials), including all ranked universities in the United States;
@@ -403,7 +403,7 @@ Neural embeddings offer a novel, data-driven solution for learning an effective 
 By virtue of being data-driven, and by the nature of neural embedding, it encodes the complex and multi-faceted nature of mobility.
 Here, we demonstrated how the embedding space encodes various aspects of scientific mobility, such as the global and regional geography, national shared languages, and the hierarchy of organizational prestige, even without explicit information on these factors.
 While scientific mobility is used as a case study, this approach can be broadly applied to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
-Moreover, this approach can be used to learn a functional distance between entities for which no geographic analog exists, such as between occupational categories based on individual's career trajectories.
+Moreover, this approach can be used to learn a functional distance between entities for which no physical analog exists, such as between occupational categories based on individual's career trajectories.
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, the unique structure of the neural embedding space is amenable to a range of unique applications for studying mobility.
 As we have shown, the embedding space allows the visualization of the complex structure of scientific mobility at high resolution across multiple scales, providing the largest and most detailed map of global scientific mobility to date.
 Other techniques, such as SemAxis~\autocite{an2018semaxis}, also allow us to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
