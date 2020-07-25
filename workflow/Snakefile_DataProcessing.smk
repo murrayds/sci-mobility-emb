@@ -100,6 +100,15 @@ rule decompose_word2vec_model:
         "python scripts/calculate_word2vec_decomposition.py --model {input} \
         --output {output}"
 
+rule l2norm_by_country:
+    input:
+        model = rules.train_word2vec_model.output,
+        lookup = ancient(rules.add_state_to_lookup.output)
+    output: NORM_BY_COUNTRY
+    shell:
+        "python scripts/calculate_l2norm_country.py --model {input.model} \
+        --lookup {input.lookup} --output {output}"
+
 ###############################################################################
 # RESEARCHER METADATA
 ###############################################################################
