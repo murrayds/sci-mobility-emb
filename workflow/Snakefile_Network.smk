@@ -32,3 +32,16 @@ rule plot_centrality_times_compare:
         "Rscript scripts/PlotTimesVsCentralityRank.R --lookup {input.lookup} \
         --times {params.times} --centrality {input.centrality} \
         --measure {wildcards.measure} --output {output}"
+
+rule plot_centrality_semaxis_compare:
+    input:
+        lookup = ancient(rules.add_state_to_lookup.output),
+        centrality = rules.calculate_network_centralities.output,
+        semaxis = rules.calculate_semaxis_prestige_projections.output,
+    params:
+        times = ORG_RANKINGS.format(ranking = "times"),
+    output: SEMAXIS_RANK_CENTRALITY_PLOT
+    shell:
+        "Rscript scripts/PlotSemAxisVsCentralityRank.R --lookup {input.lookup} \
+        --semaxis {input.semaxis} --centrality {input.centrality} \
+        --measure {wildcards.measure} --times {params.times} --output {output}"

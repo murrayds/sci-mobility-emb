@@ -169,8 +169,11 @@ SEMAXIS_RANK_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{d
 TIMES_LEIDEN_COMPARE_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'times_leiden_compare.pdf')
 RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correlation.pdf')
 
+
 # Network plots
 CENTRALITY_TIMES_RANK_PLOT = osjoin(NETWORK_FIGURE_DIR, '{traj}', '{measure}_{traj}_centrality_times_compare.pdf')
+SEMAXIS_RANK_CENTRALITY_PLOT = osjoin(NETWORK_FIGURE_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{measure}_{ranking}_d{dimensions}_ws{window}_n{numorgs}_{traj}_centrality_compare.pdf')
+
 
 # MISC PLOTS
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
@@ -420,6 +423,13 @@ rule all:
         expand(CENTRALITY_TIMES_RANK_PLOT,
                measure = CENTRALITIES,
                traj = TRAJECTORIES),
+        expand(SEMAXIS_RANK_CENTRALITY_PLOT,
+               measure = CENTRALITIES,
+               traj = TRAJECTORIES,
+               numorgs = NUMORGS,
+               ranking = "times",
+               dimensions = 300,
+               window = 1),
 
         # Misc
         ORG_LABEL_TABLE
