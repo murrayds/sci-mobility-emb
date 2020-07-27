@@ -492,8 +492,8 @@ where $N$ is the total number of organizations and $v$ and $u$ are ``in-vector" 
 
 %% Word2vec parameters and training procedure
 We used  \textit{gensim} python implementation of the \textit{word2vec} model. The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{min}$, initial learning rage $\alpha$, and the number of iterations.
-For main results, we used $d=300$ and $w=1$, which were the parameters that produced the best explained the flux between organizations (Fig. SI~\ref{fig:supp:hyperparams}).
-To mitigate the effect of less common organizations, we set the $f_{min}$ as  50.  It means organizations with at least 50 appearances in mobility sentences are included in the final embedding, as a result, 6,580 organizations, 76 percent of all organizations, are remained.
+For main results, we used $d=300$ and $w=1$, which were the parameters that explained the flux between organizations most (Fig. SI~\ref{fig:supp:hyperparams}).
+To mitigate the effect of less common organizations, we set the $f_{min}$ as  50.  It means organizations with at least 50 appearances in affiliation trajectories are included in the final embedding, as a result, 6,580 organizations, 76 percent of all organizations, are remained.
 For $\alpha$, we used the default setting 0.025 and we iterates five times over whole affiliation trajectories.
 We checked results were robust across various hyper-parameters settings, while aforementioned settings yield the best result.
 
