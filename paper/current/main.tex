@@ -501,18 +501,16 @@ We set $\alpha$ as the default value of 0.025 and iterate five times over all tr
 %
 \subsection*{Distance}
 %% Distance calculations
-We calculate $T_{ij}$, the pairwise number of co-affiliations between organizations, calculated as the number of co-occurrences of organizations within author co-affiliation trajectories.
-For example, $T_{ij} = 10$ indicates that ten authors were co-affiliated with both organization $i$ and $j$ between 2008 and 2019, as evidenced from their publications.
+$T_{ij}$, is the number of co-occurrences of organizations within author affiliation trajectories.
+For example, $T_{ij} = 10$ indicates that ten authors were affiliated with both organization $i$ and $j$ between 2008 and 2019, as evidenced from their publications.
 We treat all co-affiliations are symmetric, meaning that $T_{ij} = T_{ji}$.
 
 We also calculate two forms of the distance between organizations.
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between organizations.
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations.
-When less than one kilometer, a distance of one is imputed.
-The embedding distance with the cosine similarity, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = 1 - \frac{v_{i} \cdot v_{j}}{\lVert v_{i} \rVert \lVert v_{j} \rVert}$.
-Negative cosine distances, caused by cosine similarities greater than one, are truncated at zero. 
-Note that this distance derived from the embedding space is not a formal metric, as it does not satisfy the triangle inequality, however such distnaces have still proved practically useful in make tasks~\autocite{lerman2007embedding, brown1970migration, brown1970functional, kim2018functional}. 
-
+When less than one kilometer, a distance of 1 km is imputed.
+The embedding distance with the cosine similarity, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = 1 - \frac{\bm{v}_{i} \cdot \bm{v}_{j}}{\lVert \bm{v}_{i} \rVert \lVert \bm{v}_{j} \rVert}$.
+Note that this distance derived from the embedding space is not a formal metric, as it does not satisfy the triangle inequality, however such distances have still proved practically useful in many tasks~\autocite{lerman2007embedding, brown1970migration, brown1970functional, kim2018functional}. 
 
 
 
@@ -526,16 +524,22 @@ the gravity law of mobility loosely derives from the physical law of gravity, wh
 Given its simplicity and flexibility, this formulation and variants have proven incredibly useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}.
 Following the gravity law, the \textit{expected flux} $\hat{T_{ij}}$ between two organizations is defined as follows,
 
+%
+% Gravity law EQ
+%
 \begin{equation}
 	\label{eq:gravity_basic}
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
-where $m_{i}$ and $m_{j}$ are the organization masses, or the yearly-average count of unique mobile and non-mobile authors affiliated with each organization during the time window, and $f(r_{ij})$ is a distance-decaying function  between the two organizations. There are two popular forms of the $f(r_{ij})$. The first one is power-law function with $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0)$, and the another one is exponential function with $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  $f(r_{ij})$, $C$ can be chosen as to fit the data with the simple regression.
+
+
+where $m_{i}$ and $m_{j}$ are the organization masses, or the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization during the time window, and $f(r_{ij})$ is a distance-decaying function  between the two organizations. There are two popular forms of the $f(r_{ij})$. The first one is power-law function with $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0)$, and the another one is exponential function with $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  
+$f(r_{ij})$ and $C$ can be fit with the data.
 
 We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
 For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{-\alpha}_{ij}$, where $\alpha$ is estimated from the data.
 For embedding distance, we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$, where $\beta$ is estimated from the data.
-To estimate parameters $C$, $\alpha$ and $\beta$ are estimated by log-transforming each variant of \ref{eq:gravity_basic}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression
+Following past studies~\autocite{simini2012universal}, parameters $C$, $\alpha$ and $\beta$ are estimated by log-transforming each variant of \ref{eq:gravity_basic}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
@@ -562,14 +566,16 @@ Each axis is an antonym pair defined for each specific use case.
 In the case of natural language, the poles of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''.
 By treating organizations analogously to words and trajectories analogously to sentences, we can use SemAxis to leverage the semantic properties of the resulting embedding vectors to operationalize abstract relationships between organizations.
 
-Let $S^+ = \{v_1^+, v_2^+ \cdots v_n^+\}$ and $S^- =\{v_1^-, v_2^- \cdots v_n^-\}$ be the set of positive and negative pole organization vectors respectively. Then, the average vectors of each set can be calculated as $V^{+} = \frac{1}{n}\sum^n_1 v_i^+$ and $V^{-} = \frac{1}{n}\sum^n_1 v_i^-$. From these average vectors of each set of poles, the semantic axis is defined as $V_{\text{axis}} = V^{+} - V^{-}$. Then,  a score of organization $w$ is calculated as the cosine similarity of the organization's vector with the axis,
+Let $S^+ = \{\bm{v}_1^+, \bm{v}_2^+ \cdots \bm{v}_n^+\}$ and $S^- =\{\bm{v}_1^-, \bm{v}_2^- \cdots \bm{v}_n^-\}$ be the set of positive and negative pole organization vectors respectively. Then, the average vectors of each set can be calculated as $\bm{V}^{+} = \frac{1}{n}\sum^n_1 \bm{v}_i^+$ and $\bm{V}^{-} = \frac{1}{n}\sum^n_1 \bm{v}_i^-$. From these average vectors of each set of poles, the semantic axis is defined as $\bm{V}_{\text{axis}} = \bm{V}^{+} - \bm{V}^{-}$. Then,  a score of organization $a$ is calculated as the cosine similarity of the organization's vector with the axis,
 
 $$
-score(w)_{V_{\text{axis}}} = \cos(v_{w}, V_{\text{axis}}) = \frac{u_{w} \cdot V_{\text{axis}}}{\lVert v_{w} \rVert \lVert V_{\text{axis}} \rVert},
+score(a)_{\bm{V}_{\text{axis}}} = \cos(\bm{v}_{a}, \bm{V}_{\text{axis}}) = \frac{\bm{u}_{a} \cdot \bm{V}_{\text{axis}}}{\lVert \bm{v}_{a} \rVert \lVert \bm{V}_{\text{axis}} \rVert},
 $$
-where higher scores mean that organization $w$ is more closely aligned to $S^+$ than $S^-$.
 
-We apply SemAxis to U.S. universities by defining two axes, one of geography and one of academic prestige.
+
+where higher scores mean that organization $a$ is more closely aligned to $S^+$ than $S^-$.
+
+We apply SemAxis to U.S. universities by defining two axes that capture geography and academic prestige, respectively.
 The poles of the geographic axis are defined as the mean vector of all vectors corresponding to organizations in California, and then the mean of all vectors of organizations in Massachusetts.
 For the prestige axis, we define a subset of top-ranked universities according to either the Times World University Rankings or based on the mean normalized research impact sourced from the Leiden Rankings.
 The other end of the prestige axis is the geographically-matched (according to census region) set of universities ranked at the bottom of these rankings.
@@ -746,7 +752,7 @@ This suggests that the embedding encodes information on prestige hierarchy at le
 %
 % S8 TEXT
 \paragraph*{S8 Text}
-\label{si:text:network_ranking}
+\label{si:text:boomerang_speculation}
 {\bf Speculation on variations of the convex-curve pattern.}
 
 The convex-curve pattern observed in Fig.~\ref{fig:length} repeats across many countries, but with variations.
