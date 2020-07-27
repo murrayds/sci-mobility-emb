@@ -479,25 +479,24 @@ In more complex cases, such as listing multiple affiliations on the same paper o
 
 %% word2vec
 These affiliation trajectories are used as input to the standard skip-gram negative sampling word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
-\textit{word2vec} constructs dense and continuous vector representations of words and phrases, in which distance between words correspond to a notion of semantic distance. There are two types of embedding vectors in the model; in-vector and out-vector. In-vector is usually mainly used as a representation vector of each word \autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch} and we also used in-vector in this study.
-By embedding affiliation trajectories, we aim to learn a dense vector for every organization where the distance between vectors relates to the tendency for two organizations to occur in similar contexts.
-Embedding vectors are learned by training a neural network to following average log probability using as input an affiliation trajectory---a sequence of tokens identifying organizations $a_{1}, a_{2}, ... a_{T}$,
-
+\textit{word2vec} constructs dense and continuous vector representations of words and phrases, in which distance between words correspond to a notion of semantic distance. By embedding affiliation trajectories, we aim to learn a dense vector for every organization where the distance between vectors relates to the tendency for two organizations to occur in similar contexts.
+Formally, model attempt to maximize average log probability a target organization  in an affiliation trajectory $a_{t}$, given organizations in the surrounding context window, $a_{t+k}$. This can be written as follow, where $w$ is the size of the window and $T$ iterates through possible target organizations:
 $$
-\frac{1}{T}\sum_{t = 1}^{T} \sum_{-c \leq j \leq c, j \neq 0} \log p(a_{t + j} \vert a_{t})
+\frac{1}{T}\sum_{t = 1}^{T} \sum_{-w \leq j \leq w, j \neq 0} \log p(a_{t + j} \vert a_{t}),
 $$
-
-where T is the total size of the training sequence, $c$ is the window size before and after the target organization token $a_{t}$ that is used to define the context, $a_{t + j}$~\autocite{mikolov2013word2vec}. 
-The hidden layer of the trained neural network is used as the final representation.
+where the conditional probability of observing one organization $a_{i}$, given another $a_{j}$, is defined as, 
+$$
+p(a_{i} \vert a_{j}) = \frac{\exp(u_{a_{i}} \cdot v_{a_{j}})}{\sum_{n=1}^N \exp(u_{a_{n}} \cdot v_{a_{j}})},
+$$
+where $N$ is the total number of organizations and $v$ and $u$ are ``in-vector" and ``out-vector" respectively~\autocite{mikolov2013word2vec}. Usually, in-vector $v$ is used as a final representation vector~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch}, we used in-vector in this study as well.
 
 %% Word2vec parameters and training procedure
-To mitigate the effect of less common organizations, only organizations appearing at least 50 times in mobility sentences are included in the embedding;
-this yields 6,580, or 76 percent of all organizations.
-We iterate the skip-gram training for five epochs over all mobility sentences.
-The skip-gram negative sampling model has several tunable hyper-parameters, including the dimension of the learned vectors, the size of the token window considered when training, the minimum frequency threshold for including an organization, and the number of iterations.
-Results are reported for embeddings with a dimensionality of 300 and a window size of one, which were the parameters that produced that best explained the flux between organizations (Fig. SI~\ref{fig:supp:hyperparams}).
-We note that this performance and the outcomes of the analysis were robust to hyper-parameters settings.
-All word embeddings are trained using the \textit{gensim} python implementation of the skip-gram \textit{word2vec} model.
+We used  \textit{gensim} python implementation of the \textit{word2vec} model. The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{min}$, initial learning rage $\alpha$, and the number of iterations.
+For main results, we used $d=300$ and $w=1$, which were the parameters that produced the best explained the flux between organizations (Fig. SI~\ref{fig:supp:hyperparams}).
+To mitigate the effect of less common organizations, we set the $f_{min}$ as  50.  It means organizations with at least 50 appearances in mobility sentences are included in the final embedding, as a result, 6,580 organizations, 76 percent of all organizations, are remained.
+For $\alpha$, we used the default setting 0.025 and we iterates five times over whole affiliation trajectories.
+We checked results were robust across various hyper-parameters settings, while aforementioned settings yield the best result.
+
 
 
 
@@ -535,7 +534,6 @@ Following the gravity law, the \textit{expected flux} $\hat{T_{ij}}$ between two
 	\label{eq:gravity_basic}
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
-
 where $m_{i}$ and $m_{j}$ are the organization masses, or the yearly-average count of unique mobile and non-mobile authors affiliated with each organization during the time window, and $f(r_{ij})$ is a distance-decaying function  between the two organizations. There are two popular forms of the $f(r_{ij})$. The first one is power-law function with $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0)$, and the another one is exponential function with $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  $f(r_{ij})$, $C$ can be chosen as to fit the data with the simple regression.
 
 We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
@@ -545,14 +543,13 @@ To estimate parameters $C$, $\alpha$ and $\beta$ are estimated by log-transformi
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
-	\ln\frac{T_{ij}}{m_im_j} = \ln C  - \alpha \ln g_{ij}
+	\ln\frac{T_{ij}}{m_im_j} = \ln C  - \alpha \ln g_{ij},
 \end{equation}
 
 \begin{equation}
 	\label{eq:linear_flux_emb}
-	\ln\frac{T_{ij}}{m_im_j} = \ln C - \beta d_{ij}
+	\ln\frac{T_{ij}}{m_im_j} = \ln C - \beta d_{ij},
 \end{equation}
-
 where $T_{ij}$ is the real flux from the dataset. The gravity law of mobility is known to be sensitive to the case where $T_{ij} = 0$, or zero movement between organizations.
 Here, non-zero flows account for only 4.2 percent of all possible pairs of the 6,580 organizations represented in the embedding.
 This value is comparable to other common applications of the gravity law, such as to hone calls, commuting, and migration \autocite{simini2012universal}.
