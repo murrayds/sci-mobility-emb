@@ -441,17 +441,15 @@ We source co-affiliation trajectories of authors from the Web of Science databas
 Trajectories are constructed from author affiliations listed on the byline of publications for a given author.
 Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations~\autocite{caron2014disambiguation} that improved disambiguation (see \SI).
 This yields 33,934,672 author-affiliation combinations representing 12,963,792 authors.
-Each author-affiliation combination is associated with the publication year and an ID linking it to one of 8,661 a disambiguated organizational affiliation (see \SI for more detail)
+Each author-affiliation combination is associated with the publication year and an ID linking it to one of 8,661 disambiguated organizational affiliations (see \SI for more detail)
 Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year.
 
-
-Scientific mobility is complex and can be defined in many ways~\autocite{robinson2019mobility} and at multiple levels of analysis.
 Here, authors are classified as mobile when they have at least two distinct organization IDs in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
-Under this definition, mobile authors constitute 3,007,192 or 23.2 percent of all authors and 17,700,095 author-affiliation combinations.
+Under this definition, mobile authors constitute 3,007,192 or 23.2 \% of all authors and 17,700,095 author-affiliation combinations.
 Mobile authors were associated with, on average, 2.5 distinct organizational affiliations.
 Rates of mobility differ across countries.
 For example, France, Qatar, the USA, Iraq, and Luxembourg had the most mobile authors (Fig.~\ref{fig:supp:descriptives}c).
-However, due to their size, the USA, accounted for nearly 40 percent of all mobile authors worldwide (Fig.~\ref{fig:supp:descriptives}a), with 10 countries accounting for 80 percent of all mobility (Fig.~\ref{fig:supp:descriptives}b).
+However, due to their size, the USA, accounted for nearly 40 \% of all mobile authors worldwide (Fig.~\ref{fig:supp:descriptives}a), with 10 countries accounting for 80 \% of all mobility (Fig.~\ref{fig:supp:descriptives}b).
 The countries with the highest proportion of mobile scientists are France, Qatar, the United States, and Iraq, whereas those with the lowest are Jamaica, Serbia, Bosnia \& Herzegovina, and North Macedonia Fig.~\ref{fig:supp:descriptives}.c).
 In most cases, countries with a high degree of inter-organization mobility also have a high degree of international mobility, indicating a high proportion of their total mobility being international (Fig.~\ref{fig:supp:descriptives}.d);
 However, some countries such as France and the United States seem to have more domestic mobility than international mobility.
@@ -482,7 +480,7 @@ where $N$ is the total number of organizations and $v$ and $u$ are ``in-vector" 
 %% Word2vec parameters and training procedure
 We used  \textit{gensim} python implementation of the \textit{word2vec} model. The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{min}$, initial learning rage $\alpha$, and the number of iterations.
 For main results, we used $d=300$ and $w=1$, which were the parameters that explained the flux between organizations most (Fig. SI~\ref{fig:supp:hyperparams}).
-To mitigate the effect of less common organizations, we set the $f_{min}$ as  50.  It means organizations with at least 50 appearances in affiliation trajectories are included in the final embedding, as a result, 6,580 organizations, 76 percent of all organizations, are remained.
+To mitigate the effect of less common organizations, we set the $f_{min}$ as  50.  It means organizations with at least 50 appearances in affiliation trajectories are included in the final embedding, as a result, 6,580 organizations, 76 \% of all organizations, are remained.
 For $\alpha$, we used the default setting 0.025 and we iterates five times over whole affiliation trajectories.
 We checked results were robust across various hyper-parameters settings, while aforementioned settings yield the best result.
 
@@ -540,7 +538,7 @@ To estimate parameters $C$, $\alpha$ and $\beta$ are estimated by log-transformi
 	\ln\frac{T_{ij}}{m_im_j} = \ln C - \beta d_{ij},
 \end{equation}
 where $T_{ij}$ is the real flux from the dataset. The gravity law of mobility is known to be sensitive to the case where $T_{ij} = 0$, or zero movement between organizations.
-Here, non-zero flows account for only 4.2 percent of all possible pairs of the 6,580 organizations represented in the embedding.
+Here, non-zero flows account for only 4.2 \% of all possible pairs of the 6,580 organizations represented in the embedding.
 This value is comparable to other common applications of the gravity law, such as to hone calls, commuting, and migration \autocite{simini2012universal}.
 We follow standard practice and exclude zero flows from our analysis.
 
@@ -927,7 +925,7 @@ Taiwan           & 3.67             & 72
 		The countries with the most mobile researchers are the United States, China, France, Great Britain, and Germany.
 		\textbf{b.}
 		The same information, arranged into a cumulative distribution.
-		The five countries with the highest mobility account for approximately 70 percent of all mobility.
+		The five countries with the highest mobility account for approximately 70 \% of all mobility.
 		\textbf{c.} The proportion of researchers labeled as mobile by country.
 		\textbf{d.} First two principal components of four variables: proportion in each country mobile across organizations, proportion mobile across cities, proportion mobile across regions, and proportion mobile across countries.
 		The first component captures the overall degree of mobile, whereas the second compares within-country against across-country mobility.
@@ -949,11 +947,11 @@ Taiwan           & 3.67             & 72
 		\textbf{Reverse cumulative-distribution function of mobile authors by geographic scale.}
 		\textbf{a.}
 		The proportion of mobile authors by how many organizations are represented in their career trajectories.
-		For example, for mobile authors, 100 percent of authors held an affiliation with at least two organizations, whereas about 35 percent were affiliated with 3 ore more organizations between 2008 and 2019.
+		For example, for mobile authors, 100 \% of authors held an affiliation with at least two organizations, whereas about 35 \% were affiliated with 3 ore more organizations between 2008 and 2019.
 		Mobile authors are defined as those with at least two distinct organizational affiliations represented in our data.
-		\textbf{b.} 68 percent of mobile authors have at least two cities represented in their career trajectories.
-		\textbf{c.} 45 percent of mobile authors have 2 or more regions represented in their career trajectories.
-		\textbf{d.} Only 14 percent of mobile authors had 2 or more countries represented in their career trajectories.
+		\textbf{b.} 68 \% of mobile authors have at least two cities represented in their career trajectories.
+		\textbf{c.} 45 \% of mobile authors have 2 or more regions represented in their career trajectories.
+		\textbf{d.} Only 14 \% of mobile authors had 2 or more countries represented in their career trajectories.
 	}
 	\label{fig:supp:rcdf_by_scale}
 \end{figure}
