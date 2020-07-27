@@ -450,7 +450,7 @@ Mobile authors were associated with, on average, 2.5 distinct organizational aff
 Rates of mobility differ across countries.
 For example, France, Qatar, the USA, Iraq, and Luxembourg had the most mobile authors (Fig.~\ref{fig:supp:descriptives}c).
 However, due to their size, the USA, accounted for nearly 40 \% of all mobile authors worldwide (Fig.~\ref{fig:supp:descriptives}a), with 10 countries accounting for 80 \% of all mobility (Fig.~\ref{fig:supp:descriptives}b).
-The countries with the highest proportion of mobile scientists are France, Qatar, the United States, and Iraq, whereas those with the lowest are Jamaica, Serbia, Bosnia \& Herzegovina, and North Macedonia Fig.~\ref{fig:supp:descriptives}.c).
+The countries with the highest proportion of mobile scientists are France, Qatar, the United States, and Iraq, whereas those with the lowest are Jamaica, Serbia, Bosnia \& Herzegovina, and North Macedonia (Fig.~\ref{fig:supp:descriptives}.c).
 In most cases, countries with a high degree of inter-organization mobility also have a high degree of international mobility, indicating a high proportion of their total mobility being international (Fig.~\ref{fig:supp:descriptives}.d);
 However, some countries such as France and the United States seem to have more domestic mobility than international mobility.
 While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (Fig.~\ref{fig:supp:pubs_over_time}).
@@ -468,23 +468,32 @@ In more complex cases, such as listing multiple affiliations on the same paper o
 These affiliation trajectories are used as input to the standard skip-gram negative sampling word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
 \textit{word2vec} constructs dense and continuous vector representations of words and phrases, in which distance between words correspond to a notion of semantic distance. By embedding affiliation trajectories, we aim to learn a dense vector for every organization where the distance between vectors relates to the tendency for two organizations to occur in similar contexts.
 Formally, model attempt to maximize average log probability a target organization  in an affiliation trajectory $a_{t}$, given organizations in the surrounding context window, $a_{t+k}$. This can be written as follow, where $w$ is the size of the window and $T$ iterates through possible target organizations:
+
+%
+% MAIN W2V Equation
+%
 $$
 \frac{1}{T}\sum_{t = 1}^{T} \sum_{-w \leq j \leq w, j \neq 0} \log p(a_{t + j} \vert a_{t}),
 $$
+
+
 where the conditional probability of observing one organization $a_{i}$, given another $a_{j}$, is defined as, 
+
+%
+% CONDITIONAL PROBABILITY EQ
+%
 $$
-p(a_{i} \vert a_{j}) = \frac{\exp(u_{a_{i}} \cdot v_{a_{j}})}{\sum_{n=1}^N \exp(u_{a_{n}} \cdot v_{a_{j}})},
+p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{a_{i}} \cdot \bm{v}_{a_{j}})}{\sum_{n=1}^N \exp(\bm{u}_{a_{n}} \cdot \bm{v}_{a_{j}})},
 $$
-where $N$ is the total number of organizations and $v$ and $u$ are ``in-vector" and ``out-vector" respectively~\autocite{mikolov2013word2vec}. Usually, in-vector $v$ is used as a final representation vector~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch}, we used in-vector in this study as well.
+
+
+where $N$ is the total number of organizations and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively~\autocite{mikolov2013word2vec}. Usually, in-vector $v$ is used as a final representation vector~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch}, we used in-vector in this study as well.
 
 %% Word2vec parameters and training procedure
-We used  \textit{gensim} python implementation of the \textit{word2vec} model. The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{min}$, initial learning rage $\alpha$, and the number of iterations.
-For main results, we used $d=300$ and $w=1$, which were the parameters that explained the flux between organizations most (Fig. SI~\ref{fig:supp:hyperparams}).
-To mitigate the effect of less common organizations, we set the $f_{min}$ as  50.  It means organizations with at least 50 appearances in affiliation trajectories are included in the final embedding, as a result, 6,580 organizations, 76 \% of all organizations, are remained.
-For $\alpha$, we used the default setting 0.025 and we iterates five times over whole affiliation trajectories.
-We checked results were robust across various hyper-parameters settings, while aforementioned settings yield the best result.
-
-
+We used  \texttt{gensim} python implementation of the \textit{word2vec} model. The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rage $\alpha$, and the number of iterations.
+For main results, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between organizations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}).
+To mitigate the effect of less common organizations, we set the $f_{\min}$ as 50, limiting to organizations appearing at least 50 times across the training trajectories, or 6,580 organizations (76 \%) unique organizations.
+We set $\alpha$ as the default value of 0.025 and iterate five times over all training affiliation trajectories.
 
 
 %
