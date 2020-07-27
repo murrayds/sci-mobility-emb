@@ -86,7 +86,7 @@ max_val <- max(c(ranks$leiden_rank, ranks$semaxis_rank))
 
 # Build the plot
 plot <- ranks %>%
-  ggplot(aes(x = centrality_rank, y = semaxis_rank)) +
+  ggplot(aes(x = semaxis_rank, y = centrality_rank)) +
   geom_abline() +
   geom_point(size = 3.5, stroke = 0.5) +
   ggrepel::geom_label_repel(
@@ -98,7 +98,7 @@ plot <- ranks %>%
     size = 3.5) +
   # Add a fake top axis title, just to ensure that its the same size as the 2d fig
   scale_x_continuous(limits = c(0, max_val), sec.axis = dup_axis(name = "")) +
-  scale_y_continuous(limits = c(0, max_val + 10)) +
+  scale_y_continuous(limits = c(0, max_val + 15)) +
   guides(shape = F) +
   theme_minimal() +
   theme(
@@ -108,12 +108,13 @@ plot <- ranks %>%
     panel.grid.minor = element_blank(),
   ) +
   # Add the Spearman's Rho to the plot
-  annotate("text", x = 35, y = 150,
+  annotate("text", x = 35, y = 155,
            label = latex2exp::TeX(paste("Spearman's $\\rho = ", round(cor$estimate, 2))),
            size = 7,
            fontface = 2) +
-  xlab(axis.title) +
-  ylab("Embedding rank")
+  xlab("Embedding rank") +
+  ylab(axis.title)
+
 
 
 # Save the plot
