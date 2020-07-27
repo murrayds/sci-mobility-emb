@@ -345,8 +345,7 @@ By projecting other types of organizations onto the prestige axis, SemAxis offer
 
 
 
-What is it about the organization embedding that captures prestige so effectively?
-We find that the size (L2 norm) of the organization embedding vectors provides insights into the characteristics of organizations.
+We also find that the size (L2 norm) of the organization embedding vectors provides insights into the characteristics of organizations.
 Up to a point, the size of U.S. organization's vectors tends to increase proportional to its number of researchers (both mobile and non-mobile) who published with that organization;
 these organizations are primarily teaching-focused institutions, agencies, and hospitals that either are not ranked or have a low ranking.
 However, at around 1,000 researchers, the size of the vector decreases as the number of researchers increases;
@@ -360,19 +359,11 @@ Large, prestigious, and well-funded research universities such as Princeton and 
 Some universities, such as the University of Alaska at Fairbanks, have surprisingly small vectors, perhaps as a result of its remote location and unique circumstances.
 
 
-This same convex-curve repeats across many countries (Fig.~\ref{fig:concave30})., though with variations that can reveal characteristics about the scientific systems of each country (Fig.~\ref{fig:length}b).
-For example, the representative vector of Chinese organizations are larger than that of the United States ($\bar{l} = 2.97$ vs $\bar{l} = 2.39$, Table~\ref{table:supp:norm}), reflecting the tendency for organizations in the United States to appear more frequently in more different contexts than Chinese organizations.
+This same convex-curve repeats across many countries such as with China, which closely mirrors that of the United States (Fig.~\ref{fig:length}b).
 Smaller but scientifically advanced countries such as Australia, and other large populous countries like Brazil exhibit curves similar to the United States (Fig.~\ref{fig:length}b, inset), though their exact position and size varies between countries.
-Other nations exhibit different curves, such as Egypt which has an "S"-shaped curve---their largest organizations do not as well connected as other country's largest organizations. 
-Other nations such as Poland, Iran, and Turkey demonstrate a linear relationship between an organization's number of researchers and the vector size, indicating that their largest organizations belong to very specific contexts (Fig.~\ref{fig:concave30}).
-The organization-level distribution of embedding vector norms reveals even deeper heterogeneity---
-for example, whereas the United States has the smallest representative vector, skewness of the sizes of its organization vectors suggest that this is driven by a small number of especially-well-connected organizations ($s = -0.82$, Fig.~\ref{fig:norm_dist}).
-Germany and the United Kingdom have comparable representative vector sizes to the United States ($\bar{l} = 2.6$ and $\bar{l} = 2.61$, respectively), though they are much less skewed ($s = -0.63$ and $s = -0.55$), suggesting less inequality in the connectedness of organizations in these countries.
-The vector sizes of organizations in some countries are even more skewed, such as in Iran ($\bar{l} = 3.57$, $s = -2.13$), and China ($\bar{l} = 2.97$, $s = -1.08$), indicating the strong difference between their most- and least-connected organizations.
-For some countries, their organizations are positively-skewed, though seemingly for different reasons---
-Austria, for example, has a balanced distribution of organization vector sizes, suggesting a diverse range of organizations with most being well connected ($\bar{l} =2.64$, $s = 0.18$);
-Russia, in contrast, has a high number of organization vectors of moderate size, but also several very isolated organizations with large vector sizes ($\bar{l} = 3.08$, $s = 0.67$).
-By capturing the connectedness of organizations in the embedding vector size, the embedding space can be used to characterize universal and particularistic patterns of mobility across countries.
+Other nations exhibit different curves, such as Egypt which has an``S''-shaped curve---their largest organizations do not as well connected as other country's largest organizations. 
+Similar patterns can be found across many of the 30 of the countries with the most total researchers (Fig.~\ref{fig:concave30}), though we can only speculate on what their variations mean (see Supporting Information).
+Neural embeddings encode a relationship between organization size and vector length that is universal across countries but with potentially meaningful nuances, helping the embedding to capture the landscape of global scientific mobility. 
 
 %
 % Figure - Boomerang
@@ -404,7 +395,7 @@ By capturing the connectedness of organizations in the embedding vector size, th
 Neural embeddings offer a novel, data-driven solution for learning an effective and robust functional distance between places based on trajectory data.
 By virtue of being data-driven, and by the nature of neural embedding, it encodes the complex and multi-faceted nature of mobility.
 Here, we demonstrated how the embedding space encodes various aspects of scientific mobility, such as the global and regional geography, national shared languages, and the hierarchy of organizational prestige, even without explicit information on these factors.
-While scientific mobility is used as a case study, this approach can be broadly applied to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
+While scientific mobility is used as a case study, this approach may be broadly applicable to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
 Moreover, this approach can be used to learn a functional distance between entities for which no physical analog exists, such as between occupational categories based on individual's career trajectories.
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, the unique structure of the neural embedding space is amenable to a range of unique applications for studying mobility.
 As we have shown, the embedding space allows the visualization of the complex structure of scientific mobility at high resolution across multiple scales, providing the largest and most detailed map of global scientific mobility to date.
@@ -740,6 +731,26 @@ However, while both embedding- and network-based measures relate to university p
 The embedding-ranking of U.S. universities is less correlated with weighted degree (Spearman's $\rho = 0.45$, Fig.~\ref{fig:supp:centrality_semaxis_compare}a) and eigenvector  centrality (Spearman's $\rho = 0.55$) than with the Times Ranking itself (Spearman's $\rho = 0.73$, Fig.~\ref{fig:supp:centrality_semaxis_compare}b). 
 The embedding ranking over-ranks large research-intensive universities such as North Carolina State University, University of Florida, and Texas A\&M University, whereas the network-derived ranking over-ranks smaller, more specialized universities such as Brandeis University, Yeshiva University, and University of San Francisco. 
 This suggests that the embedding encodes information on prestige hierarchy at least as well as a network representation, but that the information encoded is something different from centrality
+
+
+%
+% S8 TEXT
+\paragraph*{S8 Text}
+\label{si:text:network_ranking}
+{\bf Speculation on variations of the convex-curve pattern.}
+
+The convex-curve pattern observed in Fig.~\ref{fig:length} repeats across many countries, but with variations.
+For example, the representative vector of Chinese organizations are larger than that of the United States ($\bar{l} = 2.97$ vs $\bar{l} = 2.39$, Table~\ref{table:supp:norm}),  causing its curve to be shifted upwards with a larger peak vector size;
+this may reflect a tendency for organizations in the United States to appear more frequently in more different contexts than Chinese organizations.
+Other nations such as Poland, Iran, and Turkey demonstrate a linear relationship between an organization's number of researchers and the vector size, indicating that their largest organizations belong to very specific contexts (Fig.~\ref{fig:concave30}).
+The organization-level distribution of embedding vector norms reveals even deeper heterogeneity---
+for example, whereas the United States has the smallest representative vector, skewness of the sizes of its organization vectors suggest that this is driven by a small number of especially-well-connected organizations ($s = -0.82$, Fig.~\ref{fig:norm_dist}).
+Germany and the United Kingdom have comparable representative vector sizes to the United States ($\bar{l} = 2.6$ and $\bar{l} = 2.61$, respectively), though they are much less skewed ($s = -0.63$ and $s = -0.55$), suggesting less inequality in the connectedness of organizations in these countries.
+The vector sizes of organizations in some countries are even more skewed, such as in Iran ($\bar{l} = 3.57$, $s = -2.13$), and China ($\bar{l} = 2.97$, $s = -1.08$), indicating the strong difference between their most- and least-connected organizations.
+For some countries, their organizations are positively-skewed, though seemingly for different reasons---
+Austria, for example, has a balanced distribution of organization vector sizes, suggesting a diverse range of organizations with most being well connected ($\bar{l} =2.64$, $s = 0.18$);
+Russia, in contrast, has a high number of organization vectors of moderate size, but also several very isolated organizations with large vector sizes ($\bar{l} = 3.08$, $s = 0.67$).
+By capturing the connectedness of organizations in the embedding vector size, the embedding space can be used to characterize universal and particularistic patterns of mobility across countries.
 
 
 \newpage
