@@ -79,6 +79,9 @@
 
 % CUSTOM MACROS
 
+% Define the supporting information name
+\def\SI{Supporting Information}
+
 %}}}
 
 \begin{document} %{{{
@@ -139,7 +142,7 @@ However, understandings of scientific mobility have been limited by the sheer sc
 Here, scientific mobility is operationalized using researcher's organizational affiliations derived from their publication histories indexed in a comprehensive bibliographic database (see Methods).
 The most fine-grained geographical unit in this data is the organization, such as a ``university'', ``research institute'', ``business'', or ``government agency''.
 As a scientist's career progresses, they move between organizations or pick up additional (simultaneous) affiliations forming \textit{affiliation trajectories} (Fig.~\ref{fig:methods:mobility_sentence}).
-These trajectories encode both migration and co-affiliation---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, markova2016synchronous, sugimoto2017mostimpact} (see Supplementary Materials).
+These trajectories encode both migration and co-affiliation---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, markova2016synchronous, sugimoto2017mostimpact} (see \SI).
 We use the trajectories of more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
 
 
@@ -160,7 +163,7 @@ The functional distance between two organizations is calculated as the cosine di
         To each organization, a unique identifier is assigned, and they are assembled into an affiliation trajectory ordered by year of publication.
         \textbf{b.}
         In a more complex case, an author lists several affiliations on the byline of papers in $t_{2}$, $t_{3}$, and $t_{4}$.
-        In the case where multiple organizations are listed within the same year, then organization IDs within a single year are randomized across each training iteration or ``epoch" of the \textit{word2vec} model (for more detail, see Supporting Materials).
+        In the case where multiple organizations are listed within the same year, then organization IDs within a single year are randomized across each training iteration or ``epoch" of the \textit{word2vec} model (for more detail, see \SI).
     }
     \label{fig:methods:mobility_sentence}
 \end{figure}
@@ -190,7 +193,7 @@ The amount of variance explained by embedding distance ($R^{2} = 0.46$, Fig.~\re
 This pattern holds when considering the subset of only domestic (Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (Fig.~\ref{fig:supp:gravity_correlation}d).
 After fitting model parameters from the data, the embedding distance produces better predictions of expected flux than does geographic distance (Fig.~\ref{fig:gravity_performance}c--d), which also holds for the subsets of only domestic (Fig.~\ref{fig:supp:gravity_correlation}e--f) and international mobility (Fig.~\ref{fig:supp:gravity_correlation}g--h).
 The embedding distance defined from the cosine distance between vectors also outperforms that defined from their dot product ($R^{2} = 0.34$, Fig.~\ref{fig:supp:gravity_dot}).
-The embedding distance also out-performs alternative ``diffusion-based'' network distance measures such as the personalized-page rank scores (see Supporting Materials) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
+The embedding distance also out-performs alternative ``diffusion-based'' network distance measures such as the personalized-page rank scores (see \SI) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
 Our results unequivocally argue that the embedding distance better captures actual mobility patterns than does geographic distance.
 
 
@@ -305,7 +308,7 @@ This suggests that the embedding space captures the hierarchical structure of mo
 Prestige hierarchy is known to underpin the dynamics of scientific mobility~\autocite{deville2014career, clauset2015hierarchy}, but can the hierarchy be encoded in the embedding space, to which no explicit information on prestige is given and for which the direction of mobility not known?
 We test this by exploiting the geometric properties of the embedding space with SemAxis~\autocite{an2018semaxis}, an approach originally designed to characterize the semantics of words in word embeddings.
 Here, we use SemAxis to operationalize the abstract notion of academic prestige, defining each pole of the axis using high- and low-ranked universities.
-We define prestige using the Times Ranking of World Universities (and using research impact from the Leiden Rankings~\autocite{waltman2012leidenrankings} in Supplementary Materials), including all ranked universities in the United States;
+We define prestige using the Times Ranking of World Universities (and using research impact from the Leiden Rankings~\autocite{waltman2012leidenrankings}, see \SI), including all ranked universities in the United States;
 the high-rank pole is defined as the mean vector of the top five U.S. universities according to the rankings, whereas the low-ranked pole is defined using the five bottom-ranked and geographically matched (by U.S. census region) universities.
 
 The embedding space encodes the prestige hierarchy of U.S. universities well enough to re-construct university rankings. 
@@ -314,7 +317,7 @@ The embedding-based ranking is defined from the position of organizations along 
 The embedding-based ranking is strongly correlated with the Times ranking (Spearman's $\rho = 0.73$, Fig.~\ref{fig:semaxis}a).
 For reference, the embedding-based ranking achieves correlation with the Times Ranking comparable to that between the Times ranking and the publication impact scores from the Leiden Ranking~\autocite{waltman2012leidenrankings}, a well-known bibliometrically-informed university ranking (Spearman's $\rho = 0.87$, Fig.~\ref{fig:semaxis}b).
 The correlation between the embedding based ranking and the Times ranking is robust with the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities are significantly correlated with the Times Ranking (Spearman's $\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
-Performance is also comparable to network-driven measures such as degree strength (Spearman's $\rho = 0.73$) and eigenvector centrality (Spearman's $\rho = 0.76$, see Supporting Information). 
+Performance is also comparable to network-driven measures such as degree strength (Spearman's $\rho = 0.73$) and eigenvector centrality (Spearman's $\rho = 0.76$, see \SI). 
 The strongest outliers that were ranked more highly in the Times Ranking than the embedding based ranking tend to be large state universities such as Arizona State University and  University of Florida;
 Those ranked higher in the embedding based ranking tend to be relatively-small universities such as the University of San Francisco and University of Maryland Baltimore County near major urban areas.
 This suggests that the organization embedding captures the latent prestige hierarchy inherent to academic mobility with a high degree of resolution and reliability, even without providing any explicit information on prestige~\autocite{deville2014career, clauset2015hierarchy}.
@@ -362,7 +365,7 @@ Some universities, such as the University of Alaska at Fairbanks, have surprisin
 This same convex-curve repeats across many countries such as with China, which closely mirrors that of the United States (Fig.~\ref{fig:length}b).
 Smaller but scientifically advanced countries such as Australia, and other large populous countries like Brazil exhibit curves similar to the United States (Fig.~\ref{fig:length}b, inset), though their exact position and size varies between countries.
 Other nations exhibit different curves, such as Egypt which has an``S''-shaped curve---their largest organizations do not as well connected as other country's largest organizations. 
-Similar patterns can be found across many of the 30 of the countries with the most total researchers (Fig.~\ref{fig:concave30}), though we can only speculate on what their variations mean (see Supporting Information).
+Similar patterns can be found across many of the 30 of the countries with the most total researchers (Fig.~\ref{fig:concave30}), though we can only speculate on what their variations mean (see \SI).
 Neural embeddings encode a relationship between organization size and vector length that is universal across countries but with potentially meaningful nuances, helping the embedding to capture the landscape of global scientific mobility. 
 
 %
@@ -436,9 +439,9 @@ Data, analysis, and associated code have been made publicly available and can be
 % Do we need to talk about how we define mobility in relation to past papers?
 We source co-affiliation trajectories of authors from the Web of Science database hosted by the Center for Science and Technology Studies at Leiden University.
 Trajectories are constructed from author affiliations listed on the byline of publications for a given author.
-Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations~\autocite{caron2014disambiguation} that improved disambiguation (see supporting materials).
+Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations~\autocite{caron2014disambiguation} that improved disambiguation (see \SI).
 This yields 33,934,672 author-affiliation combinations representing 12,963,792 authors.
-Each author-affiliation combination is associated with the publication year and an ID linking it to one of 8,661 a disambiguated organizational affiliation (see supporting materials for more detail)
+Each author-affiliation combination is associated with the publication year and an ID linking it to one of 8,661 a disambiguated organizational affiliation (see \SI for more detail)
 Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year.
 
 
