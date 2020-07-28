@@ -441,7 +441,7 @@ We source co-affiliation trajectories of authors from the Web of Science databas
 Trajectories are constructed from author affiliations listed on the byline of publications for a given author.
 Given the limitations of author-name disambiguation, we limit to papers published after 2008, when the Web of Science began providing full names and institutional affiliations~\autocite{caron2014disambiguation} that improved disambiguation (see \SI).
 This yields 33,934,672 author-affiliation combinations representing 12,963,792 authors.
-Each author-affiliation combination is associated with the publication year and an ID linking it to one of 8,661 disambiguated organizational affiliations (see \SI for more detail)
+Each author-affiliation combination is associated with the publication year and an ID linking it to one of 8,661 disambiguated organizational affiliations (see \SI for more detail).
 Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year.
 
 Here, authors are classified as mobile when they have at least two distinct organization IDs in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
@@ -475,8 +475,6 @@ Formally, model attempt to maximize average log probability a target organizatio
 $$
 \frac{1}{T}\sum_{t = 1}^{T} \sum_{-w \leq j \leq w, j \neq 0} \log p(a_{t + j} \vert a_{t}),
 $$
-
-
 where the conditional probability of observing one organization $a_{i}$, given another $a_{j}$, is defined as, 
 
 %
@@ -485,14 +483,12 @@ where the conditional probability of observing one organization $a_{i}$, given a
 $$
 p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{a_{i}} \cdot \bm{v}_{a_{j}})}{\sum_{n=1}^N \exp(\bm{u}_{a_{n}} \cdot \bm{v}_{a_{j}})},
 $$
-
-
-where $N$ is the total number of organizations and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively~\autocite{mikolov2013word2vec}. Usually, in-vector $v$ is used as a final representation vector~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch}, we used in-vector in this study as well.
+where $N$ is the total number of organizations and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively~\autocite{mikolov2013word2vec}. Usually, in-vector $\bm{v}$ is used as a final representation vector~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch}, we used in-vector in this study as well.
 
 %% Word2vec parameters and training procedure
-We used  \texttt{gensim} python implementation of the \textit{word2vec} model. The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rage $\alpha$, and the number of iterations.
+We used  \texttt{gensim} python implementation of the \textit{word2vec} model. The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
 For main results, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between organizations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}).
-To mitigate the effect of less common organizations, we set the $f_{\min}$ as 50, limiting to organizations appearing at least 50 times across the training trajectories, or 6,580 organizations (76 \%) unique organizations.
+To mitigate the effect of less common organizations, we set the $f_{\min}$ as 50, limiting to organizations appearing at least 50 times across the training trajectories,  6,580 organizations (76 \%) unique organizations are kept in the result embedding .
 We set $\alpha$ as the default value of 0.025 and iterate five times over all training affiliation trajectories.
 
 
@@ -501,7 +497,7 @@ We set $\alpha$ as the default value of 0.025 and iterate five times over all tr
 %
 \subsection*{Distance}
 %% Distance calculations
-$T_{ij}$, is the number of co-occurrences of organizations within author affiliation trajectories.
+$T_{ij}$ is the number of co-occurrences of organizations within author affiliation trajectories.
 For example, $T_{ij} = 10$ indicates that ten authors were affiliated with both organization $i$ and $j$ between 2008 and 2019, as evidenced from their publications.
 We treat all co-affiliations are symmetric, meaning that $T_{ij} = T_{ji}$.
 
@@ -510,7 +506,7 @@ The geographic distance, $g_{ij}$, is the pairwise geographic distance between o
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations.
 When less than one kilometer, a distance of 1 km is imputed.
 The embedding distance with the cosine similarity, $d_{ij}$, is calculated as the pairwise cosine distance between vectors from the learned organization embedding, where $v_{i}$ and $v_{j}$ represent the vectors and $d_{ij} = 1 - \frac{\bm{v}_{i} \cdot \bm{v}_{j}}{\lVert \bm{v}_{i} \rVert \lVert \bm{v}_{j} \rVert}$.
-Note that this distance derived from the embedding space is not a formal metric, as it does not satisfy the triangle inequality, however such distances have still proved practically useful in many tasks~\autocite{lerman2007embedding, brown1970migration, brown1970functional, kim2018functional}. 
+Note that cosine distance derived from the embedding space is not a formal metric, as it does not satisfy the triangle inequality, however cosine distance have still proved practically useful across many tasks~\autocite{lerman2007embedding, brown1970migration, brown1970functional, kim2018functional}. 
 
 
 
@@ -531,15 +527,13 @@ Following the gravity law, the \textit{expected flux} $\hat{T_{ij}}$ between two
 	\label{eq:gravity_basic}
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
-
-
 where $m_{i}$ and $m_{j}$ are the organization masses, or the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization during the time window, and $f(r_{ij})$ is a distance-decaying function  between the two organizations. There are two popular forms of the $f(r_{ij})$. The first one is power-law function with $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0)$, and the another one is exponential function with $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  
 $f(r_{ij})$ and $C$ can be fit with the data.
 
 We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
 For geographic distance, we use the power-law function of the gravity law, with $f(g_{ij})= g^{-\alpha}_{ij}$, where $\alpha$ is estimated from the data.
 For embedding distance, we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$, where $\beta$ is estimated from the data.
-Following past studies~\autocite{simini2012universal}, parameters $C$, $\alpha$ and $\beta$ are estimated by log-transforming each variant of \ref{eq:gravity_basic}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression
+Following past studies~\autocite{simini2012universal}, parameters $C$, $\alpha$ and $\beta$ are estimated by log-transforming each variant of \ref{eq:gravity_basic}, obtaining Eq.~\ref{eq:linear_flux_geo} and Eq.~\ref{eq:linear_flux_emb} in the form of linear equations, and fitting parameters using linear regression \autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
@@ -571,8 +565,6 @@ Let $S^+ = \{\bm{v}_1^+, \bm{v}_2^+ \cdots \bm{v}_n^+\}$ and $S^- =\{\bm{v}_1^-,
 $$
 score(a)_{\bm{V}_{\text{axis}}} = \cos(\bm{v}_{a}, \bm{V}_{\text{axis}}) = \frac{\bm{u}_{a} \cdot \bm{V}_{\text{axis}}}{\lVert \bm{v}_{a} \rVert \lVert \bm{V}_{\text{axis}} \rVert},
 $$
-
-
 where higher scores mean that organization $a$ is more closely aligned to $S^+$ than $S^-$.
 
 We apply SemAxis to U.S. universities by defining two axes that capture geography and academic prestige, respectively.
@@ -609,7 +601,7 @@ Understanding the structure and dynamics of mobility is thus essential for under
 
 %
 % S2 Text
-\paragraph*{S2Text}
+\paragraph*{S2 Text}
 \label{si:text:mobility_models}
 {\bf Modeling scientific mobility.}
 
