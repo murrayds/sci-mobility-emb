@@ -10,6 +10,8 @@
 col_list <- list(
   "USA" = "#d35400",
   "BRA" = "#27ae60",
+  "AUS" = "#8e44ad",
+  "CHE" = "#8e44ad",
   "SWD" = "#8e44ad",
   "EGY" = "black"
 )

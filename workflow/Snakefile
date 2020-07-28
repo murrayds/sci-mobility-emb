@@ -30,6 +30,7 @@ STAT_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Stat')
 NETWORK_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Network')
 UMAP_FIGURE_DIR = osjoin(FIGURE_DIR, 'UMAP')
 MATH_FIGURE_DIR = osjoin(FIGURE_DIR, 'Math')
+NETWORK_FIGURE_DIR = osjoin(FIGURE_DIR, 'Network')
 DESCRIPTIVE_FIG_DIR = osjoin(FIGURE_DIR, 'Descriptive')
 AXES_DATA_DIR = osjoin(ADDITIONAL_DATA_DIR, 'OrgAxes')
 SEMAXIS_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'SemAxis')
@@ -68,7 +69,8 @@ ORG_META = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{traj}_org_metadata.txt')
 ####################
 # Network Data #
 ####################
-FLOWS_NETWORK = osjoin(NETWORK_DATA_DIR, 'flows_edgelist.csv')
+FLOWS_NETWORK = osjoin(NETWORK_DATA_DIR, '{traj}_flows_edgelist.csv')
+NETWORK_CENTRALITIES = osjoin(NETWORK_DATA_DIR, '{traj}_net_centralities.csv')
 
 ##############
 # Embeddings #
@@ -167,6 +169,12 @@ SEMAXIS_RANK_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{d
 TIMES_LEIDEN_COMPARE_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'times_leiden_compare.pdf')
 RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correlation.pdf')
 
+
+# Network plots
+CENTRALITY_TIMES_RANK_PLOT = osjoin(NETWORK_FIGURE_DIR, '{traj}', '{measure}_{traj}_centrality_times_compare.pdf')
+SEMAXIS_RANK_CENTRALITY_PLOT = osjoin(NETWORK_FIGURE_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{measure}_{ranking}_d{dimensions}_ws{window}_n{numorgs}_{traj}_centrality_compare.pdf')
+
+
 # MISC PLOTS
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
 BOOMERANG_COMPARE_PLOT = osjoin(MATH_FIGURE_DIR, 'boomerang', 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{country}_usa_{traj}_d{dimensions}_ws{window}_boomerang_compare.pdf')
@@ -225,6 +233,8 @@ GEO_CONSTRAINTS_FILT = ['same-country',
 
 GRAVITY_MODEL_TYPES = ['exp', 'power']
 
+CENTRALITIES = ['degree', 'eigen']
+
 # A set of around 30 of the largest countries to plot specifics for, most others
 # are too small to give reasonable or useful results
 COUNTRY_LIST = ["AUS", "AUT", "BEL", "BRA", "CAN", "CHE", "CHN", "CZE",
@@ -253,6 +263,9 @@ include: 'Snakefile_Gravity.smk'
 
 # Rules relating to the math.
 include: 'Snakefile_Math.smk'
+
+# Rules relating to the math.
+include: 'Snakefile_Network.smk'
 
 ###############################################################################
 # TARGET RULE
@@ -404,6 +417,19 @@ rule all:
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
         expand(RANK_CORRELATION_PLOT, ranking = RANKINGS),
+
+        # Network
+        expand(NETWORK_CENTRALITIES, traj = TRAJECTORIES),
+        expand(CENTRALITY_TIMES_RANK_PLOT,
+               measure = CENTRALITIES,
+               traj = TRAJECTORIES),
+        expand(SEMAXIS_RANK_CENTRALITY_PLOT,
+               measure = CENTRALITIES,
+               traj = TRAJECTORIES,
+               numorgs = NUMORGS,
+               ranking = "times",
+               dimensions = 300,
+               window = 1),
 
         # Misc
         ORG_LABEL_TABLE
