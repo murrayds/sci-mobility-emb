@@ -325,7 +325,7 @@ This suggests that the organization embedding captures the latent prestige hiera
 The axes can further be visualized to examine the the relative position of organizations along the prestige axis, and along a geographic axis between California and Massachusetts that aids visualization.
 Prestigious universities such as Colombia, Stanford, MIT, Harvard, and Rockefeller are positioned towards the top of the axis (Fig.~\ref{fig:semaxis}c).
 Universities at the bottom of this axis tend to be regional universities with lower national profiles (yet still ranked by Times Higher Education) and with more emphasis on teaching, such as Barry University and California State University at Long Beach.
-By projecting other types of organizations onto the prestige axis, SemAxis offers a new means of reasoning about the prestige of organizations which are typically not ranked, such as government organizations (Fig.~\ref{fig:semaxis}d), and research institutes (Fig.~\ref{fig:semaxis}e), or for which rankings are often low-resolution and idiosyncratic, such as for regional and liberal arts universities (Fig.~\ref{fig:semaxis}f).
+By projecting other types of organizations onto the prestige axis, SemAxis offers a new means of reasoning about the prestige of organizations for which rankings are often low-resolution or incomplete, such as regional and liberal arts universities (Fig.~\ref{fig:semaxis}d), or for which no such rankings exist, such as government organizations (Fig.~\ref{fig:semaxis}d), and research institutes (Fig.~\ref{fig:semaxis}e).
 
 %
 % Figure - SemAxis results
@@ -340,7 +340,7 @@ By projecting other types of organizations onto the prestige axis, SemAxis offer
 	  	Even when considering only a total of ten organization vectors, the estimate of the Spearman's rank correlation between the embedding and Times ranking is $\rho = 0.73$ (n = 145), and it increases if we include more top-and-bottom ranked universities (Fig.~\ref{fig:supp:semaxis_compare}).
 	  	\textbf{b.} Times ranking is correlated with Leiden Ranking of U.S. universities with Spearman's $\rho = 0.87$
 		\textbf{c-f.} Illustration of SemAxis projection along two axes;  \textit{latent geographical axis}, from California to Massachusetts (left to right) and the \textit{prestige axis}.
-		Shown for U.S. Universities (\textbf{c}), Teaching colleges (\textbf{d}), Research institutes (\textbf{e}), and Government organizations (\textbf{f}).
+		Shown for U.S. Universities (\textbf{c}), regional and liberal arts universities (\textbf{d}), Research institutes (\textbf{e}), and Government organizations (\textbf{f}).
 		Full organization names listed in Table~\ref{table:supp:orglabels}.
 	}
 	\label{fig:semaxis}
@@ -467,7 +467,7 @@ In more complex cases, such as listing multiple affiliations on the same paper o
 %% word2vec
 These affiliation trajectories are used as input to the standard skip-gram negative sampling word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
 \textit{word2vec} constructs dense and continuous vector representations of words and phrases, in which distance between words correspond to a notion of semantic distance. By embedding affiliation trajectories, we aim to learn a dense vector for every organization where the distance between vectors relates to the tendency for two organizations to occur in similar contexts.
-Formally, model attempt to maximize average log probability a target organization  in an affiliation trajectory $a_{t}$, given organizations in the surrounding context window, $a_{t+k}$. This can be written as follow, where $w$ is the size of the window and $T$ iterates through possible target organizations:
+Formally,  the model attempt to maximize average log probability of a target organization appearing in an affiliation trajectory $a_{t}$, given organizations in the surrounding context window, $a_{t+k}$. This can be written as follow, where $w$ is the size of the window and $T$ iterates through possible target organizations:
 
 %
 % MAIN W2V Equation
@@ -483,13 +483,15 @@ where the conditional probability of observing one organization $a_{i}$, given a
 $$
 p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{a_{i}} \cdot \bm{v}_{a_{j}})}{\sum_{n=1}^N \exp(\bm{u}_{a_{n}} \cdot \bm{v}_{a_{j}})},
 $$
-where $N$ is the total number of organizations and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively~\autocite{mikolov2013word2vec}. Usually, in-vector $\bm{v}$ is used as a final representation vector~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch}, we used in-vector in this study as well.
+where $N$ is the total number of organizations and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively~\autocite{mikolov2013word2vec}.  We follow past studies and use the in-vector, $\bm{v}$, as the final representation~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch}.
 
 %% Word2vec parameters and training procedure
-We used  \texttt{gensim} python implementation of the \textit{word2vec} model. The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
+We used the \texttt{gensim} python implementation of the \textit{word2vec} model. 
+The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
 For main results, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between organizations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}).
-To mitigate the effect of less common organizations, we set the $f_{\min}$ as 50, limiting to organizations appearing at least 50 times across the training trajectories,  6,580 unique organizations are kept in the result embedding .
-We set $\alpha$ as the default value of 0.025 and iterate five times over all training affiliation trajectories.
+To mitigate the effect of less common organizations, we set the $f_{\min}$ as 50, limiting to organizations appearing at least 50 times across the training trajectories;
+6,580 unique organizations appear in the resulting embedding.
+We set $\alpha$ to its default value of 0.025 and iterate five times over all training affiliation trajectories.
 
 
 %
