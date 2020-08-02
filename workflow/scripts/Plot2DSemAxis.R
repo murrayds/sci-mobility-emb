@@ -15,8 +15,8 @@ NOT_HIGHLIGHTED_ALPHA = 0.9
 
 MASS_LABEL = "Massachusetts"
 CALI_LABEL = "California"
-TOP_LABEL = "High-ranked"
-BOT_LABEL = "Low-ranked"
+TOP_LABEL = "High-ranked universities"
+BOT_LABEL = "Low-ranked universities"
 
 STATES_TO_PLOT <- c("Connecticut", "New York", "Arizona", "California", "Massachusetts", "Florida")
 STATE_COLORS <- c("#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f")
@@ -115,10 +115,16 @@ if (opt$overall == TRUE) {
     if (is.na(opt$state)) {
       if (opt$sector == "Government") {
         pointcolor <- "#16a085"
+        TOP_LABEL = "High-ranked government organizations"
+        BOT_LABEL = "Low-ranked government organizations"
       } else if (opt$sector == "Institute") {
         pointcolor <- "#2980b9"
+        TOP_LABEL = "High-ranked research institutes"
+        BOT_LABEL = "Low-ranked research institutes"
       } else if (opt$sector == "Teaching"){
         pointcolor <- "#8e44ad"
+        TOP_LABEL = "High-ranked regional and liberal arts colleges"
+        BOT_LABEL = "Low-ranked regional and liberal arts colleges"
       } else {
         pointcolor <- "#2980b9"
       }
