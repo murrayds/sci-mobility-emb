@@ -470,29 +470,31 @@ In more complex cases, such as listing multiple affiliations on the same paper o
 %% word2vec
 These affiliation trajectories are used as input to the standard skip-gram negative sampling word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
 \textit{word2vec} constructs dense and continuous vector representations of words and phrases, in which distance between words corresponds to a notion of semantic distance. By embedding affiliation trajectories, we aim to learn a dense vector for every organization where the distance between vectors relates to the tendency for two organizations to occur in similar contexts.
-Formally,  the model attempts to maximize average log probability of a target organization appearing in an affiliation trajectory $a_{t}$, given organizations in the surrounding context window, $a_{t+k}$. This can be written as follow, where $w$ is the size of the window and $T$ iterates through possible target organizations:
+Suppose an affiliation trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th organization in the trajectory. An organization, $a_{t}$, is considered to have context organizations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$. Then, the model learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
 
 %
 % MAIN W2V Equation
 %
-$$
-\frac{1}{T}\sum_{t = 1}^{T} \sum_{-w \leq j \leq w, j \neq 0} \log p(a_{t + j} \vert a_{t}),
-$$
-where the conditional probability of observing one organization $a_{i}$, given another $a_{j}$, is defined as, 
+\begin{equation}
+\frac{1}{T}\sum_{t = 1}^{T} \sum_{-w \leq \tau \leq w, \tau \neq 0} \log p(a_{t + \tau} \vert a_{t}),
+\end{equation}
+where,
 
 %
 % CONDITIONAL PROBABILITY EQ
 %
-$$
-p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{a_{i}} \cdot \bm{v}_{a_{j}})}{\sum_{n=1}^N \exp(\bm{u}_{a_{n}} \cdot \bm{v}_{a_{j}})},
-$$
-where $N$ is the total number of organizations and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively~\autocite{mikolov2013word2vec}.  We follow past studies and use the in-vector, $\bm{v}$, as the final representation~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch}.
+\begin{equation}
+p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{i} \cdot \bm{v}_{a_{j}})}{\sum_{n=1}^N \exp(\bm{u}_{n} \cdot \bm{v}_{a_{j}})},
+\end{equation}
+where $a_{t+\tau} = j \vert a_{t+\tau} = i$, and $N$ is the number of unique organizations represented in the data, and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively.
+The in-vector and out-vectors are different kinds of vector representations for organizations. We only use the in-vector, $v$, because the in-vector is more widely used and often superiors to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch}.
+
 
 %% Word2vec parameters and training procedure
-We used the \texttt{gensim} python implementation of the \textit{word2vec} model. 
+We used the \textit{word2vec}  implenetation in the python package \texttt{gensim}. 
 The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
 For main results, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between organizations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}).
-To mitigate the effect of less common organizations, we set the $f_{\min}$ as 50, limiting to organizations appearing at least 50 times across the training trajectories;
+To mitigate the effect of less common organizations, we set $f_{\min} = 50$, limiting to organizations appearing at least 50 times across the training trajectories;
 6,580 unique organizations appear in the resulting embedding.
 We set $\alpha$ to its default value of 0.025 and iterate five times over all training affiliation trajectories.
 
