@@ -127,12 +127,13 @@ plot <- plotdata %>%
   ggplot(aes(x = pc1, y = pc2)) +
   geom_point() +
   ggrepel::geom_label_repel(data = labels, aes(label = country_iso_alpha), size = 3) +
-  xlab(paste0("PC1: (", pc1.var, "%) - Overall mobility")) +
-  ylab(paste0("PC2: (", pc2.var, "%) - Org vs. Country Mobility")) +
+  xlab(paste0("PC1: (", pc1.var, "% of variance explained)")) +
+  ylab(paste0("PC2: (", pc2.var, "% of variance explained)")) +
   theme_minimal() +
   theme(
-    panel.grid.major = element_blank(),
-    text = element_text(family = "Helvetica"),
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(size = 0.5),
+    text = element_text(family = "Helvetica", size = 12),
     axis.title = element_text(face = "bold", size = 12),
     axis.text = element_text(size = 11)
   )

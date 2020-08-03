@@ -84,13 +84,14 @@ plot <- plotdata %>%
   ggrepel::geom_label_repel(data = labels, aes(label = country_iso_alpha), nudge_x = 5, size = 3, force = 2, direction = "y") +
   theme_minimal() +
   theme(
-    text = element_text(family = "Helvetica"),
+    text = element_text(size = 12, family = "Helvetica"),
     axis.title = element_text(size = 12, face = "bold"),
     axis.text = element_text(size = 11),
-    panel.grid.major = element_blank()
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(size = 0.5),
   ) +
   xlab("Rank") +
-  ylab("Proportion of global mobile researchers")
+  ylab("Proportion all mobile researchers by country")
 
 
 p <- egg::set_panel_size(plot,

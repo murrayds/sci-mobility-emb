@@ -51,14 +51,17 @@ plot <- plotdata %>%
     geom_point(size = 3, shape = 21) +
     expand_limits(y = 0) + # Make sure that y=axis stretches to 0
     scale_y_continuous(limits = c(0, 1500000),
-                       breaks = c(0, 1000000, 1500000),
-                       labels = c("0", "1,000,000", "1,500,000")) +
+                       breaks = c(0, 500000, 1000000, 1500000),
+                       labels = c("0", "500,000", "1,000,000", "1,500,000")) +
     viridis::scale_fill_viridis(discrete = T, option = "A") +
     theme_minimal() +
     theme(
+      text = element_text(size = 12, family = "Helvetica"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.background = element_rect(size = 0.5),
       axis.title.x = element_blank(),
       axis.title.y = element_text(size = 12, face = "bold"),
-      legend.text = element_text(size = 11, family = "Helvetica"),
       legend.title = element_text(size = 12, face = "bold"),
       legend.position = c(0.20, 0.81),
       legend.background = element_rect()

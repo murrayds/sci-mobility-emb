@@ -89,7 +89,7 @@ plot <- dist %>%
                          na.value=NA
     ) +
     coord_fixed() +
-    guides(fill = F) +
+    #guides(fill = F) +
     scale_x_continuous(breaks = c(0, 0.5, 1),
                        limits = c(0, 1),
                        labels = c("0", "0.5", "1"),
@@ -113,7 +113,7 @@ plot <- dist %>%
       panel.border = element_rect(colour = "black", fill=NA, size=1)
     ) +
     # Add labels
-    xlab("Embedding distance") +
+    xlab("Cosine distance") +
     ylab("Dot product similarity")
 
 p <- egg::set_panel_size(plot,
@@ -121,4 +121,4 @@ p <- egg::set_panel_size(plot,
                          height = unit(FIG_HEIGHT, "in"))
 
 # Save the plot
-ggsave(opt$output, p, width = FIG_WIDTH + 1, height = FIG_HEIGHT + 1)
+ggsave(opt$output, p, width = FIG_WIDTH + 2.4, height = FIG_HEIGHT + 1.8)

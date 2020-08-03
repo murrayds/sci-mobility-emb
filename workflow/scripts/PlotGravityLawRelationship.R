@@ -211,7 +211,10 @@ if (opt$showcoef) {
                           geom = "text_npc",
                           aes(label = paste(..rr.label.., sep = "~~~")),
                           parse=TRUE,
-                          label.x.npc = ifelse(grepl("ppr", opt$distance, fixed = TRUE), 0.25, 0.95),
+                          label.x.npc = ifelse(
+                            grepl("ppr", opt$distance, fixed = TRUE) | grepl("dot", opt$distance, fixed = TRUE),
+                            0.05, 0.95
+                          ),
                           label.y.npc = 0.96,
                           rr.digits = 2,
                           size = 7
