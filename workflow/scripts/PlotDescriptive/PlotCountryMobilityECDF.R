@@ -91,14 +91,15 @@ plot <- plotdata %>%
     geom_label(data = labels, aes(x = index, y = cumulative, label = text), size = 3, nudge_x = 6) +
     theme_minimal() +
     theme(
-      text = element_text(family = "Helvetica"),
+      text = element_text(family = "Helvetica", size = 12),
       axis.title = element_text(face = "bold", size = 12),
       axis.text = element_text(size = 11),
       axis.text.y = element_text(face = c(rep("plain", 9), "bold", "bold", "plain")),
-      panel.grid.major = element_blank()
+      panel.grid.minor = element_blank(),
+      panel.background = element_rect(size = 0.5),
     ) +
     xlab("Rank") +
-    ylab("Cumulative proportion")
+    ylab("Cumulative % of all mobile researchers by country")
 
 p <- egg::set_panel_size(plot,
                          width  = unit(FIG_WIDTH, "in"),

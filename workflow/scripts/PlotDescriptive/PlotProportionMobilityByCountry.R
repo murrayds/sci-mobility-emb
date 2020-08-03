@@ -99,13 +99,14 @@ plot <- plotdata %>%
     scale_x_continuous(expand = c(0, 0)) +
     theme_minimal() +
     theme(
-      panel.grid.major = element_blank(),
-      text = element_text(family = "Helvetica"),
+      panel.background = element_rect(size = 0.5),
+      panel.grid.minor = element_blank(),
+      text = element_text(family = "Helvetica", size = 12),
       axis.title = element_text(size = 12, face = "bold"),
       axis.text = element_text(size = 11),
     ) +
     xlab("Rank") +
-    ylab("Proportion mobile")
+    ylab("% mobility in each country")
 
 p <- egg::set_panel_size(plot,
                          width  = unit(FIG_WIDTH, "in"),
