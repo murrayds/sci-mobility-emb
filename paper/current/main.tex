@@ -540,8 +540,7 @@ In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ betwe
 \end{equation}
 where $m_{i}$ and $m_{j}$ are the organization masses, or the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization during the time window, and $f(r_{ij})$ is a decay function of distance $r_{ij}$ between organizations $i$ and $j$. 
 There are two popular forms of the $f(r_{ij})$:
-one is a power law function in the form $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0$, which we call the power decay model;
-the other and the another one is an exponential function in the form $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}, which we call the exponential model.  
+one is a power law function in the form $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0$, and the other and the another one is an exponential function in the form $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  
 The parameters for $f(r_{ij})$ and $C$ are fit to given mobility data using a log-linear regression~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity, simini2012universal}.
 
 We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
@@ -970,14 +969,13 @@ Taiwan           & 3.67             & 72
 	\centering
 	\includegraphics[width=0.8\textwidth]{\figdir/Descriptive/rcdf_by_scale.pdf}
 	\caption{
-		\textbf{Reverse cumulative-distribution function of mobile authors by geographic scale.}
+		\textbf{Reverse cumulative-distribution function of mobile researchers by geographic scale.}
 		\textbf{a.}
-		The proportion of mobile authors by how many organizations are represented in their career trajectories.
-		For example, for mobile authors, 100 \% of authors held an affiliation with at least two organizations, whereas about 35 \% were affiliated with 3 ore more organizations between 2008 and 2019.
-		Mobile authors are defined as those with at least two distinct organizational affiliations represented in our data.
-		\textbf{b.} 68 \% of mobile authors have at least two cities represented in their career trajectories.
-		\textbf{c.} 45 \% of mobile authors have 2 or more regions represented in their career trajectories.
-		\textbf{d.} Only 14 \% of mobile authors had 2 or more countries represented in their career trajectories.
+		Survival probability of mobile researchers with respect to the number of organizations in the their affiliation trajectory.
+		All mobile authors were affiliated with at least two organizations (i.e., survival probability of one) and about 35.0\% were affiliated with three or more. 
+		\textbf{b.} About 68\% of mobile authors listed at least two cities represented in their career trajectories.
+		\textbf{c.} 45\% of mobile authors have two or more regions represented in their career trajectories.
+		\textbf{d.} Only 14\% of mobile authors had two or more countries represented in their career trajectories.
 	}
 	\label{fig:supp:rcdf_by_scale}
 \end{figure}
@@ -994,13 +992,13 @@ Taiwan           & 3.67             & 72
 	\caption{
 		\textbf{Larger dimensions, smaller window size improves embedding performance.}
 		The correlation, or amount of flux explained by the embedding distance with varying skip-gram negative sampling hyperparameters.
-		Window size refers to the window, on either side of the target token, to use as context for training.
-		Smaller window sizes results in an embedding that explain more of the flux.
-		Embedding dimensions refer to the size of the organization vector.
+		Window size refers to $w$, the size of the context window that defines the context in a trajectory.
+		Smaller window sizes result in an embedding that explain more flux.
+		Embedding dimensions refer to the size of the embedding vector.
 		Larger vectors perform better, though little difference between 200 and 300.
 		All variants perform better on same-country pairs of organizations than on all organizations.
 		All variants perform worse on different-country pairs on organizations.
-		Larger embeddings outperform mid-size embeddings for the different-country case.
+		Embeddings with larger dimensions outperform mid-size embeddings for the different-country case.
 	}
 	\label{fig:supp:cosdot}
 \end{figure}
@@ -1014,10 +1012,9 @@ Taiwan           & 3.67             & 72
 	\includegraphics[width=\textwidth]{\figdir/Math/d300_ws1_dot_cosine.pdf}
 	\caption{
 		\textbf{Cosine distance is correlated with dot product similarity.}
-		Calculated as the pairwise cosine distance (x-axis) and dot product similarity (y-axis) between organizational vectors.
-		The two quantities are correlated with $R^{2} = 0.73$.
-		Color indicates frequency of organizations in hex bin.
-		Black dots are the mean dot product similarity for binned sets of embedding similarity and error bars correspond to 95\textsc{th} percentile confidence intervals.
+		We find a relatively high correlation between the embedding distance---one minus the cosine similarity---and the dot product similarity between organization vectors ($R^2 = 0.73$).
+		Color of each hex bin indicates the frequency of organization pairs. 
+		Black dots indicate the mean dot product similarity averaged over binned sets at the same embedding distance.
 		Red line is line of best fit.
 	}
 	\label{fig:supp:hyperparams}
@@ -1033,11 +1030,12 @@ Taiwan           & 3.67             & 72
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_geo_bymodel.pdf}
 	\caption{
 		\textbf{For geographic distance, the power-decay gravity model is better.}
-		Predictions of flux between organization pairs made using geographic distance the exponential gravity model (top), and the power-law decay model (bottom).
+		Flux between organization pairs predicted by the gravity model with different distance decay functions, i.e., exponential decay function (\textbf{a}) and power-law decay function (\textbf{b}) using geographic distance.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		Shown using all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility.
-		The power-decay model outperforms the exponential gravity model.
+		Box color corresponds to the degree to which the distribution overlaps with $x = y$; 
+		a perfect prediction yields all points on the black line.
+		Shown for all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility.
+		The gravity model with the power-decay function outperforms that with an exponential decay function.
 	}
 	\label{fig:supp:predict_geo_bymodel}
 \end{figure}
@@ -1051,12 +1049,13 @@ Taiwan           & 3.67             & 72
 	\centering
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_emb_bymodel.pdf}
 	\caption{
-		\textbf{For embedding distance, the exponential gravity model is better.}
-		Predictions of flux between organization pairs made using embedding distance the exponential gravity model (top), and the power-law decay model (bottom).
+		\textbf{For geographic distance, the power-decay gravity model is better.}
+		Flux between organization pairs predicted by the gravity model with different distance decay functions, i.e., exponential decay function (\textbf{a}) and power-law decay function (\textbf{b}) using embedding distance.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		Shown using all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility.
-		The exponential gravity model out-performs the power-decay model.
+		Box color corresponds to the degree to which the distribution overlaps with $x = y$; 
+		a perfect prediction yields all points on the black line.
+		Shown for all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility.
+		The gravity model with the exponential decay function outperforms that with a power-decay function.
 	}
 	\label{fig:supp:predict_emb_bymodel}
 \end{figure}
@@ -1070,15 +1069,15 @@ Taiwan           & 3.67             & 72
 	\centering
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
 	\caption{
-		\textbf{Embedding distance explains more variance for global, within, and between country flux than geographic distance.}
+		\textbf{Embedding distance explains more variance for global, within, and across country flux than geographic distance.}
 		\textbf{a.}
-		Embedding distance (cosine distance between vectors) explains more of the total distance than does geographic distance (\textbf{b}).
-		Red line is line of best fit.
+		Embedding distance explains more flux than geographic distance (\textbf{b}).
+		Red line is the line of best fit.
 		Black dots are mean flux across binned distances.
-		Color indicates frequency of organization pairs within each hex bin.
+		Color of each hex bin indicates frequency of organization pairs.
 		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}a and Fig.~\ref{fig:gravity_performance}.
-		\textbf{c-d.}	embedding distance explains more variance when considering only pairs of organizations within the same country.
-		\textbf{e-f.} embedding distance is more robust than geographic distance for pairs of organizations in different countries.
+		\textbf{c-d.}	embedding distance explains more variance when considering only within-country organization pairs.
+		\textbf{e-f.} embedding distance is more robust than geographic distance when considering only across-country organization pairs.
 	}
 	\label{fig:supp:gravity_correlation}
 \end{figure}
@@ -1095,9 +1094,10 @@ Taiwan           & 3.67             & 72
 		\textbf{Little difference between gravity predictions fit on all or subsets of data.}
 		Predictions of flux between organization pairs made using embedding distance out-performs those made using geographic distance.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$.
-		\textbf{a-b.} Predictions are made with parameter, estimating parameters from all pairs of organizations, making global predictions (as in Fig.~\ref{fig:gravity_performance}c), and showing only subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
-		\textbf{c-d.} Predictions made by estimating gravity law parameters on subset of organizations in the same country (\textbf{c}) and different country \textbf{d});
+		Box color corresponds to the degree to which the distribution overlaps the line $x = y$; 
+		a perfect prediction yields all points on the black line.
+		\textbf{a-b.} Predictions are made with parameters estimated from all pairs of organizations (as in Fig.~\ref{fig:gravity_performance}c), and showing only the subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
+		\textbf{c-d.} Predictions made using parameters estimated from the subset of organizations in the same country (\textbf{c}) and different country \textbf{d});
 		this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h.
 	}
 	\label{fig:supp:gravity_prediction_subsets}
@@ -1121,7 +1121,8 @@ Taiwan           & 3.67             & 72
 		Color indicates frequency of organization pairs within each hex bin.
 		Similarly, PPR distance performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$;
+		a perfect prediction yields all points on the black line.
 	}
 	\label{fig:supp:gravity_dot}
 \end{figure}
@@ -1139,13 +1140,14 @@ Taiwan           & 3.67             & 72
 		\textbf{Personalized page rank with cosine distance.}
 		Performance of personalized page rank scores in explaining and predicting mobility.
 		Personalized page rank is calculated for the underlying mobility network, and distance measured as the cosine distnace between PPR probability distribution vectors.
-		PPR cosine distance performs roughly similar to geographic distance in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
-		Red line is line of best fit.
-		Black dots are mean flux across binned distances.
-		Color indicates frequency of organization pairs within each hex bin.
+		PPR cosine distance performs roughly similar to geographic distance in explaining global(\textbf{a}), domestic (\textbf{b}), or international (\textbf{c}) country mobility.
+		Red line is the line of best fit.
+		Black dots indicate the mean flux across binned distances.
+		Color of hex bind indicates frequency of organization pairs.
 		Similarly, PPR distance performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$;
+		a perfect prediction yields all points on the black line.
 	}
 	\label{fig:supp:gravity_pprcos}
 \end{figure}
@@ -1163,13 +1165,14 @@ Taiwan           & 3.67             & 72
 		Performance of personalized page rank scores in explaining and predicting mobility.
 		Personalized page rank is calculated for the underlying mobility network, and distance measured as the Jensen-Shannon Divergence (JSD) between PPR probability distribution vectors.
 		PPR JSD performs roughly similar to geographic distance in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
-		Overall, PPR JSD explains more vairance in mobility than using cosine distance (Fig.~\ref{fig:supp:gravity_pprcos}), except for international mobility, for which cosine similarity out-performs JSD.
-		Red line is line of best fit.
+		Overall, PPR JSD explains more variance in mobility than using cosine distance (Fig.~\ref{fig:supp:gravity_pprcos}), except for international mobility, for which cosine similarity out-performs JSD.
+		Red line is the line of best fit.
 		Black dots are mean flux across binned distances.
-		Color indicates frequency of organization pairs within each hex bin.
+		Color of hex bind indicates frequency of organization pairs.
 		Similarly, PPR JSD performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$;
+		a perfect prediction yields all points on the black line. 
 	}
 	\label{fig:supp:gravity_pprjsd}
 \end{figure}
