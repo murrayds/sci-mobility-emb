@@ -91,7 +91,7 @@ plot <- plotdata %>%
     panel.background = element_rect(size = 0.5),
   ) +
   xlab("Rank") +
-  ylab("% all mobile researchers by country")
+  ylab("Proportion all mobile researchers by country")
 
 
 p <- egg::set_panel_size(plot,

@@ -106,7 +106,7 @@ plot <- plotdata %>%
       axis.text = element_text(size = 11),
     ) +
     xlab("Rank") +
-    ylab("% mobility in each country")
+    ylab("Proportion mobility in each country")
 
 p <- egg::set_panel_size(plot,
                          width  = unit(FIG_WIDTH, "in"),
