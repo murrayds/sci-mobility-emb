@@ -103,7 +103,7 @@ However, geographic distance is becoming less relevant in the increasingly-globa
 However, existing functional distance are often arbitrary and consider only single isolated facets of mobility.
 Using the case study of scientific mobility, we demonstrate the a neural embedding model can successfully encode the affiliation trajectories of scientists into a vector-space representation of organizations~\autocite{mikolov2013word2vec} from which a functional distance can be derived.
 We show that the proposed functional distance reflects the multi-faced structure of scientists' mobility that is not explained by geographic distance alone, capturing relations based on culture, language, and academic prestige at multiple levels of granularity.
-The vector representations of organizations themselves also reveal insights into the landscape of global scientific mobility, such as a relationship between organizations' size and their connectedness that is consistent across most countries. 
+The vector representations of organizations themselves also reveal insights into the landscape of global scientific mobility, such as a relationship between organizations' size and the norm of its vector that is consistent across most countries. 
 The ability to learn scalable, dense, and meaningful high-resolution vector representations of mobility directly from the data can open up a new avenue of studying human mobility.
 
 \end{abstract}
@@ -144,7 +144,7 @@ We use the trajectories of more than three million name-disambiguated authors wh
 
 
 A vector-space embedding of organizations is learned by using affiliation trajectories as input to the standard skip-gram with negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
-This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
+This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
 They are also computationally efficient, robust to noise, and can encode relations between entities as geomemetric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
 In the organization embedding, each organization is encoded into a single vector, and vectors relate to one another based on the likelihood of organizations appearing adjacent to one another in the same affiliation trajectory.
 The functional distance between two organizations is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}.
@@ -407,7 +407,7 @@ Moreover, this approach can be used to learn a functional distance between entit
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, the structure of the neural embedding space is amenable to a range of unique applications for studying mobility.
 As we have shown, the embedding space allows the visualization of the complex structure of scientific mobility at high resolution across multiple scales, providing a large and detailed map of the landscape of global scientific mobility.
 SemAxis~\autocite{an2018semaxis} allows us to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
-Investigation of the structure of the embedding space, such as the vector norm, reveals unique and universal patterns based on organization's size and connectedness and could contribute to deeper understandings of scientific mobility.
+Investigation of the structure of the embedding space, such as the vector norm, reveals unique and universal patterns based on organization's size and their vector norm that could be leveraged in future studies of mobility.
 Neural embedding opens the door for new approaches to represent and study scientific mobility, and also mobility more generally.
 
 
@@ -487,7 +487,7 @@ where,
 p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{i} \cdot \bm{v}_{a_{j}})}{\sum_{n=1}^N \exp(\bm{u}_{n} \cdot \bm{v}_{a_{j}})},
 \end{equation}
 where $a_{t+\tau} = j \vert a_{t+\tau} = i$, and $N$ is the number of unique organizations represented in the data, and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively.
-The in-vector and out-vectors are different kinds of vector representations for organizations. We only use the in-vector, $v$, because the in-vector is more widely used and often superiors to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2016twitch}.
+The in-vector and out-vectors are different kinds of vector representations for organizations. We only use the in-vector, $v$, because the in-vector is more widely used and often superiors to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}.
 
 
 %% Word2vec parameters and training procedure
@@ -1189,7 +1189,7 @@ Taiwan           & 3.67             & 72
 		The network demonstrates country-level structure, but not at the detail or the extent of the global UMAP projection (Fig.~\ref{fig:projection}a).
 		Each node corresponds to an organization, whereas  weighted edges (not shown) correspond to the flow of mobile researchers between the two organization.
 		Nodes are colored by the country of the organization.
-		Nodes are positioned using the force atlas layout algorithm.
+		Nodes are positioned using the Force Atlas layout algorithm.
 	}
 	\label{fig:supp:network_vis}
 \end{figure}
@@ -1219,7 +1219,7 @@ Taiwan           & 3.67             & 72
 	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Pennsylvania.pdf}
 	\caption{
 		\textbf{UMAP Projection of organizations in Pennsylvania.}
-		UMAP projection of the embedding space of organizations in Pennsylvania reveal clustering based on geography, sector, and academic prestige.
+		UMAP projection of the embedding space of organizations in Pennsylvania reveals clustering based on geography, sector, and academic prestige.
 		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019.
 		Color indicates the sector.
 	}
@@ -1268,7 +1268,7 @@ Taiwan           & 3.67             & 72
 	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_compare_fig.pdf}
 	\caption{
 		\textbf{SemRank hierarchy is robust.}
-		\textbf{a.} Spearman's $rho$ (n = 143) between Times prestige rank and embedding rank derived using SemAxis, with poles defined using the top and bottom (geographically matched) ranked universities.
+		\textbf{a.} Spearman's $\rho$ ($n = 143$) between Times prestige rank and embedding rank derived using SemAxis, with poles defined using the top and bottom (geographically matched) ranked universities.
 		Black points show spearman correlation using all organizations; white points show correlation using only universalizes not aggregated in the poles.
 		Including more universities improves performance, but quickly saturates after around five universities.
 		\textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by the number of universities used to define the poles (n).
@@ -1290,7 +1290,7 @@ Taiwan           & 3.67             & 72
 	\caption{
 		\textbf{Network centrality is strongly correlated with Times ranking.}
 		Comparison between the ranking of organizations by their network-centrality rank and their rank in the 2018 Times Higher Education ranking of U.S. Universities .
-		The Times rank is correlated with degree centrality rank (\textbf{a}) with a Spearman's $\rho = 0.73$, and is correlated with the eigenvector centrality rank (\textbf{b}) with a Spearman's $\rho = 0.76$.
+		The Times rank is correlated with degree centrality rank (\textbf{a}) with Spearman's $\rho = 0.73$, and is correlated with the eigenvector centrality rank (\textbf{b}) with Spearman's $\rho = 0.76$.
 	}
 	\label{fig:supp:centrality_times_compare}
 \end{figure}
@@ -1306,7 +1306,7 @@ Taiwan           & 3.67             & 72
 	\caption{
 		\textbf{Network centrality less correlated with Embedding rank.}
 		Comparison between the ranking of organizations by their network-centrality rank and the embedding rank derived with SemAxis with poles defined using the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities .
-		Embedding rank is correlated with degree centrality rank (\textbf{a}) with a Spearman's $\rho = 0.45$, and is correlated with the eigenvector centrality rank (\textbf{b}) with a Spearman's $\rho = 0.55$.
+		Embedding rank is correlated with degree centrality rank (\textbf{a}) with Spearman's $\rho = 0.45$, and is correlated with the eigenvector centrality rank (\textbf{b}) with Spearman's $\rho = 0.55$.
 	}
 	\label{fig:supp:centrality_semaxis_compare}
 \end{figure}

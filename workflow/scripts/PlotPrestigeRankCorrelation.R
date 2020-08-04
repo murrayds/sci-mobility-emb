@@ -69,7 +69,7 @@ plot <- corr %>%
     legend.background = element_rect(colour="black", fill="white"),
     legend.title = element_blank()
   ) +
-  xlab("Num orgs in axis") +
+  xlab("Number of organizations used to define axis") +
   ylab(latex2exp::TeX("Spearman's $\\rho"))
 
 # Save the plot
