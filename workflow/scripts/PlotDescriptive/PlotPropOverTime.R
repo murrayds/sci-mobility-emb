@@ -58,7 +58,7 @@ plotdata <- flows.withmeta %>%
     # Set order and labels of the counts
     Scale = factor(Scale,
                  levels = c("count_org_mobile", "count_city_mobile", "count_region_mobile", "count_country_mobile"),
-                 labels = c("Org", "City", "Region", "Country"))
+                 labels = c("Organization", "City", "Region", "Country"))
   ) %>%
   group_by(Scale, pub_year) %>%
   summarize(
@@ -75,8 +75,11 @@ plot <- plotdata %>%
   guides(fill = guide_legend(ncol = 2)) +
   theme_minimal() +
   theme(
+    text = element_text(size = 12, family = "Helvetica"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.background = element_rect(size = 0.5),
     axis.title.x = element_blank(),
-    legend.text = element_text(size = 12, family = "Helvetica"),
     axis.title.y = element_text(size = 12, face = "bold"),
     legend.title = element_text(size = 12, face = "bold"),
     legend.position = c(0.2, 0.85),

@@ -54,22 +54,32 @@ plot <- researchers.meta.long %>%
   # Create a reverse ECDF Line
   geom_step(aes(y = 1 - ..y..), stat='ecdf') +
   # Add labels at x = 2 stating the proportion of mobile researchers
-  geom_label(data = labels,
-             aes(x = 2, y = ypos, label = format(round(cumulative, 2), nsmall = 2))
+  ggrepel::geom_label_repel(
+    data = labels,
+    aes(x = 2,
+        y = ypos,
+        label = format(round(cumulative, 2), nsmall = 2)),
+    min.segment.length = 0.1,
+    force = 0,
+    nudge_x = 1, nudge_y = 0.2,
+    segment.color = "grey",
+    segment.size = 0.25
   ) +
   # Split into sub-plots for org, city, region, and country
   facet_wrap(~key, nrow = 2, ncol = 2) +
-  scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), limits = c(0, 10)) +
-  scale_y_continuous(breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1.0), limits = c(-0.1, 1.1)) +
+  scale_x_continuous(breaks = c(1, 3, 5, 7, 9), limits = c(1, 9)) +
+  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1.0), limits = c(-0.1, 1.1)) +
   theme_minimal() +
   theme(
-    text = element_text(family = "Helvetica"),
+    text = element_text(family = "Helvetica", size = 12),
     axis.title = element_text(size = 12, face = "bold"),
     axis.text = element_text(size = 11),
     strip.text = element_text(size = 12, face = "bold"),
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(size = 0.5)
   ) +
-  xlab("#Affiliations per researcher") +
-  ylab("Fraction of data")
+  xlab("# affiliations per researcher") +
+  ylab("Fraction of researchers")
 
 
 # Save the plot
