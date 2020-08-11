@@ -98,7 +98,7 @@
 
 
 Human mobility and migration drive major societal phenomena such as the growth and evolution of cities~\autocite{wef2017migration, curiel2018citygravity},  epidemics~\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity}, economies~\autocite{kaluza2010cargo, kerr2011immigration}, and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}.
-Geographic distance and population have been considered as leading factors of human mobilit~\autocite{zipf1946gravity}.
+Geographic distance and population have been considered as leading factors of human mobility~\autocite{zipf1946gravity}.
 However, geographic distance is becoming less relevant in the increasingly-globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization, altbach2004globalization} in which physical barriers are shrinking while linguistic, cultural, and historical relationships are becoming more important, which calls for alternative \textit{functional distances} that take these factors into account~\autocite{boschma2005proximity,  brown1970functional, brown1970migration, kim2018functional}.
 However, existing functional distance are often arbitrary and consider only single isolated facets of mobility.
 Using the case study of scientific mobility, we demonstrate the a neural embedding model can successfully encode the affiliation trajectories of scientists into a vector-space representation of organizations~\autocite{mikolov2013word2vec} from which a functional distance can be derived.
@@ -129,7 +129,7 @@ To capture such complexity of human mobility, new approaches that incorporate it
 
 			
 Here, we propose using a neural embedding model that draws from real-world mobility trajectories to encode the complex landscape of global mobility into a dense, continuous, and meaningful vector-space representation, from which a \textit{functional distance} between places is derived.
-Using the case of scientific mobility, we demonstrate that the functional distance captures relations based on culture, language, and academic prestige, along with geographic relations, at multiple levels of granularity
+Using the case of scientific mobility, we demonstrate that the functional distance captures relations based on culture, language, and academic prestige, along with geographic relations, at multiple levels of granularity.
 
 
 Scientific mobility is a central driver of the increasingly-globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition}, being strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}.
@@ -236,9 +236,10 @@ At the same time, the embedding space also reflects a mix of geographic, histori
 The embedding space also allows us to \textit{zoom in} on subsets and re-project them using UMAP to reveal local relationships.
 For example, re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries between Egypt and the Philippines that largely corresponds to geography, but with some exceptions along the cultural and religious spectrums;
 Iraq is nearer to Malaysia in southeast-Asian than closer and more religiously-similar Saudi Arabia and Qatar.
-In fact, we compute the distance, $d$, between nations in the original embedding space as the cosine distance between the centroids of organizations vectors belonging to that country. 
+We also validate this finding quantitatively with the distance between nations  in the embedding space $d$,  cosine distance between the centroids of organizations vectors belonging to that country. 
 Then, Malaysia ($d=0.29$) is closer to Iraq more than Arabia ($d=0.50$) and Qatar ($d=0.51$).
-Linguistic and historical ties are also conspicuous.
+
+Linguistic and historical ties also effect the scientific mobility.
 We observe that Spanish-speaking post-colonial Latin American nations are positioned near Spain (Fig.~\ref{fig:projection}c), rather than nearby Portuguese-speaking nations ($d = 0.34$ vs. $d = 0.52$ for Mexico and $d = 0.39$ vs. $d = 0.49$ for Chile) reflecting linguistic and cultural ties.
 Similarly, North-African countries that were once under French rule such as Morocco are closer to France ($d =0.35$) than to similarly-distant European countries such as Spain ($d = 0.40$) and Italy ($d = 0.53$).
 Comparable structural patterns exist even within a single country.
@@ -268,14 +269,13 @@ Similar structures can be observed in other states such as among New York's CUNY
 \end{figure}
 
 
-Just as the embedding space makes it possible to ``zoom in'' on subsets of organizations, it is also possible to ``zoom out'' by aggregating organizational vectors.
+Just as the embedding space makes it possible to \textit{zoom in} on subsets of organizations, it is also possible to \textit{zoom out}  by aggregating organizational vectors.
 We can examine the country-level structure that governs scientific mobility.
-To this end, we define the representative vector of each country as the average of their organizational vectors.
-We then perform hierarchical clustering of nations that have at least 25 organizations represented in the embedding space based on their cosine similarity, excluding the United States which is a dominant hub well connected to most other countries (see Fig. \ref{fig:clustering}a).
+For the purpose, we define the representative vector of each country as the average of their organizational vector and perform hierarchical clustering of nations that have at least 25 organizations represented in the embedding space based on their cosine similarity, excluding the United States which is a dominant hub well connected to most other countries (see Fig. \ref{fig:clustering}a).
 The six identified clusters roughly correspond to countries in East-Asia (orange), Scandinavia (dark purple), the British Commonwealth (light purple), and Central and Eastern Europe (light blue), and then two remaining diverse clusters contain a mix of European, Latin American, and Mediterranean countries.
 The cluster structure shows that not only geography but also linguistic ties between countries are related to scientific mobility.
 
-We quantify the relative importance of geography (by region), and language (by most widely-spoken language of each country) using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a ``zooming lens''.
+We quantify the relative importance of geography (by region), and language (by most widely-spoken language of each country) using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering by explicitly adjusting the relative importance of different levels of the hierarchy with scaling parameter $r$, acting like a \textit{zooming lens}.
 If $r$ is high, the similarity is based on the lower levels of the dendrogram, whereas when $r$ is low, the similarity is based on higher levels.
 Fig. \ref{fig:clustering}b demonstrates that the region plays a major role at higher levels of the clustering process (low $r$), and language (family) explains the clustering more at the lower levels (high $r$).
 This suggests that the embedding space captures the hierarchical structure of mobility---at the highest level, geography defines the embedding space, followed by language.
@@ -311,13 +311,13 @@ Prestige hierarchy is known to underpin the dynamics of scientific mobility, whe
 We test this by exploiting the geometric properties of the embedding space with SemAxis~\autocite{an2018semaxis}.
 Here, we use SemAxis to operationalize the abstract notion of academic prestige, defining an axis in the embedding space where poles are defined using known high- and low-ranked universities.
 To define prestige of ranked U.S. ranked universities, we use the Times Ranking of World Universities (we also use research impact from the Leiden Rankings~\autocite{waltman2012leidenrankings}, see \SI);
-the high-rank pole is defined as the mean vector of the top five U.S. universities according to the rankings, whereas the low-ranked pole is defined using the five bottom-ranked (geographically-matched by U.S. census region) universities.
+the high-rank pole is defined as the average vector of the top five U.S. universities according to the rankings, whereas the low-ranked pole is defined using the five bottom-ranked (geographically-matched by U.S. census region) universities.
 We derive an embedding-based ranking for universities based on their nearness to the high-ranked pole.
 
 The embedding space encodes the prestige hierarchy of U.S. universities that are coherent with real-world university rankings.
 The embedding-based ranking is strongly correlated with the Times ranking (Spearman's $\rho = 0.73$, Fig.~\ref{fig:semaxis}a).
 For reference, the embedding-based ranking achieves correlation with the Times ranking comparable to that between the Times ranking and the publication impact scores from the Leiden Ranking~\autocite{waltman2012leidenrankings}, a bibliometrically-based university ranking (Spearman's $\rho = 0.87$, Fig.~\ref{fig:semaxis}b).
-The correlation between the embedding-based ranking and the Times ranking is robust regardless of the number of organizations used to define the axes (Fig. SI~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities produces a ranking that is significantly correlated with the Times ranking (Spearman's $\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
+The correlation between the embedding-based ranking and the Times ranking is robust regardless of the number of organizations used to define the axes (Fig. ~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities produces a ranking that is significantly correlated with the Times ranking (Spearman's $\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
 The correlation is also comparable to network-driven measures such as degree strength (sum of edge weights, Spearman's $\rho = 0.73$) and eigenvector centrality (Spearman's $\rho = 0.76$, see \SI). 
 The strongest outliers that were ranked more highly in the Times ranking than in the embedding-based ranking tend to be large state universities such as Arizona State University and  University of Florida.
 Those ranked higher in the embedding based ranking tend to be relatively-small universities near major urban areas such as the University of San Francisco and University of Maryland Baltimore County.
@@ -571,9 +571,9 @@ We follow standard practice and exclude zero flows from our analysis.
 SemAxis~\autocite{an2018semaxis, nakandala2017gendered, kozlowski2018geometry} leverages the latent semantic characteristics of word embeddings to represent the position of terms along a conceptual axis, reflecting the relationship of these terms to a corresponding concept.
 Each axis is an antonym pair defined for each specific use case.
 In the case of natural language, the poles of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''.
-By treating organizations analogously to words and trajectories analogously to sentences, we can use SemAxis to leverage the semantic properties of the resulting embedding vectors to operationalize abstract relationships between organizations.
+By treating organizations analogously to words and trajectories analogously to sentences, we can use SemAxis to leverage the semantic properties of the embedding vectors to operationalize abstract relationships between organizations.
 
-Let $S^+ = \{\bm{v}_1^+, \bm{v}_2^+ \cdots \bm{v}_n^+\}$ and $S^- =\{\bm{v}_1^-, \bm{v}_2^- \cdots \bm{v}_n^-\}$ be the set of positive and negative pole organization vectors respectively. 
+ Let $S^+ = \{\bm{v}_1^+, \bm{v}_2^+ \cdots \bm{v}_n^+\}$ and $S^- =\{\bm{v}_1^-, \bm{v}_2^- \cdots \bm{v}_n^-\}$ be the set of positive and negative pole organization vectors respectively. 
 Then, the average vectors of each set can be calculated as $\bm{V}^{+} = \frac{1}{n}\sum^n_{i=1} \bm{v}_i^+$ and $\bm{V}^{-} = \frac{1}{n}\sum^n_{i=1} \bm{v}_i^-$. 
 From these average vectors of each set of poles, the semantic axis is defined as $\bm{V}_{\text{axis}} = \bm{V}^{+} - \bm{V}^{-}$. Then,  a score of organization $a$ is calculated as the cosine similarity of the organization's vector with the axis,
 
