@@ -327,7 +327,9 @@ This suggests that organizations in the embedding space are arranged according t
 The axes can further be visualized to examine the relative position of organizations along the prestige axis, and along a geographic axis between California and Massachusetts to aid visualization.
 Prestigious universities such as Columbia, Stanford, MIT, Harvard, and Rockefeller are positioned towards the top of the axis (Fig.~\ref{fig:semaxis}c).
 Universities at the bottom of this axis tend to be regional universities with lower national profiles (yet still ranked by Times Higher Education) and with more emphasis on teaching, such as Barry University and California State University at Long Beach.
-By projecting other types of organizations onto the prestige axis, SemAxis offers a new means of reasoning about the prestige of organizations for which rankings are often low-resolution or incomplete, such as regional and liberal arts universities, seminaries, musical schools, and community colleges (Fig.~\ref{fig:semaxis}d), or for which no such rankings exist, such as government organizations (Fig.~\ref{fig:semaxis}d), and research institutes (Fig.~\ref{fig:semaxis}e).
+By projecting other types of organizations onto the prestige axis, SemAxis offers a new means of reasoning about the prestige of organizations for which rankings are often low-resolution, incomplete, or entirely absent such as regional and liberal arts universities, seminaries, musical schools, and community colleges (Fig.~\ref{fig:semaxis}d), government organizations (Fig.~\ref{fig:semaxis}d), and research institutes (Fig.~\ref{fig:semaxis}e).
+Using SemAxis, we can even construct quantitative rankings for these types of organizations that correlate with their citation impact (Fig.~\ref{fig:supp:sector_semaxis_impact}. 
+
 
 %
 % Figure - SemAxis results
@@ -1326,6 +1328,31 @@ Taiwan           & 3.67             & 72
 		Full organization names listed in Table~\ref{table:supp:orglabels}.
 	}
 	\label{fig:supp:semaxis_states}
+\end{figure}
+
+
+
+
+
+%
+% Figure - SemAxis By State
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/sector_rank_comparison.pdf}
+	\caption{
+		\textbf{SemAxis reconstructs publication impact in non-university sectors.}
+		Comparison between the ranking of organizations in each non-university sector by their citation impact and the embedding rank.
+		Citation impact is calculated as the mean-normalized citation score using papers published in the Web of Science database between 2008 and 2019. 
+		The embedding rank is derived by first projecting non-university organizations onto the SemAxis axis formed with poles defined using the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities.
+		\textbf{a} Shows how the correlation between the citation impact and SemAxis rankings differ while varying the size threshold for including an organization.
+		Size is calculated as the mean annualized number of unique authors publishing with that organization. 
+		Annotations show the number of organizations remaining at thresholds pf 0, 50, and 100. 
+		\textbf{b}. Comparison of organizations using a size threshold of 10 for regional and liberal arts colleges, and 50 for research institutes and government organizations;
+		these thresholds were chosen as points thresholds of stability in \textbf{a}. 		
+		The impact rank is correlated with the embedding rank for regional and liberal arts colleges with Spearman's $\rho = 0.49 (n = 48)$, research institutes with Spearman's $\rho = 0.58 (n = 159)$, and for government organizations with Spearman's $\rho = 0.36 (n = 55)$. 
+	}
+	\label{fig:supp:sector_semaxis_impact}
 \end{figure}
 
 
