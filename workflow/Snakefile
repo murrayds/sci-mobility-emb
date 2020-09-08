@@ -50,6 +50,7 @@ MOBILITY_TRAJECTORIES_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{traj}', '{year}_
 ORG_SIZES = osjoin(RAW_DATA_DIR, '2008-2019_inst_sizes.txt')
 ORG_STATE_NAMES = osjoin(ADDITIONAL_DATA_DIR, 'org_states.csv')
 US_CENSUS_REGIONS = osjoin(ADDITIONAL_DATA_DIR, 'usa_states_to_regions.csv')
+ORG_IMPACT = osjoin(ADDITIONAL_DATA_DIR, 'org_impact_scores.txt')
 
 ######################
 # Mobility sentences #
@@ -166,9 +167,10 @@ SEMAXIS_2D_COASTS_PRESTIGE_OVERALL_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}'
 SEMAXIS_2D_COASTS_PRESTIGE_STATE_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'states', '{state}_coasts_{ranking}_rank_2Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_2D_COASTS_PRESTIGE_SECTOR_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'sectors', '{sector}_coasts_{ranking}_rank_2Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_RANK_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'n{numorgs}_{ranking}_semcompare_d{dimensions}_ws{window}.pdf')
+IMPACT_SEMAXIS_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'sector', '{sector}_n{numorgs}_{ranking}_sem-impact_compare_d{dimensions}_ws{window}.pdf')
 TIMES_LEIDEN_COMPARE_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'times_leiden_compare.pdf')
 RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correlation.pdf')
-
+IMPACT_SEMAXIS_BY_THRESHOLD_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'threshold_n{numorgs}_{ranking}_sem-impact_d{dimensions}_ws{window}.pdf')
 
 # Network plots
 CENTRALITY_TIMES_RANK_PLOT = osjoin(NETWORK_FIGURE_DIR, '{traj}', '{measure}_{traj}_centrality_times_compare.pdf')
@@ -408,6 +410,19 @@ rule all:
         expand(SEMAXIS_RANK_COMPARISON_PLOT,
                ranking = RANKINGS,
                numorgs = NUMORGS,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
+        expand(IMPACT_SEMAXIS_COMPARISON_PLOT,
+               ranking = RANKINGS,
+               numorgs = 5,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE,
+               sector = SECTORS),
+        expand(IMPACT_SEMAXIS_BY_THRESHOLD_PLOT,
+               ranking = RANKINGS,
+               numorgs = 5,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
