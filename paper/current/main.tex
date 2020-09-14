@@ -436,7 +436,7 @@ With the changing paradigm of global mobility we need now, more than ever, new t
 
 Data, analysis, and associated code have been made publicly available and can be found at \url{https://github.com/murrayds/sci-mobility-emb}.
 
-\subsection*{Data}
+\subsection*{Data - Scientific mobility}
 %% Main dataset
 % Do we need to talk about how we define mobility in relation to past papers?
 We source co-affiliation trajectories of authors from the Web of Science database hosted by the Center for Science and Technology Studies at Leiden University.
@@ -457,12 +457,16 @@ In most cases, countries with a high degree of inter-organization mobility also 
 However, some countries such as France and the United States seem to have more domestic mobility than international mobility.
 While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (Fig.~\ref{fig:supp:pubs_over_time}).
 
+\subsection*{Data -US Airport Itinerary data}
+We use US airport itinerary data from the Bureau of Transportation statistics provided by the United States Department of Transportation. Origin and Destination Survey (DB1B) is a 10\% sample of domestic airline tickets, including origin, destination, and other itinerary details. Trajectories are represented as the list of airport code, cover itinerary between 1993 to 2020 and 30,776,0841 trajectory in total and the unique number of airports is 838.
+
+
 
 
 
 \subsection*{Embedding}
 %% Mobility sentences
-We embed co-affiliation trajectories by treating them analogously to sentences and organizations analogously to words.
+We embed co-affiliation trajectories by treating them analogously to sentences and organizations analogously to words. 
 The trajectories of mobile authors were converted to ``affiliation trajectories'' by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}a.
 In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple publications in the same year, the order is randomized within that year, as shown in  Fig.~\ref{fig:methods:mobility_sentence}b.
 
