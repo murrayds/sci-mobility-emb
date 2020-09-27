@@ -100,7 +100,8 @@
 Human mobility and migration drive major societal phenomena such as the growth and evolution of cities~\autocite{wef2017migration, curiel2018citygravity},  epidemics~\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity}, economies~\autocite{kaluza2010cargo, kerr2011immigration}, and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}.
 Historically, human mobility is strongly constrained by physical separation---geographical distance~\autocite{zipf1946gravity}.
 However, geographic distance is becoming less relevant in the increasingly-globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization, altbach2004globalization} in which physical barriers are shrinking while linguistic, cultural, and historical relationships are becoming more important, which calls for an alternative modeling framework for human mobility that take these factors into account~\autocite{boschma2005proximity,  brown1970functional, brown1970migration, kim2018functional}.
-Here, using a massive dataset of scientific mobility, we demonstrate a neural embedding model can successfully encode nuanced relationships between locations into a vector-space ~\autocite{mikolov2013word2vec}, providing an effective functional distance that reflects the multi-faced structure of scientists' mobility and capturing cultural, linguistic relations, and even academic prestige at multiple levels of granularity, as well as implicit hierarchical structure.
+Here, using a massive dataset of scientific mobility and U.S. flight itineraries, we demonstrate a neural embedding model that successfully encodes nuanced relationships between locations into a vector-space ~\autocite{mikolov2013word2vec}, providing an effective functional distance that reflects the multi-faced structure of human mobility. 
+Focusing on the case of scientific mobility between organizations, we show that the embedding captures cultural and linguistic relations, and even academic prestige at multiple levels of granularity, as well as implicit hierarchical structure.
 Furthermore, vector representations of organizations themselves also reveal insights into the landscape of global scientific mobility, such as a relationship between organizations' size and the norm of its vector that is consistent across most countries. 
 The ability to learn scalable, dense, and meaningful high-resolution vector representations of mobility directly derived from the data can open up a new avenue of studying human mobility.
 
@@ -143,6 +144,10 @@ This neural embedding model, originally designed for learning language models~\a
 They are also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
 As a result, each organization is encoded into a single vector representation, and vectors relate to one another based on the likelihood of organizations appearing adjacent to one another in the same affiliation trajectory.
 
+This procedure is repeated for a dataset of U.S. flight itinerary data, in which trajectories were formed from the unique identifiers of Airports in more than 300 million passenger flight itineraries between 1993 and 2020.
+As with scientific mobility, we use a neural embedding model to learn a vector-space representation of 828 U.S. airports from passenger trajectories (see Data and Methods).
+ 
+
 %
 % Figure - Example of mobility sentences
 %
@@ -184,10 +189,17 @@ The embedding distance correlates with and can be used to predict real-wold mobi
 The amount of variance in the expected flux explained by embedding distance ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) is more than twice that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
 This pattern holds when considering the subset of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
 We fit the gravity model given by Eq.~\ref{eq:gravity_basic} (see Data and Methods) and computed the expected flux  $\hat{T}_{ij}$ using geographic distance and embedding distance as parameters.
-The embedding distance produces better predictions of actual flux than does geographic distance (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}), which also holds for the subsets of only domestic and only international mobility.
+The embedding distance produces better predictions of actual flux than does geographic distance (Fig.~\ref{fig:gravity_performance}c-d), which also holds for the subsets of only domestic and only international mobility (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
 The embedding distance defined from the cosine distance between vectors also outperforms that defined from their dot product ($R^{2} = 0.34$, Fig.~\ref{fig:supp:gravity_dot}).
 The embedding distance also out-performs alternative ``diffusion-based'' network distance measures such as the personalized-page rank scores (see \SI) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
 Our results unequivocally demonstrate that the embedding distance better captures patterns of actual scientific mobility than does geographic distance.
+
+This approach is generalizable to other domains, such as learning a functional distance between airports. 
+We learned an embedding of U.S. airports following a similar procedure as scientific mobility, using trajectories formed by the flight itineraries of individual passengers (see Data and Methods).
+As with scientific mobility, the embedding approach better predicts real-world flows of airline passengers than does geographic distance. 
+Embedding distance explains more of the expected flux between U.S. airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}e) than does geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}f). 
+Fitting the data to the gravity model given by Eq.~\ref{eq:gravity_basic} using each of embedding and geographic distance as parameters, and we find that predictions made using embedding distance out-performed those made using geographic distnace (Fig.~\ref{fig:gravity_performance}g-h). 
+These results demonstrate that embeddings are applicable to a diverse range of mobility trajectory data. 
 
 
 %
@@ -209,6 +221,7 @@ Our results unequivocally demonstrate that the embedding distance better capture
 		Box color corresponds to the degree to which the distribution overlaps with $y = x$;
 		a perfect prediction yields all points on the black line.
 		``RMSE'' is the root-mean-squared error between the actual and predicted values.
+		We show the generalizability of this approach by repeating it on a a dataset of U.S. flight itineraries. 
 		\textbf{e-f.} Embedding distance better explains the expected flux of passengers between U.S. airports than does geographic distance. 
 		\textbf{g-h.} Predictions of flux between airport pairs made using embedding distance outperform those made using geographic distance. 
 	}
@@ -218,7 +231,8 @@ Our results unequivocally demonstrate that the embedding distance better capture
 
 \subsection*{Embeddings capture global structure of mobility}
 
-The geometric space generated by the neural embedding methods sheds light on the multi-faceted relationships between organizations. To explore the topological structure of the embedding, we use a standard dimensionality reduction method (UMAP~\autocite{mcinnes2018umap}) to obtain a two-dimensional representation (Fig.~\ref{fig:projection}a).
+We focus on the case of scientific mobility, and investigate how the geometric space generated by the neural embedding method sheds light on the multi-faceted relationships between organizations. 
+To explore the topological structure of the embedding, we use a standard dimensionality reduction method (UMAP~\autocite{mcinnes2018umap}) to obtain a two-dimensional representation (Fig.~\ref{fig:projection}a).
 By showing relationships between individual organizations, rather than aggregates such as nations or cities, this projection constitutes the largest and highest resolution ``map'' of scientific mobility to date.
 
 Globally, the geographical constraints are conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors.
@@ -456,10 +470,9 @@ However, some countries such as France and the United States seem to have more d
 While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (Fig.~\ref{fig:supp:pubs_over_time}).
 
 \subsection*{Data -US Airport Itinerary}
-We use US airport itinerary data from the Bureau of Transportation statistics provided by the United States Department of Transportation. Origin and Destination Survey (DB1B) is a 10\% sample of domestic airline tickets, including origin, destination, and other itinerary details. Trajectories are represented as the list of airport code and cover itinerary between 1993 to 2020. There are 307,760,841 trajectories in total and the unique number of airports is 838.
-
-
-
+We source US airport itinerary data from the Origin and Destination Survey (DB1B), provided by the Bureau of Transportation Statistics at the United States Department of Transportation. 
+DB1B is a sample of 10 percent of domestic airline tickets between 1993 and 2020, comprising 307,760,841 passenger itineraries between 828 U.S. airports. 
+Each itinerary is associated with an origin, destination, and associated metadata. 
 
 
 \subsection*{Embedding}
