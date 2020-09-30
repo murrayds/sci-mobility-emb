@@ -50,6 +50,8 @@ MOBILITY_TRAJECTORIES_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{traj}', '{year}_
 ORG_SIZES = osjoin(RAW_DATA_DIR, '2008-2019_inst_sizes.txt')
 ORG_STATE_NAMES = osjoin(ADDITIONAL_DATA_DIR, 'org_states.csv')
 US_CENSUS_REGIONS = osjoin(ADDITIONAL_DATA_DIR, 'usa_states_to_regions.csv')
+ORG_IMPACT = osjoin(ADDITIONAL_DATA_DIR, 'org_impact_scores.txt')
+AIRPORT_DATA = osjoin(RAW_DATA_DIR, 'airport_ws1_d300.csv')
 
 ######################
 # Mobility sentences #
@@ -166,14 +168,19 @@ SEMAXIS_2D_COASTS_PRESTIGE_OVERALL_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}'
 SEMAXIS_2D_COASTS_PRESTIGE_STATE_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'states', '{state}_coasts_{ranking}_rank_2Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_2D_COASTS_PRESTIGE_SECTOR_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'sectors', '{sector}_coasts_{ranking}_rank_2Dsemaxis_d{dimensions}_ws{window}_n{numorgs}.pdf')
 SEMAXIS_RANK_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'n{numorgs}_{ranking}_semcompare_d{dimensions}_ws{window}.pdf')
+IMPACT_SEMAXIS_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'sector', '{sector}_n{numorgs}_{ranking}_sem-impact_compare_d{dimensions}_ws{window}.pdf')
 TIMES_LEIDEN_COMPARE_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'times_leiden_compare.pdf')
 RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correlation.pdf')
-
+IMPACT_SEMAXIS_BY_THRESHOLD_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'threshold_n{numorgs}_{ranking}_sem-impact_d{dimensions}_ws{window}.pdf')
 
 # Network plots
 CENTRALITY_TIMES_RANK_PLOT = osjoin(NETWORK_FIGURE_DIR, '{traj}', '{measure}_{traj}_centrality_times_compare.pdf')
 SEMAXIS_RANK_CENTRALITY_PLOT = osjoin(NETWORK_FIGURE_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{measure}_{ranking}_d{dimensions}_ws{window}_n{numorgs}_{traj}_centrality_compare.pdf')
 
+# Airport data plots
+GRAVITY_AIRPORT_PLOT = osjoin(FIGURE_DIR, 'Airport', 'Gravity', '{airdistance}_airport_gravity.pdf')
+AIRPORT_PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, 'Airport', '{airdistance}_predicted_vs_actual_airport.csv')
+AIRPORT_PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', 'Airport', '{model}_{airdistance}_predicted_vs_actual_airport.pdf')
 
 # MISC PLOTS
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
@@ -224,6 +231,7 @@ SECTORS = ['Teaching', 'Government', 'Institute']
 # Gravity law parameters
 TO_FILTER = ["filter"]
 DISTANCE_PARAMS = ['geo', 'emb', 'pprcos', 'pprjsd', 'dot']
+AIRPORT_DISTANCES = ['geo', 'emb']
 GEO_CONSTRAINTS = ['global',
                    'same-country',
                    'different-country']
@@ -266,6 +274,9 @@ include: 'Snakefile_Math.smk'
 
 # Rules relating to the math.
 include: 'Snakefile_Network.smk'
+
+# Rules relating to the Airport dataset.
+include: 'Snakefile_Airport.smk'
 
 ###############################################################################
 # TARGET RULE
@@ -411,6 +422,19 @@ rule all:
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE),
+        expand(IMPACT_SEMAXIS_COMPARISON_PLOT,
+               ranking = RANKINGS,
+               numorgs = 5,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE,
+               sector = SECTORS),
+        expand(IMPACT_SEMAXIS_BY_THRESHOLD_PLOT,
+               ranking = RANKINGS,
+               numorgs = 5,
+               traj = TRAJECTORIES,
+               dimensions = W2V_DIMENSIONS,
+               window = W2V_WINDOW_SIZE),
         expand(PRESTIGE_AGGREGATE_RANK_COR,
                ranking = RANKINGS,
                traj = TRAJECTORIES,
@@ -430,6 +454,13 @@ rule all:
                ranking = "times",
                dimensions = 300,
                window = 1),
+
+        # Airport
+        expand(GRAVITY_AIRPORT_PLOT, airdistance = AIRPORT_DISTANCES),
+        expand(AIRPORT_PREDICTED_VS_ACTUAL, airdistance = AIRPORT_DISTANCES),
+        expand(AIRPORT_PREDICTED_VS_ACTUAL_PLOT,
+               airdistance = AIRPORT_DISTANCES,
+               model = GRAVITY_MODEL_TYPES),
 
         # Misc
         ORG_LABEL_TABLE
