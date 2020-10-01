@@ -410,17 +410,16 @@ Similar patterns can be found across many of the 30 of the countries with the mo
 \section*{Conclusion}
 
 Neural embedding approaches offer a novel, data-driven solution for learning an effective and robust representation of locations based on trajectory data, encoding the complex and multi-faceted nature of mobility.
-We demonstrated how the embedding space encodes various aspects of scientific mobility, such as the global and regional geography, shared languages, and the hierarchy of organizational prestige, even without explicit information on these factors.
+We demonstrated that a functional distance derived from the embedding can be used with the gravity model of mobility to better predicts real-world mobility than does geographic distance.
+Embedding distance outperformed geographic distance both in the case of U.S. flight itineraries and global scientific mobility domains of mobility with very different characteristics. 
+Focusing on scientific mobility, we find that neural embedding's performance is driven by its ability to encode many aspects of scientific mobility into a single representation, including global and regional geography, shared languages, and prestige hierarchies, even without explicit information on these factors.
 
-
-
-While scientific mobility is used as a case study, this approach may be broadly applicable to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
+While we focus on data of U.S. flight itineraries and scientific mobility, this approach may be broadly applicable to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
 Moreover, this approach can be used to learn a functional distance between entities for which no physical analog exists, such as between occupational categories based on individuals' career trajectories.
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, the structure of the neural embedding space is amenable to a range of unique applications for studying mobility.
 As we have shown, the embedding space allows the visualization of the complex structure of scientific mobility at high resolution across multiple scales, providing a large and detailed map of the landscape of global scientific mobility.
 Embedding also allows us to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
 Investigation of the structure of the embedding space, such as the vector norm, reveals unique and universal patterns based on the organization's size and their vector norm that could be leveraged in future studies of mobility.
-
 
 
 In spite of its promise, our study has several limitations.
@@ -429,7 +428,7 @@ Second, the neural embedding approach is most useful in cases of mobility betwee
 Neither of these methodological limitations is insurmountable, and future work can aim to incorporate directionality and identify meaningful representations of continuous mobility data.
 Finally, the case of scientific mobility presents domain-specific limitations.
 Reliance on bibliometric metadata means that we capture only long-term mobility such as migration, rather than the array or more frequent short-term mobility such as conference travel and temporary visits.
-The kinds of mobility we do capture---migration, and co-affiliation---are ,although they are qualitatively different, treated identically by our model.
+The kinds of mobility we do capture---migration, and co-affiliation---although qualitatively different, are treated identically by our model.
 Also, our data might further suffer from survivorship bias: researchers at prestigious organizations tend to have more publications, leading to these organizations appearing more frequently in affiliation trajectories.
 
 
