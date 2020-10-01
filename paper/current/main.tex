@@ -447,7 +447,14 @@ With the changing paradigm of global mobility, we need now, more than ever, new 
 \section*{Data and Methods}
 \label{sec:datamethods} %{{{
 
-Data, analysis, and associated code have been made publicly available and can be found at \url{https://github.com/murrayds/sci-mobility-emb}.
+Processed data, analysis, and associated code have been made publicly available and can be found at \url{https://github.com/murrayds/sci-mobility-emb}.
+
+
+\subsection*{U.S. flight itinerary data}
+We source U.S. airport itinerary data from the Origin and Destination Survey (DB1B), provided by the Bureau of Transportation Statistics at the United States Department of Transportation. 
+DB1B is a sample of 10 percent of domestic airline tickets between 1993 and 2020, comprising 307,760,841 passenger itineraries between 828 U.S. airports. 
+Each itinerary is associated with an origin, destination, and passenger and ticket metadata. 
+
 
 \subsection*{Scientific mobility data}
 %% Main dataset
@@ -470,17 +477,12 @@ In most cases, countries with a high degree of inter-organization mobility also 
 However, some countries such as France and the United States seem to have more domestic mobility than international mobility.
 While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (Fig.~\ref{fig:supp:pubs_over_time}).
 
-\subsection*{U.S. Airport Itinerary data}
-We source U.S. airport itinerary data from the Origin and Destination Survey (DB1B), provided by the Bureau of Transportation Statistics at the United States Department of Transportation. 
-DB1B is a sample of 10 percent of domestic airline tickets between 1993 and 2020, comprising 307,760,841 passenger itineraries between 828 U.S. airports. 
-Each itinerary is associated with an origin, destination, and associated metadata. 
-
 
 \subsection*{Embedding}
 %% Mobility sentences
 We embed trajectories by treating them analogously to sentences and locations analogously to words. 
-For U.S. airport itinerary, trajectories are formed by the flight itineraries of individual passenger and each location is unique airport code.
-For scientific mobility, the trajectories of mobile authors were converted to ``affiliation trajectories'' by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}a.
+For U.S. airport itinerary, trajectories are formed from the flight itineraries of individual passenger, in which airports correspond to unique identifiers. 
+For scientific mobility, an``affiliation trajectories'' is constructed for each mobile author, which is built by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}a.
 In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple publications in the same year, the order is randomized within that year, as shown in  Fig.~\ref{fig:methods:mobility_sentence}b.
 
 %% word2vec
