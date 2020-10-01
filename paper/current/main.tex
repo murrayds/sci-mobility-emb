@@ -160,12 +160,13 @@ As a result, each location is encoded into a single vector representation, and v
         \textbf{Construction of affiliation trajectories from publication records}
         \textbf{a.}
         An author published five papers across five time periods, with only one affiliation listed in the byline of each paper.
-        A unique identifier is assigned to each each organization and they are assembled into an affiliation trajectory ordered by year of publication.
+        A unique identifier is assigned to each organization and they are assembled into an affiliation trajectory ordered by year of publication.
         \textbf{b.}
         If an author lists multiple organization affiliations within the same year, then organization IDs within that year are placed in random order in each training iteration of the \textit{word2vec} model (for more detail, see \SI).
     }
     \label{fig:methods:mobility_sentence}
 \end{figure}
+
 
 To validate our approach, we evaluate the quality of vector representations with their performance in predicting real-world mobility flows using the gravity model framework~\autocite{zipf1946gravity, barbosa2018human}.
 The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity} that models the \textit{expected flux}, $\hat{T}_{ij}$ between locations (organizations) based on their populations and distance:
@@ -187,21 +188,19 @@ We define the distance function in terms of either the geographic distance betwe
 %
 \subsection*{Embeddings provide functional distance between locations}
 
-The embedding distance correlates with and can be used to predict real-wold mobility flows better than geographic distance. 
-The amount of variance in the expected flux explained by embedding distance ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) is more than twice that of geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
+We show that the embedding distance, compared with the geographical distances, predicts actual mobility flows. 
+For the case of scientific mobility, the amount of variance in the expected flux explained by the embedding distance ($R^{2} = 0.46$, Fig.~\ref{fig:gravity_performance}a) is more than twice that of the geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b).
 This pattern holds when considering the subset of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
-We fit the gravity model given by Eq.~\ref{eq:gravity_basic} (see Data and Methods) and computed the expected flux  $\hat{T}_{ij}$ using geographic distance and embedding distance as parameters.
-The embedding distance produces better predictions of actual flux than does geographic distance (Fig.~\ref{fig:gravity_performance}c-d), which also holds for the subsets of only domestic and only international mobility (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
+We fit the gravity model given by Eq.~\ref{eq:gravity_basic} (see Data and Methods) and computed the expected flux  $\hat{T}_{ij}$ using the geographic distance and the embedding distance as parameters.
+The embedding distance produces better predictions of actual flux than does the geographic distance (Fig.~\ref{fig:gravity_performance}c-d), which also holds for the subsets of only domestic and only international mobility (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
 The embedding distance defined from the cosine distance between vectors also outperforms that defined from their dot product ($R^{2} = 0.34$, Fig.~\ref{fig:supp:gravity_dot}).
-The embedding distance also out-performs alternative ``diffusion-based'' network distance measures such as the personalized-page rank scores (see \SI) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-Our results unequivocally demonstrate that the embedding distance better captures patterns of actual scientific mobility than does geographic distance.
+The embedding distance also out-performs alternative ``diffusion-based'' network distance measures such as the personalized-page rank scores (see \SI) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}). These results are consistent in the U.S. flight itinerary data.
+As with scientific mobility, the embedding approach better predicts actual flows of airline passengers than the geographic distance. 
+The embedding distance explains more of the expected flux between U.S. airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}f). 
+By fitting the gravity model given by Eq.~\ref{eq:gravity_basic} using each of the embedding distance and the geographic distance as parameters, and we find that predictions with embedding distance out-performed those with the geographic distance (Fig.~\ref{fig:gravity_performance}g-h). 
+Our results demonstrate that the embedding distance better captures patterns of actual mobility than does the geographic distance across datasets.
 
-This approach is generalizable to other domains, such as learning a functional distance between airports. 
-We learned an embedding of U.S. airports following a similar procedure as scientific mobility, using trajectories formed by the flight itineraries of individual passengers (see Data and Methods).
-As with scientific mobility, the embedding approach better predicts real-world flows of airline passengers than does geographic distance. 
-Embedding distance explains more of the expected flux between U.S. airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}e) than does geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}f). 
-Fitting the data to the gravity model given by Eq.~\ref{eq:gravity_basic} using each of embedding and geographic distance as parameters, and we find that predictions made using embedding distance out-performed those made using geographic distnace (Fig.~\ref{fig:gravity_performance}g-h). 
-These results demonstrate that embeddings are applicable to a diverse range of mobility trajectory data. 
+
 
 
 %
