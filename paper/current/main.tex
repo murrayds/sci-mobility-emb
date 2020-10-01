@@ -413,7 +413,7 @@ See Supporting Information for more discussion.
 %
 \section*{Conclusion}
 
-Neural embedding approach offers a novel, data-driven solution for learning an effective and robust representation of locations based on trajectory data, encoding the complex and multi-faceted nature of mobility.
+Neural embedding approaches offer a novel, data-driven solution for learning an effective and robust representation of locations based on trajectory data, encoding the complex and multi-faceted nature of mobility.
 We demonstrated how the embedding space encodes various aspects of scientific mobility, such as the global and regional geography, shared languages, and the hierarchy of organizational prestige, even without explicit information on these factors.
 
 
@@ -454,7 +454,7 @@ With the changing paradigm of global mobility, we need now, more than ever, new 
 
 Data, analysis, and associated code have been made publicly available and can be found at \url{https://github.com/murrayds/sci-mobility-emb}.
 
-\subsection*{Data - Scientific mobility}
+\subsection*{Scientific mobility data}
 %% Main dataset
 % Do we need to talk about how we define mobility in relation to past papers?
 We source co-affiliation trajectories of authors from the Web of Science database hosted by the Center for Science and Technology Studies at Leiden University.
@@ -475,22 +475,23 @@ In most cases, countries with a high degree of inter-organization mobility also 
 However, some countries such as France and the United States seem to have more domestic mobility than international mobility.
 While the number of publications has increased year-to-year, the mobility and disciplinary makeup of the dataset has not significantly changed across the period of study (Fig.~\ref{fig:supp:pubs_over_time}).
 
-\subsection*{Data -US Airport Itinerary}
-We source US airport itinerary data from the Origin and Destination Survey (DB1B), provided by the Bureau of Transportation Statistics at the United States Department of Transportation. 
+\subsection*{U.S. Airport Itinerary data}
+We source U.S. airport itinerary data from the Origin and Destination Survey (DB1B), provided by the Bureau of Transportation Statistics at the United States Department of Transportation. 
 DB1B is a sample of 10 percent of domestic airline tickets between 1993 and 2020, comprising 307,760,841 passenger itineraries between 828 U.S. airports. 
 Each itinerary is associated with an origin, destination, and associated metadata. 
 
 
 \subsection*{Embedding}
 %% Mobility sentences
-We embed co-affiliation trajectories by treating them analogously to sentences and organizations analogously to words. 
-The trajectories of mobile authors were converted to ``affiliation trajectories'' by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}a.
+We embed trajectories by treating them analogously to sentences and locations analogously to words. 
+For U.S. airport itinerary, trajectories are formed by the flight itineraries of individual passenger and each location is unique airport code.
+For scientific mobility, the trajectories of mobile authors were converted to ``affiliation trajectories'' by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}a.
 In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple publications in the same year, the order is randomized within that year, as shown in  Fig.~\ref{fig:methods:mobility_sentence}b.
 
 %% word2vec
-These affiliation trajectories are used as input to the standard skip-gram negative sampling word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
-\textit{word2vec} constructs dense and continuous vector representations of words and phrases, in which distance between words corresponds to a notion of semantic distance. By embedding affiliation trajectories, we aim to learn a dense vector for every organization where the distance between vectors relates to the tendency for two organizations to occur in similar contexts.
-Suppose an affiliation trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th organization in the trajectory. An organization, $a_{t}$, is considered to have context organizations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$. Then, the model learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
+These trajectories are used as input to the standard skip-gram negative sampling word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
+\textit{word2vec} constructs dense and continuous vector representations of words and phrases, in which distance between words corresponds to a notion of semantic distance. By embedding trajectories, we aim to learn a dense vector for every locations where the distance between vectors relates to the tendency for two locations to occur in similar contexts.
+Suppose an trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th location in the trajectory. An location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$. Then, the model learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
 
 %
 % MAIN W2V Equation
@@ -506,17 +507,17 @@ where,
 \begin{equation}
 p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{i} \cdot \bm{v}_{a_{j}})}{\sum_{n=1}^N \exp(\bm{u}_{n} \cdot \bm{v}_{a_{j}})},
 \end{equation}
-where $a_{t+\tau} = j \vert a_{t+\tau} = i$, and $N$ is the number of unique organizations represented in the data, and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively.
-The in-vector and out-vectors are different kinds of vector representations for organizations. We only use the in-vector, $v$, because the in-vector is more widely used and often superiors to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}.
+where $a_{t+\tau} = j \vert a_{t+\tau} = i$, and $N$ is the number of unique locations represented in the data, and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively.
+The in-vector and out-vectors are different kinds of vector representations for locations. We only use the in-vector, $v$, because the in-vector is more widely used and often superiors to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}.
 
 
 %% Word2vec parameters and training procedure
-We used the \textit{word2vec}  implenetation in the python package \texttt{gensim}. 
+We used the \textit{word2vec}  implementation in the python package \texttt{gensim}. 
 The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
-For main results, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between organizations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}).
-To mitigate the effect of less common organizations, we set $f_{\min} = 50$, limiting to organizations appearing at least 50 times across the training trajectories;
-6,580 unique organizations appear in the resulting embedding.
-We set $\alpha$ to its default value of 0.025 and iterate five times over all training affiliation trajectories.
+For main results, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}).
+To mitigate the effect of less common locations, we set $f_{\min} = 50$, limiting to locations appearing at least 50 times across the training trajectories;
+744 unique airport for U.S. airport itinerary  and 6,580 unique organizations for scientific mobility appear in the resulting embedding.
+We set $\alpha$ to its default value of 0.025 and iterate five times over all training trajectories.
 
 
 %
@@ -524,18 +525,16 @@ We set $\alpha$ to its default value of 0.025 and iterate five times over all tr
 %
 \subsection*{Distance}
 %% Distance calculations
-We calculate $T_{ij}$ as the number of trajectories in which two organizations $i$ and $j$ appear together.
-For example, $T_{ij} = 10$ indicates that ten authors were affiliated with both organization $i$ and $j$ between 2008 and 2019, as evidenced from their publications.
-Organizations appearing multiple times in an affiliation trajectory are only counted once. 
-In affiliation trajectories where an organization appears multiple times, 
-We note that $T_{ij} = T_{ji}$.
+We calculate $T_{ij}$ as the total number of co-occurrence between two locations $i$ and $j$ across the data-set.
+For case in scientific mobility, $T_{ij} = 10$ indicates that the number of co-occurrence between both organization $i$ and $j$ between 2008 and 2019 is 10, as evidenced from their publications.
+We treat $T_{ij} = T_{ji}$ because directional information is not informative.
 
-We calculate two forms of the distance between organizations.
-The geographic distance, $g_{ij}$, is the pairwise geographic distance between organizations.
-Geographic distance is calculated as the great circle distance, in kilometers, between pairs of organizations.
+We calculate two forms of the distance between locations.
+The geographic distance, $g_{ij}$, is the pairwise geographic distance between locations.
+Geographic distance is calculated as the great circle distance, in kilometers, between pairs of locations.
 When less than one kilometer, a distance of 1 km is imputed.
 The embedding distance with the cosine distance, $d_{ij}$, is calculated as $d_{ij} = 1 - \frac{\bm{v}_{i} \cdot \bm{v}_{j}}{\lVert \bm{v}_{i} \rVert \lVert \bm{v}_{j} \rVert}$,
-where $v_i$ and $v_j$ are the embedding vectors for organizations $i$ and $j$, respectively.
+where $v_i$ and $v_j$ are the embedding vectors for locations $i$ and $j$, respectively.
 Note that $d_{ij}$ is not a formal metric because it does not satisfy the triangle inequality.
 Nevertheless, cosine distance is often shown to be useful in practice~\autocite{lerman2007embedding, brown1970migration, brown1970functional, kim2018functional}. 
 
@@ -546,7 +545,7 @@ Nevertheless, cosine distance is often shown to be useful in practice~\autocite{
 %
 \subsection*{Gravity Law}
 
-We model co-occurences $T_{ij}$ for organizations $i$, and $j$, often referred to as flux, using the gravity law of mobility~\autocite{zipf1946gravity}.
+We model co-occurences $T_{ij}$ for locations $i$, and $j$, often referred to as flux, using the gravity law of mobility~\autocite{zipf1946gravity}.
 The gravity law of mobility loosely derives from the physical law of gravity, in which the attraction between two objects is a function of their mass and the distance between them.
 This formulation and variants have proven useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}.
 In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ between two organizations $i$ and $j$ is defined as,
@@ -558,14 +557,14 @@ In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ betwe
 	\label{eq:gravity_basic}
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
-where $m_{i}$ and $m_{j}$ are the organization masses, or the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization during the time window, and $f(r_{ij})$ is a decay function of distance $r_{ij}$ between organizations $i$ and $j$. 
-There are two popular forms of the $f(r_{ij})$:
+where $m_{i}$ and $m_{j}$ are the population of locations which is the total number of passenger on each airport for U.S. airport itinerary and the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization for scientific mobility.  $f(r_{ij})$ is a decay function of distance $r_{ij}$ between locations $i$ and $j$. 
+There are two popular forms for the $f(r_{ij})$:
 one is a power law function in the form $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0$, and the other and the another one is an exponential function in the form $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  
 The parameters for $f(r_{ij})$ and $C$ are fit to given mobility data using a log-linear regression~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity, simini2012universal}.
 
-We consider separate variants of $f(r_{ij})$ for geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
-For geographic distance, we use the power-law function of the gravity law, $f(g_{ij})= g^{-\alpha}_{ij}$ (Eq.~\ref{eq:linear_flux_geo}).
-For embedding distance, we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$ (Eq.~\ref{eq:linear_flux_emb}).
+We consider separate variants of $f(r_{ij})$ for the geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
+For the geographic distance, we use the power-law function of the gravity law, $f(g_{ij})= g^{-\alpha}_{ij}$ (Eq.~\ref{eq:linear_flux_geo}).
+For the embedding distance, we use the exponential function, with $f(d_{ij}) = e^{-\beta d_{ij}}$ (Eq.~\ref{eq:linear_flux_emb}).
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
@@ -576,9 +575,9 @@ For embedding distance, we use the exponential function, with $f(d_{ij}) = e^{-\
 	\label{eq:linear_flux_emb}
 	\ln\frac{T_{ij}}{m_im_j} = \ln C - \beta d_{ij},
 \end{equation}
-where $T_{ij}$ is the real flux from the data. 
-The gravity law of mobility is sensitive to $T_{ij} = 0$, or zero movement between organizations.
-In our dataset, non-zero flows account for only 4.2 \% of all possible pairs of the 6,580 organizations represented in the embedding.
+where $T_{ij}$ is the actual flow from the data. 
+The gravity law of mobility is sensitive to $T_{ij} = 0$, or zero movement  between locations.
+In our dataset, non-zero flows account for only 4.2 \% of all possible pairs of the 6,580 organizations for scientific mobility, while 76.4\% of all possible pairs of the 744 airports for U.S. airport Itinerary.
 This value is comparable to other common applications of the gravity law, such as to phone calls, commuting, and migration \autocite{simini2012universal}.
 We follow standard practice and exclude zero flows from our analysis.
 
@@ -588,7 +587,7 @@ We follow standard practice and exclude zero flows from our analysis.
 % SUBSECTION: SEMAXIS
 %
 \subsection*{SemAxis}
-SemAxis~\autocite{an2018semaxis, nakandala2017gendered, kozlowski2018geometry} leverages the latent semantic characteristics of word embeddings to represent the position of terms along a conceptual axis, reflecting the relationship of these terms to a corresponding concept.
+SemAxis~\autocite{an2018semaxis, nakandala2017gendered, kozlowski2018geometry} and similar studies demonstrated that ``semantic axes'' can be found from an embedding space by defining the ``poles'' and the latent semantic relationship along semantic axis can be extracted with the simple arithmetic.
 Each axis is an antonym pair defined for each specific use case.
 In the case of natural language, the poles of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''.
 By treating organizations analogously to words and trajectories analogously to sentences, we can use SemAxis to leverage the semantic properties of the embedding vectors to operationalize abstract relationships between organizations.
