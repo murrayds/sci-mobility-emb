@@ -126,18 +126,19 @@ Low dimensional distance alone cannot represent the multitude of inter-related f
 Networks offer a solution to representing many dimensions of mobility, yet they only represent flows between discrete entities, and so cannot easily capture the relationships between entities themselves. 
 Overcoming the complexity of mobility requires moving beyond simple functional distances and networks, to instead learning high-dimensional landscapes of mobility that incorporates the many facets of mobility into a single fine-grained and continuous representation. 
 			
-Here, we propose to apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense, continuous, and meaningful vector-space representation, from which not only a meaningful \textit{functional distance} between places but also relationships based on culture, language, and even prestige along with geographic relationship can be probed. 
-We leverage two massive datasets: a dataset of U.S. airport itinerary records and  scientific mobility captured in bibliometric records. In particular, we focus on scientific mobility throughout the paper due to its richness and importance. Scientific mobility, which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}, is not only an important topic on the science of science but also ideal for our study thanks to its richness and well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career}. 
+Here, we propose to apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense, continuous, and meaningful vector-space representation, from which we can not only derive a meaningful \textit{functional distance} between places but also probe relationships based on culture, language, and even prestige along with geographic relationship. 
+We leverage two massive datasets: a dataset of U.S. passenger flight itinerary records, and a dataset of scientific mobility between organizations captured in bibliometric records. 
+In particular, we focus on scientific mobility throughout the paper due to its richness and importance. Scientific mobility, which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}, is not only an important topic on the science of science but also ideal for our study thanks to its richness and well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career}. 
 In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility.
 
 
-For U.S. airport itinerary data, we use trajectories consists of the 828 unique identifier of U.S. airport in more than 300 million passenger flight itineraries between 1993 and 2020 from the Airline Origin and Destination Survey. Each trajectory includes origin, destination, and other itinerary details of passengers transported.
- For scientific mobility, we use trajectories of more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
+The flight itinerary data, from the Airline Origin and Destination Survey, consists of records of more than 300 million itineraries between 1993 and 2020 documenting domestic flights between 828 airports in the United States. 
+A trajectory is constructed for each passenger flight itinerary, forming an ordered sequence of unique identifiers of the origin and destination airports. 
+Although more complex, trajectories of scientific mobility are constructed in a similar fashion. 
+Trajectories are constructed using more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
 Each trajectory is operationalized using a researcher's organizational affiliations derived from their publication histories indexed in a comprehensive bibliographic database (see Methods).
 As a scientist's career progresses, they move between organizations or pick up additional (simultaneous) affiliations forming \textit{affiliation trajectories} (Fig.~\ref{fig:methods:mobility_sentence}).
 Thus, the trajectories encode both migration and co-affiliation---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, markova2016synchronous, sugimoto2017mostimpact} (see \SI).
-
-
 
 A vector-space embedding of locations (airports and organizations) is learned by using trajectories as input to the standard skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
 This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
@@ -145,7 +146,6 @@ They are also computationally efficient, robust to noise, and can encode relatio
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
 
  
-
 %
 % Figure - Example of mobility sentences
 %
@@ -165,16 +165,19 @@ As a result, each location is encoded into a single vector representation, and v
 
 
 To validate our approach, we evaluate the quality of vector representations with their performance in predicting real-world mobility flows using the gravity model framework~\autocite{zipf1946gravity, barbosa2018human}.
-The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity} that models the \textit{expected flux}, $\hat{T}_{ij}$ between locations (organizations) based on their populations and distance:
+The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity} that models the \textit{expected flux}, $\hat{T}_{ij}$ between locations (airports and organizations) based on their populations and distance:
 
 \begin{equation}
 	\label{eq:gravity_basic}
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
-where $m_{i}$ is the population of locations $i$,  $f(r_{ij})$ is a decay function with respect to distance between locations, and $C$ is a constant estimated from data (see Data and Methods). For the U.S. airport itinerary, we use population $m_{i}$ as the total number of unique passenger on each airport and  for scientific mobility, we use the total number of mobile and non-mobile authors who affiliated with organization.
+
+where $m_{i}$ is the population of locations $i$,  $f(r_{ij})$ is a decay function with respect to distance between locations, and $C$ is a constant estimated from data (see Data and Methods). 
+For the flight itinerary data, we use population $m_{i}$ as the total number of unique passenger on each airport, and for scientific mobility, we use the mean annual number of of unique mobile and non-mobile authors who affiliated with each organization.
 $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini2012universal}, is the expected frequency of the co-occurrence of location $i$ and $j$ in the trajectory in the gravity model.
-The gravity model dictates that the expected flow, $\hat{T}_{ij}$, is symmetric (\ie $\hat{T}_{ij }= \hat{T}_{ji})$, is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
-We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}. For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
+The gravity model dictates that the expected flow, $\hat{T}_{ij}$, is symmetric (\ie $\hat{T}_{ij }= \hat{T}_{ji})$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
+We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}. 
+For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_emb_bymodel} and Fig.~\ref{fig:supp:predict_geo_bymodel}).
 
 
 %
