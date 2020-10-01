@@ -299,13 +299,13 @@ This suggests that the embedding space captures the hierarchical structure of mo
 	\includegraphics[width=\textwidth]{\figdir/Clustering/cluster_country.pdf}
 	\caption{
 		\textbf{Geography, then language, conditions international mobility.}
-		\textbf{a.} Hierarchically clustered similarity matrix of country vectors aggregated as the mean of all organization vectors within the country, excluding the United States and countries with less than or equal to 25 organizations.
+		\textbf{a.} Hierarchically clustered similarity matrix of country vectors aggregated as the mean of all organization vectors within the country, excluding the United States and countries with at most 25 organizations.
 		Color of matrix cells corresponds to the cosine similarity between country vectors.
 		Color of country names corresponds to their cluster.
-		Color of three cell rows separated from the matrix corresponds to, from left to right, the region of the country, the language family~\autocite{ethnologue}, and the individual language.
+		Color of three cell rows separated from the matrix corresponds to, from left to right, the region of the country, the language family~\autocite{ethnologue}, and the dominant language.
 		\textbf{b.}	Element-centric cluster similarity~\autocite{gates2019element} reveals the factors dictating hierarchical clustering.
 		Region better explains the grouping of country vectors at higher levels of the clustering.
-		Language family, and then the most widely-spoken language, better explain the grouping of countries at more fine-grained level.
+		Language family, and then the most widely-spoken language, better explain the fine-grained grouping of countries.
 	}
 	\label{fig:clustering}
 \end{figure}
@@ -317,28 +317,29 @@ This suggests that the embedding space captures the hierarchical structure of mo
 %
 \subsection*{Embeddings capture latent prestige hierarchy}
 
-Prestige hierarchy is known to underpin the dynamics of scientific mobility, where researchers tend to move to similar or less prestigious organizations~\autocite{deville2014career, clauset2015hierarchy}. Does the embedding space, to which no prestige information is given, encode a prestige hierarchy?
+Prestige hierarchy is known to underpin the dynamics of scientific mobility, where researchers tend to move to similar or less prestigious organizations~\autocite{deville2014career, clauset2015hierarchy}. Could the embedding space, to which no explicit prestige information is given, encode a prestige hierarchy?
 We test this by exploiting the geometric properties of the embedding space with SemAxis~\autocite{an2018semaxis}.
 Here, we use SemAxis to operationalize the abstract notion of academic prestige, defining an axis in the embedding space where poles are defined using known high- and low-ranked universities.
-To define prestige of ranked U.S. ranked universities, we use the Times Ranking of World Universities (we also use research impact from the Leiden Rankings~\autocite{waltman2012leidenrankings}, see \SI);
+As an external measure of prestige, we use the Times Ranking of World Universities (we also use research impact from the Leiden Rankings~\autocite{waltman2012leidenrankings}, see \SI);
 the high-rank pole is defined as the average vector of the top five U.S. universities according to the rankings, whereas the low-ranked pole is defined using the five bottom-ranked (geographically-matched by U.S. census region) universities.
-We derive an embedding-based ranking for universities based on their nearness to the high-ranked pole.
+We derive an embedding-based ranking for universities based on the spectrum from the high-ranked to low-ranked poles (see Data and Methods).
 
 The embedding space encodes the prestige hierarchy of U.S. universities that are coherent with real-world university rankings.
 The embedding-based ranking is strongly correlated with the Times ranking (Spearman's $\rho = 0.73$, Fig.~\ref{fig:semaxis}a).
-For reference, the embedding-based ranking achieves correlation with the Times ranking comparable to that between the Times ranking and the publication impact scores from the Leiden Ranking~\autocite{waltman2012leidenrankings}, a bibliometrically-based university ranking (Spearman's $\rho = 0.87$, Fig.~\ref{fig:semaxis}b).
+For reference, the correlation between the Times ranking and the publication impact scores from the Leiden Ranking~\autocite{waltman2012leidenrankings}, a bibliometrically-based university ranking is 0.87 (Spearman's $\rho$, Fig.~\ref{fig:semaxis}b).
 The correlation between the embedding-based ranking and the Times ranking is robust regardless of the number of organizations used to define the axes (Fig. ~\ref{fig:supp:semaxis_compare}), such that even using only the single top-ranked and bottom-ranked universities produces a ranking that is significantly correlated with the Times ranking (Spearman's $\rho = 0.46$, Fig.~\ref{fig:supp:semaxis_compare}a).
 The correlation is also comparable to network-driven measures such as degree strength (sum of edge weights, Spearman's $\rho = 0.73$) and eigenvector centrality (Spearman's $\rho = 0.76$, see \SI). 
-The strongest outliers that were ranked more highly in the Times ranking than in the embedding-based ranking tend to be large state universities such as Arizona State University and  University of Florida.
-Those ranked higher in the embedding based ranking tend to be relatively-small universities near major urban areas such as the University of San Francisco and University of Maryland Baltimore County.
-This suggests that organizations in the embedding space are arranged according to prestige, even when the erepresentation is learned using data without explicit infomration on the direction of mobility (as in other formal models~\autocite{clauset2015hierarchy}), or prestige. 
+The strongest outliers that were ranked more highly in the Times ranking than in the embedding-based ranking tend to be large state universities such as Arizona State University and the University of Florida.
+Those ranked higher in the embedding-based ranking tend to be relatively-small universities near major urban areas such as the University of San Francisco and the University of Maryland Baltimore County.
+In sum, our result suggests that the embedding space is capable of capturing information about academic prestige, even when the presentation is learned using data without explicit information on the direction of mobility (as in other formal models~\autocite{clauset2015hierarchy}), or prestige. 
 
 
-The axes can further be visualized to examine the relative position of organizations along the prestige axis, and along a geographic axis between California and Massachusetts to aid visualization.
+
+The axes can further be visualized to examine the relative position of organizations along the prestige axis, and along a geographic axis between California and Massachusetts.
 Prestigious universities such as Columbia, Stanford, MIT, Harvard, and Rockefeller are positioned towards the top of the axis (Fig.~\ref{fig:semaxis}c).
 Universities at the bottom of this axis tend to be regional universities with lower national profiles (yet still ranked by Times Higher Education) and with more emphasis on teaching, such as Barry University and California State University at Long Beach.
-By projecting other types of organizations onto the prestige axis, SemAxis offers a new means of reasoning about the prestige of organizations for which rankings are often low-resolution, incomplete, or entirely absent such as regional and liberal arts universities, seminaries, musical schools, and community colleges (Fig.~\ref{fig:semaxis}d), government organizations (Fig.~\ref{fig:semaxis}d), and research institutes (Fig.~\ref{fig:semaxis}e).
-Using SemAxis, we can even construct quantitative rankings for these types of organizations that correlate with their citation impact (Fig.~\ref{fig:supp:sector_semaxis_impact}). 
+By projecting other types of organizations onto the prestige axis, SemAxis offers a new means of reasoning about the prestige of organizations for which rankings are often low-resolution, incomplete, or entirely absent, such as regional and liberal arts universities, seminaries, musical schools, community colleges (Fig.~\ref{fig:semaxis}d), government organizations (Fig.~\ref{fig:semaxis}d), and research institutes (Fig.~\ref{fig:semaxis}e).
+Their estimatee prestige has a significant correlation with their citation impact (Fig.~\ref{fig:supp:sector_semaxis_impact}). 
 
 
 %
@@ -363,24 +364,26 @@ Using SemAxis, we can even construct quantitative rankings for these types of or
 
 
 We also find that the size (L2 norm) of the organization embedding vectors provides insights into the characteristics of organizations.
-Up to a point (around 1,000 researchers), the size of U.S. organization's vectors tends to increase proportionally to the number of researchers (both mobile and non-mobile) within that organization with published work;
+Up to a point (around 1,000 researchers), the size of U.S. organization's vectors tends to increase proportionally to the number of researchers (both mobile and non-mobile) with published work;
 these organizations are primarily teaching-focused institutions, agencies, and hospitals that either are not ranked or have a low ranking.
 However, at around 1,000 researchers, the size of the vector decreases as the number of researchers increases.
 These organizations are primarily research-intensive and prestigious universities with higher rankings, research outputs, R\&D funding, and doctoral students (Fig.~\ref{fig:supp:length_vs_metaInfo}).
-A similar pattern has been observed in applications of neural embedding to natural language, in which the size of word vectors was found to represent the word's specificity.
+A similar pattern has been observed in applications of neural embedding to natural language, in which the size of word vectors was found to represent the word's \emph{specificity}.
 Roughly speaking, for word embeddings, the size of a vector indicates a specificity, i.e., the word associated with the vector frequently co-appears with particular context words\autocite{schakel2015measuring}. 
 If the word in question is universal, appearing frequently in many different contexts, it would not have a large norm due to a lack of strong association with a particular context.
 Likewise, an organization such as Harvard with a small norm appears in many contexts, alongside many different organizations in affiliation trajectories---it is well-connected.
 The concavity emerges in part from the relationship between the size of the vector and the expected connectedness of the organization given its size (Fig.~\ref{fig:length}a, inset, $R^{2} = 0.17$).
-Large, prestigious, and well-funded research universities such as Princeton and Harvard have smaller vector norms because they appear in many different contexts compared to more teaching-focused organizations such as NY Medical College, and University of Michigan at Flint.
+Large, prestigious, and well-funded research universities such as Princeton and Harvard have smaller vector norms because they appear in many different contexts compared to more teaching-focused organizations such as NY Medical College, and the University of Michigan at Flint.
 Some universities, such as the University of Alaska at Fairbanks, have considerably small vectors, which may be a result of its remote location and unique circumstances.
 
 
-This find a similar convex-curve across many countries such as China, which closely mirrors that of the United States (Fig.~\ref{fig:length}b).
-Smaller but scientifically advanced countries such as Australia, and other large populous countries such as Brazil exhibit curves similar to the United States (Fig.~\ref{fig:length}b, inset), though their exact position and size varies.
+
+We report that this curve is almost universal. For instance, China closely mirrors that of the United States (Fig.~\ref{fig:length}b).
+Smaller but scientifically advanced countries such as Australia, and other populous countries such as Brazil exhibit curves similar to the United States (Fig.~\ref{fig:length}b, inset), though their exact position and size vary.
 Other nations exhibit different curves, such as Egypt which has an``S''-shaped curve, meaning that their largest organizations are not as well connected as other countries' largest organizations. 
-Similar patterns can be found across many of the 30 of the countries with the most total researchers (Fig.~\ref{fig:concave30}), however we can only speculate on what their variations mean (see \SI).
-Neural embeddings encode a relationship between organization size and vector length that is universal across countries but with potentially meaningful nuances, helping the embedding to capture the landscape of global scientific mobility. 
+Similar patterns can be found across many of the 30 of the countries with the most total researchers (Fig.~\ref{fig:concave30}), however, we can only speculate on what their variations mean (see \SI).
+See Supporting Information for more discussion.
+
 
 %
 % Figure - Boomerang
