@@ -350,10 +350,10 @@ Their estimatee prestige has a significant correlation with their citation impac
 	\includegraphics[width=0.7\textwidth]{\figdir/SemAxis/semaxis_fig.pdf}
 	\caption{
 		\textbf{Embedding captures latent geography and prestige hierarchy.}
-		\textbf{a.} Comparison between the ranking of organizations by their rank in the Times ranking and the embedding rank derived using SemAxis pointing from the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities.
+		\textbf{a.} Comparison between the ranking of organizations in the Times ranking and the embedding ranking derived using SemAxis.
 		Un-filled points are those top and bottom five universities used span the axis.
 	  	Even when considering only a total of ten organization vectors, the estimate of the Spearman's rank correlation between the embedding and Times ranking is $\rho = 0.73$ ($n = 145$), which increases when more top-and-bottom ranked universities are included (Fig.~\ref{fig:supp:semaxis_compare}).
-	  	\textbf{b.} Times ranking is correlated with Leiden Ranking of U.S. universities with Spearman's $\rho = 0.87$
+	  	\textbf{b.} Times ranking is correlated with Leiden Ranking of U.S. universities with Spearman's $\rho = 0.87$.
 		\textbf{c-f.} Illustration of SemAxis projection along two axes;  \textit{latent geographical axis}, from California to Massachusetts (left to right) and the \textit{prestige axis}.
 		Shown for U.S. Universities (\textbf{c}), regional and liberal arts colleges (\textbf{d}), Research institutes (\textbf{e}), and Government organizations (\textbf{f}).
 		Full organization names listed in Table~\ref{table:supp:orglabels}.
@@ -395,12 +395,12 @@ See Supporting Information for more discussion.
 		\textbf{Size of organization embedding vectors captures prestige and size of organizations.}
 		\textbf{a.} Size (L2 norm) of organization embedding vectors compared to the number of researchers for U.S. universities.
 		Color indicates the rank of the university from the Times ranking, with 1 being the highest ranked university.
-		Uncolored points are universities not listed on a Times ranking.
-		A convex-shape emerges, wherein larger universities tend to be more distant from the origin (large L2 norm); however, the more prestigious universities tend to have a small L2 norm.
+		Uncolored points are universities not listed on the Times ranking.
+		A convex-shape emerges, wherein larger universities tend to be more distant from the origin (large L2 norm); however, the more prestigious universities tend to have smaller L2 norms.
 		The L2 norm is correlated weakly with the ratio of organizations' number of connections (non-zero flows) to the number of researchers ($R^{2} = 0.17$, \textbf{inset}).
 		The red line is the line of the best fit, and 99\% confidence intervals are shown, though are too small to be visible.
-		\textbf{b.} We find a simliar convex-curve pattern across many countries such as the United States, China, Australia, Brazil, and others (\textit{inset}, and Fig.~\ref{fig:concave30}). 
-		Some countries exhibit variants of this pattern, such as Egypt 's ``S''-shaped curve (\textbf{inset}).
+		\textbf{b.} We find a similar convex-curve pattern across many countries such as the United States, China, Australia, Brazil, and others (\textit{inset}, and Fig.~\ref{fig:concave30}). 
+		Some countries exhibit variants of this pattern, such as Egypt's case with missing the right side of the curve.
 		The loess regression lines are shown for each selected country, and for the aggregate of remaining countries, with 99\% confidence intervals.
 		Loess lines are also shown for organizations in Australia, Brazil, and Egypt (\textbf{inset}).
 	}
@@ -413,28 +413,29 @@ See Supporting Information for more discussion.
 %
 \section*{Conclusion}
 
-Neural embeddings offer a novel, data-driven solution for learning an effective and robust functional distance between places based on trajectory data, encoding the complex and multi-faceted nature of mobility.
+Neural embedding approach offers a novel, data-driven solution for learning an effective and robust representation of locations based on trajectory data, encoding the complex and multi-faceted nature of mobility.
 We demonstrated how the embedding space encodes various aspects of scientific mobility, such as the global and regional geography, shared languages, and the hierarchy of organizational prestige, even without explicit information on these factors.
+
 
 
 While scientific mobility is used as a case study, this approach may be broadly applicable to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
 Moreover, this approach can be used to learn a functional distance between entities for which no physical analog exists, such as between occupational categories based on individuals' career trajectories.
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, the structure of the neural embedding space is amenable to a range of unique applications for studying mobility.
 As we have shown, the embedding space allows the visualization of the complex structure of scientific mobility at high resolution across multiple scales, providing a large and detailed map of the landscape of global scientific mobility.
-SemAxis~\autocite{an2018semaxis} allows us to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
-Investigation of the structure of the embedding space, such as the vector norm, reveals unique and universal patterns based on organization's size and their vector norm that could be leveraged in future studies of mobility.
-Neural embedding opens the door for new approaches to represent and study scientific mobility, and also mobility more generally.
+Embedding also allows us to quantify abstract notions in mobility such as academic prestige, and can also be generalized to other abstract axes.
+Investigation of the structure of the embedding space, such as the vector norm, reveals unique and universal patterns based on the organization's size and their vector norm that could be leveraged in future studies of mobility.
 
 
 
-In spite of its promise, this approach and analysis has several limitations.
-First, the current \textit{skip-gram word2vec} model can not encode directional information, meaning that embedding will be less effective at capturing mobility for which directionality is critical.
+In spite of its promise, our study has several limitations.
+First, the current skip-gram word2vec model cannot encode directional information, meaning that embedding will be less effective at capturing mobility for which directionality is critical.
 Second, the neural embedding approach is most useful in cases of mobility between discrete geographic units such as between countries, cities, and businesses; this approach is less useful in the case of mobility between locations represented using geographic coordinates, such as in the modeling of animal movements.
 Neither of these methodological limitations is insurmountable, and future work can aim to incorporate directionality and identify meaningful representations of continuous mobility data.
 Finally, the case of scientific mobility presents domain-specific limitations.
 Reliance on bibliometric metadata means that we capture only long-term mobility such as migration, rather than the array or more frequent short-term mobility such as conference travel and temporary visits.
-The kinds of mobility we do capture---migration and co-affiliation---are treated identically by our model although they are qualitatively different.
+The kinds of mobility we do capture---migration, and co-affiliation---are ,although they are qualitatively different, treated identically by our model.
 Also, our data might further suffer from survivorship bias: researchers at prestigious organizations tend to have more publications, leading to these organizations appearing more frequently in affiliation trajectories.
+
 
 
 Mobility and migration are at the core of human nature and history~\autocite{shah2020migration}, driving societal phenomena as diverse as epidemics\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity} and science and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}.
@@ -442,7 +443,8 @@ However, the paradigm of scientific migration may be changing.
 Traditional hubs of migration have experienced many politically-motivated policy changes that affect scientific mobility, such as travel restrictions in the U.S. and U.K.~\autocite{chinchilla2018travelban}.
 At the same time, other nations, such as China, are growing into major scientific powers and attractors of talent~\autocite{tollefson2018china, cao2020returning}.
 Unprecedented health crises such as the COVID-19 pandemic threaten to bring drastic global changes to travel and migration by tightening borders and halting travel.
-With the changing paradigm of global mobility we need now, more than ever, new tools and approaches to capture and understand human mobility in order to inform sensible, effective, sustainable, and humane policies.
+With the changing paradigm of global mobility, we need now, more than ever, new tools and approaches to capture and understand human mobility in order to inform sensible, effective, sustainable, and humane policies.
+
 
 %
 % DATA AND METHODS
