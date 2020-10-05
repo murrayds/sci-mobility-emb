@@ -1,4 +1,4 @@
-	\documentclass[12pt]{article} %{{{
+\documentclass[12pt]{article} %{{{
 
 
 % Text
@@ -6,6 +6,7 @@
 
 % Figures
 \usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \def\figdir{../Figs}
 
@@ -42,7 +43,7 @@
 
 % Refs
 \usepackage[style=nature,
-					backend=bibtex,
+					backend=biber,
 					sortcites=true,
 					autocite=superscript
 ]{biblatex}
@@ -128,8 +129,8 @@ Networks offer a solution to representing many dimensions of mobility, yet they 
 Overcoming the complexity of mobility requires moving beyond simple functional distances and networks, to instead learning high-dimensional landscapes of mobility that incorporates the many facets of mobility into a single fine-grained and continuous representation. 
 			
 Here, we apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense, continuous, and meaningful vector-space representation, from which we can not only derive a meaningful \textit{functional distance} between places but also probe relationships based on culture, language, and even prestige along with geographic relationship. 
-We leverage two massive datasets: a dataset of U.S. passenger flight itinerary records, and a dataset of scientific mobility between organizations captured in bibliometric records. 
-In particular, we focus on scientific mobility throughout the paper due to its richness and importance. Scientific mobility, which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}, is not only an important topic on the science of science but also ideal for our study thanks to its richness and well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career}. 
+We leverage two massive datasets: a dataset of U.S. passenger flight itinerary records, and a dataset of scientists' career mobility between organizations captured in bibliometric records. 
+In particular, we focus on scientific mobility due to its richness and importance. Scientific mobility, which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}, is not only an important topic in the Science of Science but also ideal for our study thanks to its richness and well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career}. 
 In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility.
 
 
@@ -193,7 +194,7 @@ In the case flight itineraries, the embedding distance explains more than twice 
 We fit the gravity model given by Eq.~\ref{eq:gravity_basic} (see Data and Methods) and computed the expected flux  $\hat{T}_{ij}$ using the geographic distance and the embedding distance as parameters.
 The embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}c-d).
 These results are consistent in the case of scientific mobility. 
-the amount of variance in the expected flux explained by the embedding distance ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) is again more than double that explained by the geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}f).
+The amount of variance in the expected flux explained by the embedding distance ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) is again more than double that explained by the geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}f).
 This pattern holds when considering the subset of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
 As with flight itineraries, we fit the gravity model on the scientific mobility data using the gravity model.
 Predictions made using the embedding distance outperform those made using the geographic distance (Fig.~\ref{fig:gravity_performance}g-h), which also holds for the subsets of only domestic and only international mobility (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}).
@@ -246,13 +247,13 @@ We also validate this finding quantitatively with the cosine distance between na
 Malaysia is nearer to many Islamic countries such as Iraq ($d = 0.29$), Pakistan ($d = 0.31$), and Saudi Arabia ($d = 0.41$)  than neighboring but Buddhist Thailand ($d = 0.43$) and predominantly-secular Vietnam ($d = 0.48$). 
 
 Linguistic and historical ties also affect scientific mobility.
-We observe that Spanish-speaking post-colonial Latin American nations are positioned near Spain (Fig.~\ref{fig:projection}c), rather than nearby Portuguese-speaking nations ($d = 0.34$ vs. $d = 0.52$ for Mexico and $d = 0.39$ vs. $d = 0.49$ for Chile) reflecting linguistic and cultural ties.
-Similarly, North-African countries that were once under French rule such as Morocco are closer to France ($d =0.35$) than to similarly-distant European countries such as Spain ($d = 0.40$) and Italy ($d = 0.53$).
+We observe that Spanish-speaking Latin American nations are positioned near Spain (Fig.~\ref{fig:projection}c), rather than Portuguese-speaking Brazil ($d = 0.34$ vs. $d = 0.52$ for Mexico and $d = 0.39$ vs. $d = 0.49$ for Chile) reflecting linguistic and cultural ties.
+Similarly, North-African countries that were once under French rule such as Morocco are closer to France ($d =0.35$) than to similarly geographically-distant European countries such as Spain ($d = 0.40$), Portugal ($d = 0.55$), and Italy ($d = 0.53$).
 Comparable structural patterns exist even within a single country.
 For example, organizations within Quebec in Canada are located nearer the French cluster ($d = 0365$) than the United States cluster ($d = 0.49$).
 
 Mirroring the global pattern, organizations in the United States are largely arranged according to geography (Fig.~\ref{fig:projection}d).
-Re-projecting organizations located in Massachusetts (Fig.~\ref{fig:projection}e) reveals structure based on urban centers (Boston vs. Worcester), organization type (e.g., hospitals vs. universities), and university systems (UMass vs. Harvard \& MIT).
+Re-projecting organizations located in Massachusetts (Fig.~\ref{fig:projection}e) reveals structure based on urban centers (Boston vs. Worcester), organization type (e.g., hospitals vs. universities), and university systems (Univeristy of  Massachusetts system vs. Harvard \& MIT).
 For example, even though UMass Boston is located in Boston, it clusters with other universities in the UMass System ($d = 0.33$) rather than the other typically more highly-ranked and research-focused organizations in Boston ($d = 0.38$), implying a relative lack of mobility between the two systems.
 Similar structures can be observed in other states such as among New York's CUNY and SUNY systems (Fig.~\ref{fig:supp:proj_newyork}), Pennsylvania's state system (Fig.~\ref{fig:supp:proj_pennsylvania}), Texas's Agricultural and Mechanical universities (Fig.~\ref{fig:supp:proj_texas}), and between the University of California and State University of California systems (Fig.~\ref{fig:supp:proj_california}).
 
@@ -319,7 +320,7 @@ This suggests that the embedding space captures the hierarchical structure of mo
 Prestige hierarchy is known to underpin the dynamics of scientific mobility, where researchers tend to move to similar or less prestigious organizations~\autocite{deville2014career, clauset2015hierarchy}. Could the embedding space, to which no explicit prestige information is given, encode a prestige hierarchy?
 This question is tested by exploiting the geometric properties of the embedding space with SemAxis~\autocite{an2018semaxis}.
 Here, we use SemAxis to operationalize the abstract notion of academic prestige, defining an axis in the embedding space where poles are defined using known high- and low-ranked universities.
-As an external measure of prestige, we use the Times Ranking of World Universities (we also use research impact from the Leiden Rankings~\autocite{waltman2012leidenrankings}, see \SI);
+As an external proxy of prestige, we use the Times Ranking of World Universities (we also use research impact from the Leiden Ranking~\autocite{waltman2012leidenrankings}, see \SI);
 the high-rank pole is defined as the average vector of the top five U.S. universities according to the rankings, whereas the low-rank pole is defined using the five bottom-ranked (geographically-matched by U.S. census region) universities.
 We derive an embedding-based ranking for universities based on the geometrical spectrum from the high-ranked to low-ranked poles (see Data and Methods).
 
@@ -427,7 +428,7 @@ Second, the neural embedding approach is most useful in cases of mobility betwee
 Neither of these methodological limitations is insurmountable, and future work can aim to incorporate directionality and identify meaningful representations of continuous mobility data.
 Finally, the case of scientific mobility presents domain-specific limitations.
 Reliance on bibliometric metadata means that we capture only long-term mobility such as migration, rather than the array or more frequent short-term mobility such as conference travel and temporary visits.
-The kinds of mobility we do capture---migration, and co-affiliation---although qualitatively different, are treated identically by our model.
+The kinds of mobility we do capture---migration, and co-affiliation---although conceptually different, are treated identically by our model.
 Also, our data might further suffer from survivorship bias: researchers at prestigious organizations tend to have more publications, leading to these organizations appearing more frequently in affiliation trajectories.
 
 
@@ -1441,8 +1442,6 @@ Taiwan           & 3.67             & 72
 	}
 	\label{fig:norm_dist}
 \end{figure}
-
-
 
 
 
