@@ -239,21 +239,21 @@ By showing relationships between individual organizations, rather than aggregate
 Globally, the geographical constraints are conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors.
 At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network representations (Fig.~\ref{fig:supp:network_vis}) that have been dominating studies of scientific mobility~\autocite{chinchilla2018global, czaika2018globalisation}.
 
-The embedding space also allows us to \textit{zoom in} on subsets and re-project them using UMAP to reveal local relationships.
-For example, re-projecting organizations located in Western, Southern, and Southeastern Asia (Fig.~\ref{fig:projection}b) reveals a gradient of countries between Egypt and the Philippines that largely corresponds to geography, but with some exceptions along with the cultural and religious spectra;
-Malaysia, with its official religion of Islam, is nearer to Middle Eastern countries in the embedding space than many geographically-closer but South Asia countries.
-We also validate this finding quantitatively with the distance between nations in the embedding space $d$,  cosine distance between the centroids of organizations vectors belonging to that country. 
-Then, in the embedding space, Malaysia is nearer to many Islamic countries such as Iraq ($d = 0.29$), Pakistan ($d = 0.31$), and Saudi Arabia ($d = 0.41$)  than neighboring but Buddhist Thailand ($d = 0.43$) and predominantly-secular Vietnam ($d = 0.48$). 
+The embedding space also allows us to \textit{zoom in} on subsets and re-project them to reveal local relationships.
+For example, re-projecting organizations located in Western, Southern, and Southeastern Asia with UMAP (Fig.~\ref{fig:projection}b) reveals a gradient of countries between Egypt and the Philippines that largely corresponds to geography, but with some exceptions along with the cultural and religious spectra;
+Malaysia, with its official religion of Islam, is nearer to Middle Eastern countries in the embedding space than many geographically-closer South Asian countries.
+We also validate this finding quantitatively with the cosine distance between nations (the centroids of organizations vectors belonging to that country). 
+Malaysia is nearer to many Islamic countries such as Iraq ($d = 0.29$), Pakistan ($d = 0.31$), and Saudi Arabia ($d = 0.41$)  than neighboring but Buddhist Thailand ($d = 0.43$) and predominantly-secular Vietnam ($d = 0.48$). 
 
 Linguistic and historical ties also affect scientific mobility.
 We observe that Spanish-speaking post-colonial Latin American nations are positioned near Spain (Fig.~\ref{fig:projection}c), rather than nearby Portuguese-speaking nations ($d = 0.34$ vs. $d = 0.52$ for Mexico and $d = 0.39$ vs. $d = 0.49$ for Chile) reflecting linguistic and cultural ties.
 Similarly, North-African countries that were once under French rule such as Morocco are closer to France ($d =0.35$) than to similarly-distant European countries such as Spain ($d = 0.40$) and Italy ($d = 0.53$).
 Comparable structural patterns exist even within a single country.
-For example, at the global level (Fig~\ref{fig:projection}a), organizations within Quebec in Canada are located nearer the French cluster ($d = 0.65$) than the rest of the Canadian organizations ($d = 0.88$).
+For example, organizations within Quebec in Canada are located nearer the French cluster ($d = 0365$) than the United States cluster ($d = 0.49$).
 
 Mirroring the global pattern, organizations in the United States are largely arranged according to geography (Fig.~\ref{fig:projection}d).
 Re-projecting organizations located in Massachusetts (Fig.~\ref{fig:projection}e) reveals structure based on urban centers (Boston vs. Worcester), organization type (e.g., hospitals vs. universities), and university systems (UMass vs. Harvard \& MIT).
-For example, even though UMass Boston is located in Boston, it clusters with other universities in the UMass System ($d = 0.34$) rather than the other typically more highly-ranked and research-focused universities in Boston ($d = 0.41$), implying a relative lack of mobility between the two systems.
+For example, even though UMass Boston is located in Boston, it clusters with other universities in the UMass System ($d = 0.33$) rather than the other typically more highly-ranked and research-focused organizations in Boston ($d = 0.38$), implying a relative lack of mobility between the two systems.
 Similar structures can be observed in other states such as among New York's CUNY and SUNY systems (Fig.~\ref{fig:supp:proj_newyork}), Pennsylvania's state system (Fig.~\ref{fig:supp:proj_pennsylvania}), Texas's Agricultural and Mechanical universities (Fig.~\ref{fig:supp:proj_texas}), and between the University of California and State University of California systems (Fig.~\ref{fig:supp:proj_california}).
 
 %
