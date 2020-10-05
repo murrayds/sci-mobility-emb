@@ -486,7 +486,7 @@ In more complex cases, such as listing multiple affiliations on the same paper o
 %% word2vec
 These trajectories are used as input to the standard skip-gram negative sampling word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
 \textit{word2vec} constructs dense and continuous vector representations of words and phrases, in which distance between words corresponds to a notion of semantic distance. By embedding trajectories, we aim to learn a dense vector for every locations where the distance between vectors relates to the tendency for two locations to occur in similar contexts.
-Suppose an trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th location in the trajectory. An location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$. Then, the model learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
+Suppose an trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th location in the trajectory. A location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$. Then, the model learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
 
 %
 % MAIN W2V Equation
@@ -582,7 +582,7 @@ We follow standard practice and exclude zero flows from our analysis.
 % SUBSECTION: SEMAXIS
 %
 \subsection*{SemAxis}
-SemAxis~\autocite{an2018semaxis, nakandala2017gendered, kozlowski2018geometry} and similar studies demonstrated that ``semantic axes'' can be found from an embedding space by defining the ``poles'' and the latent semantic relationship along semantic axis can be extracted with the simple arithmetic.
+SemAxis and similar studies~\autocite{an2018semaxis, nakandala2017gendered, kozlowski2018geometry} demonstrated that ``semantic axes'' can be found from an embedding space by defining the ``poles'' and the latent semantic relationship along semantic axis can be extracted with the simple arithmetic.
 Each axis is an antonym pair defined for each specific use case.
 In the case of natural language, the poles of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''.
 By treating organizations analogously to words and trajectories analogously to sentences, we can use SemAxis to leverage the semantic properties of the embedding vectors to operationalize abstract relationships between organizations.
@@ -618,11 +618,11 @@ From the prestige axis, we derive a ranking of universities that we then compare
 {\bf Mobility and science.}
 
 As scholars move, they bring their knowledge, their skills, and their social connections with them--collectively the movements of researchers shape the structure and direction of the global scientific enterprise.
-For example, prestige-driven mobility between doctoral-granting and employing institution is highly unequal~\autocite{clauset2015hierarchy, deville2014career}, which impacts the diffusion of ideas across academia~\autocite{morgan2018prestige}.
+For example, prestige-driven mobility between doctoral-granting and employing institution is highly unequal~\autocite{clauset2015hierarchy, deville2014career}, which affects the diffusion of ideas across academia~\autocite{morgan2018prestige}.
 By placing researchers in new social settings, mobility can lead to the formation of new collaborative relationships~\autocite{rodrigues2016mobility}, which in turn spurs the further diffusion of knowledge and innovations~\autocite{braunerhjelm2020labor, azoulay2011diffusion, kaiser2018innovation, armano2017innovation}.
 Perhaps resulting from the selection effects of who gets to move, or the reconfiguring of social and epistemic networks, movement is associated with increased scientific impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}.
 At the national level, the understanding of mobility has progressed beyond simplistic narratives of brain drain and brain gain, and instead adopts a new perspective of \textit{flows} of talent~\autocite{meyer2001network, ioannidis2014braindrain, gaillard1998circulation}.
-Under this flow model, a mobile researcher is viewed as contributing to both their origin and destination countries, a perspective that fosters that is evidenced by the strong science of open countires~\autocite{wagner2017open}.
+Under this flow model, a mobile researcher is viewed as contributing to both their origin and destination countries, a perspective that fosters that is evidenced by the strong science of open countries~\autocite{wagner2017open}.
 Perhaps because of these individual and national benefits, policy-makers have come to recognize the importance of global mobility~\autocite{box2008competition, oecd2010innovation}.
 Movement is a key mechanism that has clear impacts on the composition and direction of the global scientific workforce and our collective scientific understanding.
 Understanding the structure and dynamics of mobility is thus essential for understanding global science.
