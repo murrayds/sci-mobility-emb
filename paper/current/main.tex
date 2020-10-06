@@ -618,16 +618,6 @@ From the prestige axis, we derive a ranking of universities that we then compare
 \label{si:text:mobility_science}
 {\bf Mobility and science.}
 
-As scholars move, they bring their knowledge, their skills, and their social connections with them--collectively the movements of researchers shape the structure and direction of the global scientific enterprise.
-For example, prestige-driven mobility between doctoral-granting and employing institution is highly unequal~\autocite{clauset2015hierarchy, deville2014career}, which affects the diffusion of ideas across academia~\autocite{morgan2018prestige}.
-By placing researchers in new social settings, mobility can lead to the formation of new collaborative relationships~\autocite{rodrigues2016mobility}, which in turn spurs the further diffusion of knowledge and innovations~\autocite{braunerhjelm2020labor, azoulay2011diffusion, kaiser2018innovation, armano2017innovation}.
-Perhaps resulting from the selection effects of who gets to move, or the reconfiguring of social and epistemic networks, movement is associated with increased scientific impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}.
-At the national level, the understanding of mobility has progressed beyond simplistic narratives of brain drain and brain gain, and instead adopts a new perspective of \textit{flows} of talent~\autocite{meyer2001network, ioannidis2014braindrain, gaillard1998circulation}.
-Under this flow model, a mobile researcher is viewed as contributing to both their origin and destination countries, a perspective that fosters that is evidenced by the strong science of open countries~\autocite{wagner2017open}.
-Perhaps because of these individual and national benefits, policy-makers have come to recognize the importance of global mobility~\autocite{box2008competition, oecd2010innovation}.
-Movement is a key mechanism that has clear impacts on the composition and direction of the global scientific workforce and our collective scientific understanding.
-Understanding the structure and dynamics of mobility is thus essential for understanding global science.
-
 
 %
 % S2 Text
@@ -635,52 +625,12 @@ Understanding the structure and dynamics of mobility is thus essential for under
 \label{si:text:mobility_models}
 {\bf Modeling scientific mobility.}
 
-There are many ways of modeling scientific mobility from bibliographic data, the first consideration being the unit of analysis.
-Most studies of mobility have focused on \textit{country-level} mobility--the flows of researchers across nations~\autocite{sugimoto2017mostimpact, scellato2015migrant, robinson-garcia2018indicators, franzoni2012foreign-born}.
-Practically, country-level analyses benefit from higher reliability, such that idiosyncrasies and errors inherent to bibliographic databases are mitigated by this higher level of aggregation.
-Epistemically, country-level analysis is useful for national science governance who aims to understand the status of their country in the global landscape and make informed policy decisions.
-Analyses at lower levels of analysis are far less common.
-\textit{Regional}-level scientific mobility--the flow of researchers between regions or cities within or across countries has been only minimally studied~\autocite{vaccario2019mobility}, possibly due to lack of reliable long-term data and lack of policy relevance to national-level lawmakers.
-\textit{Organization}-level mobility has the potential to inform institutional policy and to understand the composition of mobility within a single country or region, especially as it relates to organization performance, prestige, and inequality~\autocite{albarran2017topeconomic, deville2014career, morgan2018prestige, clauset2015hierarchy}.
-However, affiliation disambiguation and noise in bibliometric data have makes large-scale organization-level analysis challenging.
-Here, we learn neural-network embeddings of scientific mobility at the level of organizations using a curated bibliographic database.
-These embeddings are robust to noise, and so are capable of representing clear structure even amid issues with organizational disambiguation.
-In doing so, embeddings also capture a more detailed understanding of mobility than has been previously studied.
-
-
-Another consideration when analyzing scientific mobility is what kinds of mobility to study.
-Typical understandings of mobility are directional: movement is always \textit{from} one place and \textit{to} another.
-However, scientific mobility is more complicated.
-For example, scientists often hold multiple affiliations at a time~\autocite{markova2016synchronous}, listing them as co-affiliations on a single paper, or even choosing a subset of affiliations to use for multiple simultaneous projects~\autocite{robinson2019mobility}.
-Even clearly-directional migration to another institution is complex--researchers may continue to publish with an old affiliation for projects that began before their move, and they may maintain social and organizational links to their old institution (e.g., collaborators, projects, graduate students) such that there is no clear breakage after migrating.
-There is also a whole range of short-term scientific mobility, such as visiting scholarships and short-term visits that are only visible through intensive efforts such as manual extraction from CVs~\autocite{woolley2009cv, sandstrom2009cv, canibano2011temporary}.
-Here, we focus on more long-term mobility that can be derived from bibliographic data.
-Due to the complexity of scientific mobility, we make the simplifying assumption that all scientific mobility is \textit{symmetric} or without direction such that any move from an organization $A$ to organization $B$ is equivalent to a move from $B$ to $A$.
-By assuming non-directional mobility, all mobility events are commensurate, meaning that they can be treated identically in our analysis--this allows us to represent the complexity of mobility without making decisions about the directional of their mobility or which is their main affiliation.
-Moreover, this assumption has the practical advantage of matching the data format expected by the \textit{word2vec} model, as well as the theoretical advantage of adhering to the symmetricity assumption of the gravity model of mobility.
-
-
 
 %
 % S3 TEXT
 \paragraph*{S3 Text}
 \label{si:text:mobility_traj}
 {\bf Building affiliation trajectories.}
-
-For each mobile researcher who has at least two distinct affiliations, we construct an affiliation trajectory based on the affiliations listed on their published papers indexed in the Web of Science database between 2008 and 2019.
-An author is considered mobile if they published with at least two distinct affiliations during the time period of study.
-Affiliation names were manually disambiguated, and each was mapped to a unique organization identifier.
-An affiliation trajectory for an individual researcher is a sequence of organizations in ascending order of year of publication.
-if a researcher published papers with affiliation $A$ in year $t$, $B$ in $t+1$, $C$ in $t+2$ and $A$ again in $t+3$, then the affiliation trajectory is expressed as $(A, B, C, A)$.
-
-In the case that an individual lists multiple affiliations in a single year, affiliations listed on publications published in that year are shuffled between each iteration of the \textit{word2vec} training process (each epoch).
-For example, an author who published with affiliation $A$ in $t_{0}$, and affiliations $B$ and $C$ in $t_{1}$ could appear as one of $(A, B, C)$ or $(A, C, B)$ in each training iteration.
-This effectively removes the effect of order within a year, as the order cannot be meaningfully established based on co-affiliations in a single paper, or on different affiliations listed on separate papers, for which its date of publication may not be representative of the actual completion of the project.
-
-Other than restricting to only mobile researchers, we do not perform any filtering or reductions to affiliation trajectories.
-In the case than an author publishes with organization $A$ four times in $t_{0}$, and affiliation $B$ two times in $t_{1}$, then their trajectory will be $(A, A, A, A, B, B)$.
-Although mobile authors who publish more papers will have longer trajectories, \textit{word2vec} will skip duplicate consecutive organization IDs, mitigating the impact of long repetitive trajectories.
-
 
 
 
@@ -691,57 +641,12 @@ Although mobile authors who publish more papers will have longer trajectories, \
 {\bf Network-based personalized page rank distances.}
 
 
-We examine the gravity model on the Personalized Page Rank (PPR)\autocite{jeh2003scaling} as a benchmark on the network. We construct the co-occurrence network of $N$ organizations, in which each edge between organizations $i$ and $j$ represents a co-occurence of $i$ and $j$ in the same affiliation trajectory, with weight $W_{ij}$ given by the sum of the co-occurences over all researchers. and edges are co-occurrence between two organizations. The Personalized Page Rank is a ranking algorithm for nodes based on a random walk process on networks. 
-The walker visiting at a node moves to a neighboring node chosen randomly with a probability proportionally to the weight of the edge in one step. Furthermore, with probability $\alpha$, the walker is teleported back to the starting node. The rank of a node is determined by the probability that the walker visits the node in the stationary state. The stationary distribution of the random walker starting from node $i$, denoted by $p_i=(p_{ik})$, is given by 
-
-\begin{equation}
-	\label{eq:ppr}
-	p_i = (1 - \alpha) v_i + \alpha p_i W,
-\end{equation}
-where $v_i$ is a column vector of length $N$ with entries that are all zero except the $i$th entry that equals to one, $W = (W_{ij})$ is the weighted adjacency matrix. We used $\alpha=0.9$ here.
-
- We can think $p_i$ as a representation vector of the organization $i$, and calculate the distance between organizations $i$ and $j$, $d_{ij}$ with measuring distance between $p_i$ and $p_j$ to examine the gravity law. We consider two distance measures in this analysis. The first one is cosine distance which is used for our embedding method, $d_{ij} = 1 - \frac{\bm{p}_{i} \cdot \bm{p}_{j}}{\lVert \bm{p}_{i} \rVert \lVert \bm{p}_{j} \rVert}$. Also, if we think $p_i$ as a discrete probability distribution, then we can consider Jensen–Shannon divergence (JSD), can be written as,
-
-\begin{equation}
-	\label{eq:JSD}
-	d_{ij} = JSD(p_i||p_j) = \frac{1}{2}D_{KL}(p_i||m) + \frac{1}{2}D_{KL}(p_j||m),
-\end{equation}
-
-\begin{equation}
-	\label{eq:KL}
-	D_{KL}(p_i||m) = \sum^x p_{ix}\log\frac{p_{ix}}{m_x},
-\end{equation}
-where $m=\frac{1}{2}(p_i+p_j)$. We report the result with cosine distance ($R^2=0.14$, Fig. \ref{fig:supp:gravity_pprcos}) and  Jensen–Shannon divergence ($R^2=0.19$, Fig. \ref{fig:supp:gravity_pprjsd}). In both cases, the performance is under the performance of the model with geographical distance. Even though the length of the PPR vectors is extremely larger than the length of our embedding vectors, result with the embedding distance outperforms both of them. 
-
-
 
 %
 % S5 TEXT
 \paragraph*{S5 Text}
 \label{si:text:organizations}
 {\bf Organization disambiguation and metadata.}
-
-Affiliations mapped to one of 8,661 organizations, disambiguated following that originally designed for the Leiden Rankings of World Universities~\autocite{waltman2012leidenrankings}.
-Organizational records were associated with a full name, a type indicating the sector (e.g., University, Government, Industry), and an identifier for the country and city of the organization.
-Sixteen different sector types were included in the analysis, which we aggregated to four high-level codes: \textit{University}, \textit{Hospital}, \textit{Government}, and \textit{Other}.
-Each record was also associated with a latitude and longitude. 
-However, for many organizations, these geographic coordinates were missing or incorrect. 
-We manually updated the coordinates of 2,267 organizations by searching the institution name and city on Google Maps;
-in cases where a precise location of the organization could not be identified, we used the coordinates returned when searching the name of the city.
-The data was further enriched with country-level information, including region, most widely-spoken language, and its language family (e.g., the language family of \textit{Spanish} is \textit{Italic}).
-State/province-level information was added using the reverse geocoding service LocationIQ using each organization's latitude and longitude as input.
-Regional census classifications were added for states in the United States.
-For each organization, we calculated size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
-in the case that authors publish with multiple affiliations in a single year, they are counted towards each.
-
-
-As a result of our disambiguation procedure, some affiliations are mapped to two organizations, one specific, and one more general.
-For example, any author affiliated with ``Indiana University Bloomington'' will also be listed as being affiliated with the ``Indiana University System'', a more general designation for all public universities in Indiana.
-However, a more general organization may not always occur alongside the more specific one.
-For example, a researcher affiliated with the smaller regional school ``Indiana University South Bend'' will be listed as affiliated with only the ``Indiana University System''.
-We identify all specific organizations that always co-occur along with a more general one.
-For every career trajectory that includes one of these specific organizations, we remove all occurrences of the more general organization;
-trajectories containing only a general designation are not altered.
 
 
 
@@ -751,12 +656,6 @@ trajectories containing only a general designation are not altered.
 \label{si:text:disambiguation}
 {\bf Author name dismabiguation.}
 
-Author-name disambiguation, the problem of associating names on papers with individuals authors, remains difficult for the use of bibliometric data~\autocite{dangelo2020disambiguation}.
-Authors in our dataset have been disambiguated using a rule-based algorithm that makes use of author and paper metadata, such as physical addresses, co-authors, and journal, to score papers on the likelihood of belonging to an author cluster---a cluster of publications believed to have been authored by the same individual~\autocite{caron2014disambiguation}.
-We limit our period of analysis to the period of 2008 to 2019, as in 2008 the Web of Science began indexing additional author-level metadata such as full names and email addresses.
-The disambiguation algorithm is conservative, favoring splitting clusters over merging.
-Past studies have validated this data and shown that the disambiguated authors are comparable to ground-truth records such as those from ORCID and useful for a wide range of bibliometric studies~\autocite{sugimoto2017mostimpact, robinson2019mobility, chinchilla2018global, chinchilla2018travelban}.
-
 
 
 %
@@ -765,11 +664,6 @@ Past studies have validated this data and shown that the disambiguated authors a
 \label{si:text:network_ranking}
 {\bf Reconstructing Times ranking with network measure.}
 
-The performance of the embedding ranking in reconstructing the Times ranking is comparable to that of network-derived measures such as degree strength (Spearman's $\rho = 0.73$, Fig.~\ref{fig:supp:centrality_times_compare}a) and eigencentrality centrality (Spearman's $\rho = 0.76$, Fig.~\ref{fig:supp:centrality_times_compare}b).
-However, while both embedding- and network-based measures relate to university prestige, they are qualitatively and quantitatively different.
-The embedding-ranking of U.S. universities is less correlated with degree strength (Spearman's $\rho = 0.45$, Fig.~\ref{fig:supp:centrality_semaxis_compare}a) and eigenvector  centrality (Spearman's $\rho = 0.55$) than with the Times ranking itself (Spearman's $\rho = 0.73$, Fig.~\ref{fig:supp:centrality_semaxis_compare}b). 
-The embedding ranking over-ranks large research-intensive universities such as North Carolina State University, University of Florida, and Texas A\&M University, whereas the network-derived ranking over-ranks smaller, more specialized universities such as Brandeis University, Yeshiva University, and University of San Francisco. 
-This suggests that the embedding encodes information on prestige hierarchy at least as well as a network representation, with some noticeable qualitative differences.
 
 
 %
@@ -778,172 +672,35 @@ This suggests that the embedding encodes information on prestige hierarchy at le
 \label{si:text:boomerang_speculation}
 {\bf Speculation on variations of the convex-curve pattern.}
 
-The convex-curve pattern observed in Fig.~\ref{fig:length} repeats across many countries, with variations.
-For example, the representative vector of Chinese organizations has a larger norm than that of the U.S. ($\bar{l} = 2.97$ vs $\bar{l} = 2.39$, Table~\ref{table:supp:norm}), causing its curve to be shifted upwards with a larger peak vector norm;
-this may reflect a tendency for organizations in the U.S. to appear more frequently in different contexts than Chinese organizations.
-Other nations such as Poland, Iran, and Turkey show a linear relationship between an organization's number of researchers and the vector norm, indicating that their largest organizations belong to very specific contexts (Fig.~\ref{fig:concave30}).
-The organization-level distribution of vector norms reveals deeper heterogeneity.
-The distribution of the vector norms for the U.S. is relatively skewed, suggesting their large norm is driven by a small and tight community of organizations (\textit{skew}$ = -0.82$, Fig.~\ref{fig:norm_dist}).
-Germany and the U.K. have comparable representative vector norms to the U.S. ($\bar{l} = 2.6$ and $\bar{l} = 2.61$, respectively), with lower skewness (\textit{skew}$ = -0.63$ and \textit{skew}$ = -0.55$), suggesting more tight community of organizations.
-The vector norms of organizations in some countries are even more skewed, such as in Iran ($\bar{l} = 3.57$, \textit{skew}$ = -2.13$) and China ($\bar{l} = 2.97$, \textit{skew}$ = -1.08$), indicating the strong difference between their most- and least-connected organizations.
-For some countries, their organizations are positively-skewed, though seemingly for different reasons.
-For example, Austria has a balanced distribution of organization vector norms, suggesting a diverse range of organizations with most being well connected ($\bar{l} =2.64$, $s = 0.18$);
-Russia, in contrast, has a number of organization vectors of moderate norms, but also several isolated organizations with large vector norms ($\bar{l} = 3.08$, $s = 0.67$).
-
-
+\clearpage
 \newpage
 
-% latex table generated in R 3.5.1 by xtable 1.8-2 package
-% Thu Apr  2 13:43:00 2020
-\begin{table}[ht]
-\centering
+% S1 Table
+\begin{table}
 \caption{\textbf{Full organization names}}
 \label{table:supp:orglabels}
-\begin{adjustwidth}{-2cm}{}
-\begingroup\scriptsize
-\begin{tabular}{llll}
-  \hline
-Short & Full & Short & Full \\
-  \hline
-Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
-  Columbia & Columbia Univ & Ball State & Ball State Univ \\
-  Harvard & Harvard Univ & IU Bloomington & Indiana Univ, Bloomington \\
-  UCLA & Univ of California, Los Angeles & Stevens Institute & Stevens Institute of Technology \\
-  Cal State Long Beach & California State Univ, Long Beach & NJIT & New Jersey Institute of Technology \\
-  Wright State & Wright State Univ & NYU & New York Univ \\
-  U Toledo & Univ of Toledo & SUNY Albany & Univ at Albany, The State Univ of New York \\
-  Boston U & Boston Univ & NY Medical College & New York Medical College \\
-  Suffolk & Suffolk Univ & Miami University & Miami Univ \\
-  CUNY & City Univ of New York (CUNY) & IU Pennsylvania & Indiana Univ of Pennsylvania \\
-  U Arizona & Univ of Arizona & Baylor & Baylor College of Medicine \\
-  OSU & Ohio State Univ & UT Health Center & Univ of Texas Health Science Center \\
-  MIT & Massachusetts Institute of Technology & Bard College & Bard College \\
-  Princeton & Princeton Univ & Stonehill College & Stonehill College \\
-  GCU & Grand Canyon Univ & Carleton College & Carleton College \\
-  Northcentral & Northcentral Univ & Hanover College & Hanover College \\
-  UCSF & Univ of California, San Francisco & Queens College & Queens College \\
-  Fielding & Fielding Graduate Univ & DePauw & DePauw College \\
-  Pepperdine & Pepperdine Univ & Naval Academy & United States Naval Academy \\
-  Argosy & Argosy Univ & Cal State San Marcos & California State Univ San Marcos \\
-  Yale & Yale Univ & Broad Inst & Broad Institute \\
-  U Hartford & Univ of Hartford & Forsyth Inst & Forsyth Institute \\
-  FAU & Florida Atlantic Univ & U Alaska Museum & Univ of Alaska Museum of the North \\
-  U Miami & Univ of Miami & Lawrence Berkeley & Lawrence Berkeley Natl Laboratory \\
-  UWF & The Univ of West Florida & Allen Institute & Allen Institute for Brain Science \\
-  FIT & Florida Institute of Technology & RTI International & RTI InterNatl \\
-  Purdue & Purdue Univ, West Lafayette & Fermilab & Fermilab \\
-  Notre Dame & Univ of Notre Dame & State of NY & State of New York \\
-  Indiana State & Indiana State Univ & Mayo Clinic & Mayo Clinic \\
-  Saint Mary's & Saint Mary's College & Fish and Wildlife & Fish and Wildlife Research Institute \\
-  Tufts & Tufts Univ & EPA & United States Environmental Protection Agency \\
-  Mattel & Mattel Children's Hospital & US Army & United States Army \\
-  Clark & Clark Univ & NSF & Natl Science Foundation \\
-  UMass Amherst & Univ of Massachusetts Amherst & US Navy & United States Navy \\
-  Montclair & Montclair State Univ & US Air Force & United States Air Force \\
-  Farleigh Dickinson & Fairleigh Dickinson Univ-Metro Campus & Ames Laboratory & Ames Laboratory \\
-  Rockefeller & Rockefeller Univ & Olin College & Oin College of Engineering \\
-  Adelphi & Adelphi Univ & Scrips Institute & Scrips Institute \\
-  Barnard & Barnard College & Idaho Natl Lab & Idaho Natl Laboratory \\
-  Saint John Fisher & Saint John Fisher College & Dana Faber & Dana Faber Cancer Institute \\
-  U Penn & Univ of Pennsylvania & Dept of Agriculture & United States Department of Agriculture \\
-  Villanova & Villanova Univ & DOE & United States Department of Energy \\
-  Widener & Widener Univ-Main Campus & NIAMS & Natl Institute of Arthritis, Skin Diseases \\
-  Robert Morris & Robert Morris Univ & JMI Labs & JMI Laboratories \\
-  U Cincinnati & Univ of Cincinnati & Whitehead Inst & Whitehead Institute of Biomedical Research \\
-  Case Western & Case Western Reserve Univ & Wellesley & Wellesley Univ\\
-  Ashland & Ashland Univ & UT Health, San Antonio & Univ of Texas Health Science Center, San Antonio \\
-  Texas A\&M & Texas A\&M Univ-Commerce & UNT & Univ of North Texas \\
-  Texas Southern & Texas Southern Univ & UT Southwestern Med & Univ of Texas Southwestern Medical Center \\
-  Baylor & Univ of Mary Hardin-Baylor & UT El Paso & Univ of Texas, El Paso \\
-  U Washington & Univ of Washington - Seattle & USF & Univ of South Florida, Tampa \\
-  Washington State & Washington State Univ & Florida A\&M & Florida Agricultural and Mechanical Univ \\
-  Seattle Pacific & Seattle Pacific Univ & Barry & Barry Univ \\
-  Cal State Fresno & California State Univ-Fresno & UMass Dartmouth & Univ of Massachusetts Dartmouth \\
-  Northern Arizona & Northern Arizona Univ & Worcester Poly & Worcester Polytechnic Institute \\
-  IUPUI & Indiana Univ - Purdue Univ Indianapolis & Umass Boston & Univ of Massachusetts Boston \\
-  U Dayton & Univ of Dayton & MGH Inst & MGH Institute of Health Professions \\
-  U Conn & Univ of Connecticut & Joseph W. Jones Center & Joseph W. Jones Ecological Research Center \\
-  ASU & Arizona State Univ & Vaccine Research Center & Vaccine Research Center, San Diego \\
-  U Florida & Univ of Florida & LA Ag Center & Lousianna Agricultural Center \\
-  Northern Illinois & Northern Illinois Univ & FL Fish and Wildlife & Florida Fish and Wildlife Conservation Commission \\
-  Concordia Chicago & Concordia Univ-Chicago & NHLBI & Natl Heart, Lung, and Blood Institute \\
-  U Chicago & Univ of Chicago & NY Dept. of Health & New York Department of Health \\
-  SIU Edwardsville & Southern Illinois Univ, Edwardsville & St Michaels & Saint Michaels College \\
-  SIU Carbondale & Southern Illinois Univ, Carbondale &  &  \\
-   \hline
-\end{tabular}
-\endgroup
-\end{adjustwidth}
 \end{table}
 
-
-\newpage
-
-\begin{table}[]
-\centering
-\caption{\textbf{L2 Norm of country's representative vectors}.
-			 Shown for top 30 countries with the most unique mobile and non-mobile researchers}
+% S2 Table
+\begin{table}
+\caption{\textbf{L2 Norm of country's representative vectors}.}
 \label{table:supp:norm}
-\begin{tabular}{lrr}
-\textbf{Country} & \textbf{L2 Norm} & \textbf{\# Organizations} \\ \hline
-United States    & 2.39             & 1281                      \\
-Germany          & 2.6              & 485                       \\
-United Kingdom   & 2.61             & 514                       \\
-Austria          & 2.64             & 74                        \\
-France           & 2.83             & 688                       \\
-Belgium          & 2.84             & 84                        \\
-Switzerland      & 2.85             & 66                        \\
-Spain            & 2.94             & 322                       \\
-China            & 2.97             & 497                       \\
-India            & 2.99             & 114                       \\
-Poland           & 3.02             & 145                       \\
-Canada           & 3.02             & 147                       \\
-Italy            & 3.04             & 386                       \\
-Russia           & 3.08             & 187                       \\
-Norway           & 3.1              & 122                       \\
-Netherlands      & 3.11             & 136                       \\
-Sweden           & 3.16             & 75                        \\
-Brazil           & 3.16             & 286                       \\
-Finland          & 3.17             & 66                        \\
-Denmark          & 3.21             & 54                        \\
-Czech Republic   & 3.23             & 97                        \\
-Greece           & 3.24             & 62                        \\
-Australia        & 3.24             & 90                        \\
-Turkey           & 3.28             & 99                        \\
-South Korea      & 3.28             & 156                       \\
-Israel           & 3.32             & 71                        \\
-Portugal         & 3.33             & 57                        \\
-Japan            & 3.35             & 465                       \\
-Iran             & 3.57             & 68                        \\
-Taiwan           & 3.67             & 72
-\end{tabular}
 \end{table}
 
-
+\clearpage
 \newpage
+
 
 %
 % Figure - publications over time
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Descriptive/pubs_over_time.pdf}
+\begin{figure}[]
+\begin{flushleft}
+	%\includegraphics[width=\textwidth]{\figdir/Descriptive/pubs_over_time.pdf}
 	\caption{
 		\textbf{Publications over time.}
-		\textbf{a.}
-		The number of papers published by mobile authors has been steadily increasing from 2008 to 2017, with a small decrease in 2018,  which may be due to an artifact of the Web of Science indexing process.
-		Lines correspond to publications by mobile authors, by authors with affiliations in at least two cities, at least two regions, and at least two countries.
-		We did not find major changes in the publication patterns of mobile authors during this time period.
-		\textbf{b.}
-		Lines correspond to the proportion of publications classified as Biology and Health (black), Physics and Engineering (purple), Life and Earth Science (magenta), Social Science and Humanities (orange), and Math and Computer Science (yellow).
-		The rate of publication in Biology and Health has leveled since about 2013, whereas the rate of publication in other fields has steadily increased.
-		\textbf{c.}
-		While the absolute count of publications has increased, the percentage of mobile scholars, and those with affiliations in at least least two cities, regions, or countries, as a proportion of all publications, has decreased over time.
-		\textbf{d.}
-		The proportion of authors' publications across fields has largely remained steady.
-		Biology and Health Science has comprised the majority of publications across nearly all years but has steadily declined in proportion.
-		However, the proportion of Social Science and Humanities publications has been steadily increasing.
-	}
+		}
+\end{flushleft}
 	\label{fig:supp:pubs_over_time}
 \end{figure}
 
@@ -952,70 +709,32 @@ Taiwan           & 3.67             & 72
 %
 % Figure - descriptives
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Descriptive/mobility_by_country.pdf}
-	\caption{
-		\textbf{Extent and nature of mobility by country.}
-		\textbf{a.}
-		The proportion of all mobile researchers contributed by each country. 
-		Over 30\% of all mobile researchers have been affiliated with organizations in the U.S. during the period of study.
-		\textbf{b.}
-		Cumulative distribution of data shown in (\textbf{a}).
-		The U.S., China, and France, the U.K., and Germany comprise about 70\% of all mobile researchers. 
-		\textbf{c.} 
-		The proportion of each country's researchers who are mobile.
-		The dashed line indicates the proportion of all researchers in the data who are mobile. 
-		France, followed by Qatar and the U.S. have the highest proportion of mobile researchers. 
-		\textbf{d.} First two principal components of four variables: proportion of researchers in each country mobile across organizations, proportion mobile across cities, proportion mobile across regions, and proportion mobile across countries.
-		The countries are roughly sorted in order of the number of mobile researchers and the fraction of international mobile researchers in the first and second principal components, which are indicated by PC1 and PC2, respectively. 
-		PC1 explains 88.3\% of the total variance, whereas PC2 explains 9.5\% of the total variance. 
-	}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/Descriptive/mobility_by_country.pdf}
+	\caption{\textbf{Extent and nature of mobility by country.}}
 	\label{fig:supp:descriptives}
 \end{figure}
 
 
-
-
-\newpage
 %
 % Figure - reverse CDF by scale
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=0.8\textwidth]{\figdir/Descriptive/rcdf_by_scale.pdf}
+\begin{figure}[]
+	%\includegraphics[width=0.8\textwidth]{\figdir/Descriptive/rcdf_by_scale.pdf}
 	\caption{
 		\textbf{Reverse cumulative-distribution function of mobile researchers by geographic scale.}
-		\textbf{a.}
-		Survival probability of mobile researchers with respect to the number of organizations in the their affiliation trajectory.
-		All mobile authors were affiliated with at least two organizations (i.e., survival probability of one) and about 35.0\% were affiliated with three or more. 
-		\textbf{b.} About 68\% of mobile authors listed at least two cities represented in their career trajectories.
-		\textbf{c.} 45\% of mobile authors have two or more regions represented in their career trajectories.
-		\textbf{d.} Only 14\% of mobile authors had two or more countries represented in their career trajectories.
 	}
 	\label{fig:supp:rcdf_by_scale}
 \end{figure}
 
 
 
-
 %
 % Figure - Hyperparameter performance
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
-	\caption{
-		\textbf{Larger dimensions, smaller window size improves embedding performance.}
-		The correlation, or amount of flux explained by the embedding distance with varying skip-gram negative sampling hyperparameters.
-		Window size refers to $w$, the size of the context window that defines the context in a trajectory.
-		Smaller window sizes result in an embedding that explain more flux.
-		Embedding dimensions refer to the size of the embedding vector.
-		Larger vectors perform better, though little difference between 200 and 300.
-		All variants perform better on same-country pairs of organizations than on all organizations.
-		All variants perform worse on different-country pairs on organizations.
-		Embeddings with larger dimensions outperform mid-size embeddings for the different-country case.
-	}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
+	\caption{\textbf{Larger dimensions, smaller window size improves embedding performance.}}
 	\label{fig:supp:cosdot}
 \end{figure}
 
@@ -1023,15 +742,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Dot product and cosine similarity
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Math/d300_ws1_dot_cosine.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/Math/d300_ws1_dot_cosine.pdf}
 	\caption{
 		\textbf{Cosine distance is correlated with dot product similarity.}
-		We find a relatively high correlation between the embedding distance---one minus the cosine similarity---and the dot product similarity between organization vectors ($R^2 = 0.73$).
-		Color of each hex bin indicates the frequency of organization pairs. 
-		Black dots indicate the mean dot product similarity averaged over binned sets at the same embedding distance.
-		Red line is line of best fit.
 	}
 	\label{fig:supp:hyperparams}
 \end{figure}
@@ -1041,17 +755,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Geographic predictions, by model
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_geo_bymodel.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_geo_bymodel.pdf}
 	\caption{
 		\textbf{For geographic distance, the power-decay gravity model is better.}
-		Flux between organization pairs predicted by the gravity model with different distance decay functions, i.e., exponential decay function (\textbf{a}) and power-law decay function (\textbf{b}) using geographic distance.
-		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps with $x = y$; 
-		a perfect prediction yields all points on the black line.
-		Shown for all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility.
-		The gravity model with the power-decay function outperforms that with an exponential decay function.
 	}
 	\label{fig:supp:predict_geo_bymodel}
 \end{figure}
@@ -1061,60 +768,34 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Embedding predictions, by model
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_emb_bymodel.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_emb_bymodel.pdf}
 	\caption{
 		\textbf{For geographic distance, the power-decay gravity model is better.}
-		Flux between organization pairs predicted by the gravity model with different distance decay functions, i.e., exponential decay function (\textbf{a}) and power-law decay function (\textbf{b}) using embedding distance.
-		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps with $x = y$; 
-		a perfect prediction yields all points on the black line.
-		Shown for all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility.
-		The gravity model with the exponential decay function outperforms that with a power-decay function.
 	}
 	\label{fig:supp:predict_emb_bymodel}
 \end{figure}
 
 
-
 %
 % Figure - gravity correlation
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
 	\caption{
 		\textbf{Embedding distance explains more variance for global, within, and across country flux than geographic distance.}
-		\textbf{a.}
-		Embedding distance explains more flux than geographic distance (\textbf{b}).
-		Red line is the line of best fit.
-		Black dots are mean flux across binned distances.
-		Color of each hex bin indicates frequency of organization pairs.
-		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}a and Fig.~\ref{fig:gravity_performance}.
-		\textbf{c-d.}	embedding distance explains more variance when considering only within-country organization pairs.
-		\textbf{e-f.} embedding distance is more robust than geographic distance when considering only across-country organization pairs.
 	}
 	\label{fig:supp:gravity_correlation}
 \end{figure}
 
 
-
 %
 % Figure - gravity predictions based on subset or global
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_different_fits.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_different_fits.pdf}
 	\caption{
 		\textbf{Little difference between gravity predictions fit on all or subsets of data.}
-		Predictions of flux between organization pairs made using embedding distance out-performs those made using geographic distance.
-		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps the line $x = y$; 
-		a perfect prediction yields all points on the black line.
-		\textbf{a-b.} Predictions are made with parameters estimated from all pairs of organizations (as in Fig.~\ref{fig:gravity_performance}c), and showing only the subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
-		\textbf{c-d.} Predictions made using parameters estimated from the subset of organizations in the same country (\textbf{c}) and different country \textbf{d});
-		this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h.
 	}
 	\label{fig:supp:gravity_prediction_subsets}
 \end{figure}
@@ -1124,46 +805,23 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Dot product distance
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_dot.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_dot.pdf}
 	\caption{
 		\textbf{Examine gravity model with dot product on the embedding space.}
-		Performance of dot product similarities in explaining and predicting mobility.
-		Similarity scores are calculated as the pairwise dot product between organizational vectors.
-		Dot product similarity performs better than geographic distance, though worse than cosine similarity in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
-		Red line is line of best fit.
-		Black dots are mean flux across binned distances.
-		Color indicates frequency of organization pairs within each hex bin.
-		Similarly, PPR distance performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
-		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$;
-		a perfect prediction yields all points on the black line.
 	}
 	\label{fig:supp:gravity_dot}
 \end{figure}
 
 
 
-
 %
 % Figure - PPR with COSINE DISTANCE gravity model and predictions
 %
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_pprcos.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_pprcos.pdf}
 	\caption{
 		\textbf{Personalized page rank with cosine distance.}
-		Performance of personalized page rank scores in explaining and predicting mobility.
-		Personalized page rank is calculated for the underlying mobility network, and distance measured as the cosine distnace between PPR probability distribution vectors.
-		PPR cosine distance performs roughly similar to geographic distance in explaining global(\textbf{a}), domestic (\textbf{b}), or international (\textbf{c}) country mobility.
-		Red line is the line of best fit.
-		Black dots indicate the mean flux across binned distances.
-		Color of hex bind indicates frequency of organization pairs.
-		Similarly, PPR distance performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
-		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$;
-		a perfect prediction yields all points on the black line.
 	}
 	\label{fig:supp:gravity_pprcos}
 \end{figure}
@@ -1173,22 +831,10 @@ Taiwan           & 3.67             & 72
 % Figure - PPR with JSD gravity model and predictions
 %
 
-\begin{figure}[p!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_pprjsd.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_pprjsd.pdf}
 	\caption{
 		\textbf{Personalized page rank with Jensen-Shannon Divergence.}
-		Performance of personalized page rank scores in explaining and predicting mobility.
-		Personalized page rank is calculated for the underlying mobility network, and distance measured as the Jensen-Shannon Divergence (JSD) between PPR probability distribution vectors.
-		PPR JSD performs roughly similar to geographic distance in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
-		Overall, PPR JSD explains more variance in mobility than using cosine distance (Fig.~\ref{fig:supp:gravity_pprcos}), except for international mobility, for which cosine similarity out-performs JSD.
-		Red line is the line of best fit.
-		Black dots are mean flux across binned distances.
-		Color of hex bind indicates frequency of organization pairs.
-		Similarly, PPR JSD performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
-		Boxplots show distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps $x = y$;
-		a perfect prediction yields all points on the black line. 
 	}
 	\label{fig:supp:gravity_pprjsd}
 \end{figure}
@@ -1197,15 +843,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Global Network Projection
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Projection/co_occur_with_label.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/Projection/co_occur_with_label.pdf}
 	\caption{
 		\textbf{Visualization of global mobility network.}
-		The network demonstrates country-level structure, but not at the detail or the extent of the global UMAP projection (Fig.~\ref{fig:projection}a).
-		Each node corresponds to an organization, whereas  weighted edges (not shown) correspond to the flow of mobile researchers between the two organization.
-		Nodes are colored by the country of the organization.
-		Nodes are positioned using the Force Atlas layout algorithm.
 	}
 	\label{fig:supp:network_vis}
 \end{figure}
@@ -1215,13 +856,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - New York Projection
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_New_York.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_New_York.pdf}
 	\caption{
 		\textbf{UMAP Projection of organizations in New York.}
-		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019.
-		Color indicates the sector.
 	}
 	\label{fig:supp:proj_newyork}
 \end{figure}
@@ -1230,14 +868,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Pennsylvania Projection
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Pennsylvania.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Pennsylvania.pdf}
 	\caption{
 		\textbf{UMAP Projection of organizations in Pennsylvania.}
-		UMAP projection of the embedding space of organizations in Pennsylvania reveals clustering based on geography, sector, and academic prestige.
-		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019.
-		Color indicates the sector.
 	}
 	\label{fig:supp:proj_pennsylvania}
 \end{figure}
@@ -1246,13 +880,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Texas Projection
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Texas.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Texas.pdf}
 	\caption{
 		\textbf{UMAP Projection of organizations in Texas.}
-		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019.
-		Color indicates the sector.
 	}
 	\label{fig:supp:proj_texas}
 \end{figure}
@@ -1262,13 +893,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - California Projection
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_California.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_California.pdf}
 	\caption{
 		\textbf{UMAP Projection of organizations in California.}
-		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019.
-		Color indicates the sector.
 	}
 	\label{fig:supp:proj_california}
 \end{figure}
@@ -1279,18 +907,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - SemAxis results
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_compare_fig.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_compare_fig.pdf}
 	\caption{
 		\textbf{SemRank hierarchy is robust.}
-		\textbf{a.} Spearman's $\rho$ ($n = 143$) between Times prestige rank and embedding rank derived using SemAxis, with poles defined using the top and bottom (geographically matched) ranked universities.
-		Black points show spearman correlation using all organizations; white points show correlation using only universalizes not aggregated in the poles.
-		Including more universities improves performance, but quickly saturates after around five universities.
-		\textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by the number of universities used to define the poles (n).
-		White points are those top and bottom 20 universities aggregated to define the ends of the axis.
-		The grey box corresponds to the top 20 and bottom 20 ranks.
-	  	Spearman's $\rho$ details the estimate from Spearman correlation between the two rankings using all universities, including those used to define the ends of each axis.
 	}
 	\label{fig:supp:semaxis_compare}
 \end{figure}
@@ -1300,13 +920,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Network Centrality vs. Times
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/centrality_times_compare.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/SemAxis/centrality_times_compare.pdf}
 	\caption{
 		\textbf{Network centrality is strongly correlated with Times ranking.}
-		Comparison between the ranking of organizations by their network-centrality rank and their rank in the 2018 Times Higher Education ranking of U.S. Universities .
-		The Times rank is correlated with degree centrality rank (\textbf{a}) with Spearman's $\rho = 0.73$, and is correlated with the eigenvector centrality rank (\textbf{b}) with Spearman's $\rho = 0.76$.
 	}
 	\label{fig:supp:centrality_times_compare}
 \end{figure}
@@ -1316,13 +933,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Network Centrality vs. SemAxis
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_network_compare.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_network_compare.pdf}
 	\caption{
 		\textbf{Network centrality less correlated with Embedding rank.}
-		Comparison between the ranking of organizations by their network-centrality rank and the embedding rank derived with SemAxis with poles defined using the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities .
-		Embedding rank is correlated with degree centrality rank (\textbf{a}) with Spearman's $\rho = 0.45$, and is correlated with the eigenvector centrality rank (\textbf{b}) with Spearman's $\rho = 0.55$.
 	}
 	\label{fig:supp:centrality_semaxis_compare}
 \end{figure}
@@ -1331,15 +945,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - SemAxis By State
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_states_fig.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_states_fig.pdf}
 	\caption{
 		\textbf{Geography and prestige SemAxis by U.S. state.}
-		SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top).
-		Points correspond to universities shown for California (\textbf{a}), Arizona (\textbf{b}), Washington (\textbf{c}), Massachusetts (\textbf{d}), Connecticut (\textbf{e}), New York (\textbf{f}), Texas (\textbf{g}), Pennsylvania (\textbf{h}), and Florida (\textbf{i}).
-		Grey points correspond to all other U.S. universities.
-		Full organization names listed in Table~\ref{table:supp:orglabels}.
 	}
 	\label{fig:supp:semaxis_states}
 \end{figure}
@@ -1351,60 +960,22 @@ Taiwan           & 3.67             & 72
 %
 % Figure - SemAxis By State
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/SemAxis/sector_rank_comparison.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/SemAxis/sector_rank_comparison.pdf}
 	\caption{
 		\textbf{SemAxis reconstructs publication impact in non-university sectors.}
-		Comparison between the ranking of organizations in each non-university sector by their citation impact and the embedding rank.
-		Citation impact is calculated as the mean-normalized citation score using papers published in the Web of Science database between 2008 and 2019. 
-		The embedding rank is derived by first projecting non-university organizations onto the SemAxis axis formed with poles defined using the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities.
-		\textbf{a} Shows how the correlation between the citation impact and SemAxis rankings differ while varying the size threshold for including an organization.
-		Size is calculated as the mean annualized number of unique authors publishing with that organization. 
-		Annotations show the number of organizations remaining at thresholds pf 0, 50, and 100. 
-		\textbf{b}. Comparison of organizations using a size threshold of 10 for regional and liberal arts colleges, and 50 for research institutes and government organizations;
-		these thresholds were chosen as points thresholds of stability in \textbf{a}. 		
-		The impact rank is correlated with the embedding rank for regional and liberal arts colleges with Spearman's $\rho = 0.49 (n = 48)$, research institutes with Spearman's $\rho = 0.58 (n = 159)$, and for government organizations with Spearman's $\rho = 0.36 (n = 55)$. 
 	}
 	\label{fig:supp:sector_semaxis_impact}
 \end{figure}
 
 
 %
-% Figure - SemAxis By Sector
-%
-%\begin{figure}[hp!]
-%	\centering
-%	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_sectors_fig.pdf}
-%	\caption{
-%		\textbf{Geography and prestige SemAxis in U.S. by Sector.}
-%		SemAxis projection along two axes, comparing California to Massachusetts universities (left to r%ight), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 %Times Higher Education ranking of U.S. Universities (bottom to top).
-%		Points correspond to organizations labeled as Government (\textbf{a}), Institute (\textbf{b}), and %Teaching (\textbf{c}), corresponding to government organizations, research institutes, and teaching o%rganizations, respectively.
-%		Grey points correspond to all U.S. universities.
-%	    	Full organization names listed in Table~\ref{table:supp:orglabels}.
-%	}
-%	\label{fig:supp:semaxis_sectors}
-%\end{figure}
-
-
-
-%
 % Figure - length by factors
 %
-\begin{figure}[hp!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Math/l2_org_meta.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/Math/l2_org_meta.pdf}
 	\caption{
 		\textbf{Factors relating to the L2 norm of vectors for U.S. universities}
-		Correlation between the L2 norm of organization embedding vectors of U.S. universities and characteristics of U.S. universities.
-		Dots correspond to organizations.
-		The red line is the line of  the best fit with corresponding 99\% confidence intervals.
-		Red text is the regression estimate.
-		The blue line is the loess regression line with 99\% confidence intervals.
-		Number of authors is the average annual count of unique mobile and non-mobile authors.
-		Rankings are derived from the Times Ranking of World Universities, and the Leiden Rankings of Universities.
-		Remaining variables come from the Carnegie Classification of Higher Education Institutions.
-		The factors that best explain $s_i$ are the number of authors, the rank, the amount of Science and Engineering (S\&E) funding, and the number of doctorates granted.
 	}
 	\label{fig:supp:length_vs_metaInfo}
 \end{figure}
@@ -1414,14 +985,10 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Concave-curves countries
 %
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Math/boomerang_30_countries.pdf}
+\begin{figure}[]
+	%\includegraphics[width=\textwidth]{\figdir/Math/boomerang_30_countries.pdf}
 	\caption{
 		\textbf{Concave-curve repeats across most of 30 countries with most researchers.}
-		Size (L2 norm) of organization embedding vectors compared to their number of researchers for U.S. universities.
-		Loess regression line is shown for each country with 99\% confidence intervals.
-		Countries shown are the 30 with the largest number of total unique mobile and non-mobile researchers.
 	}
 	\label{fig:concave30}
 \end{figure}
@@ -1431,18 +998,13 @@ Taiwan           & 3.67             & 72
 %
 % Figure - Norm distribution by country
 %
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=\textwidth]{\figdir/Math/l2_org_dist.pdf}
+\begin{figure}[]
+	% \includegraphics[width=\textwidth]{\figdir/Math/l2_org_dist.pdf}
 	\caption{
 		\textbf{Distribution of organization embedding vector norms by country.}
-		Histogram showing the distribution of L2 norm values of organization embedding vectors in each of the 30 countries with the largest number of total unique mobile and non-mobile researchers.
-		Text in each panel shows the number of organizations in the country (n) and the GINI index of inequality of the distribution (g);
-		a small GINI index indicates that the L2 norms of organizations are more balanced, whereas a high GINI value indicates that they are more unequal.
 	}
 	\label{fig:norm_dist}
 \end{figure}
-
 
 
 
