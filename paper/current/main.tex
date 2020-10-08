@@ -83,16 +83,22 @@
 
 
 % CUSTOM MACROS
+\usepackage{ marvosym }
 
+    
 % Define the supporting information name
 \def\SI{Supporting Information}
 \usepackage{authblk}
 %}}}
 
+\renewcommand\Authfont{\fontsize{12}{14.4}\selectfont}
+\renewcommand\Affilfont{\fontsize{9}{10.8}\itshape}
+
+
 \begin{document} %{{{
 \title{Unsupervised embedding of trajectories captures the latent structure of mobility} %{{{
-\author[1,4]{Dakota Murray}
-\author[1, 2, 4]{Jisung Yoon}
+\author[1,\Yinyang]{Dakota Murray}
+\author[1,2,\Yinyang]{Jisung Yoon}
 \author[1]{Sadamori Kojaku}
 \author[3]{Rodrigo Costas}
 \author[2]{Woo-Sung Jung}
@@ -104,7 +110,7 @@
 Pohang 37673, Republic of Korea.}
 \affil[3]{Centre for Science and Technology Studies (CWTS), Leiden University, P.O. Box 905,
 2300 AX Leiden, The Netherlands}
-\affil[4]{These authors contributed equally: Jisung Yoon, Dakota Murray.}
+\affil[\Yinyang]{These authors contributed equally: Jisung Yoon, Dakota Murray.}
 
 \date{\today}
 \maketitle %}}}
