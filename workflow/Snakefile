@@ -51,7 +51,7 @@ ORG_SIZES = osjoin(RAW_DATA_DIR, '2008-2019_inst_sizes.txt')
 ORG_STATE_NAMES = osjoin(ADDITIONAL_DATA_DIR, 'org_states.csv')
 US_CENSUS_REGIONS = osjoin(ADDITIONAL_DATA_DIR, 'usa_states_to_regions.csv')
 ORG_IMPACT = osjoin(ADDITIONAL_DATA_DIR, 'org_impact_scores.txt')
-AIRPORT_DATA = osjoin(RAW_DATA_DIR, 'airport_ws1_d300.csv')
+SECONDARY_DATA = osjoin(RAW_DATA_DIR, '{dataset}_ws1_d300.csv')
 
 ######################
 # Mobility sentences #
@@ -178,9 +178,9 @@ CENTRALITY_TIMES_RANK_PLOT = osjoin(NETWORK_FIGURE_DIR, '{traj}', '{measure}_{tr
 SEMAXIS_RANK_CENTRALITY_PLOT = osjoin(NETWORK_FIGURE_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{measure}_{ranking}_d{dimensions}_ws{window}_n{numorgs}_{traj}_centrality_compare.pdf')
 
 # Airport data plots
-GRAVITY_AIRPORT_PLOT = osjoin(FIGURE_DIR, 'Airport', 'Gravity', '{airdistance}_airport_gravity.pdf')
-AIRPORT_PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, 'Airport', '{airdistance}_predicted_vs_actual_airport.csv')
-AIRPORT_PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', 'Airport', '{model}_{airdistance}_predicted_vs_actual_airport.pdf')
+GRAVITY_SECONDARY_PLOT = osjoin(FIGURE_DIR, 'Secondary', '{dataset}', '{distance}_{dataset}_gravity.pdf')
+SECONDARY_PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{dataset}', '{distance}_predicted_vs_actual_{dataset}.csv')
+SECONDARY_PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Secondary', '{dataset}', '{model}_{distance}_predicted_vs_actual_{dataset}.pdf')
 
 # MISC PLOTS
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
@@ -231,7 +231,7 @@ SECTORS = ['Teaching', 'Government', 'Institute']
 # Gravity law parameters
 TO_FILTER = ["filter"]
 DISTANCE_PARAMS = ['geo', 'emb', 'pprcos', 'pprjsd', 'dot']
-AIRPORT_DISTANCES = ['geo', 'emb']
+OTHER_DISTANCES = ['geo', 'emb']
 GEO_CONSTRAINTS = ['global',
                    'same-country',
                    'different-country']
@@ -249,6 +249,8 @@ COUNTRY_LIST = ["AUS", "AUT", "BEL", "BRA", "CAN", "CHE", "CHN", "CZE",
                 "DEU", "DNK", "ESP", "FIN", "FRA", "GBR", "GRC", "IND",
                 "IRN", "ISR", "ITA", "JPN", "KOR", "NLD", "NOR", "POL",
                 "PRT", "RUS", "SWE", "TUR", "TWN", "USA", "EGY"]
+
+DATASETS = ['airport', 'reservation']
 
 ###############################################################################
 # Includes
@@ -276,7 +278,7 @@ include: 'Snakefile_Math.smk'
 include: 'Snakefile_Network.smk'
 
 # Rules relating to the Airport dataset.
-include: 'Snakefile_Airport.smk'
+include: 'Snakefile_Secondary.smk'
 
 ###############################################################################
 # TARGET RULE
@@ -456,11 +458,16 @@ rule all:
                window = 1),
 
         # Airport
-        expand(GRAVITY_AIRPORT_PLOT, airdistance = AIRPORT_DISTANCES),
-        expand(AIRPORT_PREDICTED_VS_ACTUAL, airdistance = AIRPORT_DISTANCES),
-        expand(AIRPORT_PREDICTED_VS_ACTUAL_PLOT,
-               airdistance = AIRPORT_DISTANCES,
-               model = GRAVITY_MODEL_TYPES),
+        expand(GRAVITY_SECONDARY_PLOT,
+               distance = OTHER_DISTANCES,
+               dataset = DATASETS),
+        expand(SECONDARY_PREDICTED_VS_ACTUAL,
+               distance = OTHER_DISTANCES,
+               dataset = DATASETS),
+        expand(SECONDARY_PREDICTED_VS_ACTUAL_PLOT,
+               distance = OTHER_DISTANCES,
+               model = GRAVITY_MODEL_TYPES,
+               dataset = DATASETS),
 
         # Misc
         ORG_LABEL_TABLE

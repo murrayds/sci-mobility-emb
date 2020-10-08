@@ -141,9 +141,10 @@ plot <- dist %>%
 # Add an x-axis scale based on the type of distance metric being used
 #
 if (opt$distance == "geo") {
+  max.dist = max(dist$distance)
   plot <- plot +
-    scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5),
-                       limits = c(0, 5),
+    scale_x_continuous(breaks = seq(0, ceiling(max.dist), 1),
+                       limits = c(0, ceiling(max.dist)),
                        labels = function(x) { parse(text=paste0("10^", x)) },
                        expand = c(0, 0)
                      )
