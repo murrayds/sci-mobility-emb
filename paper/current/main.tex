@@ -129,13 +129,15 @@ Networks offer a solution to representing many dimensions of mobility, yet they 
 Overcoming the complexity of mobility requires moving beyond simple functional distances and networks, to instead learning high-dimensional landscapes of mobility that incorporates the many facets of mobility into a single fine-grained and continuous representation. 
 			
 Here, we apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense, continuous, and meaningful vector-space representation, from which we can not only derive a meaningful \textit{functional distance} between places but also probe relationships based on culture, language, and even prestige along with geographic relationship. 
-We leverage two massive datasets: a dataset of U.S. passenger flight itinerary records, and a dataset of scientists' career mobility between organizations captured in bibliometric records. 
+We leverage three massive datasets: a dataset of U.S. passenger flight itinerary records, Korean accommodation reservation records, and a dataset of scientists' career mobility between organizations captured in bibliometric records. 
 In particular, we focus on scientific mobility due to its richness and importance. Scientific mobility, which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}, is not only an important topic in the Science of Science but also ideal for our study thanks to its richness and well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career}. 
 In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility.
 
 
 The flight itinerary data, from the Airline Origin and Destination Survey, consists of records of more than 300 million itineraries between 1993 and 2020 documenting domestic flights between 828 airports in the United States. 
 A trajectory is constructed for each passenger flight itinerary, forming an ordered sequence of unique identifiers of the origin and destination airports. 
+The Korean accommodation reservation records consist of accommodation reservation history between 2018 and 2020 between 1,038 unique accommodation in Seoul, South Korea.
+A trajectory is constructed for each customer's accommodation reservation history, constructing an ordered sequence of unique commendation with accurate location information.
 Although more complex, trajectories of scientific mobility are constructed in a similar fashion. 
 Trajectories are constructed using more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
 Each trajectory is operationalized using a researcher's organizational affiliations derived from their publication histories indexed in a comprehensive bibliographic database (see Methods).
@@ -455,7 +457,7 @@ DB1B is a sample of 10 percent of domestic airline tickets between 1993 and 2020
 Each itinerary is associated with an origin, destination, and passenger and ticket metadata. 
 
 \subsection*{Korean accommodation reservation data}
-We source Korean accommodation reservation data from collaboration with Good Choice Company in Korea. Each trajectory is the sequence of reserved accommodation in Seoul, South Korea between 2018.08.01 ~ 2020.07.31, comprising 938,962 trajectories between 1,038 unique accommodations.
+We source Korean accommodation reservation data from collaboration with Good Choice Company in Korea. Each trajectory is the sequence of reserved accommodation in Seoul, South Korea between 2018.08.01 ~ 2020.07.31, comprising 938,962 trajectories consist of  1,038 unique accommodations.
 
 \subsection*{Scientific mobility data}
 %% Main dataset
