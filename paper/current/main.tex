@@ -100,7 +100,7 @@ Human mobility and migration drive major societal phenomena such as the growth a
 Historically, human mobility is strongly constrained by physical separation---geographical distance~\autocite{zipf1946gravity}.
 However, geographic distance is becoming less relevant in the increasingly-globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization, altbach2004globalization} in which physical barriers are shrinking while linguistic, cultural, and historical relationships are becoming more important.
 The critical importance of understanding mobility in many socio-economic phenomena thus compel alternative frameworks for mobility.
-Here, using a massive dataset of scientific mobility and U.S. flight itineraries, we demonstrate that a neural embedding model~\autocite{mikolov2013word2vec} can encode nuanced relationships between locations into a vector-space, providing an effective functional distance that reflects the multi-faced structure of human mobility. 
+Here, using a massive dataset of scientific mobility, U.S. flight itineraries and Korean accommodation reservation, we demonstrate that a neural embedding model~\autocite{mikolov2013word2vec} can encode nuanced relationships between locations into a vector-space, providing an effective functional distance that reflects the multi-faced structure of human mobility. 
 Focusing on the case of scientific mobility, we show that embeddings of scientific organizations discovers cultural and linguistic relations at multiple levels of granularity, and even academic prestige.
 Furthermore, the embedding vectors themselves reveal universal relationships between organizational characteristics, and their place in the global landscape of scientific mobility. 
 The ability to learn scalable, dense and meaningful high-resolution vector representations of mobility directly from the data can open up a new avenue of studying mobility across domains.
@@ -454,6 +454,8 @@ We source U.S. airport itinerary data from the Origin and Destination Survey (DB
 DB1B is a sample of 10 percent of domestic airline tickets between 1993 and 2020, comprising 307,760,841 passenger itineraries between 828 U.S. airports. 
 Each itinerary is associated with an origin, destination, and passenger and ticket metadata. 
 
+\subsection*{Korean accommodation reservation data}
+We source Korean accommodation reservation data from collaboration with Good Choice Company in Korea. Each trajectory is the sequence of reserved accommodation in Seoul, South Korea between 2018.08.01 ~ 2020.07.31, comprising 938,962 trajectories between 1,038 unique accommodations.
 
 \subsection*{Scientific mobility data}
 %% Main dataset
