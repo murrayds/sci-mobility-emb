@@ -1,6 +1,5 @@
 \documentclass[12pt]{article} %{{{
 
-
 % Text
 \setlength{\marginparwidth}{2.3cm}
 
@@ -32,10 +31,15 @@
 \def\vec#1{{\bm #1}}
 \def\mat#1{\mathbf{#1}}
 
+% Figure captions
+\usepackage{caption}
+\captionsetup{justification=raggedright,singlelinecheck=false,font=small}
+
+
 
 % abbreviations
 \def\etal{\emph{et~al}.\ }
-\def\eg{e.g.,~}
+\def\eg{e.g.,~} 
 \def\ie{i.e.,~}
 \def\cf{cf.\ }
 \def\viz{viz.\ }
@@ -174,7 +178,7 @@ The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravit
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
 
-where $m_{i}$ is the population of locations $i$,  $f(r_{ij})$ is a decay function with respect to distance between locations, and $C$ is a constant estimated from data (see Data and Methods). 
+where $m_{i}$ is the population of locations $i$,  $f(r_{ij})$ is a decay function with respect to distance between locations, and $C$ is a constant estimated from data (see Methods). 
 For the flight itinerary data, we use population $m_{i}$ as the total number of unique passenger on each airport, and for scientific mobility, we use the mean annual number of of unique mobile and non-mobile authors who affiliated with each organization.
 $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini2012universal}, is the expected frequency of the co-occurrence of location $i$ and $j$ in the trajectory in the gravity model.
 The gravity model dictates that the expected flow, $\hat{T}_{ij}$, is symmetric (\ie $\hat{T}_{ij }= \hat{T}_{ji})$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
@@ -191,7 +195,7 @@ For geographic distance, we define $f(r_{ij})$ as the standard power-law functio
 
 We show that the embedding distance, compared with the geographical distance, predicts actual mobility flows. 
 In the case flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}b). 
-We fit the gravity model given by Eq.~\ref{eq:gravity_basic} (see Data and Methods) and computed the expected flux  $\hat{T}_{ij}$ using the geographic distance and the embedding distance as parameters.
+We fit the gravity model given by Eq.~\ref{eq:gravity_basic} (see Methods) and computed the expected flux  $\hat{T}_{ij}$ using the geographic distance and the embedding distance as parameters.
 The embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}c-d).
 These results are consistent in the case of scientific mobility. 
 The amount of variance in the expected flux explained by the embedding distance ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) is again more than double that explained by the geographic distance ($R^{2} = 0.22$, Fig.~\ref{fig:gravity_performance}f).
@@ -443,7 +447,7 @@ With the changing paradigm of global mobility, we need now, more than ever, new 
 %
 % DATA AND METHODS
 %
-\section*{Data and Methods}
+\section*{Methods}
 \label{sec:datamethods} %{{{
 
 Processed data, analysis, and associated code have been made publicly available and can be found at \url{https://github.com/murrayds/sci-mobility-emb}.
@@ -851,7 +855,8 @@ From the prestige axis, we derive a ranking of universities that we then compare
 	\label{fig:supp:network_vis}
 \end{figure}
 
-
+\clearpage 
+\newpage
 
 %
 % Figure - New York Projection
