@@ -33,8 +33,13 @@
 
 % Figure captions
 \usepackage{caption}
-\captionsetup{justification=raggedright,singlelinecheck=false,font=small}
+\captionsetup{font=small}
 
+
+
+% External file referencing
+\usepackage{xr}
+\externaldocument{supp}
 
 
 % abbreviations
@@ -495,7 +500,7 @@ Trajectories are constructed from author affiliations listed on the byline of pu
 Given the limitations of author-name disambiguation, we limit our analyses to papers published after 2008, when the Web of Science began providing full names and institutional affiliations~\autocite{caron2014disambiguation} that improved disambiguation (see \SI).
 This yields 33,934,672 author-affiliation combinations representing 12,963,792 authors.
 Each author-affiliation combination is associated with the publication year and an ID linking it to one of 8,661 disambiguated organizational affiliations (see \SI for more detail).
-Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. The most fine-grained geographical unit in this data is the organization, such as a ``university'', ``research institute'', ``business'', or ``government agency''.
+Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. The most fine-grained geographical unit in this data is the organization, such as a university, research institute, business, or government agency.
 
 Here, authors are classified as mobile when they have at least two distinct organization IDs in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
 Under this definition, mobile authors constitute 3,007,192 or 23.2 \% of all authors and 17,700,095 author-affiliation combinations.
@@ -513,8 +518,9 @@ While the number of publications has increased year-to-year, the mobility and di
 %% Mobility sentences
 We embed trajectories by treating them analogously to sentences and locations analogously to words. 
 For U.S. airport itinerary, trajectories are formed from the flight itineraries of individual passenger, in which airports correspond to unique identifiers. 
+In the case of South Korean accommodation reservations, trajectories comprise a sequence of accommodations reserved over a customer's history.
 For scientific mobility, an``affiliation trajectories'' is constructed for each mobile author, which is built by concatenating together their ordered list of unique organization identifiers, as demonstrated in Fig.~\ref{fig:methods:mobility_sentence}a.
-In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple publications in the same year, the order is randomized within that year, as shown in  Fig.~\ref{fig:methods:mobility_sentence}b.
+In more complex cases, such as listing multiple affiliations on the same paper or publishing with different affiliations on multiple publications in the same year, the order is randomized within that year, as shown in Fig.~\ref{fig:methods:mobility_sentence}b.
 
 %% word2vec
 These trajectories are used as input to the standard skip-gram negative sampling word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
@@ -542,10 +548,11 @@ The in-vector and out-vectors are different kinds of vector representations for 
 %% Word2vec parameters and training procedure
 We used the \textit{word2vec}  implementation in the python package \texttt{gensim}. 
 The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
-For main results, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}).
+For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}).
 To mitigate the effect of less common locations, we set $f_{\min} = 50$, limiting to locations appearing at least 50 times across the training trajectories;
 744 unique airport for U.S. airport itinerary  and 6,580 unique organizations for scientific mobility appear in the resulting embedding.
 We set $\alpha$ to its default value of 0.025 and iterate five times over all training trajectories.
+For scientific mobility, across each training iteration, the order of organizations within a single year is randomized. 
 
 
 %
@@ -637,414 +644,45 @@ For example, if 20 top-ranked universities are selected and six of them are in t
 From the prestige axis, we derive a ranking of universities that we then compare to other formal university rankings using Spearman rank correlation.
 
 
-
-\clearpage
-\beginsupplement
-\section{Supporting Information}
-
+%
+% Acknowledgements
+%
+\subsection*{Acknowledgements}
+We thank the Center for Science and Technology Studies at Leiden University for managing and making available the dataset of scientific mobility. 
+For their comments, we thank Guillaume Cabanac, Cassidy R. Sugimoto, Vincent Lariviére, Alessandro Flammini, Filippo Menczer, Lili Miao, Xiaoran Yan, and Inho Hong. 
+This material is based upon work supported by the Air Force Office of Scientific Research under award number FA9550-19-1-0391.
 
 
 %
-%
-\paragraph*{S1 Text}
-\label{si:text:mobility_science}
-{\bf Mobility and science.}
+% Author Contributions
+% 
+\subsection*{Author Contributions}
+Dakota Murray and Jisung Yoon were involved in all stages of data handling, analysis, and writing
+Sadamori Kojaku contributed to the development of the mathematical framework used in this paper.
+Rodrigo Costas provided access to and knowledge of the dataset of scientific mobility.
+Woo-Sung Jung, Staša Milojević , and Yong-Yeol Ahn provided guidance, mentorship, and conceptualization.
+All authors contributed to the preparation of this manuscript.
 
 
 %
-% S2 Text
-\paragraph*{S2 Text}
-\label{si:text:mobility_models}
-{\bf Modeling scientific mobility.}
+% Supporting Information
+% 
+\subsection*{Additional Information}
+Supplementary Information is available for this paper.
+Correspondence and requests for materials should be addressed to Dr. Staša Milojević and Dr. Yong-Yeol Ahn”.
+Reprints and permissions information is available at www.nature.com/reprints”
 
 
-%
-% S3 TEXT
-\paragraph*{S3 Text}
-\label{si:text:mobility_traj}
-{\bf Building affiliation trajectories.}
+\subsection*{Data Availability}
+The U.S. airline itinerary dataset can be found at XYZ. 
+The South Korean accommodation reservation dataset can be found at XYZ.
+Due to its proprietary nature, the global scientific mobility dataset, sourced from the Web of Science, cannot be provided;
+however, we have made available all metadata and trained neural embeddings available at XYZ. 
 
+\subsection*{Code Availability}
+Code used in this analysis can be found at \url{https://github.com/murrayds/sci-mobility-emb}
 
 
-%
-% S4 TEXT
-\paragraph*{S4 Text}
-\label{si:text:ppr_dist}
-{\bf Network-based personalized page rank distances.}
-
-
-
-%
-% S5 TEXT
-\paragraph*{S5 Text}
-\label{si:text:organizations}
-{\bf Organization disambiguation and metadata.}
-
-
-
-%
-% S6 TEXT
-\paragraph*{S6 Text}
-\label{si:text:disambiguation}
-{\bf Author name dismabiguation.}
-
-
-
-%
-% S7 TEXT
-\paragraph*{S7 Text}
-\label{si:text:network_ranking}
-{\bf Reconstructing Times ranking with network measure.}
-
-
-
-%
-% S8 TEXT
-\paragraph*{S8 Text}
-\label{si:text:boomerang_speculation}
-{\bf Speculation on variations of the convex-curve pattern.}
-
-\clearpage
-%
-% SUPP TABLES
-%
-% S1 Table
-\begin{table}[]
-\caption{\textbf{Full organization names}}
-\label{table:supp:orglabels}
-\end{table}
-
-% S2 Table
-\begin{table}[]
-\caption{\textbf{L2 Norm of country's representative vectors}.}
-\label{table:supp:norm}
-\end{table}
-
-\clearpage
-\newpage
-
-
-%
-% SUPP FIGURES
-%
-
-%
-% Figure - publications over time
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Descriptive/pubs_over_time.pdf}
-	\caption{
-		\textbf{Publications over time.}
-		}
-	\label{fig:supp:pubs_over_time}
-\end{figure}
-
-
-
-%
-% Figure - descriptives
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Descriptive/mobility_by_country.pdf}
-	\caption{\textbf{Extent and nature of mobility by country.}}
-	\label{fig:supp:descriptives}
-\end{figure}
-
-
-%
-% Figure - reverse CDF by scale
-%
-\begin{figure}[]
-	%\includegraphics[width=0.8\textwidth]{\figdir/Descriptive/rcdf_by_scale.pdf}
-	\caption{
-		\textbf{Reverse cumulative-distribution function of mobile researchers by geographic scale.}
-	}
-	\label{fig:supp:rcdf_by_scale}
-\end{figure}
-
-
-
-%
-% Figure - Hyperparameter performance
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
-	\caption{\textbf{Larger dimensions, smaller window size improves embedding performance.}}
-	\label{fig:supp:cosdot}
-\end{figure}
-
-
-%
-% Figure - Dot product and cosine similarity
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Math/d300_ws1_dot_cosine.pdf}
-	\caption{
-		\textbf{Cosine distance is correlated with dot product similarity.}
-	}
-	\label{fig:supp:hyperparams}
-\end{figure}
-
-
-
-%
-% Figure - Geographic predictions, by model
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_geo_bymodel.pdf}
-	\caption{
-		\textbf{For geographic distance, the power-decay gravity model is better.}
-	}
-	\label{fig:supp:predict_geo_bymodel}
-\end{figure}
-
-
-
-%
-% Figure - Embedding predictions, by model
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_emb_bymodel.pdf}
-	\caption{
-		\textbf{For geographic distance, the power-decay gravity model is better.}
-	}
-	\label{fig:supp:predict_emb_bymodel}
-\end{figure}
-
-
-%
-% Figure - gravity correlation
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
-	\caption{
-		\textbf{Embedding distance explains more variance for global, within, and across country flux than geographic distance.}
-	}
-	\label{fig:supp:gravity_correlation}
-\end{figure}
-
-
-%
-% Figure - gravity predictions based on subset or global
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_different_fits.pdf}
-	\caption{
-		\textbf{Little difference between gravity predictions fit on all or subsets of data.}
-	}
-	\label{fig:supp:gravity_prediction_subsets}
-\end{figure}
-
-
-
-%
-% Figure - Dot product distance
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_dot.pdf}
-	\caption{
-		\textbf{Examine gravity model with dot product on the embedding space.}
-	}
-	\label{fig:supp:gravity_dot}
-\end{figure}
-
-
-
-%
-% Figure - PPR with COSINE DISTANCE gravity model and predictions
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_pprcos.pdf}
-	\caption{
-		\textbf{Personalized page rank with cosine distance.}
-	}
-	\label{fig:supp:gravity_pprcos}
-\end{figure}
-
-
-%
-% Figure - PPR with JSD gravity model and predictions
-%
-
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_pprjsd.pdf}
-	\caption{
-		\textbf{Personalized page rank with Jensen-Shannon Divergence.}
-	}
-	\label{fig:supp:gravity_pprjsd}
-\end{figure}
-
-
-%
-% Figure - Global Network Projection
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Projection/co_occur_with_label.pdf}
-	\caption{
-		\textbf{Visualization of global mobility network.}
-	}
-	\label{fig:supp:network_vis}
-\end{figure}
-
-\clearpage 
-\newpage
-
-%
-% Figure - New York Projection
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_New_York.pdf}
-	\caption{
-		\textbf{UMAP Projection of organizations in New York.}
-	}
-	\label{fig:supp:proj_newyork}
-\end{figure}
-
-
-%
-% Figure - Pennsylvania Projection
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Pennsylvania.pdf}
-	\caption{
-		\textbf{UMAP Projection of organizations in Pennsylvania.}
-	}
-	\label{fig:supp:proj_pennsylvania}
-\end{figure}
-
-
-%
-% Figure - Texas Projection
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Texas.pdf}
-	\caption{
-		\textbf{UMAP Projection of organizations in Texas.}
-	}
-	\label{fig:supp:proj_texas}
-\end{figure}
-
-
-
-%
-% Figure - California Projection
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_California.pdf}
-	\caption{
-		\textbf{UMAP Projection of organizations in California.}
-	}
-	\label{fig:supp:proj_california}
-\end{figure}
-
-
-
-
-%
-% Figure - SemAxis results
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_compare_fig.pdf}
-	\caption{
-		\textbf{SemRank hierarchy is robust.}
-	}
-	\label{fig:supp:semaxis_compare}
-\end{figure}
-
-
-
-%
-% Figure - Network Centrality vs. Times
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/SemAxis/centrality_times_compare.pdf}
-	\caption{
-		\textbf{Network centrality is strongly correlated with Times ranking.}
-	}
-	\label{fig:supp:centrality_times_compare}
-\end{figure}
-
-
-
-%
-% Figure - Network Centrality vs. SemAxis
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_network_compare.pdf}
-	\caption{
-		\textbf{Network centrality less correlated with Embedding rank.}
-	}
-	\label{fig:supp:centrality_semaxis_compare}
-\end{figure}
-
-
-%
-% Figure - SemAxis By State
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_states_fig.pdf}
-	\caption{
-		\textbf{Geography and prestige SemAxis by U.S. state.}
-	}
-	\label{fig:supp:semaxis_states}
-\end{figure}
-
-
-
-
-
-%
-% Figure - SemAxis By State
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/SemAxis/sector_rank_comparison.pdf}
-	\caption{
-		\textbf{SemAxis reconstructs publication impact in non-university sectors.}
-	}
-	\label{fig:supp:sector_semaxis_impact}
-\end{figure}
-
-
-%
-% Figure - length by factors
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Math/l2_org_meta.pdf}
-	\caption{
-		\textbf{Factors relating to the L2 norm of vectors for U.S. universities}
-	}
-	\label{fig:supp:length_vs_metaInfo}
-\end{figure}
-
-
-
-%
-% Figure - Concave-curves countries
-%
-\begin{figure}[]
-	%\includegraphics[width=\textwidth]{\figdir/Math/boomerang_30_countries.pdf}
-	\caption{
-		\textbf{Concave-curve repeats across most of 30 countries with most researchers.}
-	}
-	\label{fig:concave30}
-\end{figure}
-
-
-
-%
-% Figure - Norm distribution by country
-%
-\begin{figure}[]
-	% \includegraphics[width=\textwidth]{\figdir/Math/l2_org_dist.pdf}
-	\caption{
-		\textbf{Distribution of organization embedding vector norms by country.}
-	}
-	\label{fig:norm_dist}
-\end{figure}
-
-
-
-\clearpage
 \printbibliography{}
 
 \end{document} %}}}
