@@ -143,7 +143,7 @@ plot <- dist %>%
 if (opt$distance == "geo") {
   max.dist = max(dist$distance)
   plot <- plot +
-    scale_x_continuous(breaks = seq(0, ceiling(max.dist), 1),
+    scale_x_continuous(breaks = seq(0, ceiling(max.dist) - 1, 1),
                        limits = c(0, ceiling(max.dist)),
                        labels = function(x) { parse(text=paste0("10^", x)) },
                        expand = c(0, 0)
