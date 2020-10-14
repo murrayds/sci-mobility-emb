@@ -127,12 +127,12 @@ Pohang 37673, Republic of Korea.}
 \begin{abstract}
 
 Human mobility and migration drive major societal phenomena such as the growth and evolution of cities~\autocite{wef2017migration, curiel2018citygravity},  epidemics~\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity}, economies~\autocite{kaluza2010cargo, kerr2011immigration}, and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}.
-Historically, human mobility is strongly constrained by physical separation---geographical distance~\autocite{zipf1946gravity}.
+Historically, human mobility has been strongly constrained by physical separation---geographic distance~\autocite{zipf1946gravity}.
 However, geographic distance is becoming less relevant in the increasingly-globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization, altbach2004globalization} in which physical barriers are shrinking while linguistic, cultural, and historical relationships are becoming more important.
-The critical importance of understanding mobility in many socio-economic phenomena thus compel alternative frameworks for mobility.
-Here, using a massive dataset of scientific mobility, U.S. flight itineraries, and South Korean accommodation reservations, we demonstrate that a neural embedding model~\autocite{mikolov2013word2vec} can encode nuanced relationships between locations into a vector-space, providing an effective functional distance that reflects the multi-faced structure of human mobility. 
-Focusing on the case of scientific mobility, we show that embeddings of scientific organizations discovers cultural and linguistic relations at multiple levels of granularity, and even academic prestige.
-Furthermore, the embedding vectors themselves reveal universal relationships between organizational characteristics, and their place in the global landscape of scientific mobility. 
+As the mobility and migration are becoming more complex and more critical for contemporary society, finding frameworks that will allow for capturing this complexity are of paramount importance.
+Here, using three massive dataasets: U.S. flight itineraries, South Korean accommodation reservations, and global scientific mobility,  we demonstrate that a neural embedding model~\autocite{mikolov2013word2vec} can encode nuanced relationships between locations into a vector-space, providing an effective measure of distance that reflects the multi-faced structure of human mobility. 
+Focusing on the case of scientific mobility, we show that embeddings of scientific organizations uncovers cultural and linguistic relations at multiple levels of granularity, and even academic prestige.
+Furthermore, the embedding vectors reveal universal relationships between organizational characteristics, and their place in the global landscape of scientific mobility. 
 The ability to learn scalable, dense and meaningful high-resolution vector representations of mobility directly from the data can open up a new avenue of studying mobility across domains.
 
 \end{abstract}
@@ -154,29 +154,27 @@ Similarly, a student in South Korea is more likely to attend a university in Can
 Although geographic distance has been used as the most prominent basis for models of mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} models, there have been attempts to define alternative notions of distance, or ~\textit{functional distances}~\autocite{boschma2005proximity, brown1970functional, brown1970migration, kim2018functional} from real-world data or \textit{a priori} relationships between geographic entities.
 
 Yet, functional distances are often low-resolution, computed at the level of countries rather than regions, cities, or organizations, and have focused on only a single facet of mobility at a time, whereas real-world mobility is multi-faceted, influenced simultaneously by geography, language, culture, history, and economic opportunity.  
-Low dimensional distance alone cannot represent the multitude of inter-related factors that derive mobility. 
-Networks offer a solution to representing many dimensions of mobility, yet they only represent flows between discrete entities, and so cannot easily capture the relationships between entities themselves. 
-Overcoming the complexity of mobility requires moving beyond simple functional distances and networks, to instead learning high-dimensional landscapes of mobility that incorporates the many facets of mobility into a single fine-grained and continuous representation. 
+Low dimensional distance alone cannot represent the multitude of inter-related factors that drive mobility. 
+Networks offer a solution to representing many dimensions of mobility, yet edges only encode simple relationships between connected entities, and cannot easily capture the rich landscape of mobility. 
+Thus, capturing the complexity of mobility requires moving beyond simple functional distances and networks, to learning high-dimensional landscapes of mobility that incorporate the many facets of mobility into a single fine-grained and continuous representation. 
 			
-Here, we apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense, continuous, and meaningful vector-space representation, from which we can not only derive a meaningful \textit{functional distance} between places but also probe relationships based on culture, language, and even prestige along with geographic relationship. 
-We leverage three massive datasets: U.S. passenger flight itinerary records, South Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records. 
-In particular, we focus on scientific mobility due to its richness and importance. Scientific mobility, which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}, is not only an important topic in the Science of Science but also ideal for our study thanks to its richness and well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career}. 
-In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility.
-
+Here, we apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense and continuous vector-space representation, from which we can not only derive a meaningful \textit{functional distance} between places but also probe relationships based on culture, language, and even prestige along with geographic relationship. 
+We embed trajectories from three massive datasets: U.S. passenger flight itinerary records, South Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records. 
 
 The flight itinerary data, from the Airline Origin and Destination Survey, consists of records of more than 300 million itineraries between 1993 and 2020 documenting domestic flights between 828 airports in the United States. 
 A trajectory is constructed for each passenger flight itinerary, forming an ordered sequence of unique identifiers of the origin and destination airports. 
 The Korean accommodation reservations consist of accommodation reservation history between 2018 and 2020 between 1,038 unique accommodation locations in Seoul, South Korea.
-A trajectory is constructed for each customer's accommodation reservation history, constructing an ordered sequence of unique commendation with accurate location information.
-Although more complex, trajectories of scientific mobility are constructed in a similar fashion. 
-Trajectories are constructed using more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database.
-Each trajectory is operationalized using a researcher's organizational affiliations derived from their publication histories indexed in a comprehensive bibliographic database (see Methods).
+A trajectory is constructed for each customer's accommodation reservation history, constructing an ordered sequence of accommodations reserved over time.
+We focus in more detail on scientific mobility due to its richness and importance. 
+Scientific mobility, which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}, is not only an important topic in the Science of Science but also ideal for our study thanks to its richness and well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career}. 
+In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility.
+Trajectories of scientific mobility are constructed using more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database (see Methods).
 As a scientist's career progresses, they move between organizations or pick up additional (simultaneous) affiliations forming \textit{affiliation trajectories} (Fig.~\ref{fig:methods:mobility_sentence}).
 Thus, the trajectories encode both migration and co-affiliation---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, markova2016synchronous, sugimoto2017mostimpact} (see \SI).
 
 A vector-space embedding of locations (airports and organizations) is learned by using trajectories as input to the standard skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
 This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
-They are also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
+The model is also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
 
  
@@ -207,7 +205,7 @@ The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravit
 \end{equation}
 
 where $m_{i}$ is the population of locations $i$,  $f(r_{ij})$ is a decay function with respect to distance between locations, and $C$ is a constant estimated from data (see Methods). 
-For the flight itinerary data, we use population $m_{i}$ as the total number of unique passenger on each airport, and for scientific mobility, we use the mean annual number of of unique mobile and non-mobile authors who affiliated with each organization.
+For the flight itinerary data, we use population $m_{i}$ as the total number of unique passengers on each airport, and for scientific mobility, we use the mean annual number of unique mobile and non-mobile authors who were affiliated with each organization.
 $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini2012universal}, is the expected frequency of the co-occurrence of location $i$ and $j$ in the trajectory in the gravity model.
 The gravity model dictates that the expected flow, $\hat{T}_{ij}$, is symmetric (\ie $\hat{T}_{ij }= \hat{T}_{ji})$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
 We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}. 
@@ -221,17 +219,15 @@ For geographic distance, we define $f(r_{ij})$ as the standard power-law functio
 %
 \subsection*{Embeddings provide functional distance between locations}
 
-We show that the embedding distance, compared with the geographical distance, predicts actual mobility flows. 
+We show that the embedding distance better predicts actual mobility flows than the geographic distance.
 In the case flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$). 
-We fit the gravity model given by Eq.~\ref{eq:gravity_basic} (see Methods) and computed the expected flux  $\hat{T}_{ij}$ using the geographic distance and the embedding distance as parameters.
+We fit the gravity model given by Eq.~\ref{eq:gravity_basic} (see Methods) and compute the expected flux $\hat{T}_{ij}$ using the geographic distance and the embedding distance as parameters.
 The embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}b).
 The neural embedding also performs well in a smaller geographic context:
 In the case of South Korean hotel accommodations, such that the embedding distance better explains the expected flux ($R^{2} = 0.57$, Fig.~\ref{fig:gravity_performance}c) than does geographic distance ($R^{2} = 0.25$), and predictions made using embedding distance outperform those made with geographic distance (Fig.~\ref{fig:gravity_performance}d). 
-These results are consistent in the case of scientific mobility. 
-The amount of variance in the expected flux explained by the embedding distance ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) is again more than double that explained by the geographic distance ($R^{2} = 0.22$).
-This pattern holds when considering the subset of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
-As with flight itineraries, we fit the gravity model on the scientific mobility data using the gravity model.
-Predictions made using the embedding distance outperform those made using the geographic distance (Fig.~\ref{fig:gravity_performance}f), which also holds for the subsets of only domestic and only international mobility (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}).
+This performance is consistent in the case of scientific mobility:
+the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
+These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}c and Fig.~\ref{fig:supp:predict_geo_bymodel}) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d and  Fig.~\ref{fig:supp:predict_emb_bymodel}).
 For scientific mobility, the embedding distance defined from the cosine distance between vectors also outperforms that defined from their dot product ($R^{2} = 0.34$, Fig.~\ref{fig:supp:gravity_dot}).
 The embedding distance also out-performs alternative ``diffusion-based'' network distance measures such as the personalized-page rank scores (see \SI) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
 Our results demonstrate that the embedding distance better captures patterns of actual mobility than does the geographic distance across domains.
@@ -267,11 +263,11 @@ Our results demonstrate that the embedding distance better captures patterns of 
 
 \subsection*{Embeddings capture global structure of mobility}
 
-From here, we focus on the case of scientific mobility, leveraging its richness to investigate how the geometric space generated by the neural embedding method sheds light on the multi-faceted relationships between organizations. 
+In the remaidner of the paper, we focus only on scientific mobility, leveraging its richness to investigate how the geometric space generated by the neural embedding method sheds light on the multi-faceted relationships between organizations. 
 To explore the topological structure of the embedding, we use a topology-based dimensionality reduction method (UMAP~\autocite{mcinnes2018umap}) to obtain a two-dimensional representation of the embedding space (Fig.~\ref{fig:projection}a).
 By showing relationships between individual organizations, rather than aggregates such as nations or cities, this projection constitutes the largest and highest resolution ``map'' of scientific mobility to date.
 
-Globally, the geographical constraints are conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors.
+Globally, the geographic constraints are conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors.
 At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network representations (Fig.~\ref{fig:supp:network_vis}) that have been dominating studies of scientific mobility~\autocite{chinchilla2018global, czaika2018globalisation}.
 
 The embedding space also allows us to \textit{zoom in} on subsets and re-project them to reveal local relationships.
@@ -387,7 +383,7 @@ Their estimated prestige is speculative, though we find that it significantly co
 		Un-filled points are those top and bottom five universities used span the axis.
 	  	Even when considering only a total of ten organization vectors, the estimate of the Spearman's rank correlation between the embedding and Times ranking is $\rho = 0.73$ ($n = 145$), which increases when more top-and-bottom ranked universities are included (Fig.~\ref{fig:supp:semaxis_compare}).
 	  	\textbf{b.} Times ranking is correlated with Leiden Ranking of U.S. universities with Spearman's $\rho = 0.87$.
-		\textbf{c-f.} Illustration of SemAxis projection along two axes;  \textit{latent geographical axis}, from California to Massachusetts (left to right) and the \textit{prestige axis}.
+		\textbf{c-f.} Illustration of SemAxis projection along two axes;  \textit{latent geographic axis}, from California to Massachusetts (left to right) and the \textit{prestige axis}.
 		Shown for U.S. Universities (\textbf{c}), regional and liberal arts colleges (\textbf{d}), Research institutes (\textbf{e}), and Government organizations (\textbf{f}).
 		Full organization names listed in Table~\ref{table:supp:orglabels}.
 	}
@@ -401,13 +397,12 @@ Up to a point (around 1,000 researchers), the size of U.S. organization's vector
 these organizations are primarily teaching-focused institutions, agencies, and hospitals that either are not ranked or have a low ranking.
 However, at around 1,000 researchers, the size of the vector \emph{decreases} as the number of researchers increases.
 These organizations are primarily research-intensive and prestigious universities with higher rankings, research outputs, R\&D funding, and doctoral students (Fig.~\ref{fig:supp:length_vs_metaInfo}).
-A similar pattern has been observed in applications of neural embedding to natural language, in which the size of word vectors was found to represent the word's \emph{specificity}.
-Roughly speaking, for word embeddings, the size of a vector reflects its specificity, i.e., the word associated with the vector frequently co-appears with particular context words\autocite{schakel2015measuring}. 
+A similar pattern has been observed in applications of neural embedding to natural language, in which the size of word vectors were found to represent the word's \emph{specificity}, i.e., the word associated with the vector frequently co-appears with particular context words\autocite{schakel2015measuring}. 
 If the word in question is universal, appearing frequently in many different contexts, it would not have a large norm due to a lack of strong association with a particular context.
 Likewise, an organization such as Harvard with a small norm appears in many contexts, alongside many different organizations in affiliation trajectories---it is well-connected.
-The concavity emerges in part from the relationship between the size of the vector and the expected connectedness of the organization given its size ($R^{2} = 0.17$).
+The concavity of the curve emerges in part from the relationship between the size of the vector and the expected connectedness of the organization, given its size ($R^{2} = 0.17$).
 Large, prestigious, and well-funded research universities such as Princeton and Harvard have smaller vector norms because they appear in many different contexts compared to more teaching-focused organizations such as NY Medical College, and the University of Michigan at Flint.
-Some universities, such as the University of Alaska at Fairbanks, have considerably small vectors, which may be a result of its remote location and unique circumstances.
+Some universities, such as the University of Alaska at Fairbanks, have considerably small vectors, which may be a result of their remote locations and unique circumstances.
 
 
 We report that this curve is almost universal across many countries. 
@@ -429,7 +424,7 @@ Similar patterns can be found across many of the 30 of the countries with the mo
 		Color indicates the rank of the university from the Times ranking, with 1 being the highest ranked university.
 		Uncolored points are universities not listed on the Times ranking.
 		A convex-shape emerges, wherein larger universities tend to be more distant from the origin (large L2 norm); however, the more prestigious universities tend to have smaller L2 norms.
-		\textbf{b.} We find a similar convex-curve pattern across many countries such as the United States, China, Australia, Brazil, and others (\textit{inset}, and Fig.~\ref{fig:concave30}). 
+		\textbf{b.} We find a similar convex-curve pattern across many countries such as the United States, China, Australia, Brazil, and others (\textbf{inset}, and Fig.~\ref{fig:concave30}). 
 		Some countries exhibit variants of this pattern, such as Egypt, which is missing the right side of the curve.
 		The loess regression lines are shown for each selected country, and for the aggregate of remaining countries, with 99\% confidence intervals.
 		Loess lines are also shown for organizations in Australia, Brazil, and Egypt (\textbf{inset}).
@@ -444,7 +439,7 @@ Similar patterns can be found across many of the 30 of the countries with the mo
 \section*{Conclusion}
 
 Neural embedding approaches offer a novel, data-driven solution for learning an effective and robust representation of locations based on trajectory data, encoding the complex and multi-faceted nature of mobility.
-We demonstrated that a functional distance derived from the embedding can be used with the gravity model of mobility to better predicts real-world mobility than does geographic distance.
+We demonstrated that a functional distance derived from the embedding can be used with the gravity model of mobility to better predict real-world mobility than does geographic distance.
 Embedding distance outperformed geographic distance both in the case of U.S. flight itineraries and global scientific mobility, which represent two domains with disparate nature. 
 Focusing on scientific mobility, we find that neural embedding's performance is driven by its ability to encode many aspects of scientific mobility into a single representation, including global and regional geography, shared languages, and prestige hierarchies, even without explicit information on these factors.
 
@@ -500,7 +495,7 @@ Trajectories are constructed from author affiliations listed on the byline of pu
 Given the limitations of author-name disambiguation, we limit our analyses to papers published after 2008, when the Web of Science began providing full names and institutional affiliations~\autocite{caron2014disambiguation} that improved disambiguation (see \SI).
 This yields 33,934,672 author-affiliation combinations representing 12,963,792 authors.
 Each author-affiliation combination is associated with the publication year and an ID linking it to one of 8,661 disambiguated organizational affiliations (see \SI for more detail).
-Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. The most fine-grained geographical unit in this data is the organization, such as a university, research institute, business, or government agency.
+Trajectories are represented as the list of author-affiliation combinations, ordered by year of publication, and randomly ordered for combinations within the same year. The most fine-grained geographic unit in this data is the organization, such as a university, research institute, business, or government agency.
 
 Here, authors are classified as mobile when they have at least two distinct organization IDs in their trajectory, meaning that they have published using two or more distinct affiliations between 2008 and 2019.
 Under this definition, mobile authors constitute 3,007,192 or 23.2 \% of all authors and 17,700,095 author-affiliation combinations.
