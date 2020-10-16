@@ -23,7 +23,6 @@ All files in the `Derived` folder have been generated via Snakemake or another a
 - **Embeddings/:** Trained embeddings learned from data on scientific mobility, as well as U.S. flight itineraties and South Korean accomodation reservations. Also contains organization vector norms and factorized values for each organization in the scientific mobility embedding
 - **Network/:** Network representations of scientific mobility along with infomration generated from the network
 - **SemAxis/:** Data derived from applications of the SemAxis technique on the scientific mobility embedding space
-- **Sentences/:** 'Sentences' derived from the mobility data, where each sentence is a mobility trajectory generated for an individual in the WoS dataset
 - **Stat/:** Quantitative results generated from the embedding and metadata, such as predictions made using the gravity model
 - **Visualzation_coordinates/:** UMAP coordinates used to visualize the embedding space
 
