@@ -23,8 +23,8 @@ RAW_DATA_DIR = osjoin(DATA_DIR, 'Raw')
 ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
 DESCRIPTIVE_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Descriptive')
-SENTENCES_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Sentences')
-TRAJECTORY_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Trajectories')
+SENTENCES_DATA_DIR = osjoin(RAW_DATA_DIR, 'Sentences')
+TRAJECTORY_DATA_DIR = osjoin(RAW_DATA_DIR, 'Trajectories')
 EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings')
 STAT_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Stat')
 NETWORK_DATA_DIR = osjoin(DERIVED_DATA_DIR, 'Network')
@@ -47,11 +47,11 @@ MOBILITY_RAW = osjoin(RAW_DATA_DIR, '2008-2019_transitions.txt')
 MOBILE_RESEARCHERS = osjoin(RAW_DATA_DIR, 'mobile_researcher_trajectories.txt')
 NONMOBILE_RESEARCHERS = osjoin(RAW_DATA_DIR, 'nonmobile_researcher_trajectories.txt')
 MOBILITY_TRAJECTORIES_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{traj}', '{year}_{traj}_raw_mobility.csv')
-ORG_SIZES = osjoin(RAW_DATA_DIR, '2008-2019_inst_sizes.txt')
+ORG_SIZES = osjoin(ADDITIONAL_DATA_DIR, '2008-2019_inst_sizes.txt')
 ORG_STATE_NAMES = osjoin(ADDITIONAL_DATA_DIR, 'org_states.csv')
 US_CENSUS_REGIONS = osjoin(ADDITIONAL_DATA_DIR, 'usa_states_to_regions.csv')
 ORG_IMPACT = osjoin(ADDITIONAL_DATA_DIR, 'org_impact_scores.txt')
-SECONDARY_DATA = osjoin(RAW_DATA_DIR, '{dataset}_ws1_d300.csv')
+SECONDARY_DATA = osjoin(EMBEDDINGS_DIR, 'secondary', '{dataset}_ws1_d300.csv')
 
 ######################
 # Mobility sentences #
@@ -199,6 +199,11 @@ ORG_LABEL_TABLE = osjoin(PROJ_HOME, "Assets", "org_label_table.txt")
 ALL_YEARS = range(2008, 2019, 1)
 FIG_EXTS = ['pdf', 'html']
 
+#
+# Add 'raw' to this list if you want use the raw trajectories, without
+# the precedence rules that dictate organization exclusions when there
+# are known overlaps
+#
 TRAJECTORIES = ['precedence']
 
 # RANKINGS
@@ -384,6 +389,7 @@ rule all:
         expand(COUNTRY_MOBILITY_ECDF, traj = TRAJECTORIES),
         expand(COUNTRY_MOBILITY_DISTRIBUTION, traj = TRAJECTORIES),
         HYPERPARAMETER_PERFORMANCE,
+
         TIMES_LEIDEN_COMPARE_PLOT,
 
         # SemAxis plots
