@@ -161,14 +161,14 @@ Low dimensional distance alone cannot represent the multitude of inter-related f
 Networks offer a solution to representing many dimensions of mobility, yet edges only encode simple relationships between connected entities, and cannot easily capture the rich landscape of mobility. 
 Thus, capturing the complexity of mobility requires moving beyond simple functional distances and networks, to learning high-dimensional landscapes of mobility that incorporate the many facets of mobility into a single fine-grained and continuous representation. 
 			
-Here, we apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense and continuous vector-space representation, from which we can not only derive a meaningful \textit{functional distance} between places but also probe relationships based on culture, language, and even prestige along with geographic relationship. 
+Here, we apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense and continuous vector-space representation, from which we can not only derive a meaningful functional distance between places but also probe relationships based on culture, language, and even prestige along with geographic relationship. 
 We embed trajectories from three massive datasets: U.S. passenger flight itinerary records, South Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records. 
 
 The flight itinerary data, from the Airline Origin and Destination Survey, consists of records of more than 300 million itineraries between 1993 and 2020 documenting domestic flights between 828 airports in the United States. 
 A trajectory is constructed for each passenger flight itinerary, forming an ordered sequence of unique identifiers of the origin and destination airports. 
 The Korean accommodation reservations consist of accommodation reservation history between 2018 and 2020 between 1,038 unique accommodation locations in Seoul, South Korea.
 A trajectory is constructed for each customer's accommodation reservation history, constructing an ordered sequence of accommodations reserved over time.
-Finally, we use scientific mobility data that capture the affiliation trajectory of 12,963,792 scientists across ten years.
+Finally, we use scientific mobility data that captures the affiliation trajectories of nearly 13 million scientists across ten years.
 We focus in more detail on scientific mobility due to its richness and importance. 
 Scientific mobility, which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, morgan2018prestige}, is not only an important topic in the Science of Science but also ideal for our study thanks to its richness and well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{clauset2015hierarchy, deville2014career}. 
 In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, deville2014career}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility.
@@ -226,12 +226,12 @@ For geographic distance, we define $f(r_{ij})$ as the standard power-law functio
 
 We show that the embedding distance better predicts actual mobility flows than the geographic distance across three disparate datasets.
 In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$).  Also, the embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}b).
-In the case of South Korean hotel accommodations, such that the embedding distance better explains the expected flux ($R^{2} = 0.57$, Fig.~\ref{fig:gravity_performance}c) than does geographic distance ($R^{2} = 0.25$), and predictions made using embedding distance outperform those made with geographic distance (Fig.~\ref{fig:gravity_performance}d). 
+In the case of South Korean accommodation reservations, such that the embedding distance better explains the expected flux ($R^{2} = 0.57$, Fig.~\ref{fig:gravity_performance}c) than does geographic distance ($R^{2} = 0.25$), and predictions made using embedding distance outperform those made with geographic distance (Fig.~\ref{fig:gravity_performance}d). 
 This performance is consistent in the case of scientific mobility:
 the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
 These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}c and Fig.~\ref{fig:supp:predict_geo_bymodel}) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d and  Fig.~\ref{fig:supp:predict_emb_bymodel}).
 The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores  calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-In sum, our results demonstrate that the embedding distance better captures patterns of actual mobility than does the geographic distance consistently.
+In sum, our results demonstrate that, consistently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
 
 
 
@@ -255,7 +255,7 @@ In sum, our results demonstrate that the embedding distance better captures patt
 		a perfect prediction yields all points on the black line.
 		``RMSE'' is the root-mean-squared error between the actual and predicted values.
 		Results are consistent in the case of scientific mobility. 
-		For South Korean hotel reservations, embedding distance better explains the expected flux than does geographic distance (\textbf{c}), and produces better predictions (\textbf{d}).
+		For South Korean accommodation reservations, embedding distance better explains the expected flux than does geographic distance (\textbf{c}), and produces better predictions (\textbf{d}).
 		Similarly, in the case of global scientific mobility, embedding distance explains the expected flux between organizations (\textbf{e)} and allows for better predictions (\textbf{f}) than geographic distance.
 	}
 	\label{fig:gravity_performance}
