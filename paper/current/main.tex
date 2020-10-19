@@ -178,7 +178,7 @@ As a scientist's career progresses, they move between organizations or pick up a
 Thus, the trajectories encode both migration and co-affiliation---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, sugimoto2017mostimpact} (see \SI).
 
 A vector-space embedding of locations (airports and organizations) is learned by using trajectories as input to the standard skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
-This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
+This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered} and networks~\autocite{grover2016node2vec}.
 The model is also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
 
@@ -201,8 +201,8 @@ As a result, each location is encoded into a single vector representation, and v
 \end{figure}
 
 
-To validate our approach, we evaluate the quality of vector representations with their performance in predicting real-world mobility flows using the gravity model framework~\autocite{zipf1946gravity, barbosa2018human}.
-The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity} that models the \textit{expected flux}, $\hat{T}_{ij}$ between locations (airports and organizations) based on their populations and distance:
+To validate our approach, we evaluate the quality of vector representations with their performance in predicting real-world mobility flows using the gravity model framework~\autocite{zipf1946gravity}.
+The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity} that models the \textit{expected flux}, $\hat{T}_{ij}$ between locations (airports and organizations) based on their populations and distance:
 
 \begin{equation}
 	\label{eq:gravity_basic}
@@ -574,7 +574,7 @@ Nevertheless, cosine distance is often shown to be useful in practice~\autocite{
 
 We model co-occurences $T_{ij}$ for locations $i$, and $j$, often referred to as flux, using the gravity law of mobility~\autocite{zipf1946gravity}.
 The gravity law of mobility loosely derives from the physical law of gravity, in which the attraction between two objects is a function of their mass and the distance between them.
-This formulation and variants have proven useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, truscott2012epidemicgravity, hong2016busgravity}.
+This formulation and variants have proven useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, truscott2012epidemicgravity, hong2016busgravity}.
 In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ between two organizations $i$ and $j$ is defined as,
 
 %
@@ -587,7 +587,7 @@ In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ betwe
 where $m_{i}$ and $m_{j}$ are the population of locations which is the total number of passenger on each airport for U.S. airport itinerary and the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization for scientific mobility.  $f(r_{ij})$ is a decay function of distance $r_{ij}$ between locations $i$ and $j$. 
 There are two popular forms for the $f(r_{ij})$:
 one is a power law function in the form $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0$, and the other and the another one is an exponential function in the form $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  
-The parameters for $f(r_{ij})$ and $C$ are fit to given mobility data using a log-linear regression~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity,  truscott2012epidemicgravity, hong2016busgravity, simini2012universal}.
+The parameters for $f(r_{ij})$ and $C$ are fit to given mobility data using a log-linear regression~\autocite{jung2008highwaygravity, curiel2018citygravity, truscott2012epidemicgravity, hong2016busgravity, simini2012universal}.
 
 We consider separate variants of $f(r_{ij})$ for the geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
 For the geographic distance, we use the power-law function of the gravity law, $f(g_{ij})= g^{-\alpha}_{ij}$ (Eq.~\ref{eq:linear_flux_geo}).
