@@ -225,17 +225,13 @@ For geographic distance, we define $f(r_{ij})$ as the standard power-law functio
 \subsection*{Embeddings provide functional distance between locations}
 
 We show that the embedding distance better predicts actual mobility flows than the geographic distance.
-In the case flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$). 
-We fit the gravity model given by Eq.~\ref{eq:gravity_basic} (see Methods) and compute the expected flux $\hat{T}_{ij}$ using the geographic distance and the embedding distance as parameters.
-The embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}b).
-The neural embedding also performs well in a smaller geographic context:
+In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$).  Also, the embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}b).
 In the case of South Korean hotel accommodations, such that the embedding distance better explains the expected flux ($R^{2} = 0.57$, Fig.~\ref{fig:gravity_performance}c) than does geographic distance ($R^{2} = 0.25$), and predictions made using embedding distance outperform those made with geographic distance (Fig.~\ref{fig:gravity_performance}d). 
 This performance is consistent in the case of scientific mobility:
 the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
 These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}c and Fig.~\ref{fig:supp:predict_geo_bymodel}) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d and  Fig.~\ref{fig:supp:predict_emb_bymodel}).
-For scientific mobility, the embedding distance defined from the cosine distance between vectors also outperforms that defined from their dot product ($R^{2} = 0.34$, Fig.~\ref{fig:supp:gravity_dot}).
-The embedding distance also out-performs alternative ``diffusion-based'' network distance measures such as the personalized-page rank scores (see \SI) calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-Our results demonstrate that the embedding distance better captures patterns of actual mobility than does the geographic distance across domains.
+The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores  calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
+In sum, our results demonstrate that the embedding distance better captures patterns of actual mobility than does the geographic distance consistently.
 
 
 
