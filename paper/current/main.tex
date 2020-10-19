@@ -560,8 +560,7 @@ We treat $T_{ij} = T_{ji}$ because directional information is not informative.
 We calculate two forms of the distance between locations.
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between locations.
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of locations.
-When less than one kilometer, a distance of 1 km is imputed.
-The embedding distance with the cosine distance, $d_{ij}$, is calculated as $d_{ij} = 1 - \frac{\bm{v}_{i} \cdot \bm{v}_{j}}{\lVert \bm{v}_{i} \rVert \lVert \bm{v}_{j} \rVert}$,
+In the case of U.S. flight itinerary and scientific mobility, we impute distance to 1 km when their distance is less than one kilometer. In the case of Korean accommodation reservation data, because this data is intra-city mobility trajectory, we impute distance to 0.01 km when their distance is less than 0.01 km. The embedding distance with the cosine distance, $d_{ij}$, is calculated as $d_{ij} = 1 - \frac{\bm{v}_{i} \cdot \bm{v}_{j}}{\lVert \bm{v}_{i} \rVert \lVert \bm{v}_{j} \rVert}$,
 where $v_i$ and $v_j$ are the embedding vectors for locations $i$ and $j$, respectively.
 Note that $d_{ij}$ is not a formal metric because it does not satisfy the triangle inequality.
 Nevertheless, cosine distance is often shown to be useful in practice~\autocite{lerman2007embedding, brown1970migration, brown1970functional, kim2018functional}. 
