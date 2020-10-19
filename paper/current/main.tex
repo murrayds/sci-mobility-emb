@@ -129,9 +129,9 @@ Pohang 37673, Republic of Korea.}
 
 \begin{abstract}
 
-Human mobility and migration drive major societal phenomena such as the growth and evolution of cities~\autocite{wef2017migration, curiel2018citygravity},  epidemics~\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity}, economies~\autocite{kaluza2010cargo, kerr2011immigration}, and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}.
+Human mobility and migration drive major societal phenomena such as the growth and evolution of cities~\autocite{wef2017migration, curiel2018citygravity},  epidemics~\autocite{kraemer2020covid, truscott2012epidemicgravity}, economies~\autocite{kaluza2010cargo, kerr2011immigration}, and innovation~\autocite{kaiser2018innovation, sugimoto2017mostimpact, petersen2018multiscale}.
 Historically, human mobility has been strongly constrained by physical separation---geographic distance~\autocite{zipf1946gravity}.
-However, geographic distance is becoming less relevant in the increasingly-globalized world~\autocite{czaika2018migration, czaika2018globalisation, buchan2009globalization, altbach2004globalization} in which physical barriers are shrinking while linguistic, cultural, and historical relationships are becoming more important.
+However, geographic distance is becoming less relevant in the increasingly-globalized world~\autocite{czaika2018globalisation, buchan2009globalization} in which physical barriers are shrinking while linguistic, cultural, and historical relationships are becoming more important.
 As understanding mobility is becoming critical for contemporary society, finding frameworks that can capture this complexity are of paramount importance.
 Here, using three datasets that capture human trajectories,  we demonstrate that a neural embedding model~\autocite{mikolov2013word2vec} can encode nuanced relationships between locations into a vector-space, providing an effective measure of distance that reflects the multi-faceted structure of human mobility. 
 Focusing on the case of scientific mobility, we show that embeddings of scientific organizations uncovers cultural and linguistic relations at multiple levels of granularity, and even academic prestige.
@@ -154,7 +154,7 @@ The question is surprisingly hard to answer when it involves human mobility.
 Although geographic distance has been constraining human movements throughout history, it is becoming less relevant in a world connected by rapid transit and global airline networks.
 For instance, a person living in Australia is more likely to migrate to the United Kingdom, a far-away country with similar language and culture, than to a much closer country such as Indonesia~\autocite{pew2018migration}.
 Similarly, a student in South Korea is more likely to attend a university in Canada than one in North Korea~\autocite{unesco2019students}.
-Although geographic distance has been used as the most prominent basis for models of mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} models, there have been attempts to define alternative notions of distance, or functional distances~\autocite{boschma2005proximity, brown1970functional, brown1970migration, kim2018functional} from real-world data or \textit{a priori} relationships between geographic entities.
+Although geographic distance has been used as the most prominent basis for models of mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} models, there have been attempts to define alternative notions of distance, or functional distances~\autocite{boschma2005proximity, brown1970migration, kim2018functional} from real-world data or \textit{a priori} relationships between geographic entities.
 
 Yet, functional distances are often low-resolution, computed at the level of countries rather than regions, cities, or organizations, and have focused on only a single facet of mobility at a time, whereas real-world mobility is multi-faceted, influenced simultaneously by geography, language, culture, history, and economic opportunity.  
 Low dimensional distance alone cannot represent the multitude of inter-related factors that drive mobility. 
@@ -170,12 +170,12 @@ The Korean accommodation reservations consist of accommodation reservation histo
 A trajectory is constructed for each customer's accommodation reservation history, constructing an ordered sequence of accommodations reserved over time.
 Finally, we use scientific mobility data that capture the affiliation trajectory of 12,963,792 scientists across ten years.
 We focus in more detail on scientific mobility due to its richness and importance. 
-Scientific mobility, which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, altbach2004globalization, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation, armano2017innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, azoulay2011diffusion, morgan2018prestige}, is not only an important topic in the Science of Science but also ideal for our study thanks to its richness and well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{auriol2010careers, clauset2015hierarchy, deville2014career}. 
-In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, vannoorden2012mobility, deville2014career, ackers2008mobility, scott2015dynamics}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility.
+Scientific mobility, which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, morgan2018prestige}, is not only an important topic in the Science of Science but also ideal for our study thanks to its richness and well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{clauset2015hierarchy, deville2014career}. 
+In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, deville2014career}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility.
 
 Trajectories of scientific mobility are constructed using more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database (see Methods).
 As a scientist's career progresses, they move between organizations or pick up additional (simultaneous) affiliations forming \textit{affiliation trajectories} (Fig.~\ref{fig:methods:mobility_sentence}).
-Thus, the trajectories encode both migration and co-affiliation---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, markova2016synchronous, sugimoto2017mostimpact} (see \SI).
+Thus, the trajectories encode both migration and co-affiliation---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, sugimoto2017mostimpact} (see \SI).
 
 A vector-space embedding of locations (airports and organizations) is learned by using trajectories as input to the standard skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
 This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered} and networks~\autocite{perozzi2014deepwalk, grover2016node2vec}.
@@ -202,7 +202,7 @@ As a result, each location is encoded into a single vector representation, and v
 
 
 To validate our approach, we evaluate the quality of vector representations with their performance in predicting real-world mobility flows using the gravity model framework~\autocite{zipf1946gravity, barbosa2018human}.
-The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity, xia2005measlesgravity} that models the \textit{expected flux}, $\hat{T}_{ij}$ between locations (airports and organizations) based on their populations and distance:
+The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravity, lewer2008immigrationgravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity} that models the \textit{expected flux}, $\hat{T}_{ij}$ between locations (airports and organizations) based on their populations and distance:
 
 \begin{equation}
 	\label{eq:gravity_basic}
@@ -462,10 +462,10 @@ The kinds of mobility we do capture---migration, and co-affiliation---although c
 Also, our data might further suffer from survivorship bias: researchers at prestigious organizations tend to have more publications, leading to these organizations appearing more frequently in affiliation trajectories.
 
 
-Mobility and migration are at the core of human nature and history~\autocite{shah2020migration}, driving societal phenomena as diverse as epidemics\autocite{kraemer2020covid, truscott2012epidemicgravity, xia2005measlesgravity} and innovation~\autocite{kaiser2018innovation, armano2017innovation, sugimoto2017mostimpact, petersen2018multiscale, franzoni2014advantage, morgan2018prestige, rodrigues2016mobility}.
+Mobility and migration are at the core of human nature and history, driving societal phenomena as diverse as epidemics\autocite{kraemer2020covid, truscott2012epidemicgravity} and innovation~\autocite{kaiser2018innovation, sugimoto2017mostimpact, petersen2018multiscale, morgan2018prestige, rodrigues2016mobility}.
 However, the paradigm of scientific migration may be changing.
 Traditional hubs of migration have experienced many politically-motivated policy changes that affect scientific mobility, such as travel restrictions in the U.S. and U.K.~\autocite{chinchilla2018travelban}.
-At the same time, other nations, such as China, are growing into major scientific powers and attractors of talent~\autocite{tollefson2018china, cao2020returning}.
+At the same time, other nations, such as China, are growing into major scientific powers and attractors of talent~\autocite{cao2020returning}.
 Unprecedented health crises such as the COVID-19 pandemic threaten to bring drastic global changes to travel and migration by tightening borders and halting travel.
 With the changing paradigm of global mobility, we need now, more than ever, new tools and approaches to capture and understand human mobility in order to inform sensible, effective, sustainable, and humane policies.
 
@@ -563,7 +563,7 @@ Geographic distance is calculated as the great circle distance, in kilometers, b
 In the case of U.S. flight itinerary and scientific mobility, we impute distance to 1 km when their distance is less than one kilometer. In the case of Korean accommodation reservation data, because this data is intra-city mobility trajectory, we impute distance to 0.01 km when their distance is less than 0.01 km. The embedding distance with the cosine distance, $d_{ij}$, is calculated as $d_{ij} = 1 - \frac{\bm{v}_{i} \cdot \bm{v}_{j}}{\lVert \bm{v}_{i} \rVert \lVert \bm{v}_{j} \rVert}$,
 where $v_i$ and $v_j$ are the embedding vectors for locations $i$ and $j$, respectively.
 Note that $d_{ij}$ is not a formal metric because it does not satisfy the triangle inequality.
-Nevertheless, cosine distance is often shown to be useful in practice~\autocite{lerman2007embedding, brown1970migration, brown1970functional, kim2018functional}. 
+Nevertheless, cosine distance is often shown to be useful in practice~\autocite{lerman2007embedding, brown1970migration, kim2018functional}. 
 
 
 
@@ -574,7 +574,7 @@ Nevertheless, cosine distance is often shown to be useful in practice~\autocite{
 
 We model co-occurences $T_{ij}$ for locations $i$, and $j$, often referred to as flux, using the gravity law of mobility~\autocite{zipf1946gravity}.
 The gravity law of mobility loosely derives from the physical law of gravity, in which the attraction between two objects is a function of their mass and the distance between them.
-This formulation and variants have proven useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity}.
+This formulation and variants have proven useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, truscott2012epidemicgravity, hong2016busgravity}.
 In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ between two organizations $i$ and $j$ is defined as,
 
 %
@@ -587,7 +587,7 @@ In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ betwe
 where $m_{i}$ and $m_{j}$ are the population of locations which is the total number of passenger on each airport for U.S. airport itinerary and the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization for scientific mobility.  $f(r_{ij})$ is a decay function of distance $r_{ij}$ between locations $i$ and $j$. 
 There are two popular forms for the $f(r_{ij})$:
 one is a power law function in the form $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0$, and the other and the another one is an exponential function in the form $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  
-The parameters for $f(r_{ij})$ and $C$ are fit to given mobility data using a log-linear regression~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity, xia2005measlesgravity, truscott2012epidemicgravity, hong2016busgravity, simini2012universal}.
+The parameters for $f(r_{ij})$ and $C$ are fit to given mobility data using a log-linear regression~\autocite{jung2008highwaygravity, curiel2018citygravity, lewer2008immigrationgravity,  truscott2012epidemicgravity, hong2016busgravity, simini2012universal}.
 
 We consider separate variants of $f(r_{ij})$ for the geographic distance, $g_{ij}$, and the embedding distance, $d_{ij}$, report the best-fit model of each distance.
 For the geographic distance, we use the power-law function of the gravity law, $f(g_{ij})= g^{-\alpha}_{ij}$ (Eq.~\ref{eq:linear_flux_geo}).
