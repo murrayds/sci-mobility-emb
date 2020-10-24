@@ -1,36 +1,36 @@
 ################################################################################
-# Snakefile_Airport.smk
+# Snakefile_Secondary.smk
 #
-# Contains rules relating to relating proximities in the US Airport
-# trajectory network
+# Contains rules relating to relating proximities in the secondary
+# trajectory datasets, including airports and reservations
 #
 ################################################################################
 
 ###############################################################################
 # VARIANCE EXPLAINED
 ###############################################################################
-rule plot_gravity_relationship_airport:
-    input: AIRPORT_DATA
-    output: GRAVITY_AIRPORT_PLOT
+rule plot_gravity_relationship_secondary:
+    input: SECONDARY_DATA
+    output: GRAVITY_SECONDARY_PLOT
     shell:
-        "Rscript scripts/PlotGravityLawRelationshipAirport.R --input {input} \
-        --output {output} --distance {wildcards.airdistance} --showcoef"
+        "Rscript scripts/PlotGravityLawRelationshipSecondary.R --input {input} \
+        --output {output} --distance {wildcards.distance} --showcoef"
 
 # ###############################################################################
 # # PREDICTIONS
 # ###############################################################################
-rule calculate_predicted_vs_actual_airport:
-    input: AIRPORT_DATA,
-    output: AIRPORT_PREDICTED_VS_ACTUAL,
+rule calculate_predicted_vs_actual_secondary:
+    input: SECONDARY_DATA,
+    output: SECONDARY_PREDICTED_VS_ACTUAL,
     shell:
-        "Rscript scripts/CalculatePredictedVsActualAirport.R --input {input} \
-        --output {output} --distance {wildcards.airdistance}"
+        "Rscript scripts/CalculatePredictedVsActualSecondary.R --input {input} \
+        --output {output} --distance {wildcards.distance}"
 
-rule plot_predicted_vs_actual_airport:
-    input: rules.calculate_predicted_vs_actual_airport.output
-    output: AIRPORT_PREDICTED_VS_ACTUAL_PLOT
+rule plot_predicted_vs_actual_secondary:
+    input: rules.calculate_predicted_vs_actual_secondary.output
+    output: SECONDARY_PREDICTED_VS_ACTUAL_PLOT
     shell:
-        "Rscript scripts/PlotPredictedVsActualAirport.R --input {input} \
+        "Rscript scripts/PlotPredictedVsActualSecondary.R --input {input} \
         --model {wildcards.model} --output {output}"
 #
 # rule plot_predicted_vs_actual_filtered:

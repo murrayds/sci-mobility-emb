@@ -52,6 +52,11 @@
 
 \usepackage{changepage}
 
+
+% External file referencing
+\usepackage{xr}
+\externaldocument{main}
+
 % Figure caption
 \usepackage{setspace}
 \usepackage[font=small,labelfont=bf]{caption}
@@ -85,6 +90,7 @@
 \date{\today}
 \maketitle %}}}
 
+\beginsupplement
 
 %
 %
@@ -92,7 +98,7 @@
 \label{si:text:mobility_science}
 {\bf Mobility and science.}
 
-As scholars move, they bring their knowledge, their skills, and their social connections with them--collectively the movements of researchers shape the structure and direction of the global scientific enterprise.
+As scholars move, they bring their knowledge, skills, and social connections with them---collectively the movements of researchers shape the structure and direction of the global scientific enterprise.
 For example, prestige-driven mobility between doctoral-granting and employing institution is highly unequal~\autocite{clauset2015hierarchy, deville2014career}, which affects the diffusion of ideas across academia~\autocite{morgan2018prestige}.
 By placing researchers in new social settings, mobility can lead to the formation of new collaborative relationships~\autocite{rodrigues2016mobility}, which in turn spurs the further diffusion of knowledge and innovations~\autocite{braunerhjelm2020labor, azoulay2011diffusion, kaiser2018innovation, armano2017innovation}.
 Perhaps resulting from the selection effects of who gets to move, or the reconfiguring of social and epistemic networks, movement is associated with increased scientific impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}.
@@ -116,7 +122,7 @@ Epistemically, country-level analysis is useful for national science governance 
 Analyses at lower levels of analysis are far less common.
 \textit{Regional}-level scientific mobility--the flow of researchers between regions or cities within or across countries has been only minimally studied~\autocite{vaccario2019mobility}, possibly due to lack of reliable long-term data and lack of policy relevance to national-level lawmakers.
 \textit{Organization}-level mobility has the potential to inform institutional policy and to understand the composition of mobility within a single country or region, especially as it relates to organization performance, prestige, and inequality~\autocite{albarran2017topeconomic, deville2014career, morgan2018prestige, clauset2015hierarchy}.
-However, affiliation disambiguation and noise in bibliometric data have makes large-scale organization-level analysis challenging.
+However, affiliation disambiguation and noise in bibliometric data makes large-scale organization-level analysis challenging.
 Here, we learn neural-network embeddings of scientific mobility at the level of organizations using a curated bibliographic database.
 These embeddings are robust to noise, and so are capable of representing clear structure even amid issues with organizational disambiguation.
 In doing so, embeddings also capture a more detailed understanding of mobility than has been previously studied.
@@ -125,7 +131,7 @@ In doing so, embeddings also capture a more detailed understanding of mobility t
 Another consideration when analyzing scientific mobility is what kinds of mobility to study.
 Typical understandings of mobility are directional: movement is always \textit{from} one place and \textit{to} another.
 However, scientific mobility is more complicated.
-For example, scientists often hold multiple affiliations at a time~\autocite{markova2016synchronous}, listing them as co-affiliations on a single paper, or even choosing a subset of affiliations to use for multiple simultaneous projects~\autocite{robinson2019mobility}.
+For example, scientists often hold multiple affiliations at a time~\autocite{markova2016synchronous}, listing them as co-affiliations on a single paper, or even choosing a subset of affiliations to use fohabeultiple simultaneous projects~\autocite{robinson2019mobility}.
 Even clearly-directional migration to another institution is complex--researchers may continue to publish with an old affiliation for projects that began before their move, and they may maintain social and organizational links to their old institution (e.g., collaborators, projects, graduate students) such that there is no clear breakage after migrating.
 There is also a whole range of short-term scientific mobility, such as visiting scholarships and short-term visits that are only visible through intensive efforts such as manual extraction from CVs~\autocite{woolley2009cv, sandstrom2009cv, canibano2011temporary}.
 Here, we focus on more long-term mobility that can be derived from bibliographic data.
@@ -539,7 +545,7 @@ Taiwan           & 3.67             & 72
 	\centering
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_emb_bymodel.pdf}
 	\caption{
-		\textbf{For geographic distance, the power-decay gravity model is better.}
+		\textbf{For embedding distance, the exponential=decay gravity model is better.}
 		Flux between organization pairs predicted by the gravity model with different distance decay functions, i.e., exponential decay function (\textbf{a}) and power-law decay function (\textbf{b}) using embedding distance.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps with $x = y$; 
@@ -565,7 +571,7 @@ Taiwan           & 3.67             & 72
 		Red line is the line of best fit.
 		Black dots are mean flux across binned distances.
 		Color of each hex bin indicates frequency of organization pairs.
-		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}a and Fig.~\ref{fig:gravity_performance}.
+		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}.
 		\textbf{c-d.}	embedding distance explains more variance when considering only within-country organization pairs.
 		\textbf{e-f.} embedding distance is more robust than geographic distance when considering only across-country organization pairs.
 	}
@@ -586,7 +592,7 @@ Taiwan           & 3.67             & 72
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps the line $x = y$; 
 		a perfect prediction yields all points on the black line.
-		\textbf{a-b.} Predictions are made with parameters estimated from all pairs of organizations (as in Fig.~\ref{fig:gravity_performance}c), and showing only the subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
+		\textbf{a-b.} Predictions are made with parameters estimated from all pairs of organizations (as in Fig.~\ref{fig:gravity_performance}e), and showing only the subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
 		\textbf{c-d.} Predictions made using parameters estimated from the subset of organizations in the same country (\textbf{c}) and different country \textbf{d});
 		this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h.
 	}
@@ -838,7 +844,7 @@ Taiwan           & 3.67             & 72
 		Annotations show the number of organizations remaining at thresholds pf 0, 50, and 100. 
 		\textbf{b}. Comparison of organizations using a size threshold of 10 for regional and liberal arts colleges, and 50 for research institutes and government organizations;
 		these thresholds were chosen as points thresholds of stability in \textbf{a}. 		
-		The impact rank is correlated with the embedding rank for regional and liberal arts colleges with Spearman's $\rho = 0.49 (n = 48)$, research institutes with Spearman's $\rho = 0.58 (n = 159)$, and for government organizations with Spearman's $\rho = 0.36 (n = 55)$. 
+		The impact rank is correlated with the embedding rank for regional and liberal arts colleges with Spearman's $\rho = 0.49\,(n = 48)$, research institutes with Spearman's $\rho = 0.58\,(n = 159)$, and for government organizations with Spearman's $\rho = 0.36\,(n = 55)$. 
 	}
 	\label{fig:supp:sector_semaxis_impact}
 \end{figure}
