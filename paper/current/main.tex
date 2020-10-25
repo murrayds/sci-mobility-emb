@@ -540,7 +540,7 @@ where,
 p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{i} \cdot \bm{v}_{a_{j}})}{\sum_{n=1}^N \exp(\bm{u}_{n} \cdot \bm{v}_{a_{j}})},
 \end{equation}
 where $a_{t+\tau} = j \vert a_{t+\tau} = i$, and $N$ is the number of unique locations represented in the data, and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively.
-The in-vector and out-vectors are different kinds of vector representations for locations. We only use the in-vector, $v$, because the in-vector is more widely used and often superiors to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}.
+We follow the standard practice and only use the in-vector, $v$,  which is known to be superior to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}.
 
 
 %% Word2vec parameters and training procedure
@@ -559,8 +559,8 @@ For scientific mobility, across each training iteration, the order of organizati
 \subsection*{Distance}
 %% Distance calculations
 We calculate $T_{ij}$ as the total number of co-occurrence between two locations $i$ and $j$ across the data-set.
-For case in scientific mobility, $T_{ij} = 10$ indicates that the number of co-occurrence between both organization $i$ and $j$ between 2008 and 2019 is 10, as evidenced from their publications.
-We treat $T_{ij} = T_{ji}$ because directional information is not informative.
+In scientific mobility, $T_{ij} = 10$ indicates that the number of co-occurrence between both organization $i$ and $j$ between 2008 and 2019 is 10, as evidenced from their publications.
+Here, we treat $T_{ij} = T_{ji}$ for the sake of simplicity, and, in the case of scientific mobility, because  directionalality cannot easily be derived from bibliometric records, or may not be particularly affirmative (see \SI). 
 
 We calculate two forms of the distance between locations.
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between locations.
@@ -577,10 +577,10 @@ Nevertheless, cosine distance is often shown to be useful in practice~\autocite{
 %
 \subsection*{Gravity Law}
 
-We model co-occurences $T_{ij}$ for locations $i$, and $j$, often referred to as flux, using the gravity law of mobility~\autocite{zipf1946gravity}.
-The gravity law of mobility loosely derives from the physical law of gravity, in which the attraction between two objects is a function of their mass and the distance between them.
+We model co-occurences $T_{ij}$ for locations $i$ and $j$ (referred to as flux), using the gravity law of mobility~\autocite{zipf1946gravity}.
+The gravity law of mobility, which was inspired by Newton's law of gravity, postulates that attraction between two locations is a function of their population and the distance between them.
 This formulation and variants have proven useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, truscott2012epidemicgravity, hong2016busgravity}.
-In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ between two organizations $i$ and $j$ is defined as,
+In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ between two locations $i$ and $j$ is defined as,
 
 %
 % Gravity law EQ
@@ -589,7 +589,8 @@ In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ betwe
 	\label{eq:gravity_basic}
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
-where $m_{i}$ and $m_{j}$ are the population of locations which is the total number of passenger on each airport for U.S. airport itinerary and the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization for scientific mobility.  $f(r_{ij})$ is a decay function of distance $r_{ij}$ between locations $i$ and $j$. 
+where $m_{i}$ and $m_{j}$ are the population of locations (\eg the total number of passenger on each airport for U.S. airport itinerary and the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization for scientific mobility). 
+$f(r_{ij})$ is a decay function of distance $r_{ij}$ between locations $i$ and $j$. 
 There are two popular forms for the $f(r_{ij})$:
 one is a power law function in the form $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0$, and the other and the another one is an exponential function in the form $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  
 The parameters for $f(r_{ij})$ and $C$ are fit to given mobility data using a log-linear regression~\autocite{jung2008highwaygravity, curiel2018citygravity, truscott2012epidemicgravity, hong2016busgravity, simini2012universal}.
@@ -622,7 +623,7 @@ We follow standard practice and exclude zero flows from our analysis.
 SemAxis and similar studies~\autocite{an2018semaxis, nakandala2017gendered, kozlowski2018geometry} demonstrated that ``semantic axes'' can be found from an embedding space by defining the ``poles'' and the latent semantic relationship along semantic axis can be extracted with the simple arithmetic.
 Each axis is an antonym pair defined for each specific use case.
 In the case of natural language, the poles of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''.
-By treating organizations analogously to words and trajectories analogously to sentences, we can use SemAxis to leverage the semantic properties of the embedding vectors to operationalize abstract relationships between organizations.
+We can use SemAxis to leverage the semantic properties of the embedding vectors to operationalize abstract relationships between organizations.
 
  Let $S^+ = \{\bm{v}_1^+, \bm{v}_2^+ \cdots \bm{v}_n^+\}$ and $S^- =\{\bm{v}_1^-, \bm{v}_2^- \cdots \bm{v}_n^-\}$ be the set of positive and negative pole organization vectors respectively. 
 Then, the average vectors of each set can be calculated as $\bm{V}^{+} = \frac{1}{n}\sum^n_{i=1} \bm{v}_i^+$ and $\bm{V}^{-} = \frac{1}{n}\sum^n_{i=1} \bm{v}_i^-$. 
