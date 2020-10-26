@@ -553,20 +553,20 @@ where,
 % CONDITIONAL PROBABILITY EQ
 %
 \begin{equation}
-p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{i} \cdot \bm{v}_{a_{j}})}{\sum_{n=1}^N \exp(\bm{u}_{n} \cdot \bm{v}_{a_{j}})},
+p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{a_i} \cdot \bm{v}_{a_{j}})}{\sum_{x \in \mathcal{A}} \exp(\bm{u}_{x} \cdot \bm{v}_{a_{j}})},
 \end{equation}
-where $a_{t+\tau} = j \vert a_{t+\tau} = i$, and $N$ is the number of unique locations represented in the data, and $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively.
+where $a_i = a_{t + \tau}$, $ a_j=a_{t}$, $\mathcal{A}$ is the entire set of unique locations represented in the data, and  $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively.
 We follow the standard practice and only use the in-vector, $v$,  which is known to be superior to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}.
 
 
 %% Word2vec parameters and training procedure
 We used the \textit{word2vec}  implementation in the python package \texttt{gensim}. 
 The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
-For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}).
+For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}). We also use same setting for U.S. airport itinerary and Korean accommodation reservation data.
 To mitigate the effect of less common locations, we set $f_{\min} = 50$, limiting to locations appearing at least 50 times across the training trajectories;
 744 unique airport for U.S. airport itinerary, 1004 unique accommodations for Korean accommodation reservation data, and 6,580 unique organizations for scientific mobility appear in the resulting embedding.
 We set $\alpha$ to its default value of 0.025 and iterate five times over all training trajectories.
-For scientific mobility, across each training iteration, the order of organizations within a single year is randomized. 
+For scientific mobility, across each training iteration, the order of organizations within a single year is randomized to remove unclear sequential order.. 
 
 
 %
