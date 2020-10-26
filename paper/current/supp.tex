@@ -46,6 +46,16 @@
 					sortcites=true,
 					autocite=superscript
 ]{biblatex}
+
+% Ignore irrelevant biblatex fields
+\AtEveryBibitem{%
+ \clearfield{url}%
+  \clearfield{month}%
+ \clearfield{issn}%
+ \clearfield{doi}%%
+}
+
+
 \addbibresource{mobility.bib}
 
 \usepackage{url}
