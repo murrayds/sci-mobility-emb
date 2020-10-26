@@ -560,7 +560,7 @@ We used the \textit{word2vec}  implementation in the python package \texttt{gens
 The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
 For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}).
 To mitigate the effect of less common locations, we set $f_{\min} = 50$, limiting to locations appearing at least 50 times across the training trajectories;
-744 unique airport for U.S. airport itinerary  and 6,580 unique organizations for scientific mobility appear in the resulting embedding.
+744 unique airport for U.S. airport itinerary , 1004 unique accommodations for korean accomdation reservationd data and 6,580 unique organizations for scientific mobility appear in the resulting embedding.
 We set $\alpha$ to its default value of 0.025 and iterate five times over all training trajectories.
 For scientific mobility, across each training iteration, the order of organizations within a single year is randomized. 
 
