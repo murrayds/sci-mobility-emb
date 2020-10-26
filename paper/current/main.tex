@@ -226,7 +226,7 @@ The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravit
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
 where $m_{i}$ is the population of locations $i$,  $f(r_{ij})$ is a decay function with respect to distance between locations, and $C$ is a constant estimated from data (see Methods). 
-For the flight itinerary data, we use population $m_{i}$ as the total number of unique passengers on each airport, for the Korean accommodation reservation data, we use population $m_{i}$ as the total number of unique customers on each accommodation, and for scientific mobility, we use the mean annual number of unique mobile and non-mobile authors who were affiliated with each organization.
+For the flight itinerary data, we use population $m_{i}$ as the total number of unique passengers who passed through each airport, for the Korean accommodation reservation data, we use the total number of unique customers who booked with each accommodation, and for scientific mobility, we use the mean annual number of unique mobile and non-mobile authors who were affiliated with each organization.
 $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini2012universal}, is the expected frequency of the co-occurrence of location $i$ and $j$ in the trajectory in the gravity model.
 The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij }= \hat{T}_{ji}$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
 We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}. 
@@ -501,7 +501,7 @@ Each itinerary is associated with a trajectory of airports including the origin,
 
 
 \subsection*{Korean accommodation reservation data}
-We source South Korean accommodation reservation data from collaboration with Goodchoice Company LTD.. 
+We source Korean accommodation reservation data from collaboration with Goodchoice Company LTD.. 
 The data contains customer-level reservation trajectories spanning the period of August 2018 through July 2020 and comprising 1,038 unique accommodation locations in Seoul, South Korea. 
 
 
@@ -609,7 +609,7 @@ In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ betwe
 	\label{eq:gravity_basic}
 	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
-where $m_{i}$ and $m_{j}$ are the population of locations (\eg the total number of passenger on each airport for U.S. airport itinerary,  the total number of customer on each accommodation for Korean accommodation reservation, and the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization for scientific mobility). 
+where $m_{i}$ and $m_{j}$ are the population of locations, defined as the total number of passenger who passed through each airport for U.S. airport itineraries,  the total number of customer who booked with each accommodation for Korean accommodation reservations, and the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization for scientific mobility. 
 $f(r_{ij})$ is a decay function of distance $r_{ij}$ between locations $i$ and $j$. 
 There are two popular forms for the $f(r_{ij})$:
 one is a power law function in the form $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0)$, and the other is an exponential function in the form $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  
