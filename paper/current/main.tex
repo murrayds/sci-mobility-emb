@@ -226,7 +226,7 @@ The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravit
 \end{equation}
 
 where $m_{i}$ is the population of locations $i$,  $f(r_{ij})$ is a decay function with respect to distance between locations, and $C$ is a constant estimated from data (see Methods). 
-For the flight itinerary data, we use population $m_{i}$ as the total number of unique passengers on each airport, and for scientific mobility, we use the mean annual number of unique mobile and non-mobile authors who were affiliated with each organization.
+For the flight itinerary data, we use population $m_{i}$ as the total number of unique passengers on each airport, for the South Korean accommodation reservation data, we use population $m_{i}$ as the total number of unique customers on each accommodation, and for scientific mobility, we use the mean annual number of unique mobile and non-mobile authors who were affiliated with each organization.
 $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini2012universal}, is the expected frequency of the co-occurrence of location $i$ and $j$ in the trajectory in the gravity model.
 The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij }= \hat{T}_{ji}$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
 We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}. 
