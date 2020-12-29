@@ -195,7 +195,7 @@ As a scientist's career progresses, they move between organizations or pick up a
 Thus, the trajectories encode both migration and co-affiliation---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, sugimoto2017mostimpact} (see \SI).
 
 A vector-space embedding of locations (airports, accommodations, and organizations) is learned by using trajectories as input to the standard with skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
-This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered} and networks~\autocite{grover2016node2vec}.
+This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered} and networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic}.
 The model is also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
 
@@ -501,7 +501,7 @@ Each itinerary is associated with a trajectory of airports including the origin,
 
 
 \subsection*{Korean accommodation reservation data}
-We source Korean accommodation reservation data from collaboration with Goodchoice Company LTD.. 
+We source Korean accommodation reservation data from collaboration with Goodchoice Company LTD.
 The data contains customer-level reservation trajectories spanning the period of August 2018 through July 2020 and comprising 1,038 unique accommodation locations in Seoul, South Korea. 
 
 
@@ -621,7 +621,7 @@ For the embedding distance, we use the exponential function, with $f(d_{ij}) = e
 
 \begin{equation}
 	\label{eq:linear_flux_geo}
-	\ln\frac{T_{ij}}{m_im_j} = \ln C  - \alpha \ln g_{ij},S
+	\ln\frac{T_{ij}}{m_im_j} = \ln C  - \alpha \ln g_{ij},
 \end{equation}
 
 \begin{equation}
@@ -641,7 +641,7 @@ We follow standard practice and exclude zero flows from our analysis.
 % SUBSECTION: SEMAXIS
 %
 \subsection*{SemAxis}
-SemAxis and similar studies~\autocite{an2018semaxis, nakandala2017gendered, kozlowski2018geometry} demonstrated that ``semantic axes'' can be found SemAxis and similar studies~\autocite{an2018semaxis, nakandala2017gendered, kozlowski2018geometry} demonstrated that ``semantic axes'' can be found from an embedding space by defining the ``poles'' and the latent semantic relationship along the semantic axis can be extracted with simple arithmetic.
+SemAxis and similar studies~\autocite{an2018semaxis, nakandala2017gendered, kozlowski2018geometry} demonstrated that ``semantic axes'' can be found from an embedding space by defining the ``poles'' and the latent semantic relationship along the semantic axis can be extracted with simple arithmetic.
 In the case of natural language, the poles of the axis could be ``good'' and ``bad'', ``surprising'' and ``unsurprising'', or ``masculine'' and ``feminine''.
 We can use SemAxis to leverage the semantic properties of the embedding vectors to operationalize abstract relationships between organizations.
 
