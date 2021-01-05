@@ -1,0 +1,142 @@
+\documentclass[12pt]{article} %{{{
+
+% Figures
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\def\figdir{figs}
+
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\DeclareMathOperator*{\argmax}{\arg\!\max}
+\def\given{\mid}
+
+% abbreviations
+\def\etal{\emph{et~al}.\ }
+\def\eg{e.g.,~}
+\def\ie{i.e.,~}
+\def\cf{cf.\ }
+\def\viz{viz.\ }
+\def\vs{vs.\ }
+
+% Refs
+\usepackage{biblatex}
+\addbibresource{main.bib}
+
+\usepackage{url}
+
+\newcommand{\secref}[1]{Section~\ref{sec:#1}}
+\newcommand{\figref}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\tabref}[1]{Table~\ref{tab:#1}}
+%\newcommand{\eqnref}[1]{\eqref{eq:#1}}
+%\newcommand{\thmref}[1]{Theorem~\ref{#1}}
+%\newcommand{\prgref}[1]{Program~\ref{#1}}
+%\newcommand{\algref}[1]{Algorithm~\ref{#1}}
+%\newcommand{\clmref}[1]{Claim~\ref{#1}}
+%\newcommand{\lemref}[1]{Lemma~\ref{#1}}
+%\newcommand{\ptyref}[1]{Property~\ref{#1}}
+
+% for quick author comments 
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\definecolor{light-gray}{gray}{0.8}
+\def\del#1{ {\color{light-gray}{#1}} }
+\def\yy#1{ {\color{red}\textbf{yy: #1}} }
+
+%}}}
+
+\begin{document} %{{{
+
+\title{Gravity model and word2vec} %{{{
+\date{\today}
+\maketitle %}}}
+
+\section{Introduction}\label{sec:introduction}
+
+The word2vec fits well to a wide range of mobilities, which prompts us to ask: why does the word2vec fit well to the mobility data?
+It turns out that the word2vec is tied to a gravity model, a widespread and long-standing model that well explains human mobility.
+While the gravity model predicts a flow from given locations and populations, the word2vec is a reverse engineering model that estimates the location and population from flows.
+
+Let us approach the connection by initially focusing on the gravity model.
+Suppose that flow of people between $N$ locations. The gravity model models the flow by
+\begin{align}
+    T_{ij} = G M_i M_j f(d_{ij}), \label{eq:gravity_model}
+\end{align}
+where $T_{ij}$ is the flow from location $i$ to $j$, $M_i$ is a mass term corresponding to population of $i$, $d_{ij}$ is a distance between locations $i$ and $j$,
+$f$ is a decreasing function with respect to $d_{ij}$, and $G$ is a constant.
+Note that the gravity model implicitly assumes that the flow is symmetric, \ie $T_{ij}=T_{ji}$, which eads to a stationality in population $M_{i}$.
+
+Now, let us move our focus to the word2vec.
+The word2vec takes a sequence of locations (\ie trajectory) and models the co-occurrence of center word $i$ and context word $j$ by
+\begin{align}
+    P(j\given i) = \frac{\exp(u_i ^\top v_j)}{Z_i},
+\end{align}
+where $u_i$ and $v_{j}$ are embedding vectors for node $i$, which are referred to as in-vecvtor and out-vector, respectivey, and $Z_i$ is a normalization constant.
+The co-occurrence \emph{frequency} of center and context word is given by
+\begin{align}
+    \pi_i P(j\given i) = \frac{\pi_i\exp(u_i ^\top v_j)}{Z_i},
+\end{align}
+where $\pi_i$ is the frequency of word $i$ in the sentence. When restricting window size to be one, the co-occurence frequency corresponds to the flow, \ie
+\begin{align}
+    T_{ij} = \frac{\pi_i\exp(u_i ^\top v_j)}{Z_i}. \label{eq:flow_w2v}
+\end{align}
+Additionally, because the window covers the preceding and succeeding words from a center word, the co-occurence is symmetric, $T_{ij} = T_{ji}$, which echoes the gravity model.
+Exploiting the symmetry in flows (\ie $T_{ij} = T_{ji}$), we have
+\begin{align}
+    \frac{\pi_i}{Z_i}  = \frac{\pi_j}{Z_j}
+    \Rightarrow Z_i   = \pi_i / c \label{eq:Z}
+\end{align}
+where $c$ is a positive constant. Substituting \eqref{eq:Z} into \eqref{eq:flow_w2v}, we have
+\begin{align}
+    T_{ij} = c \exp(u_i ^\top v_j). \label{eq:flow_w2v2}
+\end{align}
+Both word2vec and the gravity model assume that the flow is determined by the locations.
+Yet, they have some notable differences.
+For example, the gravity model measures the distance by the euclidean distance while the word2vec measures by a dot similarity.
+Additionally, the word2vec does not have a mass term for locations.
+
+%The word2vecs flow between locations based on a dot similarity while the gravity model does baesd on eucliden distance.
+%Although the two models differ in many respects, 
+The gap between two models can be filled by using euclidean distance for the word2vec, \ie
+\begin{align}
+    P(j\given i) = \frac{\exp(-||u_i - u_j||^2)}{Z_i}.
+\end{align}
+The flow is then given by
+\begin{align}
+    T_{ij} = c \exp(-||u_i - u_j||^2).
+\end{align}
+Now, this modified word2vec has a functional form similar to the gravity model, \ie the flow is decreasing with respective to the euclidean distance.
+
+Although the mass terms are still missing in the modified wod2vec, they come into the model when using a commonly-used optimization algorithm---\emph{the negative sampling}.
+The negative sampling is an optimization method widely used for training the word2vec.
+An overlooked fact is that the negative sampling is a biased estimator that optimizes a slightly different objective function~\cite{Gutmann2010}.
+
+The negative sampling finds the embedding vectors as follows.
+For each center--context word pair $(i,j)$, one generates $k$ noise center--context word pairs, denoted by $(i, \ell)$, where context word $\ell$ for the noise pair is sampled from a noise distribution, denoted by $p_{0}(\ell)$.
+Given a center-context word pair, $(i,j)$, as an input, one predicts whether it comes from the original data or noise distribution based on
+a similarity between two words, \eg dot similarity in case of the word2vec.
+
+Note that the negative sampling does not directly fit the word2vec to the given data but with the synthetic classification task.
+As a consequence, it does not fit the original model but a different model given by \cite{Gutmann2010}
+\begin{align}
+    P\left(j \given i \right):= \frac{p_0(j)\exp(u^\top _i v_j)}{Z_i}.
+\end{align}
+Although the negative sampling optimizes a different model, it has computational advantages and works well in practice.
+
+Let us return to the modified word2vec and optimize it using the negative sampling.
+The flow between $i$ and $j$ is given by
+\begin{align}
+    T_{ij}=\pi_i\frac{p_0(j)\exp(-||u_i - u_j||^2)}{Z_i}.
+\end{align}
+The original word2vec uses a noise distribution given by $p_{0}(\ell) = \pi^{\gamma} _\ell / \sum_{\ell'} \pi^{\gamma}_{\ell'}$, where $\gamma$ is a free parameter typicall set to $3/4$ or $1$.
+%We set $\gamma = 1$.
+Setting $\gamma=1$, we have
+\begin{align}
+    T_{ij}=c\pi_i \pi_j\exp(-||u_i - u_j||^2).
+\end{align}
+which reveals the mass $M_i$ for the modified word2vec model.
+In fact, the mass term $M_i$ for location $i$ corresponds to its frequency in the trajetory in the modified word2vec model.
+
+\printbibliography{}
+
+\end{document} %}}}
