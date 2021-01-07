@@ -60,12 +60,11 @@ While the gravity model predicts a flow from given locations and populations, th
 Let us approach the connection by initially focusing on the gravity model.
 Suppose that flow of people between $N$ locations. The gravity model models the flow by
 \begin{align}
-    T_{ij} = G M_i M_j f(d_{ij}), \label{eq:gravity_model}
+    \hat{T_{ij}} = C m_i m_j f(r_{ij}), \label{eq:gravity_model}
 \end{align}
-where $T_{ij}$ is the flow from location $i$ to $j$, $M_i$ is a mass term corresponding to population of $i$, $d_{ij}$ is a distance between locations $i$ and $j$,
-$f$ is a decreasing function with respect to $d_{ij}$, and $G$ is a constant.
+where $\hat{T_{ij}}$ is the expected flow from location $i$ to $j$, $m_i$ is the population of locations of $i$, $r_{ij}$ is a distance between locations $i$ and $j$, $f$ is a decreasing function with respect to $r_{ij}$, and $C$ is a constant.
 That the gravity model implicitly assumes that the flow is symmetric, \ie $T_{ij}=T_{ji}$, which ensures the stationarity in population $M_{i}$.
-The choice of distance measure $d_{ij}$ is entirely unconstrained; it can be the euclidean distance, or even pseudo distance measure that does not satisfy the axioms for metric space.
+The choice of distance measure $d_{ij}$ is entirely unconstrained; it can be the euclidean distance, or any kind of general distance measure.
 In the following, we refer to a measure of dissimilarity as distance.
 
 Now, let us move our focus to the word2vec.
