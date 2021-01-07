@@ -1,0 +1,144 @@
+\documentclass[12pt]{article} %{{{
+
+% Figures
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\def\figdir{figs}
+
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\DeclareMathOperator*{\argmax}{\arg\!\max}
+\def\given{\mid}
+
+% abbreviations
+\def\etal{\emph{et~al}.\ }
+\def\eg{e.g.,~}
+\def\ie{i.e.,~}
+\def\cf{cf.\ }
+\def\viz{viz.\ }
+\def\vs{vs.\ }
+
+% Refs
+\usepackage{biblatex}
+\addbibresource{main.bib}
+
+\usepackage{url}
+
+\newcommand{\secref}[1]{Section~\ref{sec:#1}}
+\newcommand{\figref}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\tabref}[1]{Table~\ref{tab:#1}}
+%\newcommand{\eqnref}[1]{\eqref{eq:#1}}
+%\newcommand{\thmref}[1]{Theorem~\ref{#1}}
+%\newcommand{\prgref}[1]{Program~\ref{#1}}
+%\newcommand{\algref}[1]{Algorithm~\ref{#1}}
+%\newcommand{\clmref}[1]{Claim~\ref{#1}}
+%\newcommand{\lemref}[1]{Lemma~\ref{#1}}
+%\newcommand{\ptyref}[1]{Property~\ref{#1}}
+
+% for quick author comments 
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\definecolor{light-gray}{gray}{0.8}
+\def\del#1{ {\color{light-gray}{#1}} }
+\def\yy#1{ {\color{red}\textbf{yy: #1}} }
+
+%}}}
+
+\begin{document} %{{{
+
+\title{Gravity model and word2vec} %{{{
+\date{\today}
+\maketitle %}}}
+
+\section{Introduction}\label{sec:introduction}
+
+The word2vec fits well to a wide range of mobilities, which prompts us to ask: why does the word2vec fit well to the mobility data?
+It turns out that the word2vec is tied to a gravity model, a widespread and long-standing model that well explains human mobility.
+While the gravity model predicts a flow from given locations and populations, the word2vec is a reverse engineering model that estimates the location and population from flows.
+
+Let us approach the connection by initially focusing on the gravity model.
+Suppose that flow of people between $N$ locations. The gravity model models the flow by
+\begin{align}
+    T_{ij} = G M_i M_j f(d_{ij}), \label{eq:gravity_model}
+\end{align}
+where $T_{ij}$ is the flow from location $i$ to $j$, $M_i$ is a mass term corresponding to population of $i$, $d_{ij}$ is a distance between locations $i$ and $j$,
+$f$ is a decreasing function with respect to $d_{ij}$, and $G$ is a constant.
+That the gravity model implicitly assumes that the flow is symmetric, \ie $T_{ij}=T_{ji}$, which ensures the stationarity in population $M_{i}$.
+The choice of distance measure $d_{ij}$ is entirely unconstrained; it can be the euclidean distance, or even pseudo distance measure that does not satisfy the axioms for metric space.
+In the following, we refer to a measure of dissimilarity as distance.
+
+Now, let us move our focus to the word2vec.
+The word2vec takes a sequence of locations (\ie trajectory) and models the co-occurrence of center word $i$ and context word $j$ by
+\begin{align}
+    P(j\given i) = \frac{\exp(u_i ^\top v_j)}{Z_i},
+\end{align}
+where $u_i$ and $v_{j}$ are embedding vectors for node $i$, which are referred to as in-vector and out-vector, respectively, and $Z_i$ is a normalization constant.
+The co-occurrence \emph{frequency} of center and context word is given by
+\begin{align}
+    \pi_i P(j\given i) = \frac{\pi_i\exp(u_i ^\top v_j)}{Z_i},
+\end{align}
+where $\pi_i$ is the frequency of word $i$ in the sentence.
+When restricting window size to be one, the co-occurrence frequency corresponds to the flow, \ie
+\begin{align}
+    T_{ij} = \frac{\pi_i\exp(u_i ^\top v_j)}{Z_i}. \label{eq:flow_w2v}
+\end{align}
+The co-occurrence frequency has a similar functional form with the gravity model, \ie $d_{ij} = -u_i ^\top v_j$ and $f(x) = \exp(-x)$.
+Yet, they have some apparent differences.
+For example, the word2vec does not have a mass term $M_i$.
+In addition, the dot similarity $u_i ^\top v_j$ can be asymmetric, \ie $u_i ^\top v_j \neq u_j ^\top v_i$.
+In practice, however, this gap is filled due to the effect of optimization algorithm---\emph{the negative sampling}.
+
+The negative sampling is an optimization method widely used for training the word2vec, which operates as follows.
+For each center--context word pair $(i,j)$, one generates $k$ noise center--context word pairs, denoted by $(i, \ell)$, where context word $\ell$ for the noise pair is sampled from a noise distribution, denoted by $p_{0}(\ell)$.
+Given a center-context word pair, $(i,j)$, as an input, one predicts whether it comes from the original data or noise distribution based on
+a similarity between two words, \eg dot similarity in case of the word2vec.
+
+An overlooked fact is that the negative sampling is a biased estimator that optimizes a slightly different objective function~\cite{Gutmann2010}.
+The negative sampling does not directly fit the word2vec to the given data but with the synthetic classification task.
+As a consequence, it does not fit the original model but a different model given by \cite{Gutmann2010}
+\begin{align}
+    P\left(j \given i \right):= \frac{p_0(j)\exp(u^\top _i v_j)}{Z_i}.
+\end{align}
+By taking into the bias, the flow between $i$ and $j$ is given by
+\begin{align}
+    T_{ij}=\pi_i\frac{p_0(j)\exp(u_i ^\top v_j)}{Z_i}. \label{eq:flow_w2v_ng0}
+\end{align}
+The word2vec uses a noise distribution given by $p_{0}(\ell) = \pi^{\gamma} _\ell / \sum_{\ell'} \pi^{\gamma}_{\ell'}$, where $\gamma$ is a free parameter typically set to $3/4$ or $1$.
+Notably, $\gamma=1$ is a special choice that ensures that the in-vector and out-vector are the same, \ie $u_i = v_i$.
+Setting $\gamma = 1$ and substituting $p_0 (\ell) = \pi_\ell$ into Eq~\eqref{eq:flow_w2v_ng0} yields
+\begin{align}
+    T_{ij}=c\pi_i \pi_j\exp(u_i ^\top u_j). \label{eq:flow_w2v_ng}
+\end{align}
+where $c$ is a positive constant, and we have exploited $\pi_i/Z_i = c$ derived from $T_{ij} = T_{ji}$.
+Equation~\eqref{eq:flow_w2v_ng} reveals the connection between the word2vec and the gravity model.
+For example, the word2vec is a special case of the gravity model, in which the mass of location $i$ is its frequency in the trajectory data, and the distance between locations is measured by their dot similarities.
+
+%\section{Optimization based on the multidimensional scaling}
+%
+%The euclidean word2vec takes flow as input and outputs the location and population at each location.
+%This algorithm is reminiscent of the multidimensional scaling (MDS), which maps entities onto a Euclidean space by preserving their dissimilarity as distance as much as possible.
+%Specifically, given a dissimilarity matrix $D=(D_{ij})$, MDS aims to map entities such that $D_{ij} \approx ||u_i - u_j||$ for all $i$ and $j$.
+%This connection allows us to optimize the euclidean word2vec using the MDS algorithm, as we will see in the following.
+%
+%For a moment, let us consider an ideal situation in which the given data is generated from Eq~\eqref{eq:flow_w2v_ng} and how we can fit the model.
+%Denoted by $T_{ij} ^\text{data}$ as the actual flow, and $T^{\text{model}}_ij$ by the flow modeled by the word2vec.
+%When embedding dimension $K$ is small, the word2vec has a limited expression power and thus the modeled flow can be considerably different to the actual flow.
+%As we increase $K$, however, the model gains more expression power and eventually achieves an exact fit, $T_{ij} ^\text{data} = T_{ij} ^\text{model}$, just like fitting a high-order polynomial function (\eg quadratic function) to two data points.
+%In this case, the distance is given by solving Eq.~\eqref{eq:flow_w2v_ng}, or
+%\begin{align}
+%    ||u_i - u_j|| = - \log \frac{T^\text{data}_{ij}}{\pi_i \pi_j} + \log c.
+%\end{align}
+%This problem is equivalent to the MDS problem, taking $R=(R_ij)$ with entries $R_{ij}= - \log \frac{T_{ij}}{\pi_i \pi_j} + \log c$ as the dissimilarity matrix.
+%It should be noted that MDS problem does not have a unique solution.
+%
+%In practice, we may want a compact embedding space, $K\ll N$.
+%Furthermore, given data may not be generated from the same model.
+%Yet, solving the MDS problem would provide a good approximate for embedding.
+%
+%An implementation issue is that the dissimilarity $R_{ij}$ can be infinity because flow $T_{ij}$ can be zero, making the MDS problem invalid.
+%To circumvent this problem, we add a small synthetic flow $\tilde \epsilon_{ij}$ to the actual flow given by $\epsilon_{ij} = \alpha \pi_i \pi_j$, where $\alpha = 1e-3$.
+
+\printbibliography{}
+
+\end{document} %}}}
