@@ -81,15 +81,14 @@ In out setting, the model takes a sequence of locations and models the co-occurr
 \begin{equation}
     p(j \given i) = \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 \end{equation}
-where $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector", respectively, and $Z_i=\sum_{x \in \mathcal{A}} \exp(\bm{u}_{x} \cdot \bm{v}_{i})$ is a normalization constant,
-and $\mathcal{A}$ is the set of all locations.
-Under restricting window size to be one, the expected flow between center location $a_i$ and context location $a_j$ is given by
+where $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector", respectively,  $Z_i=\sum_{x \in \mathcal{A}} \exp(\bm{u}_{x} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
+Under restricting window size to be one, the expected flow between center location $i$ and context location $j$ is given by
 \begin{align}
     \label{eq:flow_w2v}
     \hat{T_{ij}}=s_i P(j\given i) = \frac{s_i\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 \end{align}
 where $s_i$ is the frequency of location $i$ summed for all trajectories in the dataset.
-Although there are some similarities, Eq.~\ref{eq:flow_w2v} does not have a population term $m_i$. In additionm the distance can be asymmetric, $r_{ij}=- \bm{u}_{j} \cdot \bm{v}_{i} \neq - \bm{u}_{i} \cdot \bm{v}_{j}=r_{ji}$.
+Although there are some similarities, Eq.~\ref{eq:flow_w2v} does not have a population term $m_i$. In addition, the distance can be asymmetric, $r_{ij}=- \bm{u}_{j} \cdot \bm{v}_{i} \neq - \bm{u}_{i} \cdot \bm{v}_{j}=r_{ji}$.
 
 The gap between the gravity model and {\it word2vec} is filled by taking into account how we train the \textit{word2vec}---\emph{the negative sampling}.
 The negative sampling is an optimization method widely used for training the machine learning model, which operates as follows.
@@ -116,7 +115,7 @@ which leads to the expected flow for the word2vec model, \ie
 \begin{align}
     \hat{T_{ij}}=s_i P(j\given i) =  \frac{s_i s _j  \exp(\bm{v}_j \cdot \bm{v}_{i})}{  Z'_i\sum_{\ell'} s_{\ell'}}. \label{eq:flow_w2v_ng0}
 \end{align}
-In the \textit{word2vec}, the flow $\hat{T_{ij}}_{ij}$ is symmetric by design (\ie $\hat{T_{ij}}=\hat{T_{ji}}$) because the word2vec neglects whether the context $j$ appears later or earlier from center $i$.
+In the \textit{word2vec}, the flow $\hat{T_{ij}}_{ij}$ is symmetric by design (\ie $\hat{T_{ij}}=\hat{T_{ji}}$) because the model neglects whether the context $j$ appears later or earlier from center $i$.
 Therefore, we have
 \begin{align}
     T_{ij} = T_{ji}
@@ -158,7 +157,7 @@ Substituting \eqref{eq:gravity_constant}  into Eq.~\eqref{eq:gravity_prob} yield
 \section{Correct representation of word2vec section}
 \label{sec:correct_word2vec}
 
-Many probability models including the word2vec can be represented in form
+Many probability models including the \textit{word2vec} can be represented in form
 \begin{align}
     f(x) / \sum_{x' \in {\cal X}} f(x'),
 \end{align}
@@ -203,7 +202,7 @@ or, by substituting Eq.~\eqref{eq:unnormalized},
 \begin{align}
     p_0(x)f(x) / \sum_{x' \in {\cal X}} p_0(x')f(x').
 \end{align}
-For the word2vec, the correct expression of word2vec optimized with the negative sampling is given by
+For the \textit{word2vec}, the correct expression optimized with the negative sampling is given by
 \begin{align}
     P\left(j \given i \right):= \frac{p_0(j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}.
 \end{align}
