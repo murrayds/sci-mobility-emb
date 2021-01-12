@@ -61,11 +61,7 @@ leiden <- read_csv(opt$leiden, col_types = cols())
 times <- read_csv(opt$times, col_types = cols())
 
 # Load the organization sizes
-inst_sizes = readr::read_delim(opt$sizes, delim = "\t", col_types = cols()) %>%
-  group_by(cwts_org_no) %>%
-  summarize(
-    count = mean(person_count)
-  )
+inst_sizes = readr::read_delim(opt$sizes, delim = "\t", col_types = cols())
 
 factors.ext <- factors %>%
   left_join(lookup, by = "cwts_org_no") %>%
@@ -82,7 +78,7 @@ factors.ext <- factors %>%
     #l2norm = log10(l2norm),
     pubs = log10(impact_frac_p),
     gravity_potential = log10(gravity_potential),
-    count = log10(count),
+    size = log10(size),
     research = recode(BASIC2018, `15` = "R1", `16` = "R2", `17` = "R3", .default = "Other"),
     urban = recode(LOCALE,
                    `11` = "City", `12` = "City", `13` = "City",
@@ -153,17 +149,17 @@ plot <- factors.ext %>%
   rename(measure = var.yaxis,
          to.compare = var.compare) %>%
   # Select only variables that we will be plotting
-  select(count, leiden_rank, times_rank, FALLENR17, GRFTF17, GRCIP4PR,
+  select(size, leiden_rank, times_rank, FALLENR17, GRFTF17, GRCIP4PR,
          HUM_RSD, OTHER_RSD, STEM_RSD, SOCSC_RSD,
          `S&ER&D`, `NONS&ER&D`, measure, full_name) %>%
   na.omit() %>% # remove NA values
   tidyr::gather(key, value,
-                count, leiden_rank, times_rank, FALLENR17, GRFTF17, GRCIP4PR,
+                size, leiden_rank, times_rank, FALLENR17, GRFTF17, GRCIP4PR,
                 HUM_RSD, OTHER_RSD, STEM_RSD, SOCSC_RSD,
                 `S&ER&D`, `NONS&ER&D`) %>%
   mutate(
     key = factor(key,
-                 levels = c("count", "times_rank", "leiden_rank", "GRCIP4PR",
+                 levels = c("size", "times_rank", "leiden_rank", "GRCIP4PR",
                             "S&ER&D", "NONS&ER&D", "FALLENR17", "GRFTF17",
                             "STEM_RSD", "SOCSC_RSD", "HUM_RSD", "OTHER_RSD"),
                  labels = c("Log10(#authors)", "Times Rank", "Leiden Rank",  "#Doctoral Fields",

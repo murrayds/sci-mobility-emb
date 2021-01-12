@@ -51,16 +51,6 @@ unique_orgs <- unique(c(embedding_similarities$org1, embedding_similarities$org2
 # Load org sizes
 org_sizes <- read_delim(opt$sizes, delim = "\t", col_types = cols())
 
-# Aggregate sizes, which are stored yearly, as the average number of
-# unique people per year.
-org_sizes <- org_sizes %>%
-  group_by(cwts_org_no) %>%
-  summarize(
-    all_person_count = mean(person_count)
-  ) %>%
-  arrange(desc(all_person_count)) %>%
-  select(cwts_org_no, all_person_count)
-
 # Org flows
 org_flows <- read_csv(opt$flows, col_types = cols()) %>%
   filter(org1 %in% unique_orgs & org2 %in% unique_orgs)
@@ -77,7 +67,7 @@ distance_all <- org_flows %>%
   left_join(org_sizes, by = c("org1" = "cwts_org_no")) %>%
   left_join(org_sizes, by = c("org2" = "cwts_org_no")) %>%
   # set appropriate names for org sizes
-  rename(org1_size = all_person_count.x, org2_size = all_person_count.y)
+  rename(org1_size = size.x, org2_size = size.y)
 
 # There are memory issues, remove unecessary dataframes
 remove("org_sizes", "org_flows")
