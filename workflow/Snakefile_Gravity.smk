@@ -53,7 +53,8 @@ rule get_aggregate_gravity_slopes:
                 traj = TRAJECTORIES,
                 dimensions = W2V_DIMENSIONS,
                 window = W2V_WINDOW_SIZE,
-                gamma = W2V_GAMMA)]
+                gamma = W2V_GAMMA,
+                sizetype = SIZETYPE)]
     output: AGGREGATE_SLOPES
     shell:
         # using default argument parsing here
@@ -66,7 +67,8 @@ rule get_aggregate_gravity_r2:
                 traj = TRAJECTORIES,
                 dimensions = W2V_DIMENSIONS,
                 window = W2V_WINDOW_SIZE,
-                gamma = W2V_GAMMA)]
+                gamma = W2V_GAMMA,
+                sizetype = SIZETYPE)]
     threads: 4
     output: AGGREGATE_R2
     shell:

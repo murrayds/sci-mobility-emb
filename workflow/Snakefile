@@ -47,7 +47,7 @@ MOBILITY_RAW = osjoin(RAW_DATA_DIR, '2008-2019_transitions.txt')
 MOBILE_RESEARCHERS = osjoin(RAW_DATA_DIR, 'mobile_researcher_trajectories.txt')
 NONMOBILE_RESEARCHERS = osjoin(RAW_DATA_DIR, 'nonmobile_researcher_trajectories.txt')
 MOBILITY_TRAJECTORIES_YEARLY = osjoin(RAW_DATA_DIR, 'yearly', '{traj}', '{year}_{traj}_raw_mobility.csv')
-ORG_SIZES = osjoin(ADDITIONAL_DATA_DIR, '2008-2019_inst_sizes.txt')
+ORG_SIZES = osjoin(ADDITIONAL_DATA_DIR, '2008-2019_inst_sizes_{sizetype}.txt')
 ORG_STATE_NAMES = osjoin(ADDITIONAL_DATA_DIR, 'org_states.csv')
 US_CENSUS_REGIONS = osjoin(ADDITIONAL_DATA_DIR, 'usa_states_to_regions.csv')
 ORG_IMPACT = osjoin(ADDITIONAL_DATA_DIR, 'org_impact_scores.txt')
@@ -64,7 +64,7 @@ MOBILITY_SENTENCES = osjoin(SENTENCES_DATA_DIR, '{traj}', '{year}_{traj}_org_sen
 ####################
 ORGANIZATION_FLOWS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{traj}_organization_flows.csv')
 ORG_GEO_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'organization_geographic_distane.csv')
-AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate', '{traj}', 'aggregate_org_distances_{traj}_d{dimensions}_ws{window}_gamma{gamma}.csv')
+AGGREGATE_ORG_DISTANCES = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'aggregate', '{traj}', 'aggregate_org_distances_{traj}_d{dimensions}_ws{window}_gamma{gamma}_size{sizetype}.csv')
 RESEARCHER_META = osjoin(DESCRIPTIVE_DATA_DIR, 'researcher', '{traj}_researcher_metadata.txt')
 ORG_META = osjoin(DESCRIPTIVE_DATA_DIR, 'org', '{traj}_org_metadata.txt')
 
@@ -87,7 +87,7 @@ NORM_BY_COUNTRY = osjoin(EMBEDDINGS_DIR, '{traj}', 'norm', 'd{dimensions}_ws{win
 # Stat       #
 ##############
 AGGREGATE_R2 = osjoin(STAT_DATA_DIR, 'aggregate_r2.csv')
-PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{traj}', '{distance}', '{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}_gamma{gamma}.csv')
+PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{traj}', '{distance}', '{geo_constraint}_size{sizetype}_predicted_vs_actual_d{dimensions}_ws{window}_gamma{gamma}.csv')
 AGGREGATE_SLOPES = osjoin(STAT_DATA_DIR, 'aggregate_slopes.csv')
 
 ##############
@@ -136,19 +136,19 @@ PULLING_FORCE_COMPARE_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
 PULLING_VS_POTENTIAL_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
                                 'd{dimensions}_ws{window}_gamma{gamma}_{traj}_pulling_potential.pdf')
 PULLING_VS_SIZE_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
-                                'd{dimensions}_ws{window}_gamma{gamma}_{traj}_pulling_orgsize.pdf')
+                                'd{dimensions}_ws{window}_gamma{gamma}_{traj}_size{sizetype}_pulling_orgsize.pdf')
 POTENTIAL_VS_PI_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
                                 'd{dimensions}_ws{window}_gamma{gamma}_{traj}_potential_pi.pdf')
 PULLING_VS_PI_PLOT = osjoin(MATH_FIGURE_DIR, 'compare',
                                 'd{dimensions}_ws{window}_gamma{gamma}_{traj}_pulling_pi.pdf')
 FACTORS_ALL_CONTINUOUS_META_PLOT = osjoin(MATH_FIGURE_DIR, 'meta',
-                               '{factor}_d{dimensions}_ws{window}_gamma{gamma}_{traj}_allmeta.pdf')
+                               '{factor}_d{dimensions}_ws{window}_gamma{gamma}_{traj}_size{sizetype}_allmeta.pdf')
 
 # GRAVITY PLOTS
-GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', '{traj}', 'd{dimensions}', '{distance}', '{geo_constraint}_gravity_d{dimensions}_ws{window}_gamma{gamma}_{to_filter}.pdf')
-DOT_COSINE_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Math', '{traj}', 'd{dimensions}', 'd{dimensions}_ws{window}_gamma{gamma}_dot_cosine.pdf')
-PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', '{model}', 'd{dimensions}', '{distance}', '{traj}_{model}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}_gamma{gamma}.pdf')
-PREDICTED_VS_ACTUAL_PLOT_FILT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', '{model}', 'filtered', 'd{dimensions}', '{distance}', '{traj}_{model}_{geo_constraint_filt}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}_gamma{gamma}.pdf')
+GRAVITY_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Gravity', '{traj}', 'd{dimensions}', '{distance}', '{geo_constraint}_size{sizetype}_gravity_d{dimensions}_ws{window}_gamma{gamma}_{to_filter}.pdf')
+DOT_COSINE_RELATIONSHIP_PLOT = osjoin(FIGURE_DIR, 'Math', '{traj}', 'd{dimensions}', 'size{sizetype}_d{dimensions}_ws{window}_gamma{gamma}_dot_cosine.pdf')
+PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', '{model}', 'd{dimensions}', '{distance}', 'size{sizetype}_{traj}_{model}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}_gamma{gamma}.pdf')
+PREDICTED_VS_ACTUAL_PLOT_FILT = osjoin(FIGURE_DIR, 'Predicted', '{traj}', '{model}', 'filtered', 'd{dimensions}', '{distance}', 'size{sizetype}_{traj}_{model}_{geo_constraint_filt}_{geo_constraint}_predicted_vs_actual_d{dimensions}_ws{window}_gamma{gamma}.pdf')
 
 # DESCRIPTIVE PLOTS
 PUBS_OVER_TIME_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, '{traj}', 'pubs_over_time_plot.pdf')
@@ -168,10 +168,10 @@ SEMAXIS_2D_COASTS_PRESTIGE_OVERALL_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}'
 SEMAXIS_2D_COASTS_PRESTIGE_STATE_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'states', '{state}_coasts_{ranking}_rank_2Dsemaxis_d{dimensions}_ws{window}_gamma{gamma}_n{numorgs}.pdf')
 SEMAXIS_2D_COASTS_PRESTIGE_SECTOR_PLOT = osjoin(SEMAXIS_FIG_DIR, '2d', '{traj}', 'd{dimensions}', 'ws{window}', 'sectors', '{sector}_coasts_{ranking}_rank_2Dsemaxis_d{dimensions}_ws{window}_gamma{gamma}_n{numorgs}.pdf')
 SEMAXIS_RANK_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'n{numorgs}_{ranking}_semcompare_d{dimensions}_ws{window}_gamma{gamma}.pdf')
-IMPACT_SEMAXIS_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'sector', '{sector}_n{numorgs}_{ranking}_sem-impact_compare_d{dimensions}_ws{window}_gamma{gamma}.pdf')
+IMPACT_SEMAXIS_COMPARISON_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'sector', '{sector}_n{numorgs}_{ranking}_sem-impact_compare_d{dimensions}_ws{window}_gamma{gamma}_size{sizetype}.pdf')
 TIMES_LEIDEN_COMPARE_PLOT = osjoin(DESCRIPTIVE_FIG_DIR, 'times_leiden_compare.pdf')
 RANK_CORRELATION_PLOT = osjoin(SEMAXIS_FIG_DIR, '{ranking}_prestige_rank_correlation.pdf')
-IMPACT_SEMAXIS_BY_THRESHOLD_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'threshold_n{numorgs}_{ranking}_sem-impact_d{dimensions}_ws{window}_gamma{gamma}.pdf')
+IMPACT_SEMAXIS_BY_THRESHOLD_PLOT = osjoin(SEMAXIS_FIG_DIR, 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{ranking}', 'threshold_n{numorgs}_{ranking}_sem-impact_d{dimensions}_ws{window}_gamma{gamma}_size{sizetype}.pdf')
 
 # Network plots
 CENTRALITY_TIMES_RANK_PLOT = osjoin(NETWORK_FIGURE_DIR, '{traj}', '{measure}_{traj}_centrality_times_compare.pdf')
@@ -184,8 +184,8 @@ SECONDARY_PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Secondary', '{dataset}'
 
 # MISC PLOTS
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
-BOOMERANG_COMPARE_PLOT = osjoin(MATH_FIGURE_DIR, 'boomerang', 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{country}_usa_{traj}_d{dimensions}_ws{window}_gamma{gamma}_boomerang_compare.pdf')
-BOOMERANG_ALL_COUNTRIES = osjoin(MATH_FIGURE_DIR, 'boomerang', 'aggregate', '{traj}_d{dimensions}_ws{window}_gamma{gamma}_boomerang_all.pdf')
+BOOMERANG_COMPARE_PLOT = osjoin(MATH_FIGURE_DIR, 'boomerang', 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{country}_usa_{traj}_d{dimensions}_ws{window}_gamma{gamma}_size{sizetype}_boomerang_compare.pdf')
+BOOMERANG_ALL_COUNTRIES = osjoin(MATH_FIGURE_DIR, 'boomerang', 'aggregate', '{traj}_d{dimensions}_ws{window}_gamma{gamma}_size{sizetype}_boomerang_all.pdf')
 
 ###############################################################################
 # MISC files
@@ -205,6 +205,10 @@ FIG_EXTS = ['pdf', 'html']
 # are known overlaps
 #
 TRAJECTORIES = ['precedence']
+
+# Which organization sizes to use, whether the count of
+# all mobile + nonmobile researchers, or the mobile-only
+SIZETYPE = ['all', 'mobile']
 
 # RANKINGS
 RANKINGS = ['times', 'leiden']
@@ -324,7 +328,8 @@ rule all:
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
-               gamma = W2V_GAMMA),
+               gamma = W2V_GAMMA,
+               sizetype = SIZETYPE),
         expand(POTENTIAL_VS_PI_PLOT,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
@@ -340,7 +345,8 @@ rule all:
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
-               gamma = W2V_GAMMA),
+               gamma = W2V_GAMMA,
+               sizetype = SIZETYPE),
         expand(NORM_BY_COUNTRY,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
@@ -353,12 +359,14 @@ rule all:
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
-               gamma = W2V_GAMMA),
+               gamma = W2V_GAMMA,
+               sizetype = SIZETYPE),
         expand(BOOMERANG_ALL_COUNTRIES,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
-               gamma = W2V_GAMMA),
+               gamma = W2V_GAMMA,
+               sizetype = SIZETYPE),
 
         # Gravity Law Plots
         expand(GRAVITY_RELATIONSHIP_PLOT,
@@ -368,12 +376,14 @@ rule all:
                geo_constraint = GEO_CONSTRAINTS,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
-               gamma = W2V_GAMMA),
+               gamma = W2V_GAMMA,
+               sizetype = SIZETYPE),
         expand(DOT_COSINE_RELATIONSHIP_PLOT,
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
-               gamma = W2V_GAMMA),
+               gamma = W2V_GAMMA,
+               sizetype = SIZETYPE),
         expand(PREDICTED_VS_ACTUAL_PLOT,
                traj = TRAJECTORIES,
                distance = DISTANCE_PARAMS,
@@ -381,7 +391,8 @@ rule all:
                geo_constraint = GEO_CONSTRAINTS,
                window = W2V_WINDOW_SIZE,
                gamma = W2V_GAMMA,
-               model = GRAVITY_MODEL_TYPES),
+               model = GRAVITY_MODEL_TYPES,
+               sizetype = SIZETYPE),
         expand(PREDICTED_VS_ACTUAL_PLOT_FILT,
                traj = TRAJECTORIES,
                distance = "emb",
@@ -390,7 +401,8 @@ rule all:
                geo_constraint_filt = GEO_CONSTRAINTS_FILT,
                window = W2V_WINDOW_SIZE,
                gamma = W2V_GAMMA,
-               model = GRAVITY_MODEL_TYPES),
+               model = GRAVITY_MODEL_TYPES,
+               sizetype = SIZETYPE),
         GRADIENT_LEGEND,
         AGGREGATE_SLOPES,
 
@@ -459,6 +471,7 @@ rule all:
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
                gamma = W2V_GAMMA,
+               sizetype = SIZETYPE,
                sector = SECTORS),
         expand(IMPACT_SEMAXIS_BY_THRESHOLD_PLOT,
                ranking = RANKINGS,
@@ -466,7 +479,8 @@ rule all:
                traj = TRAJECTORIES,
                dimensions = W2V_DIMENSIONS,
                window = W2V_WINDOW_SIZE,
-               gamma = W2V_GAMMA),
+               gamma = W2V_GAMMA,
+               sizetype = SIZETYPE),
         expand(PRESTIGE_AGGREGATE_RANK_COR,
                ranking = RANKINGS,
                traj = TRAJECTORIES,
