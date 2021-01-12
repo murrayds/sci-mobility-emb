@@ -72,10 +72,9 @@ Suppose that flow of people between $N$ locations. The gravity model models the 
     \hat{T_{ij}} = C m_i m_j f(r_{ij}), \label{eq:gravity_model}
 \end{align}
 where $m_i$ is the population of locations of $i$, $r_{ij}$ is their distance, $f$ is a decreasing function of $r_{ij}$, and $C$ is a constant.
-The choice of distance measure is not entirely unconstrained; it should have symmetricity (\ie $r_{ij} = r_{ji}$).
-Apart from that, the distance measure $r_{ij}$ can be any dissimilarity measure even if it does not satisfy the axiom of metric space (such as triangle inequality $r_{ij}  + r_{jk} > r_{ik}$).
-In the following, we refer to a measure of dissimilarity as distance for brevity.
+In the following, we refer to a measure of dissimilarity as a distance for brevity.
 In gravity model, the flow is symmetric, \ie $\hat{T_{ij}}=\hat{T_{ji}}$, which ensures the stationarity in population $m_{i}$.
+
 
 Now, let us move our focus to the \textit{word2vec}.
 In out setting, the model takes a sequence of locations and models the co-occurrence of center location $i$ and context location $j$ by
@@ -90,23 +89,23 @@ Under restricting window size to be one, the expected flow between center locati
     \hat{T_{ij}}=s_i P(j\given i) = \frac{s_i\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 \end{align}
 where $s_i$ is the frequency of location $i$ summed for all trajectories in the dataset.
-Although there are some similarities, Eq.~\ref{eq:flow_w2v} does not have a population term $m_i$. In additionm the distance can be asymmetric,$r_{ij}=- \bm{u}_{j} \cdot \bm{v}_{i} \neq - \bm{u}_{i} \cdot \bm{v}_{j}=r_{ji}$.
+Although there are some similarities, Eq.~\ref{eq:flow_w2v} does not have a population term $m_i$. In additionm the distance can be asymmetric, $r_{ij}=- \bm{u}_{j} \cdot \bm{v}_{i} \neq - \bm{u}_{i} \cdot \bm{v}_{j}=r_{ji}$.
 
-The gap between the gravity model and {\it word2vec} is filled by taking into account how we train the word2vec---\emph{the negative sampling}.
-The negative sampling is an optimization method widely used for training the \textit{word2vec}, which operates as follows.
+The gap between the gravity model and {\it word2vec} is filled by taking into account how we train the \textit{word2vec}---\emph{the negative sampling}.
+The negative sampling is an optimization method widely used for training the machine learning model, which operates as follows.
 For each center--context word pair $(i,j)$, one generates $k$ noise center--context word pairs, denoted by $(i, \ell)$, where context word $\ell$ for the noise pair is sampled from a noise distribution, denoted by $p_{0}(\ell)$.
 Given a center-context word pair, $(i,j)$, as an input, one predicts whether it comes from the original data or noise distribution based on a similarity between two words, \eg dot similarity in case of the \textit{word2vec}.
 
-The negative sampling does not directly fit the word2vec to the data but through the synthetic classification task.
-An often underappreciated fact is that the negative sampling has a bias and maximizes a different objective function~\autocite{Gutmann2010}.
+The negative sampling does not directly fit the \textit{word2vec} to the data but through the synthetic classification task.
+An often underappreciated fact is that negative sampling has a bias and maximizes a different objective function~\autocite{Gutmann2010}.
 With the negative sampling, the correct expression for the conditional probability is given by
 \begin{align}
     P\left(j \given i \right):= \frac{p_0(j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}, \label{eq:prob_w2v_ng0}
 \end{align}
-where $Z'_i=\sum_{x \in \mathcal{A}} p_0(x) \exp(\bm{u}_{x} \cdot \bm{v}_{i})$ is a normalization constant.
+where $Z'_i=\sum_{x \in \mathcal{A}} p_0(x) \exp(\bm{u}_{x} \cdot \bm{v}_{i})$ is a normalization constant, and a noise distribution given by $p_{0}(j) = s^{\gamma} _j / \sum_{\ell'} s^{\gamma}_{\ell'}$, where $\gamma$ is a free parameter typically set to $3/4$ or $1$.
 See Section \ref{sec:correct_word2vec} for full calculations.
 
-The \textit{word2vec} uses a noise distribution given by $p_{0}(j) = s^{\gamma} _j / \sum_{\ell'} s^{\gamma}_{\ell'}$, where $\gamma$ is a free parameter typically set to $3/4$ or $1$.
+
 Parameter $\gamma=1$ is a special choice that ensures that the in-vector and out-vector are the same, \ie $\bm{u}_i = \bm{v}_i$ \autocite{levy2014neural}.
 Setting $\gamma = 1$, and substituting $\bm{u}_i = \bm{v}_j$ and $p_0(j) = s_j / \sum_{\ell'} s_{\ell'}$ into Eq~\eqref{eq:flow_w2v_ng0}, we have
 \begin{align}
@@ -117,7 +116,7 @@ which leads to the expected flow for the word2vec model, \ie
 \begin{align}
     \hat{T_{ij}}=s_i P(j\given i) =  \frac{s_i s _j  \exp(\bm{v}_j \cdot \bm{v}_{i})}{  Z'_i\sum_{\ell'} s_{\ell'}}. \label{eq:flow_w2v_ng0}
 \end{align}
-In the word2vec, the flow $\hat{T_{ij}}_{ij}$ is symmetric by design (\ie $\hat{T_{ij}}=\hat{T_{ji}}$) because the word2vec neglects whether the context $j$ appears later or earlier from center $i$.
+In the \textit{word2vec}, the flow $\hat{T_{ij}}_{ij}$ is symmetric by design (\ie $\hat{T_{ij}}=\hat{T_{ji}}$) because the word2vec neglects whether the context $j$ appears later or earlier from center $i$.
 Therefore, we have
 \begin{align}
     T_{ij} = T_{ji}
@@ -175,8 +174,8 @@ we are asked to classify an actual data $x$ and a noise data $\tilde x$ using a 
 Because this sigmoid function does not involve the normalization constant, the model fitting can be done with less computational burden.
 
 
-The negative sampling does not directly fits a probability model to data but does so through the synthetic classification task.
-This has a side effect: the negative sampling has a bias, and hence does not correctly train the model \cite{Dyer2014}.
+The negative sampling does not directly fit a probability model to data but does so through the synthetic classification task.
+This has a side effect: the negative sampling has a bias and hence does not correctly train the model \cite{Dyer2014}.
 The bias can be corrected using the noise contrastive estimation (NCE) \cite{Chia2010}, which solves the
 same classification task but with a bias-corrected sigmoid function, \ie
 \begin{align}
@@ -208,6 +207,7 @@ For the word2vec, the correct expression of word2vec optimized with the negative
 \begin{align}
     P\left(j \given i \right):= \frac{p_0(j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}.
 \end{align}
+
 
 %What if we train the word2vec without the correction?
 
