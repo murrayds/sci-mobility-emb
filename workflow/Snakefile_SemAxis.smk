@@ -64,6 +64,7 @@ rule generate_aggregate_prestige_rank_correlations:
                        traj = TRAJECTORIES,
                        dimensions = W2V_DIMENSIONS,
                        window = W2V_WINDOW_SIZE,
+                       gamma = W2V_GAMMA,
                        ranking = RANKINGS,
                        numorgs = NUMORGS)],
         lookup = ancient(rules.add_state_to_lookup.output)

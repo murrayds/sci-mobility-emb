@@ -90,6 +90,7 @@ rule train_word2vec_model:
     shell:
         "python scripts/train_word2vec_embedding_from_sentences.py --files {input} \
                 --dimensions {wildcards.dimensions} --window {wildcards.window} \
+                --gamma {wildcards.gamma} \
                 --minfrequency {params.wf} --numworkers {params.nw} \
                 --iterations {params.niter} --output {output}"
 
