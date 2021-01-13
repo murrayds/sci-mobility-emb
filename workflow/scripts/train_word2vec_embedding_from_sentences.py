@@ -50,7 +50,7 @@ parser.add_argument("-d", "--dimensions", help = "Embedding dimensionality",
 parser.add_argument("-w", "--window", help = "Window size for word2vec",
                     type = int, required = True)
 parser.add_argument("-g", "--gamma", help = "Gamma value for word2vec",
-                    type = int, required = True)
+                    type = float, required = True)
 parser.add_argument("-wf", "--minfrequency", help = "Minimum word frequency for word2vec",
                     type = int, required = True)
 parser.add_argument("-p", "--numworkers", help = "Number of paralell workers",

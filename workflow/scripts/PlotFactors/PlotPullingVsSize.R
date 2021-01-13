@@ -34,16 +34,15 @@ opt = parse_args(OptionParser(option_list=option_list))
 factors <- readr::read_csv(opt$input, col_types = readr::cols())
 
 # Load the organization sizes
-inst_sizes = readr::read_delim(opt$sizes, delim = "\t")
-
+inst_sizes = readr::read_delim(opt$sizes, delim = "\t", col_types = readr::cols())
 
 # Build the plot
 plot <- factors %>%
   left_join(inst_sizes, by = "cwts_org_no") %>%
   ggplot(aes(x = size, y = s_i)) +
   geom_hex(bins = 20,
-             aes(fill = stat(log10(size))),
-             size = 0 # remove boundary
+           aes(fill = log10(size)),
+           size = 0 # remove boundary
   ) +
   scale_fill_gradientn(colours=c("white", "#7f8c8d"),
                        name = "Frequency",

@@ -76,7 +76,6 @@ factors.ext <- factors %>%
     # Log transform some of the main continuous variables
     s_i = log10(s_i),
     #l2norm = log10(l2norm),
-    pubs = log10(impact_frac_p),
     gravity_potential = log10(gravity_potential),
     size = log10(size),
     research = recode(BASIC2018, `15` = "R1", `16` = "R2", `17` = "R3", .default = "Other"),

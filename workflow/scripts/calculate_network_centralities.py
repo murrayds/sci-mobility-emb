@@ -30,7 +30,7 @@ edges = pd.read_csv(args.input)
 g = nx.from_pandas_edgelist(edges, 'Source', 'Target', ['weight'])
 
 # Get a list of nodes
-orgs = g.nodes
+orgs = list(g.nodes)
 
 # Get the degree centralities
 degree_centralities = g.degree(weight = 'weight')
