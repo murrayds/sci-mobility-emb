@@ -26,6 +26,10 @@ option_list = list(
               help="Path to file containing organization PPR distances"),
   make_option(c("--pprjsd"), action="store", default=NA, type='character',
               help="Path to file containing organization PPR distances"),
+  make_option(c("--lapcos"), action="store", default=NA, type='character',
+              help="Path to file containing organization laplacian eigenmap distances"),
+  make_option(c("--svdcos"), action="store", default=NA, type='character',
+              help="Path to file containing organization singular value decomposition distances"),
   make_option(c("--dot"), action="store", default=NA, type='character',
               help="Path to file containing organization dot product similarities"),
   make_option(c("-o", "--out"), action="store", default=NA, type='character',
@@ -174,6 +178,39 @@ distance_all <- data.table::rbindlist(list(ppr1, ppr2)) %>%
 remove("ppr", "ppr1", "ppr2")
 
 
+# LAP COS
+lapcos <- read_csv(opt$lapcos, col_types = cols()) %>%
+  select(org1, org2, distance) %>%
+  rename(lapcos_distance = distance)
+
+lapcos1 <- distance_all %>%
+  inner_join(lapcos, by = c("org1" = "org1", "org2" = "org2"))
+
+lapcos2 <- distance_all %>%
+  inner_join(lapcos, by = c("org2" = "org1", "org1" = "org2"))
+
+distance_all <- data.table::rbindlist(list(lapcos1, lapcos2)) %>%
+  distinct(org1, org2, .keep_all = TRUE)
+
+remove("lapcos", "lapcos1", "lapcos2")
+
+
+# SVD COS
+svdcos <- read_csv(opt$svdcos, col_types = cols()) %>%
+  select(org1, org2, distance) %>%
+  rename(svdcos_distance = distance)
+
+svdcos1 <- distance_all %>%
+  inner_join(svdcos, by = c("org1" = "org1", "org2" = "org2"))
+
+svdcos2 <- distance_all %>%
+  inner_join(svdcos, by = c("org2" = "org1", "org1" = "org2"))
+
+distance_all <- data.table::rbindlist(list(svdcos1, svdcos2)) %>%
+  distinct(org1, org2, .keep_all = TRUE)
+
+remove("svdcos", "svdcos1", "svdcos2")
+
 #
 # ORG LOOKUP TABLES
 #
@@ -197,7 +234,9 @@ distance_all <- distance_all %>%
   select(org1, org2, count,
          org1_size, org2_size,
          geo_distance, emb_distance, dot_distance,
-         pprcos_distance, pprjsd_distance, gravity,
+         pprcos_distance, pprjsd_distance,
+         lapcos_distance, svdcos_distance,
+         gravity,
          org1_city, org1_region, org1_country,
          org2_city, org2_region, org2_country
   )

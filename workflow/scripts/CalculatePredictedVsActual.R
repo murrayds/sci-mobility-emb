@@ -30,7 +30,8 @@ agg <- readr::read_csv(opt$input, col_types = readr::cols()) %>%
   select(org1_size, org2_size,
          org1_country, org2_country,
          count, gravity,
-         geo_distance, pprcos_distance, pprjsd_distance, emb_distance, dot_distance) %>%
+         geo_distance, pprcos_distance, pprjsd_distance, emb_distance,
+         dot_distance, svdcos_distance, lapcos_distance) %>%
   rename(actual = count)
 
 # If the geographic constraint (--geo) is set, then filter the
@@ -41,8 +42,6 @@ if (opt$geo == "same-country") {
   agg <- agg %>% filter(org1_country != org2_country)
 }
 
-print(head(agg))
-print("-------")
 #
 # Calculate the expected value. We use two different equations depending on
 # whether we are calculating it on geographic distance, or embedding similarity
@@ -78,6 +77,18 @@ if (opt$distance == "geo") {
       distance = dot_distance,
       distance.log = log(dot_distance)
     )
+} else if (opt$distance == "svdcos") {
+  agg <- agg %>%
+    mutate(
+      distance = svdcos_distance,
+      distance.log = log(svdcos_distance)
+    )
+} else if (opt$distance == "lapcos") {
+  agg <- agg %>%
+    mutate(
+      distance = lapcos_distance,
+      distance.log = log(lapcos_distance)
+    )
 }
 
 fit.power <- summary(lm(log(gravity) ~ log(distance), data = agg))
@@ -100,7 +111,8 @@ agg <- agg %>%
 agg <- agg %>%
   select(-c(org1_size, org2_size,
             gravity, geo_distance, emb_distance,
-            pprcos_distance, pprjsd_distance, dot_distance))
+            pprcos_distance, pprjsd_distance, dot_distance,
+            svdcos_distance, lapcos_distance))
 
 print(head(agg))
 

@@ -172,6 +172,8 @@ rule build_aggregate_org_distances:
            dot = ancient(rules.calculate_org_w2v_dot.output),
            pprcos = ancient(ORG_PPR_COS_DISTANCE),
            pprjsd = ancient(ORG_PPR_JSD_DISTANCE),
+           lapcos = ancient(ORG_LAP_COS_DISTANCE),
+           svdcos = ancient(ORG_SVD_COS_DISTANCE),
            sizes = ORG_SIZES
     # This can eat up a lot of memory which is a problem when running paralell.
     # Set a maximum, say 2.5-gb
@@ -182,7 +184,7 @@ rule build_aggregate_org_distances:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {input.sizes} \
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
                  --pprcos {input.pprcos} --pprjsd {input.pprjsd} --dot {input.dot} \
-                 --orgs {input.orgs} --out {output}"
+                 --lapcos {input.lapcos} --svdcos {input.svdcos} --orgs {input.orgs} --out {output}"
 
 ###############################################################################
 # MISC
