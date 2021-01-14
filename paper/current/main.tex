@@ -553,9 +553,9 @@ where,
 % CONDITIONAL PROBABILITY EQ
 %
 \begin{equation}
-p(a_{i} \vert a_{j}) = \frac{\exp(\bm{u}_{a_i} \cdot \bm{v}_{a_{j}})}{\sum_{x \in \mathcal{A}} \exp(\bm{u}_{x} \cdot \bm{v}_{a_{j}})},
+p(j \vert i) = \frac{\exp(\bm{u}_{j} \cdot \bm{v}_{i})}{\sum_{x \in \mathcal{A}} \exp(\bm{u}_{x} \cdot \bm{v}_{i})},
 \end{equation}
-where $a_i = a_{t + \tau}$, $ a_j=a_{t}$, $\mathcal{A}$ is the entire set of unique locations represented in the data, and  $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively.
+where $i =a_{t} $, $ j=a_{t + \tau}$, $\mathcal{A}$ is the entire set of unique locations represented in the data, and  $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively.
 We follow the standard practice and only use the in-vector, $v$,  which is known to be superior to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}.
 
 
