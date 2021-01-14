@@ -407,6 +407,7 @@ rule all:
                sizetype = SIZETYPE),
         GRADIENT_LEGEND,
         AGGREGATE_SLOPES,
+        AGGREGATE_R2,
 
         # Descriptive Plots
         expand(PUBS_OVER_TIME_PLOT, traj = TRAJECTORIES),
