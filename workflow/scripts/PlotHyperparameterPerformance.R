@@ -9,7 +9,7 @@
 
 # Plot dimensions
 FIG_WIDTH = 7
-FIG_HEIGHT = 5
+FIG_HEIGHT = 4
 
 
 library(readr)
@@ -31,6 +31,8 @@ params <- read_csv(opt$input, col_types = readr::cols())
 
 plotdata <- params %>%
   filter(metric == "emb") %>%
+  filter(sizetype == "mobile") %>%
+  filter(gamma == 1.0) %>%
   mutate(
     dim = factor(dim),
     case = factor(case,
@@ -67,7 +69,7 @@ plot <- plotdata %>%
       panel.spacing = unit(1.5, "lines")
     ) +
     xlab("Window Size") +
-    ylab("Correlation with flux")
+    ylab("Correlation with flux (R2)")
 
 # Save the plot
 ggsave(opt$output, plot, width = FIG_WIDTH, height = FIG_HEIGHT)
