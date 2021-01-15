@@ -49,9 +49,7 @@ lookup <- read_delim(opt$lookup, delim = "\t", col_types = readr::cols()) %>%
   filter(country_iso_alpha == "USA") # select only the specified country
 
 # Information on the sizes of organizations
-sizes <- readr::read_delim(opt$sizes, delim = "\t", col_types = readr::cols()) %>%
-  group_by(cwts_org_no) %>%
-  summarize(size = mean(person_count))
+sizes <- readr::read_delim(opt$sizes, delim = "\t", col_types = readr::cols())
 
 base_data <- impact %>%
   # Make sure the impact is set to a numeric

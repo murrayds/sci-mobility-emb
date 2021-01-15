@@ -46,9 +46,7 @@ df = readr::read_csv(opt$input, col_types = readr::cols()) %>%
   select(cwts_org_no, l2norm)
 
 # Load the sizes and aggregate by org
-sizes <- readr::read_delim(opt$sizes, delim = "\t", col_types = readr::cols()) %>%
-  group_by(cwts_org_no) %>%
-  summarize(size = mean(person_count))
+sizes <- readr::read_delim(opt$sizes, delim = "\t", col_types = readr::cols())
 
 
 # Load the metadata and filter to the select countries

@@ -64,6 +64,7 @@ rule generate_aggregate_prestige_rank_correlations:
                        traj = TRAJECTORIES,
                        dimensions = W2V_DIMENSIONS,
                        window = W2V_WINDOW_SIZE,
+                       gamma = W2V_GAMMA,
                        ranking = RANKINGS,
                        numorgs = NUMORGS)],
         lookup = ancient(rules.add_state_to_lookup.output)
@@ -167,15 +168,15 @@ rule plot_semaxis_rank_comparison:
 rule plot_semaxis_rank_comparison_impact:
     input:
         axis = rules.calculate_semaxis_prestige_projections.output,
-        lookup = rules.add_state_to_lookup.output
+        lookup = rules.add_state_to_lookup.output,
+        sizes = ORG_SIZES
     params:
         types = ORG_TYPES,
-        sizes = ORG_SIZES,
         impact = ORG_IMPACT
     output: IMPACT_SEMAXIS_COMPARISON_PLOT
     shell:
         "Rscript scripts/PlotSemAxisVsImpactRank.R --semaxis {input.axis} \
-        --lookup {input.lookup} --sizes {params.sizes} --types {params.types} \
+        --lookup {input.lookup} --sizes {input.sizes} --types {params.types} \
         --impact {params.impact} --sector {wildcards.sector} \
         --output {output}"
 
@@ -183,13 +184,13 @@ rule plot_semaxis_rank_comparison_impact:
 rule plot_semaxis_impact_threshold:
     input:
         axis = rules.calculate_semaxis_prestige_projections.output,
-        lookup = rules.add_state_to_lookup.output
+        lookup = rules.add_state_to_lookup.output,
+        sizes = ORG_SIZES,
     params:
         types = ORG_TYPES,
-        sizes = ORG_SIZES,
         impact = ORG_IMPACT
     output: IMPACT_SEMAXIS_BY_THRESHOLD_PLOT
     shell:
         "Rscript scripts/PlotSemAxisVsImpactCorrByThreshold.R --semaxis {input.axis} \
-        --lookup {input.lookup} --sizes {params.sizes} --types {params.types} \
+        --lookup {input.lookup} --sizes {input.sizes} --types {params.types} \
         --impact {params.impact} --output {output}"
