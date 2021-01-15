@@ -8,8 +8,8 @@
 #
 
 # Plot dimensions
-FIG_WIDTH = 7
-FIG_HEIGHT = 4
+FIG_WIDTH = 6
+FIG_HEIGHT = 6
 
 
 library(readr)
@@ -32,43 +32,49 @@ params <- read_csv(opt$input, col_types = readr::cols())
 plotdata <- params %>%
   filter(metric == "emb") %>%
   filter(sizetype == "mobile") %>%
-  filter(gamma == 1.0) %>%
+  filter(traj == "precedence") %>%
   mutate(
     dim = factor(dim),
+    ws = factor(ws),
     case = factor(case,
                   levels = c("global", "same-country", "diff-country"),
                   labels = c("All Organizations", "Same Country", "Different Country")
-                  )
-    )
+                ),
+    gamma = factor(gamma),
+    gamma = factor(gamma,
+                   levels = c(0.75, 1.0),
+                   labels = c("gamma = 0.75", "gamma = 1.0")
+            )
+  )
 
 
 plot <- plotdata %>%
-  ggplot(aes(x = ws, y = r2, color = dim, shape = dim, group = dim)) +
+  ggplot(aes(x = dim, y = r2, color = ws, shape = ws, group = ws)) +
     geom_point(size = 3) +
     geom_line() +
     geom_linerange(aes(ymin = ci.lower, ymax = ci.upper)) +
-    facet_grid(traj~case) +
-    scale_x_continuous(breaks = unique(plotdata$ws)) +
+    facet_grid(case~gamma) +
     scale_y_continuous(
       limits = c(0.2, 0.6),
       breaks = c(0.2, 0.4, 0.6)
     ) +
     scale_color_manual(
-      name = "Embedding Dimension",
+      name = "Window size",
       values = c("#b2bec3", "#636e72", "#2d3436")
     ) +
-    scale_shape_discrete(name = "Embedding Dimension") +
+    scale_shape_discrete(name = "Window size") +
     theme_minimal() +
     theme(
       text = element_text(size = 11, family = "Helvetica"),
       strip.text = element_text(size = 12, face = "bold"),
+      strip.text.y.right = element_text(angle = 0, hjust = 0),
       axis.title = element_text(size = 12),
       legend.title = element_text(size = 12, face = "bold"),
       legend.position = "bottom",
       panel.grid.minor = element_blank(),
       panel.spacing = unit(1.5, "lines")
     ) +
-    xlab("Window Size") +
+    xlab("Embedding dimension") +
     ylab("Correlation with flux (R2)")
 
 # Save the plot
