@@ -82,6 +82,12 @@ rule plot_hyperparameter_performance:
     shell:
         "Rscript scripts/PlotHyperparameterPerformance.R --input {input} --output {output}"
 
+rule plot_distance_metric_performance:
+    input: rules.get_aggregate_gravity_r2.output
+    output: DISTANCE_METRIC_PERFORMANCE
+    shell:
+        "Rscript scripts/PlotDistanceMetricPerformance.R --input {input} --output {output}"
+
 ###############################################################################
 # MISC: PLOT ELEMENTS
 ###############################################################################
