@@ -245,7 +245,8 @@ In the case of Korean accommodation reservations, embedding distance better expl
 This performance is consistent in the case of scientific mobility:
 the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
 These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d and  Fig.~\ref{fig:supp:predict_emb_bymodel}).
-The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores  calculated from the underlying mobility network (Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
+The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores  calculated from the underlying mobility network (Fig.~\ref{fig:supp:distancemetrics}, Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
+The embedding distance derived from neural embedding also explains more of the flux than simpler embedding baselines, such as distances derived from a singular-value decomposition and from a Laplacian Eigenmap embedding of the underlying data (Fig.~\ref{fig:supp:distancemetrics}).
 In sum, our results demonstrate that, consistently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
 
 
@@ -561,8 +562,10 @@ We follow the standard practice and only use the in-vector, $v$,  which is known
 
 %% Word2vec parameters and training procedure
 We used the \textit{word2vec}  implementation in the python package \texttt{gensim}. 
-The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
-For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}). We also use same setting for U.S. airport itinerary and Korean accommodation reservation data.
+The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, shape of negative sampling distribution $\gamma$, and the number of iterations.
+For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}). 
+Although the original \textit{word2vec } paper uses $\gamma = 0.75$\autocite{mikolov2013word2vec}, here we set $\gamma = 1.0$, though results are only trivially different at different values of $\gamma$ (Fig.~\ref{fig:supp:distancemetrics}).
+We also use same setting for U.S. airport itinerary and Korean accommodation reservation data.
 To mitigate the effect of less common locations, we set $f_{\min} = 50$, limiting to locations appearing at least 50 times across the training trajectories;
 744 unique airport for U.S. airport itinerary, 1004 unique accommodations for Korean accommodation reservation data, and 6,580 unique organizations for scientific mobility appear in the resulting embedding.
 We set $\alpha$ to its default value of 0.025 and iterate five times over all training trajectories.

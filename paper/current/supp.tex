@@ -502,11 +502,38 @@ Taiwan           & 3.67             & 72
 		Smaller window sizes result in an embedding that explain more flux.
 		Embedding dimensions refer to the size of the embedding vector.
 		Larger vectors perform better, though little difference between 200 and 300.
+		Gamma refers to the $\gamma$ parameter in word2vec, which shapes the negative sampling distribution. 
+		A value of $\gamma = 0.75$ is the default for word2vec.
+		There is virtually no difference in performance based on $\gamma$.
 		All variants perform better on same-country pairs of organizations than on all organizations.
 		All variants perform worse on different-country pairs on organizations.
 		Embeddings with larger dimensions outperform mid-size embeddings for the different-country case.
 	}
-	\label{fig:supp:cosdot}
+	\label{fig:supp:hyperparameter}
+\end{figure}
+
+
+
+%
+% Figure - Distance metric performance
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{\figdir/Descriptive/distance_metric_performance.pdf}
+	\caption{
+		\textbf{Cosine distance between embedding vectors explains more flux in scientific mobility than geographic distance, baselines.}
+		The correlation, or amount of flux explained by the embedding distance across distance metrics and other experimental parameters. 
+		Distance metrics are ordered, from top to bottom, by the highest correlation ($r^{2}$). 
+		All distance metrics explain more of the flux than does geographic distance.
+		The cosine distance between embedding vectors explains more flux than all other distance metrics. 
+		The x-axis differentiates between three strategies for defining the organization population used to calculate the flux. 
+		``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+		population is defined in the same way for ``mobile-only'', except only using unique mobile researchers;
+		``Raw frequency'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding. 
+		Generally, ``All'' explains more of the flux, however there is little difference between definitions of mobility.
+		All distance metrics tend to explain more of the flux when describing all or domestic (same-country) mobility.	
+		}
+	\label{fig:supp:distancemetrics}
 \end{figure}
 
 
@@ -523,7 +550,7 @@ Taiwan           & 3.67             & 72
 		Black dots indicate the mean dot product similarity averaged over binned sets at the same embedding distance.
 		Red line is line of best fit.
 	}
-	\label{fig:supp:hyperparams}
+	\label{fig:supp:cosdot}
 \end{figure}
 
 
