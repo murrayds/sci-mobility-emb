@@ -38,6 +38,8 @@ plotdata <- params %>%
     metric = factor(metric,
                     levels = c("geo", "emb", "dot", "pprcos", "pprjsd", "lapcos", "svdcos"),
                     labels = c("Geographic\ndistance", "Embedding\ncosine distance", "Embedding\ndot product", "PPR cosine\ndistance", "PPR JSD", "Laplacian\nEigenmap\ndistance", "SVD distance")),
+    # Reorder the metric variable with 
+    metric = reorder(metric, desc(r2)),
     case = factor(case,
                   levels = c("global", "same-country", "diff-country"),
                   labels = c("All", "Domestic", "International")),
