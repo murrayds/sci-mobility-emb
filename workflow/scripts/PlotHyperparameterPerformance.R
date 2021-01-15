@@ -65,14 +65,15 @@ plot <- plotdata %>%
     scale_shape_discrete(name = "Window size") +
     theme_minimal() +
     theme(
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.border = element_rect(size = 0.5, color = "black", fill = NA),
       text = element_text(size = 11, family = "Helvetica"),
       strip.text = element_text(size = 12, face = "bold"),
       strip.text.y.right = element_text(angle = 0, hjust = 0),
       axis.title = element_text(size = 12),
       legend.title = element_text(size = 12, face = "bold"),
       legend.position = "bottom",
-      panel.grid.minor = element_blank(),
-      panel.spacing = unit(1.5, "lines")
     ) +
     xlab("Embedding dimension") +
     ylab("Correlation with flux (R2)")
