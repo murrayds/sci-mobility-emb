@@ -24,8 +24,7 @@
 \usepackage{amssymb}
 \usepackage{newtxmath}
 \DeclareMathAlphabet{\mathpzc}{T1}{pzc}{m}{it}
-\DeclareMathOperator*{\argmin}{\arg\!\min}
-\DeclareMathOperator*{\argmax}{\arg\!\max}
+\def\given{\mid}
 \usepackage{bm}
 \def\tnull{{\text{null}}}
 \def\vec#1{{\bm #1}}
@@ -148,7 +147,7 @@ Human mobility and migration drive major societal phenomena such as the growth a
 Historically, human mobility has been strongly constrained by physical separation---geographic distance~\autocite{zipf1946gravity}.
 However, geographic distance is becoming less relevant in the increasingly-globalized world~\autocite{czaika2018globalisation, buchan2009globalization} in which physical barriers are shrinking while linguistic, cultural, and historical relationships are becoming more important.
 As understanding mobility is becoming critical for contemporary society, finding frameworks that can capture this complexity is of paramount importance.
-Here, using three distinct human trajectory datasets, we demonstrate that a neural embedding model~\autocite{mikolov2013word2vec} can encode nuanced relationships between locations into a vector-space, providing an effective measure of distance that reflects the multi-faceted structure of human mobility. 
+Here, we show the  mathematical  connection  between  neural embedding models and the gravity model of human mobility and, using three distinct human trajectory datasets, demonstrate that a neural embedding model~\autocite{mikolov2013word2vec} can encode nuanced relationships between locations into a vector-space, providing an effective measure of distance that reflects the multi-faceted structure of human mobility. 
 Focusing on the case of scientific mobility, we show that embeddings of scientific organizations uncover cultural and linguistic relations, and even academic prestige, at multiple levels of granularity.
 Furthermore, the embedding vectors reveal universal relationships between organizational characteristics and their place in the global landscape of scientific mobility. 
 The ability to learn scalable, dense, and meaningful representations of mobility directly from the data can open up a new avenue of studying mobility across domains.
@@ -275,6 +274,84 @@ In sum, our results demonstrate that, consistently, the embedding distance bette
 	}
 	\label{fig:gravity_performance}
 \end{figure}
+
+
+
+\subsection*{Mathematical connection between neural embedding model and gravity model}
+
+
+Our results show that the neural embedding better explains a wide range of mobilities than conventional embedding methods, which prompts us to ask: why does the \textit{word2vec} work well for the mobility data?
+We show that the \textit{word2vec} is tied to a gravity model, a widespread and long-standing model that well explains human mobility.
+
+Let us approach the connection by initially focusing on the gravity model.
+Suppose that flow of people between $N$ locations. The gravity model models the expected flow $\hat{T_{ij}}$ from location $i$ to $j$ by
+\begin{align}
+    \hat{T_{ij}} = C m_i m_j f(r_{ij}), \label{eq:gravity_model}
+\end{align}
+where $m_i$ is the population of locations of $i$, $r_{ij}$ is their distance, $f$ is a decreasing function of $r_{ij}$, and $C$ is a constant.
+%In the following, we refer to a measure of dissimilarity as a distance for brevity.
+%In gravity model, the flow is symmetric, \ie $\hat{T_{ij}}=\hat{T_{ji}}$, which ensures the stationarity in population $m_{i}$.
+
+
+%Now, let us move our focus to the \textit{word2vec}.
+The skip-gram negative sampling \textit{word2vec} takes a sequence of locations and models the co-occurrence of center location $i$ and context location $j$ by (See Methods)
+\begin{align}
+    P\left(j \given i \right):= \frac{p_0(j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}, \label{eq:prob_w2v_ng0}
+\end{align}
+where $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector", respectively,  $Z'_i=\sum_{x \in \mathcal{A}} p_0(x) \exp(\bm{u}_{x} \cdot \bm{v}_{i})$  is a normalization constant, and $\mathcal{A}$ is the set of all locations, and a noise distribution given by $p_{0}(j) = s^{\gamma} _j / \sum_{\ell'} s^{\gamma}_{\ell'}$, where $\gamma$ is a free parameter typically set to $3/4$ or $1$. Under restricting window size to be one, the expected flow between center location $i$ and context location $j$ is given by
+\begin{align}
+    \label{eq:flow_w2v}
+    \hat{T_{ij}}=s_i P(j\given i) = \frac{s_i\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i},
+\end{align}
+where $s_i$ is the frequency of location $i$ summed for all trajectories in the dataset.
+
+Parameter $\gamma=1$ is a special choice that ensures that the in-vector and out-vector are the same, \ie $\bm{u}_i = \bm{v}_i$ \autocite{levy2014neural}.
+Setting $\gamma = 1$, and substituting $\bm{u}_i = \bm{v}_j$ and $p_0(j) = s_j / \sum_{\ell'} s_{\ell'}$ into Eq~\eqref{eq:flow_w2v_ng0}, we have
+\begin{align}
+    P\left(j \given i \right) & := \frac{ p_0 (j) \exp(\bm{v}_j \cdot \bm{v}_{i})}{ Z'_i}                      \\
+                              & =  \frac{s _j  \exp(\bm{v}_j \cdot \bm{v}_{i})}{ Z' _i\sum_{\ell'} s_{\ell'}},
+\end{align}
+which leads to the expected flow for the word2vec model, \ie
+\begin{align}
+    \hat{T_{ij}}=s_i P(j\given i) =  \frac{s_i s _j  \exp(\bm{v}_j \cdot \bm{v}_{i})}{  Z'_i\sum_{\ell'} s_{\ell'}}. \label{eq:flow_w2v_ng0}
+\end{align}
+
+In the \textit{word2vec}, the flow $\hat{T_{ij}}$ is symmetric by design (\ie $\hat{T_{ij}}=\hat{T_{ji}}$) because the model neglects whether the context $j$ appears later or earlier from center $i$.
+Then, we have
+\begin{align}
+    T_{ij} = T_{ji}
+     & \Rightarrow
+    \frac{s_i s _j  \exp(\bm{v}_j \cdot \bm{v}_{i})}{  Z'_i\sum_{\ell'} s_{\ell'}} =  \frac{s_j s _i  \exp(\bm{v}_i \cdot \bm{v}_{j})}{  Z'_j\sum_{\ell'} s_{\ell'}} \\
+     & \Rightarrow
+    Z'_i = Z'_j, \label{eq:euqal_rel}
+\end{align}
+suggesting that the normalization constant $Z' _i$ is constant.
+Combining Eqs.~\eqref{eq:flow_w2v_ng0} and \eqref{eq:euqal_rel}, we have
+\begin{align}
+    \hat{T_{ij}}=  C s_i s _j  \exp(\bm{v}_j \cdot \bm{v}_{i}),
+\end{align}
+where $C$ is a positive constant.
+Eq.~\eqref{eq:flow_w2v_ng0} reveals the connection between the \textit{word2vec} and the gravity model, with with $d_{ij} = - \bm{u}_{j} \cdot \bm{v}_{i}$ and $f(x) = \exp(-x)$.
+In sum, the \textit{word2vec} is a gravity model, in which the population of location $i$ is its frequency in the trajectory data, and the distance between locations is measured by their dot similarities. 
+
+We also shows the reverse way of derivation (from gravity model to the \textit{word2vec}).
+In the gravity model, the probability that a person moves from location $i$ to $j$ is given by
+\begin{align}
+    P\left(j \given i \right) = T_{ij} / m_i = C m_j f(d_{ij}). \label{eq:gravity_prob}
+\end{align}
+
+Because, the sum of probabilities should be one,
+\begin{align}
+     & \sum_{j} P(j \given i) = 1 \nonumber                                     \\
+     & \Rightarrow C \sum_{k} m_k f(d_{ik}) = 1 \nonumber                       \\
+     & \Rightarrow C  = 1 / \sum_{k} m_k f(d_{ik}), \label{eq:gravity_constant}
+\end{align}
+which ensures that $\sum_{j} m_j f(d_{ij})$ is constant.
+Substituting \eqref{eq:gravity_constant}  into Eq.~\eqref{eq:gravity_prob} yields a model having the same functional form with the word2vec, \ie
+\begin{align}
+    P\left(j \given i \right) = \frac{m_i f(d_{ij})}{\sum_{k} m_k f(d_{ik})}. \label{eq:gravity_prob2}
+\end{align}
+
 
 
 \subsection*{Embeddings capture global structure of mobility}
@@ -553,20 +630,83 @@ where,
 % CONDITIONAL PROBABILITY EQ
 %
 \begin{equation}
-p(j \vert i) = \frac{\exp(\bm{u}_{j} \cdot \bm{v}_{i})}{\sum_{x \in \mathcal{A}} \exp(\bm{u}_{x} \cdot \bm{v}_{i})},
+p(j \given i) = \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:cond_prob_w2v}
 \end{equation}
-where $i =a_{t} $, $ j=a_{t + \tau}$, $\mathcal{A}$ is the entire set of unique locations represented in the data, and  $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector" respectively.
+where $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector", respectively,  $Z_i=\sum_{x \in \mathcal{A}} \exp(\bm{u}_{x} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
 We follow the standard practice and only use the in-vector, $v$,  which is known to be superior to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}.
 
+Fitting the Eq.~\ref{eq:cond_prob_w2v} are computationally expensive as its denominator involves a sum over all possible entities in data.
+Commonly, the negative sampling is introduced as a way to avoid computing the denominator.
+The negative sampling is an optimization method widely used for training the machine learning model, which operates as follows.
+For each center--context word pair $(i,j)$, one generates $k$ noise center--context word pairs, denoted by $(i, \ell)$, where context word $\ell$ for the noise pair is sampled from a noise distribution, denoted by $p_{0}(\ell)$.
+Given a center-context word pair, $(i,j)$, as an input, one predicts whether it comes from the original data or noise distribution based on a similarity between two words, \eg dot similarity in case of the \textit{word2vec}.
 
-%% Word2vec parameters and training procedure
+ Due to the negative sampling, the correct expression optimized with the negative sampling is given by (see Methods:Skip-gram and \textit{word2vec})
+\begin{align}
+    P\left(j \given i \right):= \frac{p_0(j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i},
+\end{align}
+where $Z'_i=\sum_{x \in \mathcal{A}} p_0(x) \exp(\bm{u}_{x} \cdot \bm{v}_{i})$.
+
+
 We used the \textit{word2vec}  implementation in the python package \texttt{gensim}. 
 The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
 For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}). We also use same setting for U.S. airport itinerary and Korean accommodation reservation data.
 To mitigate the effect of less common locations, we set $f_{\min} = 50$, limiting to locations appearing at least 50 times across the training trajectories;
 744 unique airport for U.S. airport itinerary, 1004 unique accommodations for Korean accommodation reservation data, and 6,580 unique organizations for scientific mobility appear in the resulting embedding.
 We set $\alpha$ to its default value of 0.025 and iterate five times over all training trajectories.
-For scientific mobility, across each training iteration, the order of organizations within a single year is randomized to remove unclear sequential order.. 
+For scientific mobility, across each training iteration, the order of organizations within a single year is randomized to remove unclear sequential order.
+
+
+\subsection*{Skip-gram and \textit{word2vec}} 
+\label{sec:sg_and_word2vec}
+Many probability models including the \textit{word2vec} can be represented in form
+\begin{align}
+    f(x) / \sum_{x' \in {\cal X}} f(x'),
+\end{align}
+where $f$ is a nonnegative function. Fitting the probability models are computationally expensive as its denominator involves a sum over all possible entities ${\cal X}$ in data.
+The negative sampling is introduced as a way to avoid computing the denominator.
+The negative sampling solves a synthetic binary classification task, classifying an actual data $x$ and a noise data $\tilde x$ using a sigmoid function
+\begin{align}
+    \label{eq:sigmoid}
+    \frac{1}{1 + \exp\left( -\log f(z) \right)}.
+\end{align}
+Because this sigmoid function does not involve the normalization constant, the model fitting can be done with less computational burden. Besides , this has a side effect: the negative sampling has a bias and hence does not correctly train the model \cite{Dyer2014}.
+The bias can be corrected using the noise contrastive estimation (NCE) \cite{Chia2010}, which solves the
+same classification task but with a bias-corrected sigmoid function, \ie
+\begin{align}
+    \label{eq:sigmoid2}
+    \frac{1}{1 + \exp\left( -\log f(z) + \log p_0(z) \right)}.
+\end{align}
+Note that Eq.~\eqref{eq:sigmoid2} has an additional term $\log p_0(z)$, which is the log-probability of $z$ for a noise distribution.
+
+If the bias is not corrected, what model does the negative sampling actually fit? We rewrite the sigmoid function (Eq.~\eqref{eq:sigmoid}) in form of the bias-corrected sigmoid function, \ie
+\begin{align}
+    \label{eq:sigmoid3}
+    \frac{1}{1 + \exp\left[ - \log \tilde f(z) + \log p_0(z)  \right]},
+\end{align}
+where we have defined
+\begin{align}
+    \label{eq:unnormalized}
+    \tilde f(z) = f(z) p_0(z).
+\end{align}
+This sigmoid function correctly fits a probability model:
+\begin{align}
+    f'(x) / \sum_{x' \in {\cal X}} f'(x),
+\end{align}
+or, by substituting Eq.~\eqref{eq:unnormalized},
+\begin{align}
+    p_0(x)f(x) / \sum_{x' \in {\cal X}} p_0(x')f(x').
+\end{align}
+
+For the \textit{word2vec}, the correct expression optimized with the negative sampling is given by
+\begin{align}
+    P\left(j \given i \right):= \frac{p_0(j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}.
+\end{align}
+where $Z'_i=\sum_{x \in \mathcal{A}} p_0(x) \exp(\bm{u}_{x} \cdot \bm{v}_{i})$.
+
+
+
+
 
 
 %
@@ -611,6 +751,7 @@ In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ betwe
 \end{equation}
 where $m_{i}$ and $m_{j}$ are the population of locations, defined as the total number of passenger who passed through each airport for U.S. airport itineraries,  the total number of customer who booked with each accommodation for Korean accommodation reservations, and the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization for scientific mobility. 
 $f(r_{ij})$ is a decay function of distance $r_{ij}$ between locations $i$ and $j$. 
+Here, we used the most basic gravity model which assumes symmetry of the flow $\hat{T_{ij}} =\hat{T_{ji}}$ and distance $r_{ij} = r_{ji}$, while there are four proposed variants \autocite{wilson2011entropy}. 
 There are two popular forms for the $f(r_{ij})$:
 one is a power law function in the form $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0)$, and the other is an exponential function in the form $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.  
 The parameters for $f(r_{ij})$ and $C$ are fit to given mobility data using a log-linear regression~\autocite{jung2008highwaygravity, curiel2018citygravity, truscott2012epidemicgravity, hong2016busgravity, simini2012universal}.
