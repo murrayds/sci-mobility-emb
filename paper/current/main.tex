@@ -178,7 +178,7 @@ Networks offer a solution to representing many dimensions of mobility, yet edges
 Capturing the complexity of mobility requires moving beyond simple functional distances and networks, to learning high-dimensional landscapes of mobility that incorporate the many facets of mobility into a single fine-grained and continuous representation.
 
 Here, we apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense and continuous vector-space representation, from which we can not only derive a meaningful functional distance between locations but also probe relationships based on culture, language, and even prestige along with the geographic relationship.
-We embed trajectories from three massive datasets: U.S. passenger flight itinerary records, Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records.
+We embed trajectories from three massive datasets: U.S. passenger flight itinerary records, Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records (Detailed descriptions are available in the Methods).
 
 
 The flight itinerary data, from the Airline Origin and Destination Survey, consists of records of more than 300 million itineraries between 1993 and 2020 documenting domestic flights between 828 airports in the United States.
@@ -436,7 +436,7 @@ In sum, our results suggest that the embedding space is capable of capturing inf
 The axes can be visualized to examine the relative position of organizations along the prestige axis, and along a geographic axis between California and Massachusetts.
 Prestigious universities such as Columbia, Stanford, MIT, Harvard, and Rockefeller are positioned towards the top of the axis (Fig.~\ref{fig:semaxis}c).
 Universities at the bottom of this axis tend to be regional universities with lower national profiles (yet still ranked by Times Higher Education) and with more emphasis on teaching, such as Barry University and California State University at Long Beach.
-By projecting other types of organizations onto the prestige axis, SemAxis offers a new means of reason about the prestige of organizations for which rankings are often low-resolution, incomplete, or entirely absent, such as regional and liberal arts universities (Fig.~\ref{fig:semaxis}d), government organizations (Fig.~\ref{fig:semaxis}d), and research institutes (Fig.~\ref{fig:semaxis}e).
+By projecting other types of organizations onto the prestige axis, SemAxis offers a new means of reason about the prestige of organizations for which rankings are often low-resolution, incomplete, or entirely absent, such as regional and liberal arts universities (Fig.~\ref{fig:semaxis}d), research institutes (Fig.~\ref{fig:semaxis}e), and government organizations (Fig.~\ref{fig:semaxis}f).
 Their estimated prestige is speculative, though we find that it significantly correlates with their citation impact (Fig.~\ref{fig:supp:sector_semaxis_impact}).
 
 
@@ -461,7 +461,7 @@ Their estimated prestige is speculative, though we find that it significantly co
 
 
 
-We also find that the size (L2 norm) of the organization embedding vectors provides insights into the characteristics of organizations.
+We also find that the size (L2 norm) of the organization embedding vectors provides insights into the characteristics of organizations (Fig.~\ref{fig:length}).
 Up to a point (around 1,000 researchers), the size of U.S. organization's vectors tends to increase proportionally to the number of researchers (both mobile and non-mobile) with published work;
 these organizations are primarily teaching-focused institutions, agencies, and hospitals that either are not ranked or have a low ranking.
 However, at around 1,000 researchers, the size of the vector \emph{decreases} as the number of researchers increases.
@@ -759,7 +759,7 @@ We define two axes to capture geography and academic prestige, respectively.
 The poles of the geographic axis are defined as the mean vector of all vectors corresponding to organizations in California, and then the mean of all vectors of organizations in Massachusetts.
 For the prestige axis, we define a subset of top-ranked universities according to either the Times World University Ranking or based on the mean normalized research impact sourced from the Leiden Ranking.
 The other end of the prestige axis is the geographically-matched (according to census region) set of universities ranked at the bottom of these rankings.
-For example, if 20 top-ranked universities are selected and six of them are in the Northeastern U.S., then the bottom twenty will be chosen to also include six from the Northeastern U.S..
+For example, if 20 top-ranked universities are selected and six of them are in the Northeastern U.S., then the bottom twenty will be chosen to also include six from the Northeastern U.S.
 From the prestige axis, we derive a ranking of universities that we then compare to other formal university rankings using Spearman rank correlation.
 
 

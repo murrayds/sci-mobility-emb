@@ -1,3 +1,4 @@
+
 \documentclass[12pt]{article} %{{{
 
 % Text
@@ -161,7 +162,7 @@ For each mobile researcher who has at least two distinct affiliations, we constr
 An author is considered mobile if they published with at least two distinct affiliations during the time period of study.
 Affiliation names were manually disambiguated, and each was mapped to a unique organization identifier.
 An affiliation trajectory for an individual researcher is a sequence of organizations in ascending order of year of publication.
-if a researcher published papers with affiliation $A$ in year $t$, $B$ in $t+1$, $C$ in $t+2$ and $A$ again in $t+3$, then the affiliation trajectory is expressed as $(A, B, C, A)$.
+If a researcher published papers with affiliation $A$ in year $t$, $B$ in $t+1$, $C$ in $t+2$ and $A$ again in $t+3$, then the affiliation trajectory is expressed as $(A, B, C, A)$.
 
 In the case that an individual lists multiple affiliations in a single year, affiliations listed on publications published in that year are shuffled between each iteration of the \textit{word2vec} training process (each epoch).
 For example, an author who published with affiliation $A$ in $t_{0}$, and affiliations $B$ and $C$ in $t_{1}$ could appear as one of $(A, B, C)$ or $(A, C, B)$ in each training iteration.
