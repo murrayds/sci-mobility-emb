@@ -196,6 +196,7 @@ Thus, the trajectories encode both migration and co-affiliation---the holding of
 
 A vector-space embedding of locations (airports, accommodations, and organizations) is learned by using trajectories as input to the standard with skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
 This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered} and networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic}.
+It works under the notion that a good representation should facilitate prediction, and so learns a mapping of target locations (words) that best predict locations that co-appear in the same trajectory (sentence). 
 The model is also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
 
@@ -278,7 +279,7 @@ In sum, our results demonstrate that, consistently, the embedding distance bette
 
 
 
-\subsection*{word2vec and gravity model}
+\subsection*{word2vec and the gravity model}
 
 Why does the embedding distance predict actual mobility flows better than the geographic distance?
 Here, we show that the objective function of {\it word2vec} is equivalent to the gravity model.
@@ -378,9 +379,9 @@ Similar structures can be observed in other states such as among New York's CUNY
 \end{figure}
 
 
-Just as the embedding space makes it possible to \textit{zoom in} on subsets of organizations, it is also possible to \textit{zoom out}  by aggregating organizational vectors.
-We can examine the country-level structure that governs scientific mobility.
-For the purpose, we define the representative vector of each country as the average of their organizational vectors and, using their cosine similarities, perform hierarchical clustering of nations that have at least 25 organizations represented in the embedding space, excluding the United States which is a dominant hub well connected to most other countries (see Fig. \ref{fig:clustering}a).
+Just as the embedding space makes it possible to \textit{zoom in} on subsets of organizations, it is also possible to \textit{zoom out} by aggregating organizational vectors.
+In doing so, we can examine the country-level structure that governs scientific mobility.
+We define the representative vector of each country as the average of their organizational vectors and, using their cosine similarities, perform hierarchical clustering of nations that have at least 25 organizations represented in the embedding space, excluding the United States which is a dominant hub well connected to most other countries (see Fig. \ref{fig:clustering}a).
 The six identified clusters roughly correspond to countries in East-Asia (orange), Scandinavia (dark purple), the British Commonwealth (light purple), and Central and Eastern Europe (light blue), and then two remaining diverse clusters contain a mix of European, Latin American, and Mediterranean countries.
 The cluster structure shows that not only geography but also linguistic ties between countries are related to scientific mobility.
 
