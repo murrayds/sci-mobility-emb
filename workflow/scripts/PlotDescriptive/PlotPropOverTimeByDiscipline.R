@@ -59,7 +59,6 @@ plot <- plotdata %>%
     theme(
       text = element_text(size = 12, family = "Helvetica"),
       panel.grid.minor = element_blank(),
-      panel.grid.major = element_blank(),
       panel.background = element_rect(size = 0.5),
       axis.title.x = element_blank(),
       axis.title.y = element_text(size = 12, face = "bold"),
