@@ -624,7 +624,7 @@ For scientific mobility, across each training iteration, the order of organizati
 Negative sampling is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a distinct model  from {\it word2vec}.
 What is the different model?
 
-Negative sampling trains {\oit word2vec} using a binary classification task as follows.
+Negative sampling trains {\it word2vec} using a binary classification task as follows.
 A center-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a parameter).
 Then, given a center-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using sigmoid function:
 \begin{align}
