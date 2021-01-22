@@ -607,21 +607,8 @@ where,
 \begin{equation}
 	p(j \given i) = \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:cond_prob_w2v}
 \end{equation}
-where $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector", respectively,  $Z_i=\sum_{x \in \mathcal{A}} \exp(\bm{u}_{x} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
-We follow the standard practice and only use the in-vector, $v$,  which is known to be superior to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}.
-
-Fitting the Eq.~\ref{eq:cond_prob_w2v} are computationally expensive as its denominator involves a sum over all possible entities in data.
-Commonly, the negative sampling is introduced as a way to avoid computing the denominator.
-The negative sampling is an optimization method widely used for training the machine learning model, which operates as follows.
-For each center--context word pair $(i,j)$, one generates $k$ noise center--context word pairs, denoted by $(i, \ell)$, where context word $\ell$ for the noise pair is sampled from a noise distribution, denoted by $p_{0}(\ell)$.
-Given a center-context word pair, $(i,j)$, as an input, one predicts whether it comes from the original data or noise distribution based on a similarity between two words, \eg dot similarity in case of the \textit{word2vec}.
-
-Due to the negative sampling, the correct expression optimized with the negative sampling is given by
-\begin{align}
-	P\left(j \given i \right):= \frac{P(j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
-\end{align}
-where $Z_i=\sum_{j' \in \mathcal{A}} P(j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$.
-
+where $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector", respectively,  $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
+We follow the standard practice and only use the in-vector, $\bm{v}$,  which is known to be superior to the out-vector in link prediction benchmarks~\autocite{linzhuo2020hyperbolic, tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}.
 
 We used the \textit{word2vec}  implementation in the python package \texttt{gensim}.
 The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, and the number of iterations.
@@ -632,54 +619,55 @@ We set $\alpha$ to its default value of 0.025 and iterate five times over all tr
 For scientific mobility, across each training iteration, the order of organizations within a single year is randomized to remove unclear sequential order.
 
 
-\subsection*{Skip-gram and \textit{word2vec}}
+\subsection*{An implicit bias in the negative sampling}
 \label{sec:sg_and_word2vec}
 
-The \textit{word2vec} takes a form
-\begin{align}
-	\frac{ f(\bm{u}_{j'}, \bm{v}_i) }{ \sum_{j' \in {\cal A}} f(\bm{u}_{j'}, \bm{v}_i)},
-\end{align}
-where $f$ is a nonnegative function.
-Fitting the probability model is computationally expensive as its denominator involves a sum over all possible entities ${\cal A}$ in data.
-To circumvent this problem, the negative sampling solves a binary classification task,
-in which one is given an instance $z$ and asked whether $z$ is sampled from an actual data $x$ or a noise data $\tilde x$,
+The negative sampling is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a model different from the {\it word2vec}.
+What is the correct model for the word2vec with the negative sampling?
+
+The negative sampling trains the word2vec by a binary classification task as follows.
+One samples a center-context word pair $(i,j)$ from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$.
+The negative context $\ell$ is sampled from noise distribution $p_0(\ell)=P^\gamma(\ell)$, where $P(j)$ is the
+fraction of $j$ in the given data, and $\gamma>0$ is a parameter.
+Then, given a center-context word pair $(i,j)$, one predicts whether it is a positive or negative sample using sigmoid function:
 \begin{align}
 	\label{eq:sigmoid}
-	\frac{1}{1 + \exp\left( -\log f(z) \right)}.
+	\frac{1}{1 + \exp\left( - \bm{u}_j \cdot \bm{v}_i \right)}.
 \end{align}
-Because this sigmoid function does not involve the normalization constant, the model fitting can be done with less computational burden. Besides, this has a side effect: the negative sampling has a bias and hence does not correctly train the model \cite{Dyer2014}.
-The bias can be corrected using the noise contrastive estimation (NCE) \cite{Chia2010}, which solves the
-same classification task but with a bias-corrected sigmoid function, \ie
+
+The negative sampling does not guaranteed that, even if one increases the number of training samples and iterations, the embedding is not guaranteed to converge to the optimial one~\autocite{Chia2010,Dyer2014}.
+This inconsistency problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010}, which fits a probability model in form:
+\begin{align}
+	\label{eq:nce}
+	f(x) / \sum_{x'} f(x'),
+\end{align}
+where $f(x)$ is the unnormalized probability for an instance $x$.
+As is the case for the negative sampling, the NCE fits the model based on a binary classification task, with positive and negative samples randomly drawn from the given data and a noise distribution $p_0$, respectively, using a bias-corrected sigmoid function, \ie
 \begin{align}
 	\label{eq:sigmoid2}
-	\frac{1}{1 + \exp\left( -\log f(z) + \log p_0(z) \right)}.
+	\frac{1}{1 + \exp\left( -f(x) + \log p_0(x) \right)}.
 \end{align}
-Note that Eq.~\eqref{eq:sigmoid2} has an additional term $\log p_0(z)$, which is the log-probability of $z$ for a noise distribution.
+In case of the word2vec, the instance is the dot similarity $x=\bm{u}_i \cdot \bm{v}_j$,  $f(x)=\exp(x)$, and $p_0(j)=P^\gamma(j)$.
 
-If the bias is not corrected, what model does the negative sampling actually fit? We rewrite the sigmoid function (Eq.~\eqref{eq:sigmoid}) in form of the bias-corrected sigmoid function, \ie
+Rewriting the sigmoid function for the negative sampling (Eq.~\eqref{eq:sigmoid}) in form of the bias-corrected sigmoid function yields
 \begin{align}
 	\label{eq:sigmoid3}
-	\frac{1}{1 + \exp\left[ - \log \tilde f(z) + \log p_0(z)  \right]},
+	\frac{1}{1 + \exp\left[ - \tilde f(x) + \log p_0(x)  \right]},
 \end{align}
 where we have defined
 \begin{align}
 	\label{eq:unnormalized}
-	\tilde f(z) = f(z) p_0(z).
+	\tilde f(x) = f(x) p_0(x).
 \end{align}
-This sigmoid function correctly fits a probability model:
+This bias-corrected sigmoid function fits a probability model:
 \begin{align}
-	f'(x) / \sum_{x' \in {\cal X}} f'(x),
+	f'(x) / \sum_{x'} f'(x),
 \end{align}
-or, by substituting Eq.~\eqref{eq:unnormalized},
+or, by substituting $x=\bm{u}_i \cdot \bm{v}_j$, $f(x)=\exp(x)$, and $p_0(j)=P^\gamma (j)$,
 \begin{align}
-	p_0(x)f(x) / \sum_{x' \in {\cal X}} p_0(x')f(x').
+	P\left(j \given i \right):= \frac{P^\gamma (j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}.
 \end{align}
-
-For the \textit{word2vec}, the correct expression optimized with the negative sampling is given by
-\begin{align}
-	P\left(j \given i \right):= \frac{p_0(j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}.
-\end{align}
-where $Z'_i=\sum_{x \in \mathcal{A}} p_0(x) \exp(\bm{u}_{x} \cdot \bm{v}_{i})$.
+where $Z_i=\sum_{j' \in \mathcal{A}} P^\gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$.
 
 
 
