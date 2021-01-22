@@ -148,7 +148,7 @@
 	Historically, human mobility has been strongly constrained by physical separation---geographic distance~\autocite{zipf1946gravity}.
 	However, geographic distance is becoming less relevant in the increasingly-globalized world~\autocite{czaika2018globalisation, buchan2009globalization} in which physical barriers are shrinking while linguistic, cultural, and historical relationships are becoming more important.
 	As understanding mobility is becoming critical for contemporary society, finding frameworks that can capture this complexity is of paramount importance.
-	Here, we show the  mathematical  connection  between  neural embedding models ~\autocite{mikolov2013word2vec} and the gravity model of human mobility and, using three distinct human trajectory datasets, demonstrate that a neural embedding model can encode nuanced relationships between locations into a vector-space, providing an effective measure of distance that reflects the multi-faceted structure of human mobility.
+	Here, we illustrate a mathematical connection between neural embedding models ~\autocite{mikolov2013word2vec} and the gravity model of human mobility and, using three distinct human trajectory datasets, demonstrate that a neural embedding model can encode nuanced relationships between locations into a vector-space, providing an effective measure of distance that reflects the multi-faceted structure of human mobility.
 	Focusing on the case of scientific mobility, we show that embeddings of scientific organizations uncover cultural and linguistic relations, and even academic prestige, at multiple levels of granularity.
 	Furthermore, the embedding vectors reveal universal relationships between organizational characteristics and their place in the global landscape of scientific mobility.
 	The ability to learn scalable, dense, and meaningful representations of mobility directly from the data can open up a new avenue of studying mobility across domains.
@@ -167,7 +167,7 @@
 
 How far apart are two places?
 The question is surprisingly hard to answer when it involves human mobility.
-Although geographic distance has been constraining human movements throughout history, it is becoming less relevant in a world connected by rapid transit and global airline networks.
+Although geographic distance has historically constrained human movements, it is becoming less relevant in a world connected by rapid transit and global airline networks.
 For instance, a person living in Australia is more likely to migrate to the United Kingdom, a far-away country with similar language and culture, than to a much closer country such as Indonesia~\autocite{pew2018migration}.
 Similarly, a student in South Korea is more likely to attend a university in Canada than one in North Korea~\autocite{unesco2019students}.
 Although geographic distance has been used as the most prominent basis for models of mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} models, there have been attempts to define alternative notions of distance, or functional distances~\autocite{boschma2005proximity, brown1970migration, kim2018functional}, from real-world data or \textit{a priori} relationships between geographic entities.
@@ -178,7 +178,7 @@ Networks offer a solution to representing many dimensions of mobility, yet edges
 Capturing the complexity of mobility requires moving beyond simple functional distances and networks, to learning high-dimensional landscapes of mobility that incorporate the many facets of mobility into a single fine-grained and continuous representation.
 
 Here, we apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense and continuous vector-space representation, from which we can not only derive a meaningful functional distance between locations but also probe relationships based on culture, language, and even prestige along with the geographic relationship.
-We embed trajectories from three massive datasets: U.S. passenger flight itinerary records,  Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records.
+We embed trajectories from three massive datasets: U.S. passenger flight itinerary records, Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records.
 
 
 The flight itinerary data, from the Airline Origin and Destination Survey, consists of records of more than 300 million itineraries between 1993 and 2020 documenting domestic flights between 828 airports in the United States.
