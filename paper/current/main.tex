@@ -623,19 +623,18 @@ For scientific mobility, across each training iteration, the order of organizati
 \label{sec:sg_and_word2vec}
 
 The negative sampling is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a model different from the {\it word2vec}.
-What is the correct model for the word2vec with the negative sampling?
+What is the different model?
 
 The negative sampling trains the word2vec by a binary classification task as follows.
-One samples a center-context word pair $(i,j)$ from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$.
-The negative context $\ell$ is sampled from noise distribution $p_0(\ell)=P^\gamma(\ell)$, where $P(j)$ is the
-fraction of $j$ in the given data, and $\gamma>0$ is a parameter.
+One samples a center-context word pair $(i,j)$ from the given data as a positive pair, and sample $k$ negative pairs $(i,\ell)$ from noise distribution $p_0(\ell)=P^\gamma(\ell)$. (Remind that $P(j)$ is the
+fraction of $j$ in the given data, and $\gamma>0$ is a parameter).
 Then, given a center-context word pair $(i,j)$, one predicts whether it is a positive or negative sample using sigmoid function:
 \begin{align}
 	\label{eq:sigmoid}
 	\frac{1}{1 + \exp\left( - \bm{u}_j \cdot \bm{v}_i \right)}.
 \end{align}
 
-The negative sampling does not guaranteed that, even if one increases the number of training samples and iterations, the embedding is not guaranteed to converge to the optimial one~\autocite{Chia2010,Dyer2014}.
+The negative sampling does not guarantee that the embedding converges to the optimal one, even if one increases the number of training samples and iterations~\autocite{Chia2010,Dyer2014}.
 This inconsistency problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010}, which fits a probability model in form:
 \begin{align}
 	\label{eq:nce}
@@ -665,7 +664,7 @@ This bias-corrected sigmoid function fits a probability model:
 \end{align}
 or, by substituting $x=\bm{u}_i \cdot \bm{v}_j$, $f(x)=\exp(x)$, and $p_0(j)=P^\gamma (j)$,
 \begin{align}
-	P\left(j \given i \right):= \frac{P^\gamma (j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}.
+	P\left(j \given i \right):= \frac{P^\gamma (j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 \end{align}
 where $Z_i=\sum_{j' \in \mathcal{A}} P^\gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$.
 
