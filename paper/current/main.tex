@@ -621,31 +621,30 @@ For scientific mobility, across each training iteration, the order of organizati
 \subsection*{An implicit bias in the negative sampling}
 \label{sec:sg_and_word2vec}
 
-The negative sampling is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a model different from the {\it word2vec}.
+Negative sampling is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a distinct model  from {\it word2vec}.
 What is the different model?
 
-The negative sampling trains the word2vec by a binary classification task as follows.
-One samples a center-context word pair $(i,j)$ from the given data as a positive pair, and sample $k$ negative pairs $(i,\ell)$ from noise distribution $p_0(\ell)=P^\gamma(\ell)$. (Remind that $P(j)$ is the
-fraction of $j$ in the given data, and $\gamma>0$ is a parameter).
-Then, given a center-context word pair $(i,j)$, one predicts whether it is a positive or negative sample using sigmoid function:
+Negative sampling trains {\oit word2vec} using a binary classification task as follows.
+A center-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a parameter).
+Then, given a center-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using sigmoid function:
 \begin{align}
 	\label{eq:sigmoid}
 	\frac{1}{1 + \exp\left( - \bm{u}_j \cdot \bm{v}_i \right)}.
 \end{align}
 
-The negative sampling does not guarantee that the embedding converges to the optimal one, even if one increases the number of training samples and iterations~\autocite{Chia2010,Dyer2014}.
-This inconsistency problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010}, which fits a probability model in form:
+This procedure does not guarantee that the embedding optimally converges, even when increasing the training samples and iterations~\autocite{Chia 2010,Dyer2014}.
+This problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010}, which fits a probability model in the form:
 \begin{align}
 	\label{eq:nce}
 	f(x) / \sum_{x'} f(x'),
 \end{align}
 where $f(x)$ is the unnormalized probability for an instance $x$.
-As is the case for the negative sampling, the NCE fits the model based on a binary classification task, with positive and negative samples randomly drawn from the given data and a noise distribution $p_0$, respectively, using a bias-corrected sigmoid function, \ie
+As in negative sampling, NCE fits the model based on a binary classification task, with positive and negative samples randomly drawn from the given data and a noise distribution $p_0$, respectively, using a bias-corrected sigmoid function:
 \begin{align}
 	\label{eq:sigmoid2}
 	\frac{1}{1 + \exp\left( -f(x) + \log p_0(x) \right)}.
 \end{align}
-In case of the word2vec, the instance is the dot similarity $x=\bm{u}_i \cdot \bm{v}_j$,  $f(x)=\exp(x)$, and $p_0(j)=P^\gamma(j)$.
+In case of the {\it word2vec}, the instance is the dot similarity $x=\bm{u}_i \cdot \bm{v}_j$,  $f(x)=\exp(x)$, and $p_0(j)=P^\gamma(j)$.
 
 Rewriting the sigmoid function for the negative sampling (Eq.~\eqref{eq:sigmoid}) in form of the bias-corrected sigmoid function yields
 \begin{align}
@@ -666,10 +665,6 @@ or, by substituting $x=\bm{u}_i \cdot \bm{v}_j$, $f(x)=\exp(x)$, and $p_0(j)=P^\
 	P\left(j \given i \right):= \frac{P^\gamma (j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 \end{align}
 where $Z_i=\sum_{j' \in \mathcal{A}} P^\gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$.
-
-
-
-
 
 
 %
