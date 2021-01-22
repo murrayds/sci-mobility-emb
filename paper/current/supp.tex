@@ -429,7 +429,7 @@ Taiwan           & 3.67             & 72
 		Lines correspond to the proportion of publications classified as Biology and Health (black), Physics and Engineering (purple), Life and Earth Science (magenta), Social Science and Humanities (orange), and Math and Computer Science (yellow).
 		The rate of publication in Biology and Health has leveled since about 2013, whereas the rate of publication in other fields has steadily increased.
 		\textbf{c.}
-		While the absolute count of publications has increased, the percentage of mobile scholars, and those with affiliations in at least least two cities, regions, or countries, as a proportion of all publications, has decreased over time.
+		While the absolute count of publications has increased, the percentage of mobile scholars, and those with affiliations in at least least two cities, regions, or countries, as a proportion of all publications, has remained stable over time. 
 		\textbf{d.}
 		The proportion of authors' publications across fields has largely remained steady.
 		Biology and Health Science has comprised the majority of publications across nearly all years but has steadily declined in proportion.
@@ -479,10 +479,10 @@ Taiwan           & 3.67             & 72
 		\textbf{Reverse cumulative-distribution function of mobile researchers by geographic scale.}
 		\textbf{a.}
 		Survival probability of mobile researchers with respect to the number of organizations in the their affiliation trajectory.
-		All mobile authors were affiliated with at least two organizations (i.e., survival probability of one) and about 35.0\% were affiliated with three or more. 
-		\textbf{b.} About 68\% of mobile authors listed at least two cities represented in their career trajectories.
-		\textbf{c.} 45\% of mobile authors have two or more regions represented in their career trajectories.
-		\textbf{d.} Only 14\% of mobile authors had two or more countries represented in their career trajectories.
+		All mobile authors were affiliated with at least two organizations (i.e., survival probability of one) and about 25.0\% were affiliated with three or more. 
+		\textbf{b.} About 70\% of mobile authors listed at least two cities represented in their career trajectories.
+		\textbf{c.} 50\% of mobile authors have two or more regions represented in their career trajectories.
+		\textbf{d.} Only 17\% of mobile authors had two or more countries represented in their career trajectories.
 	}
 	\label{fig:supp:rcdf_by_scale}
 \end{figure}
@@ -541,6 +541,7 @@ Taiwan           & 3.67             & 72
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps with $x = y$; 
 		a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
 		Shown for all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility.
 		The gravity model with the power-decay function outperforms that with an exponential decay function.
 	}
@@ -556,13 +557,14 @@ Taiwan           & 3.67             & 72
 	\centering
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_emb_bymodel.pdf}
 	\caption{
-		\textbf{For embedding distance, the exponential-decay gravity model is better.}
+		\textbf{For embedding distance, the exponential-decay gravity model is slightly better.}
 		Flux between organization pairs predicted by the gravity model with different distance decay functions, i.e., exponential decay function (\textbf{a}) and power-law decay function (\textbf{b}) using embedding distance.
-		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Boxplots show the distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps with $x = y$; 
 		a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
 		Shown for all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility.
-		The gravity model with the exponential decay function outperforms that with a power-decay function.
+		The gravity model with the exponential decay function slightly outperforms that with a power-decay function except in the case of international-only mobility, for which power-decay performs slightly better. 
 	}
 	\label{fig:supp:predict_emb_bymodel}
 \end{figure}
@@ -603,6 +605,7 @@ Taiwan           & 3.67             & 72
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps the line $x = y$; 
 		a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
 		\textbf{a-b.} Predictions are made with parameters estimated from all pairs of organizations (as in Fig.~\ref{fig:gravity_performance}e), and showing only the subsets of predictions for organization pairs in the same country (\textbf{a}) and in different countries (\textbf{b}).
 		\textbf{c-d.} Predictions made using parameters estimated from the subset of organizations in the same country (\textbf{c}) and different country \textbf{d});
 		this is the same data as shown in Fig.~\ref{fig:gravity_performance}f and Fig.~\ref{fig:gravity_performance}h.
@@ -630,6 +633,7 @@ Taiwan           & 3.67             & 72
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$;
 		a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
 	}
 	\label{fig:supp:gravity_dot}
 \end{figure}
@@ -655,6 +659,7 @@ Taiwan           & 3.67             & 72
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$;
 		a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
 	}
 	\label{fig:supp:gravity_pprcos}
 \end{figure}
@@ -680,6 +685,7 @@ Taiwan           & 3.67             & 72
 		Boxplots show distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps $x = y$;
 		a perfect prediction yields all points on the black line. 
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
 	}
 	\label{fig:supp:gravity_pprjsd}
 \end{figure}
