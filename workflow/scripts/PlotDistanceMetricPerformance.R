@@ -55,9 +55,6 @@ top <- plotdata %>%
   group_by(sizetype, case) %>%
   filter(r2 == max(r2))
 
-
-print(top)
-
 # build the plot
 plot <- plotdata %>%
   ggplot(aes(x = sizetype, y = r2)) +
