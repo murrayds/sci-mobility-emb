@@ -38,7 +38,7 @@ plotdata <- params %>%
     metric = factor(metric,
                     levels = c("geo", "emb", "dot", "pprcos", "pprjsd", "lapcos", "svdcos"),
                     labels = c("Geographic\ndistance", "Embedding\ncosine distance", "Embedding\ndot product", "PPR cosine\ndistance", "PPR JSD", "Laplacian\nEigenmap\ndistance", "SVD distance")),
-    # Reorder the metric variable with 
+    # Reorder the metric variable with
     metric = reorder(metric, desc(r2)),
     case = factor(case,
                   levels = c("global", "same-country", "diff-country"),
@@ -50,15 +50,26 @@ plotdata <- params %>%
   )
 
 
+# Get the top-performing for each set of parameters
+top <- plotdata %>%
+  group_by(sizetype, case) %>%
+  filter(r2 == max(r2))
+
+
+print(top)
+
+# build the plot
 plot <- plotdata %>%
   ggplot(aes(x = sizetype, y = r2)) +
-  geom_point(stroke = 0.2, size = 2.5, alpha = 0.8, position = position_dodge(0.5)) +
+  geom_point(size = 2.5, alpha = 0.8, position = position_dodge(0.5), shape = 17) +
+  geom_point(data = top, size = 1,
+             aes(x = as.numeric(sizetype) + 0.15, y = r2 + 0.05),
+             shape = 8, position = position_dodge(0.5)) +
   facet_grid(metric~case) +
   scale_y_continuous(
-    limits = c(0, 0.52),
+    limits = c(0, 0.55),
     breaks = c(0, 0.25, 0.5)
   ) +
-  scale_shape_manual(values = c(23, 21)) +
   scale_fill_manual(values = c("darkgrey", "black")) +
   theme_minimal() +
   theme(
