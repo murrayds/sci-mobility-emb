@@ -41,7 +41,7 @@ plotdata <- errors %>%
                     levels = c("geo", "emb", "dot", "pprcos", "pprjsd", "lapcos", "svdcos"),
                     labels = c("Geographic\ndistance", "Embedding\ncosine distance", "Embedding\ndot product", "PPR cosine\ndistance", "PPR JSD", "Laplacian\nEigenmap\ndistance", "SVD distance")),
     # Reorder the metric variable with
-    metric = reorder(metric, desc(rmse)),
+    metric = reorder(metric, rmse),
     case = factor(case,
                   levels = c("global", "same", "different"),
                   labels = c("All", "Domestic", "International")),
@@ -68,16 +68,16 @@ plot <- plotdata %>%
   ggplot(aes(x = sizetype, y = rmse, fill = model, group = model)) +
   geom_point(size = 2.5, alpha = 0.8, shape = 25, position = position_dodge(0.5)) +
   geom_point(data = top, size = 1,
-             aes(x = as.numeric(sizetype) + 0.08, y = rmse + 0.15, color = model2),
+             aes(x = as.numeric(sizetype) + 0.08, y = rmse + 0.1, color = model2, fill = NULL),
              position = position_dodge2(0.5, preserve = "total"),
-             shape = 8) +
+             shape = 8, show.legend = FALSE) +
   facet_grid(metric~case) +
   scale_y_continuous(
-    limits = c(0, 1),
-    breaks = c(0, 0.5, 1.0)
+    limits = c(0.5, 1.1),
+    breaks = c(0.5, 0.75, 1.0)
   ) +
   scale_fill_manual(values = c("darkgrey", "black")) +
-  scale_color_manual(values = c("darkgrey", "black", "white")) +
+  scale_color_manual(values = c("darkgrey", "black", "white"), guide = F) +
   scale_alpha_manual(values = c(1.0, 1.0, 0)) +
   guides(alpha = F, color = F) +
   theme_minimal() +
