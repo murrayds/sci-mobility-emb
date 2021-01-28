@@ -105,6 +105,12 @@ rule plot_distance_metric_performance:
     shell:
         "Rscript scripts/PlotDistanceMetricPerformance.R --input {input} --output {output}"
 
+rule plot_distance_prediction_performance:
+    input: rules.get_aggregate_rmse.output
+    output: DISTANCE_PREDICTION_PERFORMANCE
+    shell:
+        "Rscript scripts/PlotDistancePredictionPerformance.R --input {input} --output {output}"
+
 ###############################################################################
 # MISC: PLOT ELEMENTS
 ###############################################################################

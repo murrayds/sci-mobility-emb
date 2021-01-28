@@ -188,6 +188,7 @@ SECONDARY_PREDICTED_VS_ACTUAL_PLOT = osjoin(FIGURE_DIR, 'Secondary', '{dataset}'
 # MISC PLOTS
 HYPERPARAMETER_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'hyperparameter_performance.pdf')
 DISTANCE_METRIC_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'distance_metric_performance.pdf')
+DISTANCE_PREDICTION_PERFORMANCE = osjoin(DESCRIPTIVE_FIG_DIR, 'distance_prediction_performance_rmse.pdf')
 BOOMERANG_COMPARE_PLOT = osjoin(MATH_FIGURE_DIR, 'boomerang', 'compare', '{traj}', 'd{dimensions}', 'ws{window}', '{country}_usa_{traj}_d{dimensions}_ws{window}_gamma{gamma}_size{sizetype}_boomerang_compare.pdf')
 BOOMERANG_ALL_COUNTRIES = osjoin(MATH_FIGURE_DIR, 'boomerang', 'aggregate', '{traj}_d{dimensions}_ws{window}_gamma{gamma}_size{sizetype}_boomerang_all.pdf')
 
@@ -432,6 +433,7 @@ rule all:
         expand(COUNTRY_MOBILITY_DISTRIBUTION, traj = TRAJECTORIES),
         HYPERPARAMETER_PERFORMANCE,
         DISTANCE_METRIC_PERFORMANCE,
+        DISTANCE_PREDICTION_PERFORMANCE,
 
         TIMES_LEIDEN_COMPARE_PLOT,
 
