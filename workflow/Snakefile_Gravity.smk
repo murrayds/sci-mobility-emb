@@ -75,12 +75,41 @@ rule get_aggregate_gravity_r2:
         # using default argument parsing here
         "Rscript scripts/GetAggregateGravityR2.R {input} {output}"
 
+
+rule get_aggregate_rmse:
+    input:
+        [expand(rules.calculate_predicted_vs_actual.output,
+                traj = TRAJECTORIES,
+                distance = DISTANCE_PARAMS,
+                geo_constraint = GEO_CONSTRAINTS,
+                dimensions = TARGET_DIMENSIONS,
+                window = TARGET_WINDOW_SIZE,
+                gamma = TARGET_GAMMA,
+                sizetype = SIZETYPE,
+                model = GRAVITY_MODEL_TYPES)]
+    output: AGGREGATE_RMSE
+    shell:
+        "Rscript scripts/GetAggregateRMSE.R {input} {output}"
+
+
 rule plot_hyperparameter_performance:
     input:
         rules.get_aggregate_gravity_r2.output
     output: HYPERPARAMETER_PERFORMANCE
     shell:
         "Rscript scripts/PlotHyperparameterPerformance.R --input {input} --output {output}"
+
+rule plot_distance_metric_performance:
+    input: rules.get_aggregate_gravity_r2.output
+    output: DISTANCE_METRIC_PERFORMANCE
+    shell:
+        "Rscript scripts/PlotDistanceMetricPerformance.R --input {input} --output {output}"
+
+rule plot_distance_prediction_performance:
+    input: rules.get_aggregate_rmse.output
+    output: DISTANCE_PREDICTION_PERFORMANCE
+    shell:
+        "Rscript scripts/PlotDistancePredictionPerformance.R --input {input} --output {output}"
 
 ###############################################################################
 # MISC: PLOT ELEMENTS
