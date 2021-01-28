@@ -89,6 +89,7 @@ NORM_BY_COUNTRY = osjoin(EMBEDDINGS_DIR, '{traj}', 'norm', 'd{dimensions}_ws{win
 AGGREGATE_R2 = osjoin(STAT_DATA_DIR, 'aggregate_r2.csv')
 PREDICTED_VS_ACTUAL = osjoin(STAT_DATA_DIR, '{traj}', '{distance}', '{geo_constraint}_size{sizetype}_predicted_vs_actual_d{dimensions}_ws{window}_gamma{gamma}.csv')
 AGGREGATE_SLOPES = osjoin(STAT_DATA_DIR, 'aggregate_slopes.csv')
+AGGREGATE_RMSE = osjoin(STAT_DATA_DIR, 'aggregate_rmse.csv')
 
 ##############
 # SemAxis    #
@@ -416,6 +417,7 @@ rule all:
                sizetype = SIZETYPE),
         GRADIENT_LEGEND,
         AGGREGATE_SLOPES,
+        AGGREGATE_RMSE,
         AGGREGATE_R2,
 
         # Descriptive Plots
