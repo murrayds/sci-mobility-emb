@@ -538,6 +538,36 @@ Taiwan           & 3.67             & 72
 \end{figure}
 
 
+
+
+%
+% Figure - Distance metric prediction RMSE performance 
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=0.85\textwidth]{\figdir/Descriptive/distance_prediction_performance_rmse.pdf}
+	\caption{
+		\textbf{Using cosine distance between embedding vectors as input to the gravity model results in better predictions of scientific mobility compared to geographic distance, baselines.}
+		Shown is the Root Mean Squared Error (RMSE), or the accuracy of predictions made with the gravity model of mobility using the embedding distance and other experimental parameters.
+		The RMSE is shown using both the exponential and power-law forms of the gravity model. 
+		For each distance metric and set of parameters, the RMSE is shown for 
+		Distance metrics are ordered, from top to bottom, by the lowest RMSE, where a lower error indicates better predictions. 
+		The asterisk denotes the best-performing distance metric for every case. 
+		All distance metrics result in better predictions than does geographic distance.
+		In nearly every case, the embedding distance results in the best predictions, no matter the model. 
+		When considering international mobility alone, SVD distance performs best when using the power-law definition of the gravity model. 
+		The x-axis differentiates between three strategies for defining the organization population used to calculate the flux. 
+		``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+		population is defined in the same way for ``mobile-only'', except only using unique mobile researchers;
+		``Raw frequency'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding. 
+		Generally, ``All'' results in better prediction.
+		}
+	\label{fig:supp:distancermse}
+\end{figure}
+
+
+
+
 %
 % Figure - Dot product and cosine similarity
 %
