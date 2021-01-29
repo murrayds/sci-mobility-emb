@@ -195,7 +195,7 @@ As a scientist's career progresses, they move between organizations or pick up a
 Thus, the trajectories encode both migration and co-affiliation---the holding of multiple simultaneous co-affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, sugimoto2017mostimpact} (see \SI).
 
 A vector-space embedding of locations (airports, accommodations, and organizations) is learned by using trajectories as input to the standard with skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
-This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered} and networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic}.
+This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
 It works under the notion that a good representation should facilitate prediction, and so learns a mapping of target locations (words) that best predict locations that co-appear in the same trajectory (sentence). 
 The model is also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
@@ -232,9 +232,8 @@ $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini
 
 The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij }= \hat{T}_{ji}$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
 We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}. 
-For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}), though the embedding distance outperforms geographic distance regardless of the type of gravity model used (Fig.~\ref{fig:supp:distancermse}).
-
-
+For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}), though the embedding distance outperforms geographic distance regardless of the type of gravity model used (Fig.~\ref{fig:supp:distancermse}). 
+We would like to note that different decay function $f(r_{ij})$, which is the effect of space, can be due to fundamentally different mechanism \autocite{barthelemy2011spatial} such as the different cost function for a given distance and the spatial granularity of the observation.
 
 %
 % Subsection: Embedding performance
@@ -249,7 +248,7 @@ This performance is consistent in the case of scientific mobility:
 the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
 These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
 The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores  calculated from the underlying mobility network (Fig.~\ref{fig:supp:distancemetrics}, Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baselines, such as distances derived from a singular-value decomposition and from a Laplacian Eigenmap embedding of the underlying data (Fig.~\ref{fig:supp:distancemetrics} and Fig.~\ref{fig:supp:distancermse}).
+The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baseline, such as distances derived from a singular-value decomposition on flow matrix and from a Laplacian Eigenmap embedding  \autocite{belkin2003laplacian} of the underlying data (Fig.~\ref{fig:supp:distancemetrics} and Fig.~\ref{fig:supp:distancermse}).
 In sum, our results demonstrate that, consistently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
 
 
