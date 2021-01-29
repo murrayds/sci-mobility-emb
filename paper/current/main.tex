@@ -234,7 +234,7 @@ The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij
 We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}. 
 A different decay function $f(r_{ij})$, which is the effect of space, can be due to fundamentally different mechanism \autocite{barthelemy2011spatial} such as the different cost function for a given distance and the spatial granularity of the observation.
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}), though the embedding distance outperforms geographic distance regardless of the type of gravity model used (Fig.~\ref{fig:supp:distancermse}). 
-Beyond the fitting on the data, we would like to argue that geographical distance fits well with the power-law decay function because it is is more suitable for analyzing large, complex, and scale-free spatial systems, while, embedding distance fits well with the exponential decay function, which we will show later in the section of mathematical relation between word2vec and the gravity model.
+Beyond the fitting on the data, we would like to argue that geographical distance fits well with the power-law decay function because it is is more suitable for analyzing large, complex, and scale-free spatial systems\autocite{chen2015distance}, while embedding distance fits well with the exponential decay function, which we will show later in the section of mathematical relation between \textit{word2vec}and the gravity model.
 
 
 
@@ -298,7 +298,7 @@ A location $a_t=i$ is considered to have a context location $a_{t'}=j$ that appe
 where the denominator $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
 Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---which are referred to as the in-vector and out-vector, respectively, we follow many studies by adopting the in-vector $\bm{v}_i$ as an embedding of location $i$.
 
-Our experiments show that {\it word2vec} best explains real-world mobility flow when $w=1$ (Fig.~\ref{fig:supp:hyperparams}), with the flow predicted by
+Our experiments show that {\it word2vec} best explains real-world mobility flow when $w=1$ (Fig.~\ref{fig:supp:hyperparameter}), with the flow predicted by
 \begin{align}
 	\label{eq:flow_w2v}
 	\hat{T_{ij}}= P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
@@ -622,7 +622,7 @@ We follow the standard practice and only use the in-vector, $\bm{v}$,  which is 
 %% Word2vec parameters and training procedure
 We used the \textit{word2vec}  implementation in the python package \texttt{gensim}. 
 The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, shape of negative sampling distribution $\gamma$, and the number of iterations.
-For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparams}). 
+For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparameter}). 
 Although the original \textit{word2vec } paper uses $\gamma = 0.75$\autocite{mikolov2013word2vec}, here we set $\gamma = 1.0$, though results are only trivially different at different values of $\gamma$ (Fig.~\ref{fig:supp:distancemetrics}).
 We also use same setting for U.S. airport itinerary and Korean accommodation reservation data.
 
