@@ -75,7 +75,8 @@ if (opt$geo == "same-country") {
 # Reduce the size to save on memory
 dist <- dist %>%
   select(geo_distance, emb_distance, dot_distance,
-         pprcos_distance, pprjsd_distance,  gravity)
+         pprcos_distance, pprjsd_distance,
+         svdcos_distance, lapcos_distance, gravity)
 
 axislabel <- "DEFAULT"
 # Select the appropriate metric using the --distance command line argument
@@ -112,6 +113,18 @@ if (opt$distance == "geo") {
 
   # Provide axis label
   axislabel <- "Dot product similarity"
+} else if (opt$distance == "svdcos") {
+  dist <- dist %>%
+    rename(distance = svdcos_distance)
+
+  # Provide axis label
+  axislabel <- "SVD cosine distance"
+} else if (opt$distance == "lapcos") {
+  dist <- dist %>%
+    rename(distance = lapcos_distance)
+
+  # Provide axis label
+  axislabel <- "Laplacian cosine distance"
 }
 
 # Calculate the logged gravity and select only relevant columns

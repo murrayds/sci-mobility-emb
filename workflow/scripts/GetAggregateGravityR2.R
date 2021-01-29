@@ -107,8 +107,48 @@ agg <- data.table::rbindlist(lapply(DISTANCE_FILES, function(path) {
   df2 <- get_correlations(distance_data)
   df2$metric = "emb"
 
+  # Rename lapcos_distance to "distance", remove the old column
+  distance_data <- distance_data %>%
+    mutate(distance = lapcos_distance) %>%
+    select(-lapcos_distance)
+
+  df3 <- get_correlations(distance_data)
+  df3$metric = "lapcos"
+
+  # Rename svdcos_distance to "distance", remove the old column
+  distance_data <- distance_data %>%
+    mutate(distance = svdcos_distance) %>%
+    select(-svdcos_distance)
+
+  df4 <- get_correlations(distance_data)
+  df4$metric = "svdcos"
+
+  # Rename svdcos_distance to "distance", remove the old column
+  distance_data <- distance_data %>%
+    mutate(distance = pprcos_distance) %>%
+    select(-pprcos_distance)
+
+  df5 <- get_correlations(distance_data)
+  df5$metric = "pprcos"
+
+  # Rename svdcos_distance to "distance", remove the old column
+  distance_data <- distance_data %>%
+    mutate(distance = pprjsd_distance) %>%
+    select(-pprjsd_distance)
+
+  df6 <- get_correlations(distance_data)
+  df6$metric = "pprjsd"
+
+  # Rename svdcos_distance to "distance", remove the old column
+  distance_data <- distance_data %>%
+    mutate(distance = dot_distance) %>%
+    select(-dot_distance)
+
+  df7 <- get_correlations(distance_data)
+  df7$metric = "dot"
+
   # merge the two mini data frames
-  df <- data.table::rbindlist(list(df1, df2))
+  df <- data.table::rbindlist(list(df1, df2, df3, df4, df5, df6, df7))
 
   # Specity the parameters of the file, including the embedding dimensions
   # and window size
@@ -116,6 +156,8 @@ agg <- data.table::rbindlist(lapply(DISTANCE_FILES, function(path) {
   df$traj <- filename.split[4]
   df$dim <- as.numeric(gsub("[^0-9.-]", "", filename.split[5]))
   df$ws <- as.numeric(gsub("[^0-9.-]", "", filename.split[6]))
+  df$gamma <- as.numeric(gsub("[^0-9.-]", "", filename.split[7]))
+  df$sizetype <- gsub("(size)|(.csv)", "", filename.split[8])
 
   return(df)
 }))

@@ -49,6 +49,8 @@ parser.add_argument("-d", "--dimensions", help = "Embedding dimensionality",
                     type = int, required = True)
 parser.add_argument("-w", "--window", help = "Window size for word2vec",
                     type = int, required = True)
+parser.add_argument("-g", "--gamma", help = "Gamma value for word2vec",
+                    type = float, required = True)
 parser.add_argument("-wf", "--minfrequency", help = "Minimum word frequency for word2vec",
                     type = int, required = True)
 parser.add_argument("-p", "--numworkers", help = "Number of paralell workers",
@@ -80,6 +82,7 @@ model = gensim.models.Word2Vec(
             window = args.window, # just use the entire sentence
             min_count = args.minfrequency, # Remove tokens that don't appear enough
             workers = args.numworkers, # paralellize, use 4 workers
+            ns_exponent = args.gamma, #Gamma value for word2vec
             iter = 1,
             sg = 1 # use the skip_gram model
 ) # end model
