@@ -1,4 +1,4 @@
-\documentclass[draft,12pt]{article} %{{{
+\documentclass[12pt]{article} %{{{
 
 % Text
 \setlength{\marginparwidth}{2.3cm}
@@ -234,7 +234,7 @@ The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij
 We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}. 
 A different decay function $f(r_{ij})$, which is the effect of space, can be due to fundamentally different mechanism \autocite{barthelemy2011spatial} such as the different cost function for a given distance and the spatial granularity of the observation.
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}), though the embedding distance outperforms geographic distance regardless of the type of gravity model used (Fig.~\ref{fig:supp:distancermse}). 
-Beyond the fitting on the data, we would like to argue that geographical distance fits well with the power-law decay function because it is is more suitable for analyzing large, complex, and scale-free spatial systems\autocite{chen2015distance}, while embedding distance fits well with the exponential decay function, which we will show later in the section of mathematical relation between \textit{word2vec}and the gravity model.
+Beyond the fitting on the data, we would like to argue that geographical distance fits well with the power-law decay function because it is more suitable for analyzing large, complex, and scale-free spatial systems\autocite{chen2015distance}, while embedding distance fits well with the exponential decay function, which we will show later in the section of mathematical relation between \textit{word2vec}and the gravity model.
 
 
 
