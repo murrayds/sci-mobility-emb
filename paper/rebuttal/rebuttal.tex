@@ -1,0 +1,458 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{pslatex}
+\usepackage{color}
+\usepackage{bm}
+\usepackage{cite}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}
+\definecolor{orange}{RGB}{230, 81, 0}
+\definecolor{purple}{RGB}{170, 0, 255}
+\definecolor{mygreen}{RGB}{76, 175, 80}
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{210, 210, 210}
+
+\def\figdir{../Figs}
+
+\usepackage[most]{tcolorbox}
+\newcommand{\sada}[1]{{\leavevmode\color{orange}[SK: #1]}}
+\newcommand{\sadaadded}[1]{{\leavevmode\color{orange}{#1}}}
+\newcommand{\todo}[1]{{\leavevmode\color{orange}[TODO: #1]}}
+\newcommand{\add}[1]{{\leavevmode\color{blue}#1}}
+\newcommand{\del}[1]{{\leavevmode\color{red}\sout{#1}}}
+\newcommand{\response}[1]{{\leavevmode\noindent #1}}
+%\newcommand{\rcomment}[1]{{\bigskip\begin{snugshade}\begin{quotation}\noindent #1 \end{quotation}\end{snugshade} }}
+\newcommand{\rcomment}[1]{%
+\vspace{10pt}
+\begin{tcolorbox}[colback=black!3,colframe=white!45!black]
+#1
+\end{tcolorbox}
+}
+\newcommand{\correction}[2]{{\begin{quotation}\noindent {#1}{\it #2} \end{quotation} }}
+%\newcommand{\correction}[2]{{\bigskip\begin{quotation}\noindent {#1}{\it #2} \end{quotation} }}
+
+% comment out when submitting
+\definecolor{myblue}{RGB}{33,150,243}
+\definecolor{mygreen}{RGB}{76, 175, 80}
+\definecolor{purple}{RGB}{170, 0, 255}
+
+\makeatletter
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+\begin{flushleft}
+\Large  \textbf{\@title}
+\end{flushleft}\egroup
+}
+\makeatother
+\title{Response to the review of submission\\  ``Unsupervised embedding of trajectories captures the latent structure of mobility''}
+\date{}
+\begin{document}
+\maketitle
+
+We would like to thank all reviewers. 
+Their comments have authentically helped us improve the quality of our manuscript.
+In the following, we provide detailed responses to the issues raised by the reviewer.
+The added and deleted sections of the main text are indicated by blue and red, respectively, in the annotated revised manuscript. 
+
+\section*{Response to Referee \#1}
+
+\rcomment{%
+A. Summary of the key results:
+
+This manuscript proposes to use latent embeddings to represent human mobility data. The key idea is to embed traces of mobility data using the skip-gram with negative sampling (SGNS, i.e., “word2vec”) methodology. These embeddings can then be used to represent the distance between locations (e.g., via the cosine distance between embeddings), and, perhaps more importantly, these embeddings can also be interpreted in terms of how their properties capture various aspects of mobility.
+
+The authors demonstrate three key findings, with their empirical analysis based on datasets of flight itineraries, academic career trajectories, and Korean accommodation reservations.
+The authors show that the distance implicitly defined by the embedding space better reflects the flux between locations, compared to geographic distance (and personalized PageRank, in the appendix). More concretely, the authors show that the embedding distance explains more variance for the flow when using a gravity model approach.
+The authors show how the “global” structure of the embedding space can be visualized and interpreted by using UMAP to generate two-dimensional visualizations. Notably, the authors demonstrate interesting and non-trivial organization of the data at multiple scales, based on the embeddings.
+Finally, the authors show that the embeddings encode a latent “prestige” hierarchy over the academic data (e.g., with the L2 norm having an interesting non-linear relationship with institution size that appears to be mediated by prestige).
+}
+
+\response{%
+Thank you for the valuable comments. 
+In the following, we go through the review point-by-point and address the reviewer's concerns one by one.
+}
+
+\rcomment{%
+To the best of my knowledge, this is the first work providing a thorough analysis of the structure encoded by latent mobility embeddings (e.g., the prestige hierarchy), and this is the first work I am aware of to propose embeddings as an explanatory/exploratory tool in this context. In this way, the work has some originality and significance.
+
+However, the novelty of this work is quite narrow, as there are several prior works that develop trajectory-based embeddings of human mobility based on the word2vec algorithm. For example, the following references all propose word2vec-inspired embeddings of human mobility data:
+
+Liu, Xin, Yong Liu, and Xiaoli Li. "Exploring the Context of Locations for Personalized Location Recommendations." IJCAI. 2016.
+Feng, Shanshan, et al. "POI2Vec: geographical latent representation for predicting future visitors." AAAI. 2017.
+Yao, Zijun, et al. "Representing Urban Functions through Zone Embedding with Human Mobility Patterns." IJCAI. 2018.
+Cao, Hancheng, et al. "Habit2vec: Trajectory semantic embedding for living pattern recognition in population." IEEE Transactions on Mobile Computing 19.5 (2019): 1096-1108.
+
+Notably, the location embedding methodology in Liu et al (2016) (see Section 3.1) is essentially the same as the approach used in the submitted manuscript, and the work by Liu et al (2016) is well-known with over 100 citations.
+}
+
+\response{%
+Thank you for pointing out the missing references. We carefully read the papers and add them into introduction section.
+}
+
+\rcomment{
+Put simply, there are no original scientific insights about mobility granted by the analysis of the submitted manuscript. There is a clear argument that embeddings can be a useful tool to explore mobility data, but in my opinion, this methodological insight is not sufficiently significant to warrant publication in a general-interest venue such as Nature. In its current state, this work would be more appropriate for a mobility-focused or methodological venue.
+
+I found the specific use of the SGNS algorithm unmotivated. There are many ways to generate useful low-dimensional embeddings, so why is the SGNS method prioritized above others? This method is popular, but popularity alone is not sufficient justification and I see no theoretical reason why it should be the most appropriate method. For example, a key point in this manuscript is the fact that the the SGNS embeddings capture the flux between locations better than geographic distance. However, if this is such an important point, then why not simply learn a low-dimensional embedding approximation of the flux metric directly? SVD. In my view, such a direct low-dimensional approximation of flux using a well-understood and fundamental approach (i.e., SVD) would be simpler and more theoretically motivated as a direct approximation of the flux between locations. Of course, it is possible that SVD-based embeddings would not have the same interesting properties that the SGNS embeddings have, but in my opinion, the manuscript would need to justify this. Again, the core underlying issue—which relates to the above point on reproducibility—is the element of arbitrariness in the methodology. Given that the methodology is somewhat arbitrary and essentially chosen based on popularity, it is difficult to treat some findings (e.g., the correlation with prestige) as deeply meaningful rather than just a neat happenstance. E.g., is there something special about SGNS-style embeddings that gives rise to the prestige hierarchy, or is this a common feature of embeddings that approximate pairwise location co-occurrence statistics? The supplementary material does include some results using a personalized PageRank approach, but this appears to be a weak and over-complicated baseline (e.g., compared to a direct low-dimensional approximation of flux).
+
+Overall, my concerns about the methodology center around the fact that the embedding technique is treated as a “black box” of sorts. There is no theoretical justification for why the particular embedding method is used, no thorough comparison between different strong embedding methods, and no thorough acknowledgement or treatment of the stochasticity/arbitrariness in the learned embeddings. Together, these issues—combined with the lack of a clear constructive/predictive original result—weaken the overall claims about the universality and utility of the specific embedding approach. Indeed, it concerns me how the embeddings are essentially treated as something of a black box that supposedly generates "universal" structure. In this way, the manuscript blurs the line between actually studying human mobility and simply studying the dynamics/quirks of SGNS-style embedding methods, which is worrisome and runs the risk of generating supposed "insights" that are actually just
+methodological artifacts.
+
+For some references related to the theory and justification of embedding techniques, I suggest the following, all of which emphasize the close connection between matrix factorization and embedding methods which reinforces my concern/question about why a direct SVD method was not explored. These references would hopefully allow for a more theoretical and constructive justification for the embedding approach used and potentially explain some the trends that were observed:
+
+
+
+}
+
+\response{%
+Thank you for the suggestion!
+
+TODO:
+We checked other, simpler approximations )like svd or laplacian eighmap
+New mathematical understanding, why word2vec performs better
+This new understanding motivates the use of word2vec for mobility data
+
+
+}
+
+
+\rcomment{%
+The methodology has potential limitations in terms of reproducibility and robustness, which should be addressed. This is no specific fault of the authors, but both the SGNS/word2vec algorithm and the UMAP algorithm are inherently stochastic. This means that these approaches involve inherent randomness, and for researchers to replicate the exact effect seen in this manuscript, one would need to ensure the exact same random seeds etc. were used. In my view, this is a serious limitation, especially given that the UMAP results and learned embeddings are reified and treated as first-class objects of scientific study. In other words, this manuscript proposes that the embeddings encode meaningful information about mobility and that “universal” insights can be gleaned by studying the structure of the embedding space. If this is the argument, then it is critical that the manuscript demonstrates the the findings are robust to the stochasticity that is inherent in the algorithms used. While some concessions are made to this point (e.g., discussions regarding robustness to the SGNS hyperparameters), I think the issue of stochasticity in the techniques needs to be addressed more prominently, especially in terms of how these methods can be effectively used in reproducible work moving forward and how this stochasticity and arbitrariness impacts claims of “universality”.
+}
+
+\response{%
+TODO…
+
+Heeding this as a general concern, we have added the following sentence to our limitations paragraph in our conclusion: 
+
+“We however, note that all results shown here are robust to this stochasticity, likely emerging from the limited "vocabulary" of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories). Applications of word2vec to problem domains where the ratio of the vocabulary to data is smaller, however, should take caution to ensure that findings are not the result of random artifacts.”
+
+}
+
+\rcomment{%
+Another interesting point in this work is that the authors chose to not report p-values or the results of statistical significance tests (except confidence intervals). I presume this was a conscious decision, which I do not necessarily agree with. I see no critical error in the approach used by the authors, but I would have found aspects of the manuscript easier to understand in places with results of statistical tests (e.g., associated with goodness-of-fit tests formally test that the embedding-based distances are more correlated with the flux values). Given the sample sizes involved, I have no doubt that the results are statistically significant. However, I personally do see value in rigorously performed frequentist hypothesis testing, and I felt that this manuscript could be improved by employing such techniques.
+
+Lastly, the authors do not actually state how the 99 confidence intervals were constructed. (E.g., was this via a bootstrap approach?) This detail should be added.
+}
+
+\response{%
+JS: Can we do this. I think for the regression on the gravity model, p value is nearly zeros, dakota can you specify how the confidence interval? I thnk it is pretty much clear, but reviewer want to specify it?
+}
+
+
+\rcomment{%
+F. Suggested improvements:
+References and discussion of prior work using word2vec-style embeddings of mobility data.
+Additional experiments using alternative embedding methods, especially an SVD-based embedding method, as well as robustness/reproducibility studies across different runs of the SGNS would be essential to strengthen the paper.
+In addition, some additional results demonstrating how the embeddings provide novel scientific insight, rather than just recapitulating known structures, would be essential to make this work above-the-bar for a high-impact publication such as Nature.
+
+}
+
+
+\response{
+TODO: We believe that the mathematical breakthroughs made since our first submission improve the manuscript and extend its contribution and demonstrates novel scientific insight, and justifies the use of word2vec towards mobility data. By adding this, and addressing your other points (above), we believe that the revised manuscript sufficiently remedies your concerns. 
+
+}
+
+\bigskip
+\response{%
+In summary, we have updated the manuscript by providing the appropriate context in the literature, clarifying the limitations of our study, and extending our approach to incorporate delays in contact tracing. We deeply appreciate the referee's careful reading of the paper and their constructive comments. 
+%We hope that have correctly addressed the referee's concerns and comments.
+}
+
+%===================================================
+
+\newpage
+
+\bigskip
+\section*{\bf Response to Reviewer \#2}
+
+\rcomment{%
+I have carefully read the manuscript by Murray and others entitled as “Unsupervised embedding of trajectories captures the latent structure of mobility”, submitted for publication in Nature. In this paper the authors modify a conventional embedding method originally developed for word embedding, the Word2Vec algorithm, to obtain low dimensional representation of individual mobility trajectories in different settings. They analysed an air transportation dataset describing 87)flight connections between domestic airport of the US, a South Korean hotel accommodation dataset, and a world wide scientific mobility dataset obtained from the affiliations of researchers, recorded in the ISI Web of Science corpus. Beyond the methodological advance the main result of the paper is about the latent geographical and hierarchical patterns of academic units, what the embedding built from short scientific trajectories is demonstrated to capture at once.paradox of friendship) and propose a viable way to exploit the first principle without knowing the directionality of the infections.
+}
+
+\response{%
+We would like to thank the referee for helpful comments. 
+In the following, we provide detailed responses to all issues raised by the referee.
+}
+
+\rcomment{%
+Although the paper is well written and explores a very interesting problem, I have certain criticism for the used methodology. After obtaining a representation of each dataset, the authors defined an embedding distance as the cosine distance between vectors in the space, while defining distance as the geographical distance in the original, spatially embedded datasets. Subsequently they used the Gravity Law to estimate the flux between location pairs of vector pairs in the spatial and embedded space respectively. The Gravity Law, applied on mobility, assumes that the number of people moving between two populations is proportional to the multiplicative of the sizes of the populations and a deterrence function. Research during the last decades on transportation, spatial networks and human mobility suggests that this deterrence function may take a functional form of an inverse exponential or an inverse power-law, as it has been acknowledged by the authors. However, the emergence of these different deterrence functions can be due to fundamentally different mechanisms (for a review on the topic see Barthélemy, Physics Reports 499, 1, 2011, a paper not cited in the manuscript). For example, the different cost functions (linear or logarithmic) to create link at a given distance, the spatial granularity of the observation, or even the heterogeneity of the moving individuals in terms of various factors, just to mention a few examples. Instead, the authors of the actual paper arbitrarily assumed a power-law deterrence function in the spatial case and an exponential deterrence function in the embedding space without further arguing their choice (other than fitting on the data). Furthermore, assuming different deterrence functions for the flux estimation using Gravity Law makes the estimated fluxes incomparable, resulting the invalidation of results depicted in Figure 2.
+}
+
+\response{%
+Thank you for pointing this out. 
+TODO:
+We carefully read out the Barthélemy, Physics Reports 499, 1, 2011 and other reference paper in draft.
+Also, we also report the performance of the flux estimation with different deterrence functions, which shows Embedding distance with exponential decay function always produce the best result.
+
+
+Beyond the ﬁtting on the data, we would like to argue that geographical distance ﬁts well with the power-law decay function because it is is more suitable for analyzing large, complex, and scale-free spatial systems , while embedding distance ﬁts well with the exponential decay function, which we will show later in the section of mathematical relation between word2vecand the gravity model.
+}
+
+
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=0.85\textwidth]{\figdir/Descriptive/distance_prediction_performance_rmse.pdf}
+	\caption{
+		\textbf{Using cosine distance between embedding vectors as input to the gravity model results in better predictions of scientific mobility compared to geographic distance, baselines.}
+		Shown is the Root Mean Squared Error (RMSE), or the accuracy of predictions made with the gravity model of mobility using the embedding distance and other experimental parameters.
+		The RMSE is shown using both the exponential and power-law forms of the gravity model. 
+		For each distance metric and set of parameters, the RMSE is shown for 
+		Distance metrics are ordered, from top to bottom, by the lowest RMSE, where a lower error indicates better predictions. 
+		The asterisk denotes the best-performing distance metric for every case. 
+		The x-axis differentiates between three strategies for defining the organization population used to calculate the flux. 
+		``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+		population is defined in the same way for ``mobile-only'', except only using unique mobile researchers;
+		``Raw frequency'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding. 
+		Generally, ``All'' results in better prediction.
+		}
+	\label{fig:supp:distancermse}
+\end{figure}
+
+\rcomment{
+I would suggest to the authors to carefully cite other papers applying Word2Vec embedding on spatial data, especially focusing on location embedding based on trajectory sequences. Examples are:
+A. Solomon et al., Predict Demographic Information Using Word2Vec on Spatial Trajectories., ACM UMAP '18: Proceedings of the 26th Conference on User Modeling, Adaptation and Personalization, July 2018 Pages 331–339, https://doi.org/10.1145/3209219.3209224
+A. Crivellari and E. Beinat, From Motion Activity to Geo-Embeddings: Generating and Exploring Vector Representations of Locations, Traces and Visitors through Large-Scale Mobility Data., ISPRS Int. J. Geo-Inf. 2019, 8(3), 134 (2019); https://doi.org/10.3390/ijgi8030134
+The application of the Word2Vec method on the studied trajectory sequences is not well explained. Without explaining the embedding method briefly in the main text the reader has no idea how to interpret the embedding distance, which is in the hear of the study.
+
+}
+
+\response{
+Thank you. We have added the following sentence to the introduction: “It works under the notion that a good representation should facilitate prediction, and so learns a mapping of target locations (words) that best predict locations that co-appear in the same trajectory (sentence).”
+
+In addition, we provided more explicit mathematical detail of word2vec in the new subsection entitled “word2vec and the gravity model”. 
+
+We believe that these details are sufficient in the main text of the manuscript, and refer readers to the Methods for a deeper explanation.
+}
+
+\rcomment{
+
+The original SkipGram method expects environments of locations (originally words) with fixed length, however this is not explained in the manuscript nor in Methods or the SI.
+Related question to the previous one. Let’s assume that the authors used fixed window lengths and, as mentioned in Methods Embedding section (and demonstrate in Fig.S4 - not referenced in Methods), that the windows size w=1 gives the best correlations in case of scientific mobility. This might be true in absolute terms but it is an unfair comparison to larger window sizes, as there are way more short trajectories in the data than longer ones (see Fig.S3), thus the flux prediction of w=1 is based on a way larger sample than for w>1. Undersampling the ensemble of trajectories used for w=1 predictions might provide a fair way of comparing results of different window sizes.
+The other very important parameter of the SkipGram method is the embedding dimension, which is explained in the Methods but it is not explored. E.g. to choose the ideal dimension for embedding one may sweep through a broad range of possible dimensions and not only explore three values as described in the SI (Fig.S4).
+Their main observations in section “Embeddings provide functional distance between locations” is that “…our results demonstrate that, consistently, the embedding distance better captures patterns of actual mobility than does the geographic distance.”. This is a great verification of their method but it is somewhat expected from an embedding, which is built on mobility trajectories between places, as compared to cases based on simply geographic distance.
+
+}
+\response{
+JS: HOw can we do this?
+}
+
+\rcomment{
+When datasets in the intro are explained, it should be mentioned that the detailed descriptions are in the Methods section.
+}
+\response{
+Thank you. We have added a parenthetical to the introduction after stating the datasets, as follows: 
+
+“We embed trajectories from three massive datasets: U.S. passenger flight itinerary records, Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records (Detailed descriptions are available in the Methods).”
+}
+\rcomment{
+There is no reference to Fig.5e and f in the text.
+
+}
+\response{
+We have remedied this, including a reference to both figure panels.
+
+}
+\rcomment{
+Second paragraph on page 10: the authors discuss Fig.6 here but missed to refer the figure.
+
+}
+\response{
+
+Thank you, we have corrected this oversight and added a reference to the first sentence of the relevant paragraph. 
+
+}
+\rcomment{
+Page 15, last row: double point in the end of sentence.
+
+}
+\response{
+The extra point has been deleted. 
+}
+\rcomment{
+SI Page 2, S3: “. if” -> “. If”
+
+}
+\response{
+This has been corrected. 
+}
+
+\rcomment{
+SI Fig.S1c: Here the authors conclude that the proportions “decreased over time”. These proportions seem to be rather flat without strong decreasing trends. In any case, if the authors would like to indicate minor changes here, it would be helpful for the reader if a grid would be posted on the figure.
+
+
+}
+\response{
+
+Thank you, we agree that the trend is flat, rather than decreasing. We have adjusted the text accordingly, and also added a grid to the figure so that it can be more easily read. 
+
+}
+
+\rcomment{
+
+SI Fig.S3: Posted numerical values on the figures and the values described in the caption do not match.
+
+
+}
+\response{
+
+Thank you for pointing out this oversight. The caption values have been updated. 
+
+}
+
+\rcomment{
+SI Fig.S6: Please indicate what is RMSE in the caption. The authors defined it in the main text but the SI should be self consistent too.
+
+}
+\response{
+We have added the line “RMSE is the root-mean-squared error between the actual and predicted values.” to Fig. S6 as well as all other SI figures that make use of the same visualization.
+}
+
+\rcomment{
+
+SI Fig.S7: The authors state that “The gravity model with the exponential decay function outperforms that with a power-decay function.” - this does not seem to be true for the “International” case. Please specify this in the caption.
+
+
+}
+\response{
+We have updated the relevant line of the caption to read as follows: 
+“The gravity model with the exponential decay function slightly outperforms that with a power-decay function except in the case of international-only mobility, for which power-decay performs slightly better.”
+
+}
+
+\section*{Response to Referee \#3}
+
+\rcomment{%
+In this article manuscript, Murray et al demonstrate the power of “vanilla” embedding models based on undirected trajectories and co-affiliation to capture subtle, “functional” distances between establishments, airports, scientific universities and research institutes in terms of human mobility between them. Specifically, they embed these various institutions in a 300 dimensional Euclidean space with a shallow neural network (the very popular word2vec skip-gram architecture) that enables recovery of many subtle aspects of these spaces. For example, when the authors replace geographic distance in the well-known gravity model with cosine distance from their embedding model, they more than double their prediction of human flux between the institutions in each case as well as overall. Moreover, when they interrogate the case of scientific institutions, they show (1) through dimension-reduction (with the UMAP algorithm) on their 300D space, they can recover a high-resolution 2D map of science that captures many intrinsic dimensions of the scientific landscape (e.g., like institution types, because they are built from the mobility of people who are selected and selecting between the institutions), (2) through anchoring the dimensionality of the Euclidean space (e.g., high minus low status institutions) they can identify geographic location and status; (3) through hierarchical clustering and a measure of hierarchical “depth”, the similarity of national scientific enterprises, suggesting the multi-scale resolution of these representations. In short, they demonstrate the power of popular, easy-to-run, shallow embedding approaches to capture and represent structures related to human mobility, largely deploying interesting bespoke methods they have previously developed (and published) to navigate these representations (e.g., SemAxis and Element-Centric clustering).
+}
+
+\response{%
+Thank you for the valuable comments. 
+In the following, we go through the review point-by-point and address the reviewer's concerns one by one.
+}
+
+\rcomment{
+The analysis does not compare embeddings, which would not be a problem if they were making
+an inference other than we can embed micro-mobility to trace macro-mobility. They use an
+efficient (Google engineers developed it), single-layer embedding from 2013, which produces
+linear associations. But the paper doesn’t take advantage of the revolution in deep neural
+network models that now produce powerful, nonlinear and noncontiguous (e.g., using the
+attention architecture) models that now dominate analysis of language, and are making very
+power inroads in machine vision. To be clear, deeper models require much data and computational power to tune—they are an engineering feat—but if developed in these settings, they would likely dramatically improve the prediction of flux. They take into account directionality (e.g., a person moving from one opportunity to another) and would independently capture people how people distinctly move up and down the hierarchy or from place to place (e.g., a in bi-directional model like BERT). A lack of discussion or demonstration of which model works best--and the unfounded inference that direction does not matter felt weak without a demonstration that they would not have worked better. They did and do work much better for language models and for image generation...why would they not work for analysis of human mobility? (I’m sure they would, but this would time and independent development.)
+
+}
+
+\response{
+TODO: we introduce another simpler embedding also make some theorertical relationship between gravity model and word2vec. I think we can specify here.
+}
+
+\rcomment{
+The paper does not compare human transition (or co-affiliation) data with any other kinds of
+data that could be used for embedding. Does author byline data do better than the embedding
+of collaborating institutions (almost certainly), than co-mention of the institutions in the press, as
+with institutional collaborations (e.g, the Harvard-MIT Broad Institute, or joint university
+conferences; these will be stronger signals, but there are fewer of them), than advisor-student
+university pairs (although many of these will be captured by the authors’ approach when
+students publish at their home institutions before securing jobs elsewhere).
+
+
+}
+
+\response{
+I think dakota can answer this problem 
+}
+
+\rcomment{
+The paper does not compare human transition (or co-affiliation) data with any other kinds of
+data that could be used for embedding. Does author byline data do better than the embedding
+of collaborating institutions (almost certainly), than co-mention of the institutions in the press, as
+with institutional collaborations (e.g, the Harvard-MIT Broad Institute, or joint university
+conferences; these will be stronger signals, but there are fewer of them), than advisor-student
+university pairs (although many of these will be captured by the authors’ approach when
+students publish at their home institutions before securing jobs elsewhere).
+
+}
+
+\response{
+Is there any good reasoning about this?
+}
+
+
+\rcomment{
+There are known concerns with clustering a 300 dimensional objects because of the curse of
+dimensionality. Many have shown that reducing dimensionality with UMAP to a nontrivial
+number of dimensions (e.g., 30), which preserves both local and some global distance, then
+clustering on those dimensions are much more stable (e.g., this post). This was one
+concern with the stability of the clustering analysis
+
+
+}
+
+\response{
+Will test
+}
+
+\rcomment{
+P6Para3: “For THEIR purpose…”
+}
+
+\response{
+P8Para1: “by explicitly the relative importance of different level of the hierarchy with a scaling parameter r ” which is never described or explained. Considering it was derived by the authors in a very recent paper, no one will know what it is.
+}
+
+\rcomment{
+Thank you, we have edited the text to read as “We quantify the relative importance of geography (by region), and language (by the most widely-spoken language of each country) using the element-centric clustering similarity, a method that can compare hierarchical clustering and disjoint clustering (geography, language...) at the different level of hierarchy by explicitly adjusting a scaling parameter $r$, acting like a zooming lens”
+}
+
+
+
+\section*{Response to Referee \#1}
+
+\rcomment{%
+A. Summary of the key results:
+This is a very interesting paper, that takes a new look at the tools used to model human mobility, bringing it to the AI/ML age. It demonstrates that a neural embedding model can encode the relationships between locations into a vector-space, providing an much better measure of distance than the traditionally used physical distance. It then uses multiple datasets, from travel patterns to scientific mobility, to validate the approach, offering additional caveats—demonstrating that embeddings of scientific organizations uncover cultural, prestige and linguistic relations. Overall the findings are novel and open up new possibilities in modeling human mobility.
+}
+
+\response{%
+Thank you for the valuable comments. 
+In the following, we go through the review point-by-point and address the reviewer's concerns one by one.
+}
+
+\rcomment{
+The authors define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space. The increase in R2, as they switch to the embedding distance, is rather convincing. One of the models they use as a reference is the gravity model, but they also mention the radiation model. I am curious if they tried a comparison with that, and what was the outcome. I suspect that the radiation model would have a comparable performance to the gravity one. But as distance is not the only factor there, is a comparison at all feasible?
+}
+\response{
+radiation model assumes directionality, but it is hard to define in scientific mobility.
+@dakota can you specify the charactersitc of the scientific mobilty?
+}
+
+\rcomment{
+  My second group of questions pertain to the prestige hierarchy, that really drives the dynamics of scientific mobility. The technical description addressed most of them. However, I was wondering, is it all possible to go beyond the descriptive part, and show cases where the more accurate embedding base distances do make a difference? That is, using them, we do not only obtain better correlations with the ranking data, but also allows us to address problems that we could not without the embedding distance? For example, some results have shown that a paper coauthored by two authors at different high prestige institutions has higher impact, than writing a paper with two authors of the same high prestige institution—would embedding help us pull apart such effects? Here I am not trying to make the authors to write a different paper, so maybe a little forward thinking may be enough, if doing the actual work is too time consuming, and goes beyond the current narrative.
+}
+
+\response{
+ 	I think idea itself is really interesting, but time consuming, can we skop this for the future reseathc?
+
+}
+
+
+\rcomment{
+Finally, one cannot escape the fact that COVID changes our mobility patterns. Many groups have used mobile phone data to explore these changes. I wonder, how would the pre-covid embeddings apply to post-covid mobility? Once again, I am mindful that this would require access to such data, but I would not be surprised at all if the authors have access to such data—in which case this is remains an intriguing question.
+}
+
+\response{
+ 	I think it is doable if we have enough large number of publish sequence and tracing the difference of each institution borrowing idea of the histword. But, I think it is okay to leave it as a future work.
+
+}
+
+
+%\bibliographystyle{unsrt}
+\bibliography{main.bib}
+
+
+\end{document}
