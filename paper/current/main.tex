@@ -224,7 +224,7 @@ The Gravity Model is a widely used mobility model~\autocite{curiel2018citygravit
 
 \begin{equation}
 	\label{eq:gravity_basic}
-	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
+	\hat{T}_{ij} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
 where $m_{i}$ is the population of locations $i$,  $f(r_{ij})$ is a decay function with respect to distance between locations, and $C$ is a constant estimated from data (see Methods).
 For the flight itinerary data, we use population $m_{i}$ as the total number of unique passengers who passed through each airport, for the Korean accommodation reservation data, we use the total number of unique customers who booked with each accommodation, and for scientific mobility, we use the mean annual number of unique mobile and non-mobile authors who were affiliated with each organization.
@@ -293,15 +293,15 @@ The {\it word2vec} model takes a location trajectory, denoted by ($a_{1}, a_{2},
 A location $a_t=i$ is considered to have a context location $a_{t'}=j$ that appears in its succeeding or proceeding $w$ locations in the trajectory, \ie  $j \in [a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}]$.
  {\it Word2vec} learns an embedding by estimating the probability that location $i$ has context $j$:
 \begin{align}
-	P\left(j \given i \right):= \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:prob_w2v_ng}
+	P\left(j \given i \right):= \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{\widetilde{Z_i}}, \label{eq:prob_w2v_ng}
 \end{align}
-where the denominator $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
+where the denominator $\widetilde{Z_i}=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
 Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---which are referred to as the in-vector and out-vector, respectively, we follow many studies by adopting the in-vector $\bm{v}_i$ as an embedding of location $i$.
 
 Our experiments show that {\it word2vec} best explains real-world mobility flow when $w=1$ (Fig.~\ref{fig:supp:hyperparameter}), with the flow predicted by
 \begin{align}
 	\label{eq:flow_w2v}
-	\hat{T_{ij}}= P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
+	\hat{T}_{ij} = P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 \end{align}
 where $P(i)$ is the probability that location $i$ appears in the trajectory.
 Because computing $Z_i$ is computationally demanding, multiple approximation methods have been proposed, the most  popular being negative sampling~\autocite{mikolov2013word2vec}. 
@@ -320,13 +320,13 @@ Setting $\gamma = 1$ and substituting $\bm{u}_i = \bm{v}_j$ into Eq.~\eqref{eq:p
 \begin{align}
 	\hat{T_{ij}}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
 \end{align}
-The flow $\hat{T_{ij}}$ is symmetric (\ie $\hat{T_{ij}}=\hat{T_{ji}}$) because {\it word2vec} neglects whether the context $j$ appears before or after the center $i$ in the trajectory.
+The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) because {\it word2vec} neglects whether the context $j$ appears before or after the center $i$ in the trajectory.
 If we swap $i$ and $j$ in Eq.~\eqref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
-Therefore, to ensure $T_{ij} = T_{ji}$, the denominator $Z_i$ should be a constant.
+Therefore, to ensure $T_{ij} = T_{ji}$, the denominator $Z_i$ must be a constant.
 
 Taken altogether, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
 \begin{align}
-	\hat{T_{ij}}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}), \label{eq:flow_w2v_ng0}
+	\hat{T}_{ij}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}), \label{eq:flow_w2v_ng0}
 \end{align}
 where $C$ is a positive constant.
 In other words, \emph{word2vec with the negative sampling is a gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
@@ -638,8 +638,6 @@ For scientific mobility, across each training iteration, the order of organizati
 \label{sec:sg_and_word2vec}
 
 Negative sampling is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a distinct model  from {\it word2vec}.
-What is the different model?
-
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
 A center-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a parameter).
 Then, given a center-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using sigmoid function:
@@ -648,7 +646,7 @@ Then, given a center-context word pair $(i,j)$, the model predicts whether it is
 	\frac{1}{1 + \exp\left( - \bm{u}_j \cdot \bm{v}_i \right)}.
 \end{align}
 
-This procedure does not guarantee that the embedding optimally converges, even when increasing the training samples and iterations~\autocite{Chia 2010,Dyer2014}.
+This procedure does not guarantee that the embedding optimally converges, even when increasing the training samples and iterations~\autocite{Chia2010,Dyer2014}.
 This problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010}, which fits a probability model in the form:
 \begin{align}
 	\label{eq:nce}
@@ -714,18 +712,18 @@ Nevertheless, cosine distance is often shown to be useful in practice~\autocite{
 We model co-occurences $T_{ij}$ for locations $i$ and $j$ (referred to as flux), using the gravity law of mobility~\autocite{zipf1946gravity}.
 The gravity law of mobility, which was inspired by Newton's law of gravity, postulates that attraction between two locations is a function of their population and the distance between them.
 This formulation and variants have proven useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, truscott2012epidemicgravity, hong2016busgravity}.
-In the gravity law of mobility, the \textit{expected flux}, $\hat{T_{ij}}$ between two locations $i$ and $j$ is defined as,
+In the gravity law of mobility, the \textit{expected flux}, $\hat{T}_{ij}$ between two locations $i$ and $j$ is defined as,
 
 %
 % Gravity law EQ
 %
 \begin{equation}
 	\label{eq:gravity_basic}
-	\hat{T_{ij}} = Cm_{i}m_{j}f(r_{ij}),
+	\hat{T}_{ij} = Cm_{i}m_{j}f(r_{ij}),
 \end{equation}
 where $m_{i}$ and $m_{j}$ are the population of locations, defined as the total number of passenger who passed through each airport for U.S. airport itineraries,  the total number of customer who booked with each accommodation for Korean accommodation reservations, and the yearly-average count of unique authors, both mobile and non-mobile, affiliated with each organization for scientific mobility.
 $f(r_{ij})$ is a decay function of distance $r_{ij}$ between locations $i$ and $j$.
-Here, we used the most basic gravity model which assumes symmetry of the flow $\hat{T_{ij}} =\hat{T_{ji}}$ and distance $r_{ij} = r_{ji}$, while there are four proposed variants \autocite{wilson2011entropy}.
+Here, we used the most basic gravity model which assumes symmetry of the flow $\hat{T}_{ij} =\hat{T}_{ji}$ and distance $r_{ij} = r_{ji}$, while there are four proposed variants \autocite{wilson2011entropy}.
 There are two popular forms for the $f(r_{ij})$:
 one is a power law function in the form $f(r_{ij})= r^{-\alpha}_{ij} \ (\alpha > 0)$, and the other is an exponential function in the form $f(r_{ij}) = e^{-\beta r_{ij}} \ (\beta > 0)$ \autocite{chen2015distance}.
 The parameters for $f(r_{ij})$ and $C$ are fit to given mobility data using a log-linear regression~\autocite{jung2008highwaygravity, curiel2018citygravity, truscott2012epidemicgravity, hong2016busgravity, simini2012universal}.
