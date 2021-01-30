@@ -89,15 +89,24 @@ In the following, we address each of your comments point-by-point.
 \rcomment{%
 To the best of my knowledge, this is the first work providing a thorough analysis of the structure encoded by latent mobility embeddings (e.g., the prestige hierarchy), and this is the first work I am aware of to propose embeddings as an explanatory/exploratory tool in this context. In this way, the work has some originality and significance.
 
+
+\begin{itemize}
+	\item Liu, Xin, Yong Liu, and Xiaoli Li. "Exploring the Context of Locations for Personalized Location Recommendations." IJCAI. 2016.
+\item Feng, Shanshan, et al. "POI2Vec: geographical latent representation for predicting future visitors." AAAI. 2017.
+\item Yao, Zijun, et al. "Representing Urban Functions through Zone Embedding with Human Mobility Patterns." IJCAI. 2018.
+\item Cao, Hancheng, et al. "Habit2vec: Trajectory semantic embedding for living pattern recognition in population." IEEE Transactions on Mobile Computing 19.5 (2019): 1096-1108.
+\end{itemize}
+
+
+
+
 However, the novelty of this work is quite narrow, as there are several prior works that develop trajectory-based embeddings of human mobility based on the word2vec algorithm. For example, the following references all propose word2vec-inspired embeddings of human mobility data:
 
-Liu, Xin, Yong Liu, and Xiaoli Li. "Exploring the Context of Locations for Personalized Location Recommendations." IJCAI. 2016.
-Feng, Shanshan, et al. "POI2Vec: geographical latent representation for predicting future visitors." AAAI. 2017.
-Yao, Zijun, et al. "Representing Urban Functions through Zone Embedding with Human Mobility Patterns." IJCAI. 2018.
-Cao, Hancheng, et al. "Habit2vec: Trajectory semantic embedding for living pattern recognition in population." IEEE Transactions on Mobile Computing 19.5 (2019): 1096-1108.
 
 Notably, the location embedding methodology in Liu et al (2016) (see Section 3.1) is essentially the same as the approach used in the submitted manuscript, and the work by Liu et al (2016) is well-known with over 100 citations.
 }
+
+
 
 \response{%
 Thank you for pointing out the missing references. 
@@ -234,8 +243,12 @@ Beyond the ﬁtting on the data, we would like to argue that geographical distan
 
 \rcomment{
 I would suggest to the authors to carefully cite other papers applying Word2Vec embedding on spatial data, especially focusing on location embedding based on trajectory sequences. Examples are:
-A. Solomon et al., Predict Demographic Information Using Word2Vec on Spatial Trajectories., ACM UMAP '18: Proceedings of the 26th Conference on User Modeling, Adaptation and Personalization, July 2018 Pages 331–339, https://doi.org/10.1145/3209219.3209224
-A. Crivellari and E. Beinat, From Motion Activity to Geo-Embeddings: Generating and Exploring Vector Representations of Locations, Traces and Visitors through Large-Scale Mobility Data., ISPRS Int. J. Geo-Inf. 2019, 8(3), 134 (2019); https://doi.org/10.3390/ijgi8030134
+\begin{itemize}
+\item A. Solomon et al., Predict Demographic Information Using Word2Vec on Spatial Trajectories., ACM UMAP '18: Proceedings of the 26th Conference on User Modeling, Adaptation and Personalization, July 2018 Pages 331–339, https://doi.org/10.1145/3209219.3209224
+\item A. Crivellari and E. Beinat, From Motion Activity to Geo-Embeddings: Generating and Exploring Vector Representations of Locations, Traces and Visitors through Large-Scale Mobility Data., ISPRS Int. J. Geo-Inf. 2019, 8(3), 134 (2019); https://doi.org/10.3390/ijgi8030134
+
+\end{itemize}
+
 The application of the Word2Vec method on the studied trajectory sequences is not well explained. Without explaining the embedding method briefly in the main text the reader has no idea how to interpret the embedding distance, which is in the hear of the study.
 
 }
@@ -295,7 +308,7 @@ Page 15, last row: double point in the end of sentence.
 The extra point has been deleted. 
 }
 \rcomment{
-SI Page 2, S3: “. if” -> “. If”
+SI Page 2, S3: “. if” $\rightarrow$ “. If”
 
 }
 \response{
