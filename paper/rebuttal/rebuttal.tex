@@ -25,7 +25,7 @@
     filecolor=magenta,      
     urlcolor=cyan,
 }
-
+\DeclareUnicodeCharacter{FB01}{fi}
 \usepackage{dirtytalk}
 
 \def\figdir{../Figs}
@@ -412,6 +412,8 @@ concern with the stability of the clustering analysis
 
 \response{
 \todo{will test. But what do we test exactly?}
+\todo{JS: actually, can't agree with this opinion. For sure, curse of  conventionality exists. Many dimensional reduction technique do is reducing dimension with keeping pair-wise distance. So, it can be well matched with some clustering algorithm such as k-means algorithm. But, in our analysis, we used raw similarity score for hierarchical clustering. So, in this analysis, using projected similarity form umap(their suggestion) is kinda ridiculous. Approximation is approximation, not real similarity.
+}
 }
 
 \rcomment{
