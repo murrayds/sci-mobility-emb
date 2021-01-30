@@ -525,6 +525,7 @@ Taiwan           & 3.67             & 72
 	\caption{
 		\textbf{Cosine distance between embedding vectors explains more flux in scientific mobility than geographic distance, baselines.}
 		The correlation, or amount of flux explained by the embedding distance across distance metrics and other experimental parameters. 
+		All correlations are significant at $p < 0.0001$). 
 		Distance metrics are ordered, from top to bottom, by the highest correlation ($r^{2}$). 
 		The asterisk denotes the top-performing distance metric for every case. 
 		All distance metrics explain more of the flux than does geographic distance.
@@ -580,8 +581,10 @@ Taiwan           & 3.67             & 72
 		\textbf{Cosine distance is correlated with dot product similarity.}
 		We find a relatively high correlation between the embedding distance---one minus the cosine similarity---and the dot product similarity between organization vectors ($R^2 = 0.73$).
 		Color of each hex bin indicates the frequency of organization pairs. 
-		Black dots indicate the mean dot product similarity averaged over binned sets at the same embedding distance.
-		Red line is line of best fit.
+				The red line is the line of the best fit.
+		Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution. 
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$).
 	}
 	\label{fig:supp:cosdot}
 \end{figure}
@@ -640,8 +643,10 @@ Taiwan           & 3.67             & 72
 		\textbf{Embedding distance explains more variance for global, within, and across country flux than geographic distance.}
 		\textbf{a.}
 		Embedding distance explains more flux than geographic distance (\textbf{b}).
-		Red line is the line of best fit.
+		The red line is the line of the best fit.
 		Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution. 
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
 		Color of each hex bin indicates frequency of organization pairs.
 		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}.
 		\textbf{c-d.}	embedding distance explains more variance when considering only within-country organization pairs.
@@ -685,8 +690,10 @@ Taiwan           & 3.67             & 72
 		Performance of dot product similarities in explaining and predicting mobility.
 		Similarity scores are calculated as the pairwise dot product between organizational vectors.
 		Dot product similarity performs better than geographic distance, though worse than cosine similarity in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
-		Red line is line of best fit.
+		The red line is the line of the best fit.
 		Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution. 
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
 		Color indicates frequency of organization pairs within each hex bin.
 		Similarly, PPR distance performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
@@ -711,8 +718,10 @@ Taiwan           & 3.67             & 72
 		Performance of personalized page rank scores in explaining and predicting mobility.
 		Personalized page rank is calculated for the underlying mobility network, and distance measured as the cosine distnace between PPR probability distribution vectors.
 		PPR cosine distance performs roughly similar to geographic distance in explaining global(\textbf{a}), domestic (\textbf{b}), or international (\textbf{c}) country mobility.
-		Red line is the line of best fit.
-		Black dots indicate the mean flux across binned distances.
+		The red line is the line of the best fit.
+		Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution. 
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
 		Color of hex bind indicates frequency of organization pairs.
 		Similarly, PPR distance performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
@@ -737,8 +746,10 @@ Taiwan           & 3.67             & 72
 		Personalized page rank is calculated for the underlying mobility network, and distance measured as the Jensen-Shannon Divergence (JSD) between PPR probability distribution vectors.
 		PPR JSD performs roughly similar to geographic distance in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
 		Overall, PPR JSD explains more variance in mobility than using cosine distance (Fig.~\ref{fig:supp:gravity_pprcos}), except for international mobility, for which cosine similarity out-performs JSD.
-		Red line is the line of best fit.
+		The red line is the line of the best fit.
 		Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution. 
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
 		Color of hex bind indicates frequency of organization pairs.
 		Similarly, PPR JSD performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
 		Boxplots show distribution of actual flux for binned values of predicted flux.
@@ -847,6 +858,7 @@ Taiwan           & 3.67             & 72
 		White points are those top and bottom 20 universities aggregated to define the ends of the axis.
 		The grey box corresponds to the top 20 and bottom 20 ranks.
 	  	Spearman's $\rho$ details the estimate from Spearman correlation between the two rankings using all universities, including those used to define the ends of each axis.
+	  	All correlations are significant with $p < 0.0001$. 
 	}
 	\label{fig:supp:semaxis_compare}
 \end{figure}
@@ -863,6 +875,7 @@ Taiwan           & 3.67             & 72
 		\textbf{Network centrality is strongly correlated with Times ranking.}
 		Comparison between the ranking of organizations by their network-centrality rank and their rank in the 2018 Times Higher Education ranking of U.S. Universities .
 		The Times rank is correlated with degree centrality rank (\textbf{a}) with Spearman's $\rho = 0.73$, and is correlated with the eigenvector centrality rank (\textbf{b}) with Spearman's $\rho = 0.76$.
+		All correlations are significant with $p < 0.0001$. 
 	}
 	\label{fig:supp:centrality_times_compare}
 \end{figure}
@@ -879,6 +892,7 @@ Taiwan           & 3.67             & 72
 		\textbf{Network centrality less correlated with Embedding rank.}
 		Comparison between the ranking of organizations by their network-centrality rank and the embedding rank derived with SemAxis with poles defined using the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities .
 		Embedding rank is correlated with degree centrality rank (\textbf{a}) with Spearman's $\rho = 0.45$, and is correlated with the eigenvector centrality rank (\textbf{b}) with Spearman's $\rho = 0.55$.
+		All correlations are significant with $p < 0.0001$. 
 	}
 	\label{fig:supp:centrality_semaxis_compare}
 \end{figure}
@@ -917,10 +931,11 @@ Taiwan           & 3.67             & 72
 		The embedding rank is derived by first projecting non-university organizations onto the SemAxis axis formed with poles defined using the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities.
 		\textbf{a} Shows how the correlation between the citation impact and SemAxis rankings differ while varying the size threshold for including an organization.
 		Size is calculated as the mean annualized number of unique authors publishing with that organization. 
-		Annotations show the number of organizations remaining at thresholds pf 0, 50, and 100. 
+		Annotations show the number of organizations remaining at thresholds of 0, 50, and 100. 
 		\textbf{b}. Comparison of organizations using a size threshold of 10 for regional and liberal arts colleges, and 50 for research institutes and government organizations;
 		these thresholds were chosen as points thresholds of stability in \textbf{a}. 		
 		The impact rank is correlated with the embedding rank for regional and liberal arts colleges with Spearman's $\rho = 0.49\,(n = 48)$, research institutes with Spearman's $\rho = 0.58\,(n = 159)$, and for government organizations with Spearman's $\rho = 0.36\,(n = 55)$. 
+		All correlations are significant with $p < 0.001$. 
 	}
 	\label{fig:supp:sector_semaxis_impact}
 \end{figure}
