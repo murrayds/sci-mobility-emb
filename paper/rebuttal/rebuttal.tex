@@ -198,7 +198,7 @@ In addition, some additional results demonstrating how the embeddings provide no
 
 
 \response{
-TODO: We believe that the mathematical breakthroughs made since our first submission improve the manuscript and extend its contribution and demonstrates novel scientific insight, and justifies the use of word2vec towards mobility data. By adding this, and addressing your other points (above), we believe that the revised manuscript sufficiently remedies your concerns. 
+We believe that the mathematical breakthroughs made since our first submission improve the manuscript and extend its contribution and demonstrates novel scientific insight, and justifies the use of word2vec towards mobility data. By adding this, and addressing your other points (above), we believe that the revised manuscript sufficiently remedies your concerns. 
 
 }
 
@@ -230,12 +230,18 @@ Although the paper is well written and explores a very interesting problem, I ha
 
 \response{%
 Thank you for pointing this out. 
-TODO:
-We carefully read out the Barthélemy, Physics Reports 499, 1, 2011 and other reference paper in draft.
-Also, we also report the performance of the flux estimation with different deterrence functions, which shows Embedding distance with exponential decay function always produce the best result.
+We carefully read out the Barthélemy, Physics Reports 499, 1, 2011, and referenced it in our manuscript. 
+Also, we report the performance of the flux estimation (Fig.~\ref{fig:supp:distancemetrics}, this document) and prediction (Fig.~\ref{fig:supp:distancermse}, this document) using different deterrence functions, funding that while performance differs, that the embedding distance outperforms geographic 
+distance no matter the function used. 
+We add the following line to the methods,
 
+\medskip
+\say{The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanism [...] such as the cost functions for a given distance and the spatial granularity of the observation.
+For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case. though the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
+\medskip
 
-Beyond the ﬁtting on the data, we would like to argue that geographical distance ﬁts well with the power-law decay function because it is is more suitable for analyzing large, complex, and scale-free spatial systems , while embedding distance ﬁts well with the exponential decay function, which we will show later in the section of mathematical relation between word2vecand the gravity model.
+We also argue that geographical distance ﬁts well with the power-law decay function because it is is more suitable for analyzing large, complex, and scale-free spatial systems , while embedding distance ﬁts well with the exponential decay function, which we demonstrate to correspond to an underlying mathematical relationship between \textit{word2vec} and the gravity model, a connection we recently discovered and included as a major finding in this revision (see our response to Reviewer 1).
+
 }
 
 
@@ -424,9 +430,12 @@ concern with the stability of the clustering analysis
 }
 
 \response{
-\todo{will test. But what do we test exactly?}
-\todo{JS: actually, can't agree with this opinion. For sure, curse of  conventionality exists. Many dimensional reduction technique do is reducing dimension with keeping pair-wise distance. So, it can be well matched with some clustering algorithm such as k-means algorithm. But, in our analysis, we used raw similarity score for hierarchical clustering. So, in this analysis, using projected similarity form umap(their suggestion) is kinda ridiculous. Approximation is approximation, not real similarity.
-}
+
+Thank you for this suggestion. 
+We looked into this, using UMAP to reduce the country-level embeddings from 300 down to 30 dimensions, however the results from this were incomprehensible, and inferior to those using 300 dimensions. 
+Many dimensionality reduction techniques reduce the number of dimensions by maintaining pairwise distances between vectors, so that the result can be well-suited for clustering algorithms. 
+However, our approach already uses raw pairwise similarities to perform hierarchical clustering, so approximating this distance in 30 dimensions, and then using the new distances to perform clustering is redundant. 
+We also find that the curse of dimensional is not a major issue in our analysis, at least given the size of our data and the number of locations represented---\textit{word2vec} seems able to learn dense vector-space representations.
 }
 
 \rcomment{
@@ -446,7 +455,7 @@ Thank you, we have edited the text to read as “We quantify the relative import
 }
 
 
-
+\clearpage
 \section*{Response to reviewer \#4}
 
 \rcomment{%
@@ -481,9 +490,15 @@ While we are excited to investigate the use of neural embeddings with the radiat
 }
 
 \response{
-\todo{Respond to this}
- 	I think idea itself is really interesting, but time consuming, can we skop this for the future reseathc?
 
+Thank you for this idea!
+We believe that this is an interesting topic and we hope to investigate it in the future. 
+In your particular example, an embedding distance trained using sequences of co-authorship on the same paper might be better to capture the \textit{collaborative} distance between institutions. 
+Then, using that distance, one could measure the "embedding distance" spanned by all authors in the byline, and relate this to questions impact to determine whether (a)typical collaborations relate to impact. 
+This is certainly a topic that is in our mind for future study. 
+In the case of scientific mobility, we might also consider the "embedding distance" spanned by an individual's career, and relate this to their demographics and scientific impact. 
+
+However, while these topics are exciting, we believe that that they fall outside the scope of the current manuscript, especially given the discoveries we made concerning a fundamental connection between the gravity law of mobility and \textit{word2vec}.
 }
 
 
@@ -503,6 +518,31 @@ In the future, however, we hope to have access to a fully-representative sample 
 We can use techniqeus developed by other researchers, such as those used by Hamilton, Leskovec, \& Jurafsky (\href{https://nlp.stanford.edu/projects/histwords/}{[link]}), to align embeddings trained on different data in order to quantify the changes in global mobility. 
 We look forward to approaching this, as well as other exciting projects in the future. 
 }
+
+\clearpage
+%
+% Figure - Distance metric performance
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{\figdir/Descriptive/distance_metric_performance.pdf}
+	\caption{
+		\textbf{Cosine distance between embedding vectors explains more flux in scientific mobility than geographic distance, baselines.}
+		The correlation, or amount of flux explained by the embedding distance across distance metrics and other experimental parameters. 
+		All correlations are significant at $p < 0.0001$). 
+		Distance metrics are ordered, from top to bottom, by the highest correlation ($r^{2}$). 
+		The asterisk denotes the top-performing distance metric for every case. 
+		All distance metrics explain more of the flux than does geographic distance.
+		The cosine distance between embedding vectors explains more flux than all other distance metrics. 
+		The x-axis differentiates between three strategies for defining the organization population used to calculate the flux. 
+		``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+		population is defined in the same way for ``mobile-only'', except only using unique mobile researchers;
+		``Raw frequency'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding. 
+		Generally, ``All'' explains more of the flux, however there is little difference between definitions of mobility.
+		All distance metrics tend to explain more of the flux when describing all or domestic (same-country) mobility.	
+		}
+	\label{fig:supp:distancemetrics}
+\end{figure}
 
 \clearpage
 \begin{figure}[p!]
