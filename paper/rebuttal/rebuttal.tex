@@ -18,6 +18,7 @@
 \usepackage{framed}
 \definecolor{shadecolor}{RGB}{210, 210, 210}
 
+
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -47,6 +48,9 @@
 \newcommand{\correction}[2]{{\begin{quotation}\noindent {#1}{\it #2} \end{quotation} }}
 %\newcommand{\correction}[2]{{\bigskip\begin{quotation}\noindent {#1}{\it #2} \end{quotation} }}
 
+\newcommand{\mycaption}[2]{%
+  \caption[#1]{\textbf{#1} \small#2}%
+}
 % comment out when submitting
 \definecolor{myblue}{RGB}{33,150,243}
 \definecolor{mygreen}{RGB}{76, 175, 80}
@@ -64,11 +68,24 @@
 \begin{document}
 \maketitle
 
-We would like to thank all reviewers for their incredibly helpful and insight comments which have helped to improve the quality of our manuscript.
-In the following, we provide detailed responses to the issues raised by each reviewer.
+\noindent Dear Dr.editorname and Refrees,
+
+
+We would like to thank all Referees for their incredibly helpful and insight comments which have helped to improve the quality of our manuscript.
+In the following, we provide detailed responses to the issues raised by each Referee.
 A version of our manuscript with changes annotated has also been provided to highlight changes made.
 
-\section*{Response to reviewer \#1}
+\tableofcontents
+\listoffigures
+
+
+\section{List of changes}
+
+We have broken down the list of changes to the manuscript by referee.
+
+\section{Point-by-point discussion}
+
+\subsection{Response to Referee 1}
 
 \rcomment{%
 A. Summary of the key results:
@@ -131,17 +148,6 @@ For some references related to the theory and justification of embedding techniq
 Thank you for the suggestion! 
 We split our response into two subsections concerning the theoretical justification, on one hand, and the comparison to simpler baselines, on the other. 
 
-\subsection*{Theoretical justification of \textit{word2vec} and the Gravity Model} 
-\todo {add text}
-
-
-
-\subsection*{Performance of \textit{word2vec} compared with baselines}
-\todo{add text}
-
-
-
-}
 
 
 \rcomment{%
@@ -204,8 +210,8 @@ We believe that the mathematical breakthroughs made since our first submission i
 
 \bigskip
 \response{%
-In summary, we have updated the manuscript by providing the appropriate context in the literature, clarifying the limitations of our study, and extending our approach to incorporate delays in contact tracing. We deeply appreciate the reviewer's careful reading of the paper and their constructive comments. 
-%We hope that have correctly addressed the reviewer's concerns and comments.
+In summary, we have updated the manuscript by providing the appropriate context in the literature, clarifying the limitations of our study, and extending our approach to incorporate delays in contact tracing. We deeply appreciate the Referee's careful reading of the paper and their constructive comments. 
+%We hope that have correctly addressed the Referee's concerns and comments.
 }
 
 %===================================================
@@ -213,15 +219,15 @@ In summary, we have updated the manuscript by providing the appropriate context 
 \newpage
 
 \bigskip
-\section*{\bf Response to Reviewer \#2}
+\subsection{Response to Referee 2}
 
 \rcomment{%
 I have carefully read the manuscript by Murray and others entitled as “Unsupervised embedding of trajectories captures the latent structure of mobility”, submitted for publication in Nature. In this paper the authors modify a conventional embedding method originally developed for word embedding, the Word2Vec algorithm, to obtain low dimensional representation of individual mobility trajectories in different settings. They analysed an air transportation dataset describing 87)flight connections between domestic airport of the US, a South Korean hotel accommodation dataset, and a world wide scientific mobility dataset obtained from the affiliations of researchers, recorded in the ISI Web of Science corpus. Beyond the methodological advance the main result of the paper is about the latent geographical and hierarchical patterns of academic units, what the embedding built from short scientific trajectories is demonstrated to capture at once.paradox of friendship) and propose a viable way to exploit the first principle without knowing the directionality of the infections.
 }
 
 \response{%
-We would like to thank the reviewer for helpful comments. 
-In the following, we provide detailed responses to all issues raised by the reviewer.
+We would like to thank the Referee for helpful comments. 
+In the following, we provide detailed responses to all issues raised by the Referee.
 }
 
 \rcomment{%
@@ -240,7 +246,7 @@ We add the following line to the methods,
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case. though the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
 \medskip
 
-We also argue that geographical distance ﬁts well with the power-law decay function because it is is more suitable for analyzing large, complex, and scale-free spatial systems , while embedding distance ﬁts well with the exponential decay function, which we demonstrate to correspond to an underlying mathematical relationship between \textit{word2vec} and the gravity model, a connection we recently discovered and included as a major finding in this revision (see our response to Reviewer 1).
+We also argue that geographical distance ﬁts well with the power-law decay function because it is is more suitable for analyzing large, complex, and scale-free spatial systems , while embedding distance ﬁts well with the exponential decay function, which we demonstrate to correspond to an underlying mathematical relationship between \textit{word2vec} and the gravity model, a connection we recently discovered and included as a major finding in this revision (see our response to Referee 1).
 
 }
 
@@ -364,7 +370,7 @@ We have updated the relevant line of the caption to read as follows:
 
 }
 
-\section*{Response to reviewer \#3}
+\subsection{Response to Referee 3}
 
 \rcomment{%
 In this article manuscript, Murray et al demonstrate the power of “vanilla” embedding models based on undirected trajectories and co-affiliation to capture subtle, “functional” distances between establishments, airports, scientific universities and research institutes in terms of human mobility between them. Specifically, they embed these various institutions in a 300 dimensional Euclidean space with a shallow neural network (the very popular word2vec skip-gram architecture) that enables recovery of many subtle aspects of these spaces. For example, when the authors replace geographic distance in the well-known gravity model with cosine distance from their embedding model, they more than double their prediction of human flux between the institutions in each case as well as overall. Moreover, when they interrogate the case of scientific institutions, they show (1) through dimension-reduction (with the UMAP algorithm) on their 300D space, they can recover a high-resolution 2D map of science that captures many intrinsic dimensions of the scientific landscape (e.g., like institution types, because they are built from the mobility of people who are selected and selecting between the institutions), (2) through anchoring the dimensionality of the Euclidean space (e.g., high minus low status institutions) they can identify geographic location and status; (3) through hierarchical clustering and a measure of hierarchical “depth”, the similarity of national scientific enterprises, suggesting the multi-scale resolution of these representations. In short, they demonstrate the power of popular, easy-to-run, shallow embedding approaches to capture and represent structures related to human mobility, largely deploying interesting bespoke methods they have previously developed (and published) to navigate these representations (e.g., SemAxis and Element-Centric clustering).
@@ -372,7 +378,7 @@ In this article manuscript, Murray et al demonstrate the power of “vanilla” 
 
 \response{%
 Thank you for the valuable comments. 
-In the following, we go through the review point-by-point and address the reviewer's concerns one by one.
+In the following, we go through the review point-by-point and address the Referee's concerns one by one.
 }
 
 \rcomment{
@@ -456,7 +462,7 @@ Thank you, we have edited the text to read as “We quantify the relative import
 
 
 \clearpage
-\section*{Response to reviewer \#4}
+\subsection{Response to Referee 4}
 
 \rcomment{%
 A. Summary of the key results:
@@ -465,7 +471,7 @@ This is a very interesting paper, that takes a new look at the tools used to mod
 
 \response{%
 Thank you for the valuable comments. 
-In the following, we go through the review point-by-point and address the reviewer's concerns one by one.
+In the following, we go through the review point-by-point and address the Referee's concerns one by one.
 }
 
 \rcomment{
@@ -519,6 +525,20 @@ We can use techniqeus developed by other researchers, such as those used by Hami
 We look forward to approaching this, as well as other exciting projects in the future. 
 }
 
+
+\section{Theoretical justification of \textit{word2vec} and the Gravity Model} 
+\todo {add text}
+
+
+
+\section{Performance of \textit{word2vec} compared with baselines}
+\todo{add text}
+
+
+
+}
+
+
 \clearpage
 %
 % Figure - Distance metric performance
@@ -526,9 +546,9 @@ We look forward to approaching this, as well as other exciting projects in the f
 \begin{figure}[p!]
 	\centering
 	\includegraphics[width=0.9\textwidth]{\figdir/Descriptive/distance_metric_performance.pdf}
-	\caption{
-		\textbf{Cosine distance between embedding vectors explains more flux in scientific mobility than geographic distance, baselines.}
-		The correlation, or amount of flux explained by the embedding distance across distance metrics and other experimental parameters. 
+		\mycaption
+		{Cosine distance between embedding vectors explains more flux in scientific mobility than geographic distance, baselines.}
+		{The correlation, or amount of flux explained by the embedding distance across distance metrics and other experimental parameters. 
 		All correlations are significant at $p < 0.0001$). 
 		Distance metrics are ordered, from top to bottom, by the highest correlation ($r^{2}$). 
 		The asterisk denotes the top-performing distance metric for every case. 
@@ -548,9 +568,9 @@ We look forward to approaching this, as well as other exciting projects in the f
 \begin{figure}[p!]
 	\centering
 	\includegraphics[width=0.85\textwidth]{\figdir/Descriptive/distance_prediction_performance_rmse.pdf}
-	\caption{
-		\textbf{Using cosine distance between embedding vectors as input to the gravity model results in better predictions of scientific mobility compared to geographic distance, baselines.}
-		Shown is the Root Mean Squared Error (RMSE), or the accuracy of predictions made with the gravity model of mobility using the embedding distance and other experimental parameters.
+		\mycaption
+		{Using cosine distance between embedding vectors as input to the gravity model results in better predictions of scientific mobility compared to geographic distance, baselines.}
+		{Shown is the Root Mean Squared Error (RMSE), or the accuracy of predictions made with the gravity model of mobility using the embedding distance and other experimental parameters.
 		The RMSE is shown using both the exponential and power-law forms of the gravity model. 
 		For each distance metric and set of parameters, the RMSE is shown for 
 		Distance metrics are ordered, from top to bottom, by the lowest RMSE, where a lower error indicates better predictions. 
