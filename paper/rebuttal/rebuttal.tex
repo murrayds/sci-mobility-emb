@@ -17,6 +17,7 @@
 
 
 
+
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{newtxmath}
@@ -49,6 +50,15 @@
 					sortcites=true,
 					autocite=superscript
 ]{biblatex}
+
+\AtEveryBibitem{%
+ \clearfield{url}%
+   \clearfield{month}%
+ \clearfield{issn}%
+ \clearfield{doi}%%
+}
+
+
 \addbibresource{rebuttal.bib}
 
 
