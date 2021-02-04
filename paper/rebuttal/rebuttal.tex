@@ -39,12 +39,7 @@
 
 
 \usepackage{hyperref}
-\hypersetup{
-    colorlinks=true,
-    linkcolor=black,
-    filecolor=magenta,      
-    urlcolor=cyan,
-}
+
 \usepackage[style=nature,
 					backend=biber,
 					sortcites=true,
@@ -120,6 +115,31 @@ A version of our manuscript with changes annotated has also been provided to hig
 \section{List of changes}
 
 We have broken down the list of changes to the manuscript by referee.
+
+\begin{itemize} 
+\item \textbf{Referee 1} 
+     \begin{itemize} 
+        \item blah
+        \item blah
+     \end{itemize}
+\item \textbf{Referee 2} 
+     \begin{itemize} 
+        \item blah
+        \item blah
+     \end{itemize}
+\item \textbf{Referee 3} 
+     \begin{itemize} 
+        \item blah
+        \item blah
+     \end{itemize}
+ \item \textbf{Referee 4} 
+     \begin{itemize} 
+        \item blah
+        \item blah
+     \end{itemize}
+\end{itemize}
+
+
 
 \section{Point-by-point discussion}
 All of the referees presented us with excellent, insightful comments and we feel that the changes implemented as a consequence have signiﬁcantly strengthened the manuscript. Here we offer further discussion, and introduce several results and figures to support certain arguments.
@@ -597,12 +617,24 @@ Why cosine similarity is better? In-vector and out-vectors are different in our 
 
 \section{Performance of \textit{word2vec} compared with baselines}
 \subsection{The method we have used for the test}
-\todo{list methods in here}
+We list baselines that we have used for the validation. For embedding baselines, we set $d=300$ for the pair comparison.\\\\
+\textbf{SVD-based embedding baselines}
+\begin{itemize}
+    \item Truncated SVD on the flow matrix
+	\item  Laplacian eigenmap
+	\item Levy's word2vec
+\end{itemize}
+\textbf{Network-based baselines}
+\begin{itemize}
+    \item Personalized Page Rank
+\end{itemize}
+\textbf{Geographical baselines}
+
 \subsection{Result}
 \todo{report the results and say our results are better
 Why SGD has a lower performance and SGNS yield better performance
 power of stochastic gradient descent algorithm \autocite{smith2020generalization}}
-
+also, compare the speed?
 
 
 
