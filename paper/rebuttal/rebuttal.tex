@@ -16,6 +16,7 @@
 \definecolor{shadecolor}{RGB}{210, 210, 210}
 
 \setlength{\parindent}{0em}
+\setlength{\parskip}{0.5em}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -103,19 +104,47 @@
 \end{flushleft}\egroup
 }
 \makeatother
-\title{Response to the review of submission\\  ``Unsupervised embedding of trajectories captures the latent structure of mobility''}
+\title{Re: Nature submission 2020-10-19515}
 \date{}
 \begin{document}
 \maketitle
 
-\noindent Dear Dr.editorname and Refrees,
+\bigskip
+\noindent Dear Dr. Mary Elizabeth Sutherland and Referees, \\ 
+
+We thank all the referees for their incredibly thoughtful and helpful comments and critiques, all of which provided valuable insights. 
+Following these comments, we have made a breakthrough in our study, and have made substantial revisions to our manuscript to emphasize these new theoretical contributions and additional methodological comparisons. 
+With these changes, we are confident that our paper is significantly stronger, and its contribution more wide-reaching and impactful. 
+Again, we are incredibly appreciative of these comments, which provided the insight and motivation needed to make these breakthroughs. 
+
+We have developed the mathematical and theoretical basis of our approach for embedding mobility, and made additional updates to our experiments and manuscript, addressing the three main issues raised by referees:
+
+\begin{enumerate}
+    \itemsep0em 
+	\item Our approach and analysis lacked theoretical justification and grounding, and the application of \textit{word2vec} to mobility was arbitrary
+	\item Performance of \textit{word2vec} is not well understood in the context of other, simpler embedding techniques
+	\item Our findings were not sufficiently grounded in the literature of neural embeddings and mobility
+\end{enumerate}
+
+Addressing the first point, we have identified an underlying mathematical connection between the Gravity Model of Mobility and the neural embedding technique \textit{word2vec}. 
+Namely, we demonstrate that \textit{word2vec} implicitly learns gravity-like relationships between entities, whether it be language or locations. 
+This development constitutes a major breakthrough in our understanding of neural embeddings, and provides theoretical justification for their application to mobility. 
+
+For the second point, we have also conducted experiments comparing the performance of neural embedding to distances from an embedding derived by a singular value decomposition of the mobility network, and of a Laplacian eigenmap embedding. Additionally, we compare \textit{word2vec} model to another matrix factorization approach, which \textit{word2vec} approximates. We find that the embedding distance from \textit{word2vec} outperforms all baselines in explaining and predicting real-world mobility. 
+
+Finally, addressing the third point, we take steps to better ground our manuscript in the existing literature, integrating the reviewer's suggested articles into our manuscript.
+
+In the attached detailed response, we outline the connection between \textit{word2vec} and the gravity model (section 1), and comparisons to baselines (section 2). We then provide a point-by-point response to each of the reviewer's comments in section 3. 
+
+We thank you for your time, attention, and insight, and look forward to hearing back from you!\\
 
 
-We would like to thank all Referees for their incredibly helpful and insight comments which have helped to improve the quality of our manuscript.
-In the following, we provide detailed responses to the issues raised by each Referee.
-A version of our manuscript with changes annotated has also been provided to highlight changes made.
-\todo{write a letter}
+\\Kind Regards,\\
 
+Dakota, Jisung, Sadamori, Rodrigo, Woo-Sung, Staša, and YY
+
+
+\clearpage
 \tableofcontents
 \listoffigures
 
