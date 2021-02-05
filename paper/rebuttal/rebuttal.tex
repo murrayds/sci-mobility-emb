@@ -67,12 +67,29 @@
 \chead{}
 
 
+
+%
+% COLORBOX
+%
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\newtcolorbox[auto counter, 				  
+					  number within=subsection,
+ 				       list type=subsubsection, 
+ 				       list inside=toc]{sectionbox}[1]{colback=white, 
+ 				       												colframe=black, 
+ 				       												colbacktitle=white!50!gray,
+ 				       												coltitle=black,
+ 				       												fonttitle=\bfseries, title={Comment \thetcbcounter}, 
+ 				       												list entry={Comment \thetcbcounter\quad}, breakable}
+
+
 \DeclareUnicodeCharacter{FB01}{fi}
 \usepackage{dirtytalk}
 
 \def\figdir{../Figs}
 
-\usepackage[most]{tcolorbox}
+%\usepackage[most]{tcolorbox}
 \newcommand{\sada}[1]{{\leavevmode\color{orange}[SK: #1]}}
 \newcommand{\sadaadded}[1]{{\leavevmode\color{orange}{#1}}}
 \newcommand{\todo}[1]{{\leavevmode\color{orange}[TODO: #1]}}
@@ -82,9 +99,9 @@
 %\newcommand{\rcomment}[1]{{\bigskip\begin{snugshade}\begin{quotation}\noindent #1 \end{quotation}\end{snugshade} }}
 \newcommand{\rcomment}[1]{%
 \vspace{10pt}
-\begin{tcolorbox}[colback=black!3,colframe=white!45!black, left=0pt, right=0pt, top=0pt, bottom=0pt, arc=0pt,outer arc=0pt, grow to left by=-0.5cm,grow to right by=-0.5cm]
+\begin{sectionbox}
 #1
-\end{tcolorbox}
+\end{sectionbox}
 }
 \newcommand{\correction}[2]{{\begin{quotation}\noindent {#1}{\it #2} \end{quotation} }}
 %\newcommand{\correction}[2]{{\bigskip\begin{quotation}\noindent {#1}{\it #2} \end{quotation} }}
@@ -110,7 +127,7 @@
 \maketitle
 
 \bigskip
-\noindent Dear Dr. Mary Elizabeth Sutherland and Referees, \\ 
+\noindent Dear Dr. Sutherland and Referees, \\ 
 
 We thank all the referees for their incredibly thoughtful and helpful comments and critiques, all of which provided valuable insights. 
 Following these comments, we have made a breakthrough in our study, and have made substantial revisions to our manuscript to emphasize these new theoretical contributions and additional methodological comparisons. 
@@ -259,10 +276,15 @@ One open question that remains is why the cosine distance between vectors leads 
 Another deviation in our implementation of \textit{word2vec} to mobility is that the in-vector and out-vector is different in out result, whereas they are assumed to be the same in the above derivations...
 
 \subsection{Changes to the manuscript}
-\todo{detail addition of above formulas}
-\todo{add sentences to paper concerning above issues/speculations, concerns}
-\todo{mention re-doing figures with $\gamma = 1$}
-
+To reflect these breakthroughs, we have made the following changes to the manuscript:
+\begin{itemize}
+	\itemsep0em
+	\item Following results demonstrating the performance of the embedding distance compared to geographic distance, we add the section \textbf{word2vec and the gravity model}, which summarizes the link between the two models.
+	\item We also added the section \textbf{An implicit bias in the negative sampling} to the methods section of our manuscript.
+	\item Since the formulation of the gravity used in the above derivations assumes $\gamma = 1$, we use this value of $gamma$ for all reported results. No result substantively changes with this change.
+	\item \todo{We added a sentence to the paper speculating on why cosine similarity works best}
+	\item \todo{We also added a sentence noting the in-vector and out-vector issue, and speculating on reasons/consequences}
+\end{itemize}
 
 
 %
@@ -281,12 +303,28 @@ In addition to these suggested baselines, we also consider distances derived fro
 The \textit{word2vec} model  implicitly approximates this matrix-factorization procedure, and so comparison to these ``Levy'' distances can demonstrate whether the approximation of neural embeddings outperform direct-calculations. 
 
 
+\subsection{New experimental parameters}
+In addition to the new baselines, we have also incorporate additional experimental parameters into our analysis. 
+The first is $\gamma$, a hyper-parameter of the \textit{word2vec} model, which defines the exponent which shapes the negative sampling distribution.
+The default of the `\texttt{gensim} implementation of \textit{word2vec} is to set $\gamma = 0.75$, and this was the value used in our original manuscript. 
+However, to connect \textit{word2vec} to the gravity model of mobility, we assume $\gamma = 1.0$ (see section 1). 
+We now report all main results using $\gamma = 1.0$, however we also compare its performance to embeddings learned using $\gamma = 0.75$, as we do with the number of embedded dimensions and window size.
+
+We also consider an experimental parameter differentiating between definitions of \textit{population}, in the context of scientific mobility. 
+Our original manuscript defined the population of an organization as its average annual number of unique mobile and non-mobile authors who publish with that organizational affiliation. 
+However, because non-mobile authors do not have mobility trajectories, and are thus not included in training of the embedding, this definition of population introduces additional, potentially confounding information into the experiment. 
+To tease apart the impact of population definitions, we consider two additional definitions.
+The first defines an organization's population as the average annual number of unique mobile authors, only, who publish with the organization. 
+The second definition defines the population akin to language, as simply its frequency across all mobility trajectories. 
+
 \subsection{Result}
 \todo{report the results and say our results are better @dakoda
 }
 
 
-% why sgd is better?
+
+
+\subsection{Why do neural embeddings outperform direct matrix factorization?}% why sgd is better?
 An issue in the matrix factorization approach is that it is extremely sensitive to small flows between affiliations. The matrix factorization approach embeds affiliations $i$ and $j$ such that their dot similarity is as close as to $\log (T_{ij} / P(i) P(j))$. If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes $-\infty$, pushing $i$ and $j$ too far from the other affiliations in the embedding space~\autocite{levy2014neural, Qui2018}. This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. To circumvent this problem, the previous studies~\autocite{levy2014neural, Qui2018} add a constant flow between the affiliation pairs with no flow. However, this changes the data to which we fit the model, and small flows still have a considerably strong impact on the embedding. 
 
 Also, it is well known that SVD by itself is very vulnerable to outliers \autocite{ xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust, }. Compared to SVD, a stochastic gradient descent algorithm (SGD) which is employed in SGNS \textit{word2vec} benefits from the noise in the model itself and can enhance generalization and effectiveness as well \autocite{ma2018power, smith2020generalization, zhang2019algorithmic,}.
@@ -295,13 +333,12 @@ Also, it is well known that SVD by itself is very vulnerable to outliers \autoci
 
 
 %
-% SECTION- \POINT-BY-POINT DISCUSSION
+% SECTION- POINT-BY-POINT DISCUSSION
 %
 \section{Point-by-point discussion}
 All of the referees presented us with excellent, insightful comments and we feel that the changes implemented as a consequence have signiﬁcantly strengthened the manuscript. Here we offer further discussion, and introduce several results and figures to support certain arguments.
 
 \subsection{Response to Referee 1}
-
 
 \rcomment{%
 To the best of my knowledge, this is the first work providing a thorough analysis of the structure encoded by latent mobility embeddings (e.g., the prestige hierarchy), and this is the first work I am aware of to propose embeddings as an explanatory/exploratory tool in this context. In this way, the work has some originality and significance.
@@ -390,13 +427,12 @@ In addition, some additional results demonstrating how the embeddings provide no
 
 }
 
-\bigskip
-\response{In summary, we have updated the manuscript by providing the appropriate context in the literature, clarifying the limitations of our study, and extending our approach to incorporate delays in contact tracing. We deeply appreciate the Referee's careful reading of the paper and their constructive comments. 
-%We hope that have correctly addressed the Referee's concerns and comments.
-}
 
 %===================================================
 
+%
+% Response to reviewer 2
+%
 \subsection{Response to Referee 2}
 
 \rcomment{%
