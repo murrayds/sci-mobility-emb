@@ -269,19 +269,17 @@ Another deviation in our implementation of \textit{word2vec} to mobility is that
 % SECTION-PERFORMANCE COMPARISONS
 %
 \section{Performance of \textit{word2vec} compared with baselines}
-\subsection{The method we have used for the test}
-We list baselines that we have used for the validation. For embedding baselines, we set $d=300$ for the pair comparison.\\\\
-\textbf{SVD-based embedding baselines}
-\begin{itemize}
-    \item Truncated SVD on the flow matrix
-	\item  Laplacian eigenmap
-	\item Levy's word2vec
-\end{itemize}
-\textbf{Network-based baselines}
-\begin{itemize}
-    \item Personalized Page Rank
-\end{itemize}
-\textbf{Geographical baselines}
+\subsection{Alternatives considered}
+In our original manuscript, we compared the performance of what we call the embedding distance---the cosine distance between vectors learned by \textit{word2vec}---to a range of alternatives. 
+These alternatives included the geographic distance between locations, the distance most commonly used in definitions of the gravity model of mobility, along with the dot product similarity between embedding vectors, and the cosine distance and Jensen-Shannon divergence between vectors obtained from a personalized-page-ranking procedure on the underlying mobility network. 
+
+Following the advice of the referees, we also add additional baselines to illustrate how the embedding distance performs compared to simpler embedding alternatives. 
+The first of these baselines uses the distance between vectors in an embedding space produced through a singular-value decomposition of the underlying location co-occurrence matrix.
+The second baseline is the distance between vectors obtained through a Laplacian eigenmap embedding of the location of the matrix. 
+
+In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}.
+The \textit{word2vec} model  implicitly approximates this matrix-factorization procedure, and so comparison to these ``Levy'' distances can demonstrate whether the approximation of neural embeddings outperform direct-calculations. 
+
 
 \subsection{Result}
 \todo{report the results and say our results are better @dakoda
