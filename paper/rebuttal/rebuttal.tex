@@ -589,10 +589,15 @@ We list baselines that we have used for the validation. For embedding baselines,
 \textbf{Geographical baselines}
 
 \subsection{Result}
-\todo{report the results and say our results are better
-Why SGD has a lower performance and SGNS yield better performance
-power of stochastic gradient descent algorithm \autocite{smith2020generalization}}
-also, compare the speed?
+\todo{report the results and say our results are better @dakoda
+}
+
+
+% why sgd is better?
+An issue in the matrix factorization approach is that it is extremely sensitive to small flows between affiliations. The matrix factorization approach embeds affiliations $i$ and $j$ such that their dot similarity is as close as to $\log (T_{ij} / P(i) P(j))$. If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes $-\infty$, pushing $i$ and $j$ too far from the other affiliations in the embedding space~\autocite{levy2014neural, Qui2018}. This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. To circumvent this problem, the previous studies~\autocite{levy2014neural, Qui2018} add a constant flow between the affiliation pairs with no flow. However, this changes the data to which we fit the model, and small flows still have a considerably strong impact on the embedding. 
+
+Also, it is well known that SVD by itself is very vulnerable to outliers \autocite{ xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust, }. Compared to SVD, a stochastic gradient descent algorithm (SGD) which is employed in SGNS \textit{word2vec} benefits from the noise in the model itself and can enhance generalization and effectiveness as well \autocite{ma2018power, smith2020generalization, zhang2019algorithmic,}.
+
 
 
 
