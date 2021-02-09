@@ -167,6 +167,7 @@ Dakota, Jisung, Sadamori, Rodrigo, Woo-Sung, Staša, and YY
 
 
 \section{Theoretical justification of \textit{word2vec} and the Gravity Model} 
+\label{sec:theory}
 Here, we attempt to answer a question raised from our analysis: Why does the skip-gram model with negative sampling (SGNS), otherwise known as \textit{word2vec}, work so well to model human mobility?
 We demonstrate a fundamental connection between the SGNS model and the Gravity Model of Mobility, namely, that SGNS implicitly learns gravity-like relationships between locations. 
 This connection provides necessary theoretical justification to our choice of \textit{word2vec}, and constitutes a major breakthrough of our understanding of neural embeddings. 
@@ -359,8 +360,9 @@ Notably, the location embedding methodology in Liu et al (2016) (see Section 3.1
 
 
 
-\response{Thank you for pointing out the missing references. 
-We have carefully read through all of your rec emended papers, learning a lot in the process, and have incorporated them into our manuscript's introduction.
+\response{Thank you for pointing out the missing references!
+We have carefully read through each, and learned a lot in the process.
+They have now been incorperated into our manuscript's introduction. 
 }
 
 \rcomment{
@@ -552,13 +554,11 @@ power inroads in machine vision. To be clear, deeper models require much data an
 \response{Thank you for this insightful comment. 
 We think that there is a great deal of potential in methods like BERT for representing mobility data.
 What initially drew us to \textit{word2vec}, however, was its simplicity, its ubiquity, and its mathematical tractability (at least compared to other, more sophisticated approaches). 
-This last attribute proved very useful, as in exploring the mathematical properties of the model, we discovered a deep connection between \textit{word2vec} and the Gravity Model of Mobility, which explains why it learns such effective gravity-like relationships between entities. 
+This last attribute proved very useful, as in exploring the mathematical properties of the model, we discovered a deep connection between \textit{word2vec} and the Gravity Model of Mobility, which explains why it learns such effective gravity-like relationships between entities (see Section~\ref{sec:theory} of this letter). 
 We believe hat this new discovery, not included in the manuscript (and illustrated below), justify our use of \textit{word2vec} here. 
-We agree that the revolution in neural embeddings offers great promise in mobility and look forward to reading and also working on these future studies; however we argue that our contribution is most well founded, and best serves the scientific community, by working with simpler and more established models, especially concerning the mathematical link we uncovered. 
+We agree that the revolution in neural embeddings offers great promise in mobility and look forward to contributing to this nascent field in the future; 
+however we argue that our contribution is most well founded, and best serves the scientific community, by working with simpler and more established models, especially concerning the mathematical link we uncovered. 
 To highlight the importance of altenrative models, however, we add the following line to our conclusion: \say{\textit{Future studies may also consider bi-directional embeddings, such as BERT~\autocite{devlin2018bert}, to incorporate directionality. }}. 
-
-\todo{Add complete theoretical discussion here}
-
 
 }
 
@@ -572,11 +572,11 @@ university pairs (although many of these will be captured by the authors’ appr
 students publish at their home institutions before securing jobs elsewhere).
 }
 
-\response{\todo{I'm worry this sounds too dismissive. Edit please?}
+\response{
 Thank you for this comment. 
 We feel that applying these embeddings to other areas of scientific activity would be incredibly enlightening! 
 Your recommendation of collaboration (based on the author byline) and advisor-student pairs are especially interesting, and we would aim to address these areas in future studies. 
-However, given the importance of mobility to science, the importance of human mobility more generally, and the connection we discovered between \textit{word2vec} and the gravity model, that a focus of co-affiliation, which most closely aligns with ideas of mobility, is the most reasonable data to use for this manuscript. 
+However, given the importance of mobility to science, the importance of human mobility more generally, and the connection we discovered between \textit{word2vec} and the gravity model (see Section~\ref{sec:theory}), that a focus of co-affiliation, which most closely aligns with ideas of mobility, is the most reasonable data to use for this manuscript. 
 }
 
 
@@ -709,6 +709,6 @@ We look forward to approaching this, as well as other exciting projects in the f
 	\label{fig:supp:distancermse}
 \end{figure}
 
-
+\clearpage
 \printbibliography{}
 \end{document}
