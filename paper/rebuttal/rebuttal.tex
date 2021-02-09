@@ -193,7 +193,7 @@ where,
 \begin{equation}
 	p(j \given i) = \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:cond_prob_w2v}
 \end{equation}
-where $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector", respectively,  $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations. In general, calculating $Z_i$ is computationally expensive and there are two common approximation:
+where $\bm{v}$ and $\bm{u}$ are the ``in-vector'' and ``out-vector'', respectively,  $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations. In general, calculating $Z_i$ is computationally expensive and there are two common approximation:
 hierarchical softmax \autocite{morin2005hierarchical} and negative sampling \autocite{mikolov2013word2vec}.
 
 
@@ -344,10 +344,10 @@ All of the referees presented us with excellent, insightful comments and we feel
 	To the best of my knowledge, this is the first work providing a thorough analysis of the structure encoded by latent mobility embeddings (e.g., the prestige hierarchy), and this is the first work I am aware of to propose embeddings as an explanatory/exploratory tool in this context. In this way, the work has some originality and significance.
 
 	\begin{itemize}
-		\item Liu, Xin, Yong Liu, and Xiaoli Li. "Exploring the Context of Locations for Personalized Location Recommendations." IJCAI. 2016.
-		\item Feng, Shanshan, et al. "POI2Vec: geographical latent representation for predicting future visitors." AAAI. 2017.
-		\item Yao, Zijun, et al. "Representing Urban Functions through Zone Embedding with Human Mobility Patterns." IJCAI. 2018.
-		\item Cao, Hancheng, et al. "Habit2vec: Trajectory semantic embedding for living pattern recognition in population." IEEE Transactions on Mobile Computing 19.5 (2019): 1096-1108.
+		\item Liu, Xin, Yong Liu, and Xiaoli Li. ``Exploring the Context of Locations for Personalized Location Recommendations.'' IJCAI. 2016.
+		\item Feng, Shanshan, et al. ``POI2Vec: geographical latent representation for predicting future visitors.'' AAAI. 2017.
+		\item Yao, Zijun, et al. ``Representing Urban Functions through Zone Embedding with Human Mobility Patterns.'' IJCAI. 2018.
+		\item Cao, Hancheng, et al. ``Habit2vec: Trajectory semantic embedding for living pattern recognition in population.'' IEEE Transactions on Mobile Computing 19.5 (2019): 1096-1108.
 	\end{itemize}
 
 
@@ -389,7 +389,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	However, this may not hold true for all problem domains—for example, natural language includes many millions of tokens, many of which will occur only a few times, allowing stochasticity to have a much stronger effect on the final representation.
 	Heeding this as a general concern, we have added the following sentence to our limitations paragraph in our conclusion:
 
-	\noindent “We however, note that all results shown here are robust to this stochasticity, likely emerging from the limited "vocabulary" of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories). Applications of word2vec to problem domains where the ratio of the vocabulary to data is smaller, however, should take caution to ensure that findings are not the result of random artifacts.”
+	\noindent “We however, note that all results shown here are robust to this stochasticity, likely emerging from the limited ``vocabulary'' of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories). Applications of word2vec to problem domains where the ratio of the vocabulary to data is smaller, however, should take caution to ensure that findings are not the result of random artifacts.”
 
 }
 
@@ -635,9 +635,9 @@ All of the referees presented us with excellent, insightful comments and we feel
 \response{Thank you for this idea!
 	We believe that this is an interesting topic and we hope to investigate it in the future.
 	In your particular example, an embedding distance trained using sequences of co-authorship on the same paper might be better to capture the \textit{collaborative} distance between institutions.
-	Then, using that distance, one could measure the "embedding distance" spanned by all authors in the byline, and relate this to questions impact to determine whether (a)typical collaborations relate to impact.
+	Then, using that distance, one could measure the ``embedding distance'' spanned by all authors in the byline, and relate this to questions impact to determine whether (a)typical collaborations relate to impact.
 	This is certainly a topic that is in our mind for future study.
-	In the case of scientific mobility, we might also consider the "embedding distance" spanned by an individual's career, and relate this to their demographics and scientific impact.
+	In the case of scientific mobility, we might also consider the ``embedding distance'' spanned by an individual's career, and relate this to their demographics and scientific impact.
 
 	However, while these topics are exciting, we believe that that they fall outside the scope of the current manuscript, especially given the discoveries we made concerning a fundamental connection between the gravity law of mobility and \textit{word2vec}.
 }
