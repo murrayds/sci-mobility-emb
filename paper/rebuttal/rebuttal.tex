@@ -143,8 +143,8 @@ We have developed the mathematical and theoretical basis of our approach for emb
 	\item Our findings were not sufficiently grounded in the literature of neural embeddings and mobility
 \end{enumerate}
 
-Addressing the first point, we have identified an underlying mathematical connection between the Gravity Model of Mobility and the neural embedding technique \textit{word2vec}.
-Namely, we demonstrate that \textit{word2vec} implicitly learns gravity-like relationships between entities, whether it be language or locations.
+Addressing the first point, we have identified an underlying mathematical equivalence between the Gravity Model of Mobility and the neural embedding technique \textit{word2vec}.
+Namely, we demonstrate that \textit{word2vec} 's objective function is same as the gravity law and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
 This development constitutes a major breakthrough in our understanding of neural embeddings, and provides theoretical justification for their application to mobility.
 
 For the second point, we have also conducted experiments comparing the performance of neural embedding to distances from an embedding derived by a singular value decomposition of the mobility network, and of a Laplacian eigenmap embedding. Additionally, we compare \textit{word2vec} model to another matrix factorization approach, which \textit{word2vec} approximates. We find that the embedding distance from \textit{word2vec} outperforms all baselines in explaining and predicting real-world mobility.
@@ -167,17 +167,17 @@ Dakota, Jisung, Sadamori, Rodrigo, Woo-Sung, Staša, and YY
 
 
 \section{Theoretical justification of \textit{word2vec} and the Gravity Model}
-Here, we attempt to answer a question raised from our analysis: Why does the skip-gram model with negative sampling (SGNS), otherwise known as \textit{word2vec}, work so well to model human mobility?
+Here, we answer a following question:å Why does the skip-gram model with negative sampling (SGNS), otherwise known as \textit{word2vec}, work so well to model human mobility?
 We demonstrate a fundamental connection between the SGNS model and the Gravity Model of Mobility, namely, that SGNS implicitly learns gravity-like relationships between locations.
 This connection provides necessary theoretical justification to our choice of \textit{word2vec}, and constitutes a major breakthrough of our understanding of neural embeddings.
 In addition, this motivates the use of SGNS for future study of human mobility.
 
-First, we outline of the \textit{word2vec} model.
+First, we outline  \textit{word2vec} model.
 Then, we introduce the specific SGNS model, which incorperates a procedure called negative sampling that is key to its connection with the gravity model.
 Finally, we demonstrate the connection between SGNS and the gravity model of mobility.
 
 \subsection{Details on \textit{word2vec} algorithm}
-We used standard skip-gram negative sampling word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
+We used the standard skip-gram negative sampling (SGNS) word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
 Suppose a trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th location in the trajectory. A location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$. Then, the model learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
 %
 % MAIN W2V Equation
@@ -405,7 +405,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	As such, we have a philosophy of avoiding p-values in research when it makes sense to do so.
 	In our analysis, all correlations and fits are significant at a level below 0.0001, or have a p-value  computationally indistinguishable from zero.
 	However, we recognize that p-values can help readers interpret results.
-	As such, we have opted to add to a sentence such as \say{\textit{Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits)}.} or similar to relevant figures in the main text and supporting materials.
+	As such, we have opted to add to a sentence such as \say{\textit{Correlation is calculated on the data in the log-log scale ($p <<0.0001$ across all fits)}.} or similar to relevant figures in the main text and supporting materials.
 	We believe that this solution strikes a balance between transparency while also avoiding extraneous detail and the common pitfalls of statistical reporting.
 
 	We have also provided detail about how confidence intervals were calculated in relevant figure captions.
@@ -441,16 +441,16 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{Thank you for pointing this out.
 	We carefully read out the Barthélemy, Physics Reports 499, 1, 2011, and referenced it in our manuscript.
-	Also, we report the performance of the flux estimation (Fig.~\ref{fig:supp:distancemetrics}, this document) and prediction (Fig.~\ref{fig:supp:distancermse}, this document) using different deterrence functions, funding that while performance differs, that the embedding distance outperforms geographic
+	Also, we report the performance of the flux estimation (Fig.~\ref{fig:supp:distancemetrics}, this document) and prediction (Fig.~\ref{fig:supp:distancermse}, this document) using different deterrence functions, founding that while performance differs, that the embedding distance outperforms geographic
 	distance no matter the function used.
 	We add the following line to the methods,
 
 	\medskip
 	\say{The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanism [...] such as the cost functions for a given distance and the spatial granularity of the observation.
-		For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case. though the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
+		For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case though the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
 	\medskip
 
-	We also argue that geographical distance ﬁts well with the power-law decay function because it is is more suitable for analyzing large, complex, and scale-free spatial systems , while embedding distance ﬁts well with the exponential decay function, which we demonstrate to correspond to an underlying mathematical relationship between \textit{word2vec} and the gravity model, a connection we recently discovered and included as a major finding in this revision (see our response to Referee 1).
+	We also argue that geographical distance ﬁts well with the power-law decay function because power-based gravity model can be more suitable for analyzing large, complex, and scale-free spatial systems and the exponential-based gravity model indicates simplicty rather than spatial complexity~\autocite{chen2015distance}. Meanwhile, embedding distance ﬁts well with the exponential decay function, which we demonstrate to correspond to an underlying mathematical relationship between \textit{word2vec} and the gravity model, a connection we recently discovered and included as a major finding in this revision (see our response to Referee 1).
 
 }
 
@@ -554,11 +554,11 @@ All of the referees presented us with excellent, insightful comments and we feel
 	What initially drew us to \textit{word2vec}, however, was its simplicity, its ubiquity, and its mathematical tractability (at least compared to other, more sophisticated approaches).
 	This last attribute proved very useful, as in exploring the mathematical properties of the model, we discovered a deep connection between \textit{word2vec} and the Gravity Model of Mobility, which explains why it learns such effective gravity-like relationships between entities.
 	We believe hat this new discovery, not included in the manuscript (and illustrated below), justify our use of \textit{word2vec} here.
-	We agree that the revolution in neural embeddings offers great promise in mobility and look forward to reading and also working on these future studies; however we argue that our contribution is most well founded, and best serves the scientific community, by working with simpler and more established models, especially concerning the mathematical link we uncovered.
+	
+	We agree that the revolution in neural embeddings offers great promise in mobility and look forward to reading and also working on these future studies; however, we argue that our contribution is most well-founded, and best serves the scientific community, by working with simpler and more established models, especially concerning the mathematical link we uncovered. Moreover, these deep models require a tremendous amount of training data ($\sim$3 billion words in Bert) and model parameters.
+
+	
 	To highlight the importance of altenrative models, however, we add the following line to our conclusion: \say{\textit{Future studies may also consider bi-directional embeddings, such as BERT~\autocite{devlin2018bert}, to incorporate directionality. }}.
-
-	\todo{Add complete theoretical discussion here}
-
 
 }
 
