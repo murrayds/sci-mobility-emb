@@ -31,7 +31,8 @@ agg <- readr::read_csv(opt$input, col_types = readr::cols()) %>%
          org1_country, org2_country,
          count, gravity,
          geo_distance, pprcos_distance, pprjsd_distance, emb_distance,
-         dot_distance, svdcos_distance, lapcos_distance) %>%
+         dot_distance, svdcos_distance, lapcos_distance,
+         levycos_distance, levyeuc_distance, levydot_distance) %>%
   rename(actual = count)
 
 # If the geographic constraint (--geo) is set, then filter the
@@ -88,6 +89,24 @@ if (opt$distance == "geo") {
     mutate(
       distance = lapcos_distance,
       distance.log = log(lapcos_distance)
+    )
+} else if (opt$distance == "levycos") {
+  agg <- agg %>%
+    mutate(
+      distance = levycos_distance,
+      distance.log = log(levycos_distance)
+    )
+} else if (opt$distance == "levyeuc") {
+  agg <- agg %>%
+    mutate(
+      distance = levyeuc_distance,
+      distance.log = log(levyeuc_distance)
+    )
+} else if (opt$distance == "levydot") {
+  agg <- agg %>%
+    mutate(
+      distance = levydot_distance,
+      distance.log = log(levydot_distance)
     )
 }
 

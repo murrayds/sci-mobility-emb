@@ -29,15 +29,19 @@ opt = parse_args(OptionParser(option_list=option_list))
 # Read the aggregate R2 data
 params <- read_csv(opt$input, col_types = readr::cols())
 
+metric_levels <- c("geo", "emb", "pprjsd", "lapcos", "svdcos", 'levyeuc')
 plotdata <- params %>%
   filter(dim == 300) %>%
   filter(ws == 1) %>%
   filter(gamma == 1.0) %>%
+  filter(metric %in% metric_levels) %>%
   mutate(
     sizetype = gsub(".csv", "", sizetype, fixed = T),
     metric = factor(metric,
-                    levels = c("geo", "emb", "dot", "pprcos", "pprjsd", "lapcos", "svdcos"),
-                    labels = c("Geographic\ndistance", "Embedding\ncosine distance", "Embedding\ndot product", "PPR cosine\ndistance", "PPR JSD", "Laplacian\nEigenmap\ndistance", "SVD distance")),
+                    levels = metric_levels,
+                    labels = c("Geographic\ndistance", "Embedding\ncosine distance",
+                                "PPR JSD", "Laplacian\neigenmap\ndistance",
+                                "SVD distance", "Factorized euc.\ndistance")),
     # Reorder the metric variable with
     metric = reorder(metric, desc(r2)),
     case = factor(case,
@@ -48,7 +52,6 @@ plotdata <- params %>%
                       labels = c("All", "Mobile only", "Raw frequency"))
 
   )
-
 
 # Get the top-performing for each set of parameters
 top <- plotdata %>%
