@@ -43,7 +43,7 @@
 
 % abbreviations
 \def\etal{\emph{et~al}.\ }
-\def\eg{e.g.,~} 
+\def\eg{e.g.,~}
 \def\ie{i.e.,~}
 \def\cf{cf.\ }
 \def\viz{viz.\ }
@@ -102,7 +102,7 @@
 % CUSTOM MACROS
 \usepackage{ marvosym }
 
-    
+
 % Define the supporting information name
 \def\SI{Supporting Information}
 \usepackage{authblk}
@@ -197,7 +197,7 @@ Thus, the trajectories encode both migration and co-affiliation---the holding of
 
 A vector-space embedding of locations (airports, accommodations, and organizations) is learned by using trajectories as input to the standard with skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
 This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
-It works under the notion that a good representation should facilitate prediction, and so learns a mapping of target locations (words) that best predict locations that co-appear in the same trajectory (sentence). 
+It works under the notion that a good representation should facilitate prediction, and so learns a mapping of target locations (words) that best predict locations that co-appear in the same trajectory (sentence).
 The model is also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
 
@@ -231,10 +231,10 @@ where $m_{i}$ is the population of locations $i$,  $f(r_{ij})$ is a decay functi
 For the flight itinerary data, we use population $m_{i}$ as the total number of unique passengers who passed through each airport, for the Korean accommodation reservation data, we use the total number of unique customers who booked with each accommodation, and for scientific mobility, we use the mean annual number of unique mobile and non-mobile authors who were affiliated with each organization.
 $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini2012universal}, is the expected frequency of the co-occurrence of location $i$ and $j$ in the trajectory in the gravity model.
 
-The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij }= \hat{T}_{ji}$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$. 
-We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}. 
+The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij }= \hat{T}_{ji}$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
+We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}.
 The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanism \autocite{barthelemy2011spatial} such as the cost functions for a given distance and the spatial granularity of the observation.
-For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}), though the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}). 
+For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}), though the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
 Beyond the fitting on the data, we would like to argue that geographical distance fits well with the power-law decay function because it is more suitable for analyzing large, complex, and scale-free spatial systems\autocite{chen2015distance}, while embedding distance fits well with the exponential decay function, which we will show later in the section of mathematical relation between \textit{word2vec}and the gravity model.
 
 
@@ -267,7 +267,7 @@ In sum, our results demonstrate that, consistently, the embedding distance bette
 		\textbf{a} Embedding distance (cosine distance between organization vectors, top) better explains the expected flux of passengers between U.S. airports than does geographic distance (bottom).
 		The red line is the line of the best fit.
 		Black dots are mean flux across binned distances.
-		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution. 
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution.
 		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
 		The lightness of each hex bin indicates the frequency of organization pairs within it.
 		\textbf{b} Predictions of flux between airport pairs made using embedding distance (top) outperform those made using geographic distance (bottom).
@@ -291,7 +291,7 @@ Here, we show that the objective function of {\it word2vec} is equivalent to the
 
 The {\it word2vec} model takes a location trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), as an input.
 A location $a_t=i$ is considered to have a context location $a_{t'}=j$ that appears in its succeeding or proceeding $w$ locations in the trajectory, \ie  $j \in [a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}]$.
- {\it Word2vec} learns an embedding by estimating the probability that location $i$ has context $j$:
+	{\it Word2vec} learns an embedding by estimating the probability that location $i$ has context $j$:
 \begin{align}
 	P\left(j \given i \right):= \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{\widetilde{Z_i}}, \label{eq:prob_w2v_ng}
 \end{align}
@@ -304,7 +304,7 @@ Our experiments show that {\it word2vec} best explains real-world mobility flow 
 	\hat{T}_{ij} = P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 \end{align}
 where $P(i)$ is the probability that location $i$ appears in the trajectory.
-Because computing $Z_i$ is computationally demanding, multiple approximation methods have been proposed, the most  popular being negative sampling~\autocite{mikolov2013word2vec}. 
+Because computing $Z_i$ is computationally demanding, multiple approximation methods have been proposed, the most  popular being negative sampling~\autocite{mikolov2013word2vec}.
 Negative sampling finds the embedding vectors by solving a binary classification task, in which the model classifies whether a given center-context location pair $(i, j)$ comes from the data or artificially generated ``negative'' samples.
 The negative pair $(i,j)$ is sampled in proportion to $P^\gamma(j)$ with parameter $\gamma \geq 0$.
 
@@ -332,6 +332,14 @@ where $C$ is a positive constant.
 In other words, \emph{word2vec with the negative sampling is a gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
 While the gravity model generates the flow from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given trajectories.
 Therefore, the embedding distance is inherently tied to the flow, and hence, has greater predictive power than the geographic distance.
+
+A central assumption in our mathematical analysis is that the embedding vectors are optimum in terms of the {\it word2vec}'s objective function.
+However, the embedding vectors are sub-optimal in practice because the optimization algorithm is stochastic and can be trapped in a local optimum.
+This has two consequences.
+First, the suboptimal in- and out-vectors can be different, which goes against the premise that the (optimal) in-vectors and out-vectors are identical.
+Second, dot similarity should in principle predict the mobility flow better than cosine similarity because dot similarity includes cosine similarity as its special case.
+However, our simulations show that it is the cosine similarity that better predicted the mobility flow~[reference to a figure]. This phenomenon---cosine similarity outperforms dot similarity---has been observed in many applications of word embedding~\cite{add citations}. Yet, why cosine similarity is superior to dot similarity has not been clearly understood.
+Nevertheless, among the 7(?) measures tested in our simulations, dot similarity is the second-best predictor of mobility flow following cosine similarity. Furthermore, unlike cosine similarity, dot similarity has a mathematical connection to the gravity model.
 
 
 \todo{add stuff about cosine distance performing better, SGD performing better}
@@ -533,12 +541,12 @@ Investigation of the structure of the embedding space, such as the vector norm, 
 
 In spite of its promise, our study has several limitations.
 First, the skip-gram \textit{word2vec} model does not leverage directionality, meaning that embedding will be less effective at capturing mobility for which directionality is critical.
-Future studies may also consider bi-directional embeddings, such as BERT~\autocite{devlin2018bert}, to incorporate directionality. 
+Future studies may also consider bi-directional embeddings, such as BERT~\autocite{devlin2018bert}, to incorporate directionality.
 Second, the neural embedding approach is most useful in cases of mobility between discrete geographic units such as between countries, cities, and businesses; this approach is less useful in the case of mobility between locations represented using geographic coordinates, such as in the modeling of animal movements.
 Neither of these methodological limitations is insurmountable, and future work can aim to incorporate directionality and identify meaningful representations of continuous mobility data.
-Third, neural embeddings are an inherently stochastic procedure, and so results may change across different iterations. 
-We however, note that all results shown here are robust to this stochasticity, likely emerging from the limited "vocabulary" of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories). 
-Applications of \textit{word2vec }to problem domains where the ratio of the vocabulary to data is smaller, however, should take caution to ensure that findings are not the result of random artifacts. 
+Third, neural embeddings are an inherently stochastic procedure, and so results may change across different iterations.
+We however, note that all results shown here are robust to this stochasticity, likely emerging from the limited "vocabulary" of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories).
+Applications of \textit{word2vec }to problem domains where the ratio of the vocabulary to data is smaller, however, should take caution to ensure that findings are not the result of random artifacts.
 Finally, the case of scientific mobility presents domain-specific limitations.
 Reliance on bibliometric metadata means that we capture only long-term mobility such as migration, rather than the array or more frequent short-term mobility such as conference travel and temporary visits.
 The kinds of mobility we do capture---migration, and co-affiliation---although conceptually different, are treated identically by our model.
@@ -625,9 +633,9 @@ We follow the standard practice and only use the in-vector, $\bm{v}$,  which is 
 
 
 %% Word2vec parameters and training procedure
-We used the \textit{word2vec}  implementation in the python package \texttt{gensim}. 
+We used the \textit{word2vec}  implementation in the python package \texttt{gensim}.
 The skip-gram negative sampling  \textit{word2vec} model has several tunable hyper-parameters, including the embedding dimension $d$, the size of the context window $w$, the minimum frequency threshold $f_{\min}$, initial learning rate $\alpha$, shape of negative sampling distribution $\gamma$, and the number of iterations.
-For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparameter}). 
+For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig.~\ref{fig:supp:hyperparameter}).
 Although the original \textit{word2vec } paper uses $\gamma = 0.75$\autocite{mikolov2013word2vec}, here we set $\gamma = 1.0$, though results are only trivially different at different values of $\gamma$ (Fig.~\ref{fig:supp:distancemetrics}).
 We also use same setting for U.S. airport itinerary and Korean accommodation reservation data.
 
@@ -702,10 +710,10 @@ The embedding distance with the cosine distance, $d_{ij}$, is calculated as $d_{
 where $v_i$ and $v_j$ are the embedding vectors for locations $i$ and $j$, respectively.
 Note that $d_{ij}$ is not a formal metric because it does not satisfy the triangle inequality.
 Nevertheless, cosine distance is often shown to be useful in practice~\autocite{lerman2007embedding, brown1970migration, kim2018functional}.
-We compare the performance of this cosine-based embedding distance against those derived using dot product similarity and euclidean distance. 
+We compare the performance of this cosine-based embedding distance against those derived using dot product similarity and euclidean distance.
 
-We compare the performance of the embedding distance to many baselines. 
-These include distances derived from simpler embedding approaches, such as Singular Value Decomposition (SVD) and a Laplacian Eigenmap embedding performed on the underlying co-occurrence matrix. 
+We compare the performance of the embedding distance to many baselines.
+These include distances derived from simpler embedding approaches, such as Singular Value Decomposition (SVD) and a Laplacian Eigenmap embedding performed on the underlying co-occurrence matrix.
 We also use network-based distances, calculating vectors using a Personalized Page Rank approach and measuring the distance between them using cosine distance and Jensen-Shannon Divergence (see \SI).
 Finally, we compare the embedding distnace against embeddings calculated through direct matrix factorization, following the approach that \textit{word2vec} implicitley approximates~\cite{levy2014neural}.
 
@@ -797,7 +805,7 @@ Rodrigo Costas is partially funded by the South African DST-NRF Centre of Excell
 
 %
 % Author Contributions
-% 
+%
 \subsection*{Author Contributions}
 All authors contributed extensively to the work presented in this paper.
 D. M. and J.Y. were involved in all stages of conceptualization, analysis, and writing, S.K. developed the theoretical framework, R.C. assembled input data, and W.J., S.M., and Y.A. contributed to conceptualization.
@@ -806,7 +814,7 @@ All authors discussed the results and commented on the manuscript at all stages.
 
 %
 % Supporting Information
-% 
+%
 \subsection*{Additional Information}
 Supplementary Information is available for this paper.
 Correspondence and requests for materials should be addressed to Dr. Staša Milojević and Dr. Yong-Yeol Ahn.
