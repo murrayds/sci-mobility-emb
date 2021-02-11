@@ -334,12 +334,14 @@ While the gravity model generates the flow from the given mass and locations, {\
 Therefore, the embedding distance is inherently tied to the flow, and hence, has greater predictive power than the geographic distance.
 
 A central assumption in our mathematical analysis is that the embedding vectors are optimum in terms of the {\it word2vec}'s objective function.
-However, the embedding vectors are sub-optimal in practice because the optimization algorithm is stochastic and can be trapped in a local optimum.
+However, this premise is not practical because the optimization algorithm often finds sub-optimal embeddings due to its stochasticity and being trapped in a local optimum.
 This has two consequences.
-First, the suboptimal in- and out-vectors can be different, which goes against the premise that the (optimal) in-vectors and out-vectors are identical.
+First, the in- and out-vectors can be different.
 Second, dot similarity should in principle predict the mobility flow better than cosine similarity because dot similarity includes cosine similarity as its special case.
-However, our simulations show that it is the cosine similarity that better predicted the mobility flow~[reference to a figure]. This phenomenon---cosine similarity outperforms dot similarity---has been observed in many applications of word embedding~\cite{add citations}. Yet, why cosine similarity is superior to dot similarity has not been clearly understood.
-Nevertheless, among the 7(?) measures tested in our simulations, dot similarity is the second-best predictor of mobility flow following cosine similarity. Furthermore, unlike cosine similarity, dot similarity has a mathematical connection to the gravity model.
+However, our simulations show that it is the cosine similarity that better predicted the mobility flow~[reference to a figure].
+This phenomenon---cosine similarity outperforms dot similarity---has been observed in many applications of word embedding~\cite{add citations}.
+Nevertheless, among the 7(?) measures tested in our simulations, dot similarity is the second-best predictor of mobility flow following cosine similarity.
+Furthermore, unlike cosine similarity, dot similarity has a mathematical connection to the gravity model.
 
 
 \subsection*{Embeddings capture global structure of mobility}
@@ -542,7 +544,7 @@ Future studies may also consider bi-directional embeddings, such as BERT~\autoci
 Second, the neural embedding approach is most useful in cases of mobility between discrete geographic units such as between countries, cities, and businesses; this approach is less useful in the case of mobility between locations represented using geographic coordinates, such as in the modeling of animal movements.
 Neither of these methodological limitations is insurmountable, and future work can aim to incorporate directionality and identify meaningful representations of continuous mobility data.
 Third, neural embeddings are an inherently stochastic procedure, and so results may change across different iterations.
-We however, note that all results shown here are robust to this stochasticity, likely emerging from the limited "vocabulary" of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories).
+We however, note that all results shown here are robust to this stochasticity, likely emerging from the limited ``vocabulary'' of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories).
 Applications of \textit{word2vec }to problem domains where the ratio of the vocabulary to data is smaller, however, should take caution to ensure that findings are not the result of random artifacts.
 Finally, the case of scientific mobility presents domain-specific limitations.
 Reliance on bibliometric metadata means that we capture only long-term mobility such as migration, rather than the array or more frequent short-term mobility such as conference travel and temporary visits.
