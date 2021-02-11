@@ -80,6 +80,7 @@
 \newcommand{\secref}[1]{Section~\ref{sec:#1}}
 \newcommand{\figref}[1]{Fig.~\ref{fig:#1}}
 \newcommand{\tabref}[1]{Table~\ref{tab:#1}}
+\newcommand{\todo}[1]{{\leavevmode\color{orange}[TODO: #1]}}
 %\newcommand{\eqnref}[1]{\eqref{eq:#1}}
 %\newcommand{\thmref}[1]{Theorem~\ref{#1}}
 %\newcommand{\prgref}[1]{Program~\ref{#1}}
@@ -233,7 +234,7 @@ $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini
 The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij }= \hat{T}_{ji}$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
 We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}.
 The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanism \autocite{barthelemy2011spatial} such as the cost functions for a given distance and the spatial granularity of the observation.
-For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}), though the embedding distance outperforms geographic distance regardless of the type of gravity model used (Fig.~\ref{fig:supp:distancermse}).
+For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}), though the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
 Beyond the fitting on the data, we would like to argue that geographical distance fits well with the power-law decay function because it is more suitable for analyzing large, complex, and scale-free spatial systems\autocite{chen2015distance}, while embedding distance fits well with the exponential decay function, which we will show later in the section of mathematical relation between \textit{word2vec}and the gravity model.
 
 
@@ -251,9 +252,8 @@ This performance is consistent in the case of scientific mobility:
 the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
 These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
 The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores  calculated from the underlying mobility network (Fig.~\ref{fig:supp:distancemetrics}, Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baseline, such as distances derived from a singular-value decomposition on flow matrix and from a Laplacian Eigenmap embedding  \autocite{belkin2003laplacian} of the underlying data (Fig.~\ref{fig:supp:distancemetrics} and Fig.~\ref{fig:supp:distancermse}).
+The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baseline, such as distances derived from a singular-value decomposition on flow matrix and from a Laplacian Eigenmap embedding  \autocite{belkin2003laplacian} of the underlying data (Fig.~\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), in many cases even putperforming a direct factorization approach~\cite{levy2014neural}), which \textit{word2vec} efficiently approximates.
 In sum, our results demonstrate that, consistently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
-
 
 
 %
@@ -342,6 +342,9 @@ However, our simulations show that it is the cosine similarity that better predi
 This phenomenon---cosine similarity outperforms dot similarity---has been observed in many applications of word embedding~\cite{add citations}.
 Nevertheless, among the 7(?) measures tested in our simulations, dot similarity is the second-best predictor of mobility flow following cosine similarity.
 Furthermore, unlike cosine similarity, dot similarity has a mathematical connection to the gravity model.
+
+
+\todo{add stuff about cosine distance performing better, SGD performing better}
 
 
 \subsection*{Embeddings capture global structure of mobility}
@@ -524,13 +527,13 @@ Similar patterns can be found across many of the 30 countries with the most tota
 %
 \section*{Conclusion}
 
-Neural embedding approaches offer a novel, data-driven solution for learning an effective and robust representation of locations based on trajectory data, encoding the complex and multi-faceted nature of mobility.
+Neural embedding approaches offer a novel, data-driven solution for efficiently learning an effective and robust representation of locations based on trajectory data, encoding the complex and multi-faceted nature of mobility.
 We demonstrated that a functional distance derived from the embedding can be used with the gravity model of mobility to better predict real-world mobility than does geographic distance.
 Embedding distance outperformed geographic distance across distinct and disparate domains, including U.S. flight itineraries, Korean hotel accommodation reservations, and global scientific mobility.
 We discover that this performance results from neural embeddings implicitly learning gravity law relationships between locations, making them particularly well suited to representing mobility.
-Focusing on scientific mobility, we find that neural embedding's performance is driven by its ability to encode many aspects of scientific mobility into a single representation, including global and regional geography, shared languages, and prestige hierarchies, even without explicit information on these factors.
+Focusing on scientific mobility, we find that the embedding successfully encodes many aspects of scientific mobility into a single representation, including global and regional geography, shared languages, and prestige hierarchies, even without explicit information on these factors.
 
-While we focus on three domains of mobility, this approach may be broadly applicable to other kinds of mobility data, such as general human migration, transit-network mobility, and more.
+While we focus on three domains of mobility, this approach may be broadly applicable to other kinds of mobility data that is expected to follow a gravity-like pattern, such as general human migration, transit-network mobility, and more.
 Moreover, this approach can be used to learn a functional distance even between entities for which no physical analog exists, such as between occupational categories based on individuals' career trajectories.
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, the structure of the neural embedding space is amenable to a range of unique applications for studying mobility.
 As we have shown, the embedding space allows the visualization of the complex structure of scientific mobility at high resolution across multiple scales, providing a large and detailed map of the landscape of global scientific mobility.
@@ -700,7 +703,7 @@ We calculate $T_{ij}$ as the total number of co-occurrence between two locations
 In scientific mobility, $T_{ij} = 10$ indicates that the number of co-occurrence between both organization $i$ and $j$ between 2008 and 2019 is 10, as evidenced from their publications.
 Here, we treat $T_{ij} = T_{ji}$ for the sake of simplicity and, in the case of scientific mobility, because directionality cannot easily be derived from bibliometric records, or may not be particularly informative (see \SI).
 
-We calculate two forms of distance between locations.
+We calculate two main forms of distance between locations.
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between locations.
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of locations.
 In the case of U.S. flight itinerary and scientific mobility, we impute distance to 1 km when their distance is less than one kilometer.
@@ -709,9 +712,12 @@ The embedding distance with the cosine distance, $d_{ij}$, is calculated as $d_{
 where $v_i$ and $v_j$ are the embedding vectors for locations $i$ and $j$, respectively.
 Note that $d_{ij}$ is not a formal metric because it does not satisfy the triangle inequality.
 Nevertheless, cosine distance is often shown to be useful in practice~\autocite{lerman2007embedding, brown1970migration, kim2018functional}.
+We compare the performance of this cosine-based embedding distance against those derived using dot product similarity and euclidean distance.
 
-
-
+We compare the performance of the embedding distance to many baselines.
+These include distances derived from simpler embedding approaches, such as Singular Value Decomposition (SVD) and a Laplacian Eigenmap embedding performed on the underlying co-occurrence matrix.
+We also use network-based distances, calculating vectors using a Personalized Page Rank approach and measuring the distance between them using cosine distance and Jensen-Shannon Divergence (see \SI).
+Finally, we compare the embedding distnace against embeddings calculated through direct matrix factorization, following the approach that \textit{word2vec} implicitley approximates~\cite{levy2014neural}.
 
 
 %

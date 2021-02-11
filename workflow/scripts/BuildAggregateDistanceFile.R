@@ -32,6 +32,12 @@ option_list = list(
               help="Path to file containing organization singular value decomposition distances"),
   make_option(c("--dot"), action="store", default=NA, type='character',
               help="Path to file containing organization dot product similarities"),
+  make_option(c("--levycos"), action="store", default=NA, type='character',
+              help="Path to file containing organization cosine similarities, calculated using levy's factorization"),
+  make_option(c("--levyeuc"), action="store", default=NA, type='character',
+              help="Path to file containing organization euclidean distance, calculated using levy's factorization"),
+  make_option(c("--levydot"), action="store", default=NA, type='character',
+              help="Path to file containing organization dot product similarities, calculated using levy's factorization"),
   make_option(c("-o", "--out"), action="store", default=NA, type='character',
               help="Path to save aggregated distance file")
 ) # end option_list
@@ -211,6 +217,58 @@ distance_all <- data.table::rbindlist(list(svdcos1, svdcos2)) %>%
 
 remove("svdcos", "svdcos1", "svdcos2")
 
+# LEVY COS
+levycos <- read_csv(opt$levycos, col_types = cols()) %>%
+  select(org1, org2, distance) %>%
+  rename(levycos_distance = distance)
+
+levycos1 <- distance_all %>%
+  inner_join(levycos, by = c("org1" = "org1", "org2" = "org2"))
+
+levycos2 <- distance_all %>%
+  inner_join(levycos, by = c("org2" = "org1", "org1" = "org2"))
+
+distance_all <- data.table::rbindlist(list(levycos1, levycos2)) %>%
+  distinct(org1, org2, .keep_all = TRUE)
+
+remove("levycos", "levycos1", "levycos2")
+
+
+# LEVY EUC
+levyeuc <- read_csv(opt$levyeuc, col_types = cols()) %>%
+  select(org1, org2, distance) %>%
+  rename(levyeuc_distance = distance)
+
+levyeuc1 <- distance_all %>%
+  inner_join(levyeuc, by = c("org1" = "org1", "org2" = "org2"))
+
+levyeuc2 <- distance_all %>%
+  inner_join(levyeuc, by = c("org2" = "org1", "org1" = "org2"))
+
+distance_all <- data.table::rbindlist(list(levyeuc1, levyeuc2)) %>%
+  distinct(org1, org2, .keep_all = TRUE)
+
+remove("levyeuc", "levyeuc1", "levyeuc2")
+
+
+# LEVY DOT
+levydot <- read_csv(opt$levydot, col_types = cols()) %>%
+  select(org1, org2, distance) %>%
+  rename(levydot_distance = distance)
+
+levydot1 <- distance_all %>%
+  inner_join(levydot, by = c("org1" = "org1", "org2" = "org2"))
+
+levydot2 <- distance_all %>%
+  inner_join(levydot, by = c("org2" = "org1", "org1" = "org2"))
+
+distance_all <- data.table::rbindlist(list(levydot1, levydot2)) %>%
+  distinct(org1, org2, .keep_all = TRUE)
+
+remove("levydot", "levydot1", "levydot2")
+
+
+
 #
 # ORG LOOKUP TABLES
 #
@@ -236,6 +294,7 @@ distance_all <- distance_all %>%
          geo_distance, emb_distance, dot_distance,
          pprcos_distance, pprjsd_distance,
          lapcos_distance, svdcos_distance,
+         levycos_distance, levyeuc_distance, levydot_distance,
          gravity,
          org1_city, org1_region, org1_country,
          org2_city, org2_region, org2_country
