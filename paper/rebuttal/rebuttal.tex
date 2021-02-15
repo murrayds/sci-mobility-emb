@@ -188,7 +188,7 @@ Dakota, Jisung, Sadamori, Rodrigo, Woo-Sung, Staša, and YY
 
 \section{Theoretical justification of \textit{word2vec} and the Gravity Model}
 \label{sec:theory}
-Here, we attempt to answer a question raised from our analysis: Why does the skip-gram model with negative sampling (SGNS), otherwise known as \textit{word2vec}, work so well to model human mobility?
+Here, we answer a question: Why does the skip-gram model with negative sampling (SGNS), otherwise known as \textit{word2vec}, work so well to model human mobility?
 We demonstrate a fundamental connection between the SGNS model and the Gravity Model of Mobility, namely, that SGNS implicitly learns gravity-like relationships between locations.
 This connection provides necessary theoretical justification to our choice of \textit{word2vec}, and constitutes a major breakthrough of our understanding of neural embeddings.
 In addition, this motivates the use of SGNS for future study of human mobility.
@@ -293,8 +293,7 @@ Therefore, the embedding distance is inherently tied to the flow, and hence, has
 In the mathematical analysis, we assumed that the embedding vectors are optimal in terms of the objective of {\it word2vec}, which, however, is not true in our numerical simulations.
 This violation of assumption leads to two substantial consequences for embedding vectors.
 First, although there exist optimal in-vector and out-vector that are identical, the in-vector and out-vector can be different in practice because they are sub-optimal.
-Second, while dot similarity is a formal distance measure in terms of its connection to the gravity model, our simulations show that dot similarity did not predict mobility flow better than cosine similarity (Fig.~\ref{fig:supp:distancemetrics}). It has been widely observed that cosine similarity is generally better than dot similarity in many applications of word embedding~\cite{} 
-\todo{[Jisung, could you add citations?]}. Therefore, the superiority of cosine similarity is not a problem specific to, but instead a general feature of word embedding.
+Second, while dot similarity is a formal distance measure in terms of its connection to the gravity model, our simulations show that dot similarity did not predict mobility flow better than cosine similarity (Fig.~\ref{fig:supp:distancemetrics}). It has been widely observed that cosine similarity is generally better than dot similarity in many applications of word embedding~\autocite{levy2015improving}. Therefore, the superiority of cosine similarity is not a problem specific to, but instead a general feature of word embedding.
 Nevertheless, dot similarity still outperformed geographic distance and some baselines (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}). What makes cosine similarity superior to dot similarity warrants the future work.
 
 \subsection{Changes to the manuscript}
