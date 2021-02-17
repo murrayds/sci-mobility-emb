@@ -197,7 +197,7 @@ Thus, the trajectories encode both migration and co-affiliation---the holding of
 
 A vector-space embedding of locations (airports, accommodations, and organizations) is learned by using trajectories as input to the standard with skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
 This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
-It works under the notion that a good representation should facilitate prediction, and so learns a mapping of target locations (words) that best predict locations that co-appear in the same trajectory (sentence).
+It works under the notion that a good representation should facilitate prediction,  so learns a mapping of words that predicts the target word with surrounding words (context).
 The model is also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
 
@@ -334,17 +334,13 @@ While the gravity model generates the flow from the given mass and locations, {\
 Therefore, the embedding distance is inherently tied to the flow, and hence, has greater predictive power than the geographic distance.
 
 A central assumption in our mathematical analysis is that the embedding vectors are optimum in terms of the {\it word2vec}'s objective function.
-However, this premise is not practical because the optimization algorithm often finds sub-optimal embeddings due to its stochasticity and being trapped in a local optimum.
+However, this premise is not practical because the optimization algorithm (e.g. stochastic gradient descent algorithm) often finds sub-optimal embeddings due to its stochasticity and being trapped in a local optimum.
 This has two consequences.
 First, the in- and out-vectors can be different.
 Second, dot similarity should in principle predict the mobility flow better than cosine similarity because dot similarity includes cosine similarity as its special case.
-However, our simulations show that it is the cosine similarity that better predicted the mobility flow~[reference to a figure].
-This phenomenon---cosine similarity outperforms dot similarity---has been observed in many applications of word embedding~\cite{add citations}.
-Nevertheless, among the 7(?) measures tested in our simulations, dot similarity is the second-best predictor of mobility flow following cosine similarity.
-Furthermore, unlike cosine similarity, dot similarity has a mathematical connection to the gravity model.
-
-
-\todo{add stuff about cosine distance performing better, SGD performing better}
+However, our simulations show that it is the cosine similarity that better predicted the mobility flow~(Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+ It has been widely observed that cosine similarity (dot product with $l2$ normalization) is generally better than dot similarity and dot similarity with various normalization methods in capturing a similarity between two words ~\autocite{levy2015improving}.
+Nevertheless, among the ten measures tested in our simulations, dot similarity is the second-best predictor of mobility flow following cosine similarity.
 
 
 \subsection*{Embeddings capture global structure of mobility}
@@ -652,7 +648,7 @@ An issue is that the generated embedding vectors can be largely affected by smal
 For example, if there is no flow between locations $i$ and $j$ (\ie, $T_{ij} = 0$), then $q_{ij} = -\infty$, pushing $i$ and $j$ to the infinite horizon of the embedding space.
 To remedy this problem, one can add a small amount of flow between such locations or exclude them from the embedding~\cite{levy2014neural,Qiu2018}.
 However, this may change the data to which we fit the model, and small flows may still have profound impact on the embedding space.
-Therefore, we adopt the \textt{gensim} implementation of the \textit{word2vec}.
+Therefore, we adopt the \texttt{gensim} implementation of the \textit{word2vec}.
 Our simulations show that, in the prediction task of mobility flow, \texttt{gensim}'s word2vec performs better than the matrix factorization approach in xxx out of the xxx datasets (Fig.~??).
 
 
