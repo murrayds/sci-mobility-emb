@@ -289,7 +289,7 @@ While the gravity model generates the flow from the given mass and locations, {\
 Therefore, the embedding distance is inherently tied to the flow, and hence, has greater predictive power than the geographic distance.
 
 A central assumption in our mathematical analysis is that the embedding vectors are optimum in terms of the {\it word2vec}'s objective function.
-However, this premise is not practical because the optimization algorithm (e.g. stochastic gradient descent algorithm) often finds sub-optimal embeddings due to its stochasticity and being trapped in a local optimum.
+However, this premise is not practical because the optimization algorithm (\eg stochastic gradient descent algorithm) often finds sub-optimal embeddings due to its stochasticity and being trapped in a local optimum.
 This has two consequences.
 First, the in- and out-vectors can be different.
 Second, dot similarity should in principle predict the mobility flow better than cosine similarity because dot similarity includes cosine similarity as its special case.

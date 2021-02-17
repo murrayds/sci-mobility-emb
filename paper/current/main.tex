@@ -334,12 +334,12 @@ While the gravity model generates the flow from the given mass and locations, {\
 Therefore, the embedding distance is inherently tied to the flow, and hence, has greater predictive power than the geographic distance.
 
 A central assumption in our mathematical analysis is that the embedding vectors are optimum in terms of the {\it word2vec}'s objective function.
-However, this premise is not practical because the optimization algorithm (e.g. stochastic gradient descent algorithm) often finds sub-optimal embeddings due to its stochasticity and being trapped in a local optimum.
+However, this premise is not practical because the optimization algorithm (\eg stochastic gradient descent algorithm) often finds sub-optimal embeddings due to its stochasticity and being trapped in a local optimum.
 This has two consequences.
 First, the in- and out-vectors can be different.
 Second, dot similarity should in principle predict the mobility flow better than cosine similarity because dot similarity includes cosine similarity as its special case.
 However, our simulations show that it is the cosine similarity that better predicted the mobility flow~(Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
- It has been widely observed that cosine similarity (dot product with $l2$ normalization) is generally better than dot similarity and dot similarity with various normalization methods in capturing a similarity between two words ~\autocite{levy2015improving}.
+It has been widely observed that cosine similarity (dot product with $l2$ normalization) is generally better than dot similarity and dot similarity with various normalization methods in capturing a similarity between two words ~\autocite{levy2015improving}.
 Nevertheless, among the ten measures tested in our simulations, dot similarity is the second-best predictor of mobility flow following cosine similarity.
 
 
