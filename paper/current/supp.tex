@@ -73,7 +73,7 @@
  \clearfield{issn}%
  \clearfield{doi}%%
 }
-
+\newcommand{\todo}[1]{{\leavevmode\color{orange}[TODO: #1]}}
 
 \addbibresource{mobility.bib}
 
@@ -225,11 +225,44 @@ where $v_i$ is a column vector of length $N$ with entries that are all zero exce
 \end{equation}
 where $m=\frac{1}{2}(p_i+p_j)$. We report the result with cosine distance ($R^2=0.14$, Fig. \ref{fig:supp:gravity_pprcos}) and  Jensen–Shannon divergence ($R^2=0.19$, Fig. \ref{fig:supp:gravity_pprjsd}). In both cases, the performance is under the performance of the model with geographical distance. Even though the length of the PPR vectors is extremely larger than the length of our embedding vectors, result with the embedding distance outperforms both of them. 
 
+\paragraph*{S5 Text}
+\label{si:text:Raw SVD}
+{\bf Singular vector decomposition distance.}
 
+
+We examine the gravity model on the embedding vector with applying truncated singular vector decomposition (SVD) on the co-occurrence matrix as the first benchmark on the matrix factorization method. Intuitively,  truncated SVD performs linear low rank approximation of the matrix with given dimension $d$. First, we construct the co-occurrence matrix of $N$ organization, $A_{ij}$ given by the co-occurence of $i$ and $j$ in the same affiliation trajectory. Then, we apply truncated singular vector decomposition with $d=300$ on the flow matrix $A$ directly.
+
+We report the result with cosine distance ($R^2=0.247$, Table~\ref{supp:table:r2_table}), which is the best performance among cosine distance, euclidean distances and dot product. The performance is slightly over the the performance of the model with geographical distance. 
+\todo{@dakoda can you write down the performance with other distance measures simply here?}
+
+
+\paragraph*{S6 Text}
+\label{si:text:Laplacian}
+{\bf Laplacian eigenmap distance.}
+
+
+We also consider Laplacian eigenmaps \cite{belkin2003laplacian}, which is the most fundamental graph embedding method, as the second benchmark on the matrix factorization. First, we construct the co-occurrence matrix of $N$ organization, $A_{ij}$ given by the co-occurence of $i$ and $j$ in the same affiliation trajectory and degree matrix $D$ which is the diagonal matrix for which $D_{ii}=\sum_j {A_{ij}}$. Then we construct graph lapalcian matrix $L = D-A$  and apply  truncated singular vector decomposition in the matrix $L$ with $d=300$.
+
+We report the result with euclidean distance ($R^2=0.341$, Table~\ref{supp:table:r2_table}), which is the best performance among cosine distance, euclidean distances and dot product. The performance is much bettern that the performance of the model with geographical distance, still below the performance of our suggested way.
+\todo{@dakoda can you write down the performance with other distance measures simply here?}
+
+
+\paragraph*{S7 Text}
+\label{si:text:Laplacian}
+{\bf Levy's  symmetric SVD \textit{word2vec} distance}
+
+Furthermore, We examine the gravity model with embedding vector with the symmetric SVD  \textit{word2vec} method\cite{levy2014neural} as the third benchmark on the matrix factorization. Based on idea of \textit{word2vec} is just implciity matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding. First, we construct the matrix of $N$ organization,
+
+\begin{equation}
+ M_{ij} = \log(\frac{N(i,j) |D|}{N(i) N(j)}) - \log(k)
+\end{equation}
+
+We report the result with euclidean distance ($R^2=0.341$, Table~\ref{supp:table:r2_table}), which is the best performance among cosine distance, euclidean distances and dot product. The performance is much bettern that the performance of the model with geographical distance, still below the performance of our suggested way.
+\todo{@dakoda can you write down the performance with other distance measures simply here?}
 
 %
 % S5 TEXT
-\paragraph*{S5 Text}
+\paragraph*{S8 Text}
 \label{si:text:organizations}
 {\bf Organization disambiguation and metadata.}
 
@@ -259,7 +292,7 @@ trajectories containing only a general designation are not altered.
 
 %
 % S6 TEXT
-\paragraph*{S6 Text}
+\paragraph*{S9 Text}
 \label{si:text:disambiguation}
 {\bf Author name dismabiguation.}
 
@@ -273,7 +306,7 @@ Past studies have validated this data and shown that the disambiguated authors a
 
 %
 % S7 TEXT
-\paragraph*{S7 Text}
+\paragraph*{S10 Text}
 \label{si:text:network_ranking}
 {\bf Reconstructing Times ranking with network measure.}
 
@@ -286,7 +319,7 @@ This suggests that the embedding encodes information on prestige hierarchy at le
 
 %
 % S8 TEXT
-\paragraph*{S8 Text}
+\paragraph*{S11 Text}
 \label{si:text:boomerang_speculation}
 {\bf Speculation on variations of the convex-curve pattern.}
 
