@@ -305,8 +305,8 @@ To reflect these breakthroughs, we have made the following changes to the manusc
 	\item Following results demonstrating the performance of the embedding distance compared to geographic distance, we add the section \textbf{word2vec and the gravity model}, which summarizes the link between the two models.
 	\item We also added the section \textbf{An implicit bias in the negative sampling} to the methods section of our manuscript.
 	\item Since the formulation of the gravity used in the above derivations assumes $\gamma = 1$, we use this value of $gamma$ for all reported results. No result substantively changes with this change.
-	\item \todo{We added a sentence to the paper speculating on why cosine similarity works best}
-	\item \todo{We also added a sentence noting the in-vector and out-vector issue, and speculating on reasons/consequences}
+	\item We added a sentence to the paper speculating on why cosine similarity works best in the main text.
+	\item We also added a sentence noting the in-vector and out-vector issue, and speculating on reasons/consequences.
 \end{itemize}
 
 
@@ -380,7 +380,7 @@ Also, it is well known that SVD by itself is very vulnerable to outliers \autoci
 To reflect these additional experiments, we have made the following changes to our manuscript:
 \begin{itemize}
 	\item Added Fig~\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table} to the manuscript.
-	\item \todo{add sentence speculating on SGD performance differences into text/supporting meterials}
+	\item We have added sentence speculating on SGD performance differences into supporting materials
 \end{itemize}
 
 
@@ -511,7 +511,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	\say{The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanism [...] such as the cost functions for a given distance and the spatial granularity of the observation.
 		For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case though the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
 
-	We also argue that geographical distance ﬁts well with the power-law decay function because power-based gravity model can be more suitable for analyzing large, complex, and scale-free spatial systems and the exponential-based gravity model indicates simplicty rather than spatial complexity~\autocite{chen2015distance}. Meanwhile, embedding distance ﬁts well with the exponential decay function, which we demonstrate to correspond to an underlying mathematical relationship between \textit{word2vec} and the gravity model, a connection we recently discovered and included as a major finding in this revision (see our response to Referee 1).
+	We find the article that geographical distance ﬁts well with the power-law decay function because power-based gravity model can be more suitable for analyzing large, complex, and scale-free spatial systems theoretically and the exp`onential-based gravity model indicates simplicty rather than spatial complexity~\autocite{chen2015distance}. Meanwhile, embedding distance ﬁts well with the exponential decay function, which we demonstrate to correspond to an underlying mathematical relationship between \textit{word2vec} and the gravity model, a connection we recently discovered and included as a major finding in this revision (see our response to Referee 1).
 
 }
 
@@ -544,7 +544,6 @@ All of the referees presented us with excellent, insightful comments and we feel
 }
 
 \response{
-	\todo{Thoughts on this response? Still not 100\% sure I follow the reviewer}
 	Thank you for this comment.
 	We however, do not believe that this is a problem in our analysis.
 	Raw co-occurrence, which is used to define our 'flux' between organizations, is always calculated using all organizations in a trajectory, and so window size does not affect flux.
