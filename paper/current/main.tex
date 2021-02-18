@@ -252,7 +252,7 @@ This performance is consistent in the case of scientific mobility:
 the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
 These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
 The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores  calculated from the underlying mobility network (Fig.~\ref{fig:supp:distancemetrics}, Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baseline, such as distances derived from a singular-value decomposition on flow matrix and from a Laplacian Eigenmap embedding  \autocite{belkin2003laplacian} of the underlying data (Fig.~\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), in many cases even putperforming a direct factorization approach~\cite{levy2014neural}), which \textit{word2vec} efficiently approximates.
+The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baseline, such as distances derived from a singular-value decomposition on flow matrix and from a Laplacian Eigenmap embedding  \autocite{belkin2003laplacian} of the underlying data (Fig.~\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), in many cases even putperforming a direct factorization approach~\autocite{levy2014neural}), which \textit{word2vec} efficiently approximates.
 In sum, our results demonstrate that, consistently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
 
 
@@ -645,11 +645,11 @@ To mitigate the effect of less common locations, we set $f_{\min} = 50$, limitin
 We set $\alpha$ to its default value of 0.025 and iterate five times over all training trajectories.
 For scientific mobility, across each training iteration, the order of organizations within a single year is randomized to remove unclear sequential order.
 
-There is an alternative implementation of \textit{word2vec} based on a matrix factorization~\cite{levy2014neural,Qiu2018}, which optimizes the same objective function as for \texttt{gensim} but in a different way.
+There is an alternative implementation of \textit{word2vec} based on a matrix factorization~\autocite{levy2014neural,Qiu2018}, which optimizes the same objective function as for \texttt{gensim} but in a different way.
 The matrix factorization approach generates embedding vectors such that the dot similarity for locations $i$ and $j$ is as close as $q_{ij}= \log(T_{ij} / s_i s_j) + \text{const}$.
 An issue is that the generated embedding vectors can be largely affected by small flows $T_{ij}$ in the data.
 For example, if there is no flow between locations $i$ and $j$ (\ie, $T_{ij} = 0$), then $q_{ij} = -\infty$, pushing $i$ and $j$ to the infinite horizon of the embedding space.
-To remedy this problem, one can add a small amount of flow between such locations or exclude them from the embedding~\cite{levy2014neural,Qiu2018}.
+To remedy this problem, one can add a small amount of flow between such locations or exclude them from the embedding~\autocite{levy2014neural,Qiu2018}.
 However, this may change the data to which we fit the model, and small flows may still have profound impact on the embedding space.
 Therefore, we adopt the \texttt{gensim} implementation of the \textit{word2vec}.
 Our simulations show that, in the prediction task of mobility flow, \texttt{gensim}'s word2vec performs better than the matrix factorization approach in xxx out of the xxx datasets (Fig.~??).
@@ -725,7 +725,7 @@ We compare the performance of this cosine-based embedding distance against those
 We compare the performance of the embedding distance to many baselines.
 These include distances derived from simpler embedding approaches, such as Singular Value Decomposition (SVD) and a Laplacian Eigenmap embedding performed on the underlying co-occurrence matrix.
 We also use network-based distances, calculating vectors using a Personalized Page Rank approach and measuring the distance between them using cosine distance and Jensen-Shannon Divergence (see \SI).
-Finally, we compare the embedding distnace against embeddings calculated through direct matrix factorization, following the approach that \textit{word2vec} implicitley approximates~\cite{levy2014neural}.
+Finally, we compare the embedding distnace against embeddings calculated through direct matrix factorization, following the approach that \textit{word2vec} implicitley approximates~\autocite{levy2014neural}.
 
 
 %
