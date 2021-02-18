@@ -342,7 +342,8 @@ Our numerical simulations show that dot similarity calculated by {\it word2vec} 
 However, cosine similarity predicted mobility flow better than dot similarity.
 This result echos many applications of word embedding such as word analogy test~\autocite{levy2015improving}, in which cosine similarity outperforms dot similarity.
 In predicting mobility flow, if the embedding vectors are optimal, cosine similarity should be no better than dot similarity because cosine similarity is a special case of dot similarity.
-Therefore, the inferiority of dot similarity is attributed to the optimization process, and a careful tuning of the optimization algorithm would close the gap between our mathematical and numerical results.
+Therefore, the inferiority of dot similarity is attributed to the optimization process.
+Although finding an optimal embedding is difficult in practice, a careful tuning of the optimization algorithm would close the gap between our mathematical and numerical results.
 
 
 \subsection*{Embeddings capture global structure of mobility}
