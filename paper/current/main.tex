@@ -338,11 +338,11 @@ However, this premise is not practical because the optimization algorithm (\eg s
 This has two consequences.
 First, the in- and out-vectors can be different.
 Second, dot similarity calculated by {\it word2vec} is the distance metric tied to the gravity model, and hence, should capture the mobility flow well.
-In fact, dot similarity calculated by {\it word2vec} is the second-best predictor of mobility flow among ten embedding distances in our numerical simulations~(Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+Our numerical simulations show that dot similarity calculated by {\it word2vec} is the second-best predictor of mobility flow among the ten embedding distances~(Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
 However, cosine similarity predicted mobility flow better than dot similarity.
 This result echos many applications of word embedding such as word analogy test~\autocite{levy2015improving}, in which cosine similarity outperforms dot similarity.
 In predicting mobility flow, if the embedding vectors are optimal, cosine similarity should be no better than dot similarity because cosine similarity is a special case of dot similarity.
-Therefore, the inferiority of dot similarity is attributed to the optimization process, and therefore, dot similarity can outperform cosine similarity by a careful tuning of the optimization algorithm.
+Therefore, the inferiority of dot similarity is attributed to the optimization process, and therefore, a careful tuning of the optimization algorithm would close the gap between our mathematical and numerical results.
 
 
 \subsection*{Embeddings capture global structure of mobility}
