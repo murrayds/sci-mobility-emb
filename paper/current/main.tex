@@ -293,10 +293,10 @@ The {\it word2vec} model takes a location trajectory, denoted by ($a_{1}, a_{2},
 A location $a_t=i$ is considered to have a context location $a_{t'}=j$ that appears in its succeeding or proceeding $w$ locations in the trajectory, \ie  $j \in [a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}]$.
 	{\it Word2vec} learns an embedding by estimating the probability that location $i$ has context $j$:
 \begin{align}
-	P\left(j \given i \right):= \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{\widetilde{Z_i}}, \label{eq:prob_w2v_ng}
+	P\left(j \given i \right):= \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:prob_w2v_ng}
 \end{align}
-where the denominator $\widetilde{Z_i}=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
-Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---which are referred to as the in-vector and out-vector, respectively, we follow many studies by adopting the in-vector $\bm{v}_i$ as an embedding of location $i$.
+where the denominator $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
+Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---which are referred to as the in-vector and out-vector, respectively, we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$.
 
 Our experiments show that {\it word2vec} best explains real-world mobility flow when $w=1$ (Fig.~\ref{fig:supp:hyperparameter}), with the flow predicted by
 \begin{align}
@@ -304,7 +304,7 @@ Our experiments show that {\it word2vec} best explains real-world mobility flow 
 	\hat{T}_{ij} = P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 \end{align}
 where $P(i)$ is the probability that location $i$ appears in the trajectory.
-Because computing $Z_i$ is computationally demanding, multiple approximation methods have been proposed, the most  popular being negative sampling~\autocite{mikolov2013word2vec}.
+Because computing $Z_i$ is computationally demanding, multiple approximation methods have been proposed, the most popular being negative sampling~\autocite{mikolov2013word2vec}.
 Negative sampling finds the embedding vectors by solving a binary classification task, in which the model classifies whether a given center-context location pair $(i, j)$ comes from the data or artificially generated ``negative'' samples.
 The negative pair $(i,j)$ is sampled in proportion to $P^\gamma(j)$ with parameter $\gamma \geq 0$.
 
@@ -315,14 +315,14 @@ When taking into account this bias, {\it word2vec} with the negative sampling fi
 \end{align}
 where we redefine the normalization constant as $Z_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$. (See Methods section for the full calculation).
 
-Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\bm{u}_i = \bm{v}_i$ \autocite{levy2014neural}.
+Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\bm{u}_i = \bm{v}_i$~\autocite{levy2014neural}.
 Setting $\gamma = 1$ and substituting $\bm{u}_i = \bm{v}_j$ into Eq.~\eqref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
 \begin{align}
-	\hat{T_{ij}}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
+	\hat{T}_{ij}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
 \end{align}
 The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) because {\it word2vec} neglects whether the context $j$ appears before or after the center $i$ in the trajectory.
 If we swap $i$ and $j$ in Eq.~\eqref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
-Therefore, to ensure $T_{ij} = T_{ji}$, the denominator $Z_i$ must be a constant.
+Therefore, to ensure $\hat{T}_{ij} = \hat{T}_{ji}$, the denominator $Z_i$ must be a constant.
 
 Taken altogether, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
 \begin{align}
@@ -330,18 +330,18 @@ Taken altogether, the {\it word2vec} model with the negative sampling predicts a
 \end{align}
 where $C$ is a positive constant.
 In other words, \emph{word2vec with the negative sampling is a gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
-While the gravity model generates the flow from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given trajectories.
-Therefore, the embedding distance is inherently tied to the flow, and hence, has greater predictive power than the geographic distance.
+While the gravity model generates mobility flow from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
+Therefore, the embedding distance is inherently tied to mobility flow, and hence, has greater predictive power than the geographic distance.
 
 A central assumption in our mathematical analysis is that the embedding vectors are optimum in terms of the {\it word2vec}'s objective function.
 However, this premise is not practical because the optimization algorithm (\eg stochastic gradient descent algorithm) often finds sub-optimal embeddings.
 This has two consequences.
 First, the in- and out-vectors can be different.
-Second, dot similarity calculated by {\it word2vec} is the distance metric tied to the gravity model, and hence, should capture the mobility flow well.
-However, in our numerical simulations, cosine similarity calculated by {\it word2vec} predicts better than the dot similarity~(Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+Second, although dot similarity calculated by {\it word2vec} is the distance metric tied to the gravity model, and hence, should capture the mobility flow well,
+it is cosine similarity that best predicted mobility flow in our numerical simulations~(Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
 Cosine similarity is a special case of dot similarity, and thus, should be no better than dot similarity if the embedding vectors are optimal.
 In practice, cosine similarity often outperform dot similarity in many applications of word embedding such as word analogy test~\autocite{levy2015improving}.
-Nevertheless, among the ten measures tested in our simulations, dot similarity is the second-best predictor of mobility flow, can be even better than cosine similarity.
+Nevertheless, among the ten embedding distance tested in our simulations, dot similarity is the second-best predictor of mobility flow, can be even better than cosine similarity by carefully turning the optimization algorithm.
 
 
 \subsection*{Embeddings capture global structure of mobility}
