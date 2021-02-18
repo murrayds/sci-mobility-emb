@@ -658,8 +658,8 @@ Our simulations show that, in the prediction task of mobility flow, \texttt{gens
 
 Negative sampling is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a distinct model  from {\it word2vec}.
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
-A center-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a parameter).
-Then, given a center-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using sigmoid function:
+A target-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a parameter).
+Then, given a target-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using sigmoid function:
 \begin{align}
 	\label{eq:sigmoid}
 	\frac{1}{1 + \exp\left( - \bm{u}_j \cdot \bm{v}_i \right)}.
@@ -671,7 +671,7 @@ This problem is addressed by the noise contrastive estimation (NCE) \autocite{Ch
 	\label{eq:nce}
 	f(x) / \sum_{x'} f(x'),
 \end{align}
-where $f(x)$ is the unnormalized probability for an instance $x$.
+where $f(x)$ is the non-normalized probability for an instance $x$.
 As in negative sampling, NCE fits the model based on a binary classification task, with positive and negative samples randomly drawn from the given data and a noise distribution $p_0$, respectively, using a bias-corrected sigmoid function:
 \begin{align}
 	\label{eq:sigmoid2}
@@ -713,7 +713,7 @@ We calculate two main forms of distance between locations.
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between locations.
 Geographic distance is calculated as the great circle distance, in kilometers, between pairs of locations.
 In the case of U.S. flight itinerary and scientific mobility, we impute distance to 1 km when their distance is less than one kilometer.
-In the case of Korean accommodation reservation data, because this data is intra-city mobility trajectory, we impute distance to 0.01 km when their distance is less than 0.01 km.
+In the case of Korean accommodation reservation data, because this data is intra-city mobility trajectory at a much smaller scale, we impute distance to 0.01 km when their distance is less than 0.01 km.
 The embedding distance with the cosine distance, $d_{ij}$, is calculated as $d_{ij} = 1 - \frac{\bm{v}_{i} \cdot \bm{v}_{j}}{\lVert \bm{v}_{i} \rVert \lVert \bm{v}_{j} \rVert}$,
 where $v_i$ and $v_j$ are the embedding vectors for locations $i$ and $j$, respectively.
 Note that $d_{ij}$ is not a formal metric because it does not satisfy the triangle inequality.
@@ -721,7 +721,7 @@ Nevertheless, cosine distance is often shown to be useful in practice~\autocite{
 We compare the performance of this cosine-based embedding distance against those derived using dot product similarity and euclidean distance.
 
 We compare the performance of the embedding distance to many baselines.
-These include distances derived from simpler embedding approaches, such as Singular Value Decomposition (SVD) and a Laplacian Eigenmap embedding performed on the underlying co-occurrence matrix.
+These include distances derived from simpler embedding approaches, such as Singular Value Decomposition (SVD) and a Laplacian Eigenmap embedding performed on the underlying location co-occurrence matrix.
 We also use network-based distances, calculating vectors using a Personalized Page Rank approach and measuring the distance between them using cosine distance and Jensen-Shannon Divergence (see \SI).
 Finally, we compare the embedding distance against embeddings calculated through direct matrix factorization, following the approach that \textit{word2vec} implicitley approximates~\autocite{levy2014neural}.
 
