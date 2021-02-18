@@ -287,16 +287,16 @@ In sum, our results demonstrate that, consistently, the embedding distance bette
 \subsection*{word2vec and the gravity model}
 
 Why does the embedding distance predict actual mobility flows better than the geographic distance?
-Here, we show that the objective function of {\it word2vec} is equivalent to the gravity model.
+Here, we show that the objective function of {\it word2vec} is equivalent to the gravity model, explaining its ability to learn gravity-like relationships between locations. 
 
-The {\it word2vec} model takes a location trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), as an input.
-A location $a_t=i$ is considered to have a context location $a_{t'}=j$ that appears in its succeeding or proceeding $w$ locations in the trajectory, \ie  $j \in [a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}]$.
+The {\it word2vec} model takes a location trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), as input.
+A location $a_t=i$ is considered to have a context location $a_{t'}=j$ that appears in the previous or subsequent $w$ locations in the trajectory, \ie  $j \in [a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}]$.
 	{\it Word2vec} learns an embedding by estimating the probability that location $i$ has context $j$:
 \begin{align}
 	P\left(j \given i \right):= \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:prob_w2v_ng}
 \end{align}
 where the denominator $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
-Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---which are referred to as the in-vector and out-vector, respectively, we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$.
+Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---referred to as the in-vector and out-vector, respectively---we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$.
 
 Our experiments show that {\it word2vec} best explains real-world mobility flow when $w=1$ (Fig.~\ref{fig:supp:hyperparameter}), with the flow predicted by
 \begin{align}
@@ -305,7 +305,7 @@ Our experiments show that {\it word2vec} best explains real-world mobility flow 
 \end{align}
 where $P(i)$ is the probability that location $i$ appears in the trajectory.
 Because computing $Z_i$ is computationally demanding, multiple approximation methods have been proposed, the most popular being negative sampling~\autocite{mikolov2013word2vec}.
-Negative sampling finds the embedding vectors by solving a binary classification task, in which the model classifies whether a given center-context location pair $(i, j)$ comes from the data or artificially generated ``negative'' samples.
+Negative sampling finds the embedding vectors by solving a binary classification task, in which the model classifies whether a given target-context location pair $(i, j)$ comes from the data or from artificially generated ``negative'' samples.
 The negative pair $(i,j)$ is sampled in proportion to $P^\gamma(j)$ with parameter $\gamma \geq 0$.
 
 As a heuristic, the negative sampling has a bias and maximizes a different objective function~\autocite{Gutmann2010}.
@@ -313,14 +313,14 @@ When taking into account this bias, {\it word2vec} with the negative sampling fi
 \begin{align}
 	P\left(j \given i \right):= \frac{P^ \gamma(j) \exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:prob_w2v_ng0}
 \end{align}
-where we redefine the normalization constant as $Z_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$. (See Methods section for the full calculation).
+where we redefine the normalization constant as $Z_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$. (See Methods section for the full derivation).
 
 Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\bm{u}_i = \bm{v}_i$~\autocite{levy2014neural}.
 Setting $\gamma = 1$ and substituting $\bm{u}_i = \bm{v}_j$ into Eq.~\eqref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
 \begin{align}
 	\hat{T}_{ij}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
 \end{align}
-The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) because {\it word2vec} neglects whether the context $j$ appears before or after the center $i$ in the trajectory.
+The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) because {\it word2vec} neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
 If we swap $i$ and $j$ in Eq.~\eqref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
 Therefore, to ensure $\hat{T}_{ij} = \hat{T}_{ji}$, the denominator $Z_i$ must be a constant.
 
@@ -331,19 +331,17 @@ Taken altogether, the {\it word2vec} model with the negative sampling predicts a
 where $C$ is a positive constant.
 In other words, \emph{word2vec with the negative sampling is a gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
 While the gravity model generates mobility flow from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
-Therefore, the embedding distance is inherently tied to mobility flow, and hence, has greater predictive power than the geographic distance.
+Therefore, the embedding distance is inherently tied to the mobility flow, and hence, has greater predictive power than the geographic distance and other baselines.
 
-A central assumption in our mathematical analysis is that the embedding vectors are optimum in terms of the {\it word2vec}'s objective function.
+A key assumption in our mathematical analysis is that the embedding vectors are optimum in terms of the {\it word2vec}'s objective function.
 However, this premise is not practical because the optimization algorithm (\eg stochastic gradient descent algorithm) often finds sub-optimal embeddings.
 This has two consequences.
 First, the in- and out-vectors can be different.
-Second, dot similarity calculated by {\it word2vec} is the distance metric tied to the gravity model, and hence, should capture the mobility flow well.
-Our numerical simulations show that dot similarity calculated by {\it word2vec} is the second-best predictor of mobility flow among the ten embedding distances~(Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
-However, cosine similarity predicted mobility flow better than dot similarity.
-This result echos many applications of word embedding such as word analogy test~\autocite{levy2015improving}, in which cosine similarity outperforms dot similarity.
-In predicting mobility flow, if the embedding vectors are optimal, cosine similarity should be no better than dot similarity because cosine similarity is a special case of dot similarity.
-Therefore, the inferiority of dot similarity is attributed to the optimization process.
-Although finding an optimal embedding is difficult in practice, a careful tuning of the optimization algorithm would close the gap between our mathematical and numerical results.
+Second, {\it word2vec} learns the dot distance between location vectors, and so this distance should best capture mobility flows. 
+However, our numerical simulations show that the dot similarity between vectors is outperformed by the cosine distance as a predictor of mobility flow between scientific organizations~(Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+This result echos other applications of word embedding, such as word analogy testing~\autocite{levy2015improving}, in which cosine distance also outperformed dot similarity.
+Given that cosine similarity is a special case of dot similarity, we speculate that the deviation in explanatory and predictive quality can be attributed to \textit{word2vec's} optimization process.
+Although finding an optimal embedding is difficult in practice, careful tuning of the optimization algorithm would close the gap between our mathematical and numerical results.
 
 
 \subsection*{Embeddings capture global structure of mobility}
