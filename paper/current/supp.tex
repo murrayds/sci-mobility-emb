@@ -229,22 +229,26 @@ where $m=\frac{1}{2}(p_i+p_j)$. We report the result with cosine distance ($R^2=
 \label{si:text:Raw SVD}
 {\bf Singular vector decomposition distance.}
 
+We use the truncated singular vector decomposition (SVD) on the underlying mobility co-occurrence matrix as a baseline embedding. 
+In short, truncated SVD performs linear low-rank approximation of the matrix with given dimensions, $d$.
+First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory. 
+Then, we apply truncated singular vector decomposition with $d=300$ on the flow matrix $A$ directly.
 
-We examine the gravity model on the embedding vector with applying truncated singular vector decomposition (SVD) on the co-occurrence matrix as the first benchmark on the matrix factorization method. Intuitively,  truncated SVD performs linear low rank approximation of the matrix with given dimension $d$. First, we construct the co-occurrence matrix of $N$ organization, $A_{ij}$ given by the co-occurence of $i$ and $j$ in the same affiliation trajectory. Then, we apply truncated singular vector decomposition with $d=300$ on the flow matrix $A$ directly.
+We calculate distance between organizations in the SVD embedding space using cosine distance, finding that it explains slighly more of the flux between organizations than does geographic distance ($R^2=0.247$, Table~\ref{supp:table:r2_table}).
+When used as an input to the gravity model, this distance produces better predictions than geographic distance using both the exponential and power-law models. 
 
-We report the result with cosine distance ($R^2=0.247$, Table~\ref{supp:table:r2_table}), which is the best performance among cosine distance, euclidean distances and dot product. The performance is slightly over the the performance of the model with geographical distance. 
-\todo{@dakoda can you write down the performance with other distance measures simply here?}
 
 
 \paragraph*{S6 Text}
 \label{si:text:Laplacian}
-{\bf Laplacian eigenmap distance.}
+{\bf Laplacian Eigenmap distance.}
 
+We also consider Laplacian Eigenmap embeddings~\autocite{belkin2003laplacian} as a baseline, which is one of the most fundamental approaches for graph embedding. 
+First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory and degree matrix $D$ which is the diagonal matrix for which $D_{ii}=\sum_j {A_{ij}}$. Then we construct graph Lapalcian matrix $L = D-A$  and apply truncated singular vector decomposition in the matrix $L$ with $d=300$.
 
-We also consider Laplacian eigenmaps \autocite{belkin2003laplacian}, which is the most fundamental graph embedding method, as the second benchmark on the matrix factorization. First, we construct the co-occurrence matrix of $N$ organization, $A_{ij}$ given by the co-occurence of $i$ and $j$ in the same affiliation trajectory and degree matrix $D$ which is the diagonal matrix for which $D_{ii}=\sum_j {A_{ij}}$. Then we construct graph lapalcian matrix $L = D-A$  and apply  truncated singular vector decomposition in the matrix $L$ with $d=300$.
+We only report results based on the cosine distance between Laplacian embedding vectors, finding that it explains less of the total flux than geographic distance ($R^{2} = 0.212$, Table~\ref{supp:table:r2_table}). 
+When used as an input to the gravity model, the Laplacian cosine distance produces marginally-better predictions than geographic distance using both the exponential (RMSE $= 0.859$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE = $0.839$, Table~\ref{supp:table:rmse_power_table}), performing slightly better with the power-law model.  
 
-We report the result with euclidean distance ($R^2=0.341$, Table~\ref{supp:table:r2_table}), which is the best performance among cosine distance, euclidean distances and dot product. The performance is much bettern that the performance of the model with geographical distance, still below the performance of our suggested way.
-\todo{@dakoda can you write down the performance with other distance measures simply here?}
 
 
 \paragraph*{S7 Text}
