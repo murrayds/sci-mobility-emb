@@ -172,7 +172,7 @@ Addressing the first point, we have identified an underlying mathematical equiva
 Namely, we demonstrate that \textit{word2vec} 's objective function is equivalent to the gravity law and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
 This development constitutes a major breakthrough in our understanding of neural embeddings, and provides theoretical justification for their application to mobility.
 
-For the second point, we have also conducted experiments comparing the performance of neural embedding to an embedding derived by a singular value decomposition of the mobility network, and of a Laplacian eigenmap embedding.
+For the second point, we have also conducted experiments comparing the performance of neural embedding to an embedding derived by a singular value decomposition of the mobility network, and of a Laplacian eigenmap embedding. 
 Additionally, we compare \textit{word2vec} model to another matrix factorization approach, which \textit{word2vec} approximates. We find that the embedding distance from \textit{word2vec} outperforms all baselines in explaining and predicting real-world mobility.
 
 Finally, addressing the third point, we take steps to better ground our manuscript in the existing literature, integrating the reviewer's suggested articles into our manuscript.
@@ -193,18 +193,14 @@ Dakota, Jisung, Sadamori, Rodrigo, Woo-Sung, Staša, and YY
 
 \section{Theoretical justification of \textit{word2vec} and the Gravity Model}
 \label{sec:theory}
-Here, we answer a question: Why does the skip-gram model with negative sampling (SGNS), otherwise known as \textit{word2vec}, work so well to model human mobility?
-We demonstrate a fundamental connection between the SGNS model and the Gravity Model of Mobility, namely, that SGNS implicitly learns gravity-like relationships between locations.
-This connection provides necessary theoretical justification to our choice of \textit{word2vec}, and constitutes a major breakthrough of our understanding of neural embeddings.
+Why does \textit{word2vec} with the skip-gram with negative sampling model (SGNS) work so well to model human mobility?
+Here, we demonstrate that the SGNS model and the gravity model of mobility are mathematically equivalent.
+This connection provides strong theoretical justification to our choice of \textit{word2vec}, and constitutes a major breakthrough of our understanding of neural embeddings.
 In addition, this motivates the use of SGNS for future study of human mobility.
 
-First, we outline  \textit{word2vec} model.
-Then, we introduce the specific SGNS model, which incorperates a procedure called negative sampling that is key to its connection with the gravity model.
-Finally, we demonstrate the connection between SGNS and the gravity model of mobility.
-
-\subsection{Details on \textit{word2vec} algorithm}
-We used the standard skip-gram negative sampling (SGNS) word embedding, commonly known as \textit{word2vec}~\autocite{mikolov2013word2vec}.
-Suppose a trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th location in the trajectory. A location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$. Then, the model learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
+\subsection{\textit{word2vec} algorithm}
+Imagine a trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th location in the trajectory. A location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$. 
+Then, the SGNS model learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
 %
 % MAIN W2V Equation
 %
@@ -221,22 +217,22 @@ where,
 \end{equation}
 where $\bm{v}$ and $\bm{u}$ are the ``in-vector'' and ``out-vector'', respectively,  $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations. In general, calculating $Z_i$ is computationally expensive and there are two common approximation:
 hierarchical softmax \autocite{morin2005hierarchical} and negative sampling \autocite{mikolov2013word2vec}.
+Due to its simplicity and performance, negative sampling is the most widely used strategy, which we also adopt in our study. 
 
 
 \subsection{An implicit bias in the negative sampling}
-
-In our paper, we employed a specific algorithm SGNS word embedding. However, it is well known that the negative sampling is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a distinct model  from {\it word2vec}.
+Although negative sampling is the most common approximation, it is known that it is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes an objective function different from {\it word2vec}.
 
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
-A center-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a parameter).
-Then, given a center-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using sigmoid function:
+A target-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a parameter).
+Then, given a target-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using a sigmoid function:
 \begin{align}
 	\label{eq:sigmoid}
 	\frac{1}{1 + \exp\left( - \bm{u}_j \cdot \bm{v}_i \right)}.
 \end{align}
 
-This procedure does not guarantee that the embedding optimally converges to the original conditional probability eq.\ref{eq:cond_prob_w2v}, even when increasing the training samples and iterations~\autocite{Chia2010,Dyer2014} in the fact that negative sampling has implicit bias.
-This problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010}, which fits a probability model in the form:
+This procedure does not guarantee that the embedding optimally converges to the original conditional probability from Eq.~\ref{eq:cond_prob_w2v}, even when increasing the training samples and iterations~\autocite{Chia2010,Dyer2014} because negative sampling has implicit bias.
+This problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010}, which fits the following probability model,
 \begin{align}
 	\label{eq:nce}
 	f(x) / \sum_{x'} f(x'),
@@ -247,7 +243,7 @@ where $f(x)$ is the unnormalized probability for an instance $x$. As in negative
 	\frac{1}{1 + \exp\left( -f(x) + \log p_0(x) \right)}.
 \end{align}
 
-Rewriting the sigmoid function for the negative sampling (Eq.~\eqref{eq:sigmoid}) in form of the bias-corrected sigmoid function yields
+Rewriting the sigmoid function for the negative sampling (Eq.~\ref{eq:sigmoid}) where the bias-corrected sigmoid function yields
 \begin{align}
 	\label{eq:sigmoid3}
 	\frac{1}{1 + \exp\left[ - \tilde f(x) + \log p_0(x)  \right]},
@@ -257,7 +253,7 @@ where we have defined
 	\label{eq:unnormalized}
 	\tilde f(x) = f(x) p_0(x).
 \end{align}
-So, the model with the negative sampling optimize $\tilde f(x)$, not $f(x)$. In case of the {\it word2vec}, the instance is the dot similarity $x=\bm{u}_i \cdot \bm{v}_j$,  $f(x)=\exp(x)$, and $p_0(j)=P^\gamma(j)$, and the SGNS word2vec actually optimize the following conditional probability:
+So, the model with the negative sampling optimizes $\tilde f(x)$, not $f(x)$. In case of the {\it word2vec}, the instance is the dot similarity $x=\bm{u}_i \cdot \bm{v}_j$,  $f(x)=\exp(x)$, and $p_0(j)=P^\gamma(j)$, and the SGNS word2vec actually optimize the following conditional probability:
 \begin{align}
 	P\left(j \given i \right):= \frac{P^\gamma (j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 	\label{eq:real_cond}
@@ -267,52 +263,44 @@ where $Z_i=\sum_{j' \in \mathcal{A}} P^\gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}
 
 \subsection{\textit{word2vec} and the gravity model}
 
-Taking into an implicit bias in the negative sampling  and set $w=1$, the \textit{word2vec} predict the flow with
+Taking into account the implicit bias in the negative sampling  and setting $w=1$, the \textit{word2vec} predicts the flow between locations with
 \begin{align}
-	\hat{T_{ij}}= P(i) P(j\given i) = \frac{P(i)P^\gamma (j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:prob_w2v_ng0}
+	\hat{T}_{ij}= P(i) P(j\given i) = \frac{P(i)P^\gamma (j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:prob_w2v_ng0}
 \end{align}
 where we have redefined $Z_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$.
 
 Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\bm{u}_i = \bm{v}_i$ \autocite{levy2014neural}.
-Setting $\gamma = 1$ and substituting $\bm{u}_i = \bm{v}_j$ into Eq.~\eqref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
+Setting $\gamma = 1$ and substituting $\bm{u}_i = \bm{v}_j$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
 \begin{align}
 	\hat{T_{ij}}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
 \end{align}
 
-The flow $\hat{T_{ij}}$ is symmetric (\ie $\hat{T_{ij}}=\hat{T_{ji}}$) because {\it word2vec} neglects whether the context $j$ appears before or after the center $i$ in the trajectory---the mechanism of skip-gram.
-If we swap $i$ and $j$ in Eq.~\eqref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
+The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) becausethe skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
+If we swap $i$ and $j$ in Eq.~\ref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
 Therefore, to ensure $\hat{T}_{ij} = \hat{T}_{ji}$, the denominator $Z_i$ should be a constant.
 
-Taken altogether, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
+Taken together, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
 \begin{align}
 	\hat{T_{ij}}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}), \label{eq:flow_w2v_ng0}
 \end{align}
 where $C$ is a positive constant.
 
-In other words, \emph{word2vec with the negative sampling is a gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
-While the gravity model generates mobility flow from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
+In other words, \emph{word2vec with the negative sampling is a equivalent to a gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
+While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
 Therefore, the embedding distance is inherently tied to mobility flow, and hence, has greater predictive power than the geographic distance.
 
-A central assumption in our mathematical analysis is that the embedding vectors are optimum in terms of the {\it word2vec}'s objective function.
-However, this premise is not practical because the optimization algorithm (\eg stochastic gradient descent algorithm) often finds sub-optimal embeddings.
-This has two consequences.
-First, the in- and out-vectors can be different.
-Second, dot similarity calculated by {\it word2vec} is the distance metric tied to the gravity model, and hence, should capture the mobility flow well.
-Our numerical simulations show that dot similarity calculated by {\it word2vec} is the second-best predictor of mobility flow among the ten embedding distances~(Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
-However, cosine similarity predicted mobility flow better than dot similarity.
-This result echos many applications of word embedding such as word analogy test~\autocite{levy2015improving}, in which cosine similarity outperforms dot similarity.
-In predicting mobility flow, if the embedding vectors are optimal, cosine similarity should be no better than dot similarity because cosine similarity is a special case of dot similarity.
-Therefore, the inferiority of dot similarity is attributed to the optimization process.
-Although finding an optimal embedding is difficult in practice, a careful tuning of the optimization algorithm would close the gap between our mathematical and numerical results.
+In practice, because we do not have unlimited amounts of data (which is also noisy) and the optimization may not find the true optimum, the idealized result may not hold. 
+Indeed, we tend to find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
+Nevertheless, a model with dot similarity is still the second best after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered. 
 
 \subsection{Changes to the manuscript}
-To reflect these breakthroughs, we have made the following changes to the manuscript:
+To reflect our new findings, we have made the following changes to the manuscript:
 \begin{itemize}
 	\itemsep0em
 	\item Following results demonstrating the performance of the embedding distance compared to geographic distance, we add the section \textbf{word2vec and the gravity model}, which summarizes the link between the two models.
 	\item We also added the section \textbf{An implicit bias in the negative sampling} to the methods section of our manuscript.
-	\item Since the formulation of the gravity used in the above derivations assumes $\gamma = 1$, we use this value of $gamma$ for all reported results. No result substantively changes with this change.
-	\item We added a sentence to the paper speculating on why cosine similarity works best in the main text.
+	\item Since the formulation of the gravity used in the above derivations assumes $\gamma = 1$, we use $\gamma = 1$ for all reported results. No results have been substantively changed.
+	\item We added a sentence to the paper speculating on why cosine similarity works best.
 	\item We also added a sentence noting the in-vector and out-vector issue, and speculating on reasons/consequences.
 \end{itemize}
 
