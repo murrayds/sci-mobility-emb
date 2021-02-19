@@ -225,6 +225,9 @@ where $v_i$ is a column vector of length $N$ with entries that are all zero exce
 \end{equation}
 where $m=\frac{1}{2}(p_i+p_j)$. We report the result with cosine distance ($R^2=0.14$, Fig. \ref{fig:supp:gravity_pprcos}) and  Jensen–Shannon divergence ($R^2=0.19$, Fig. \ref{fig:supp:gravity_pprjsd}). In both cases, the performance is under the performance of the model with geographical distance. Even though the length of the PPR vectors is extremely larger than the length of our embedding vectors, result with the embedding distance outperforms both of them. 
 
+
+%
+% S5 Text
 \paragraph*{S5 Text}
 \label{si:text:Raw SVD}
 {\bf Singular vector decomposition distance.}
@@ -238,7 +241,8 @@ We calculate distance between organizations in the SVD embedding space using cos
 When used as an input to the gravity model, this distance produces better predictions than geographic distance using both the exponential and power-law models. 
 
 
-
+%
+% S6 Text
 \paragraph*{S6 Text}
 \label{si:text:Laplacian}
 {\bf Laplacian Eigenmap distance.}
@@ -250,9 +254,10 @@ We only report results based on the cosine distance between Laplacian embedding 
 When used as an input to the gravity model, the Laplacian cosine distance produces marginally-better predictions than geographic distance using both the exponential (RMSE $= 0.859$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE = $0.839$, Table~\ref{supp:table:rmse_power_table}), performing slightly better with the power-law model.  
 
 
-
+%
+% S7 Text
 \paragraph*{S7 Text}
-\label{si:text:Laplacian}
+\label{si:text:levy}
 {\bf Levy's  symmetric SVD \textit{word2vec} distance}
 
 Furthermore, We examine the gravity model with embedding vector with the symmetric SVD  \textit{word2vec} method\autocite{levy2014neural} as the third benchmark on the matrix factorization. Based on idea of \textit{word2vec} is just implciity matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding. First, we construct the matrix of $N$ organization,
@@ -265,7 +270,7 @@ We report the result with euclidean distance ($R^2=0.341$, Table~\ref{supp:table
 \todo{@dakoda can you write down the performance with other distance measures simply here?}
 
 %
-% S5 TEXT
+% S8 TEXT
 \paragraph*{S8 Text}
 \label{si:text:organizations}
 {\bf Organization disambiguation and metadata.}
@@ -295,7 +300,7 @@ trajectories containing only a general designation are not altered.
 
 
 %
-% S6 TEXT
+% S9 TEXT
 \paragraph*{S9 Text}
 \label{si:text:disambiguation}
 {\bf Author name dismabiguation.}
@@ -309,7 +314,7 @@ Past studies have validated this data and shown that the disambiguated authors a
 
 
 %
-% S7 TEXT
+% S10 TEXT
 \paragraph*{S10 Text}
 \label{si:text:network_ranking}
 {\bf Reconstructing Times ranking with network measure.}
@@ -322,7 +327,7 @@ This suggests that the embedding encodes information on prestige hierarchy at le
 
 
 %
-% S8 TEXT
+% S11 TEXT
 \paragraph*{S11 Text}
 \label{si:text:boomerang_speculation}
 {\bf Speculation on variations of the convex-curve pattern.}
