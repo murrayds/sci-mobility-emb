@@ -69,11 +69,20 @@ plotdata <- data.table::rbindlist(list(r2, rmse), use.names = T) %>%
                              "Prediction error\n(Exponential model)"))
   )
 
+# Get the top-performing for each set of parameters
+top <- plotdata %>%
+  group_by(type) %>%
+  filter((type == "Flux explained" & value == max(value)) | (type != "Flux explained" & value == min(value)))
+
 # build the plot
 plot <- plotdata %>%
   ggplot(aes(x = value, y = metric, fill = type, shape = type)) +
   geom_point(size = 2.5, alpha = 0.8,
              position = position_dodge(0.75)) +
+  geom_point(data = top, size = 1,
+             aes(y = as.numeric(metric) + 0.1, x = value + 0.05, fill = type, shape = type),
+             position = position_dodge(0.75),
+             shape = 8, show.legend = FALSE) +
   geom_text(aes(label = round(value, 2)), size = 2.5, hjust = -1,
             position = position_dodge(0.75)) +
   facet_wrap(~performance) +
