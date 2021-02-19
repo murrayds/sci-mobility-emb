@@ -277,6 +277,16 @@ The cosine distance performs better, but worse than geographic distance ($R^{2} 
 The euclidean distance performs best, explaining more of the flux than geographic distance, and only being below the embedding distance ($R^{2} = 0.341$, Table~\ref{supp:table:r2_table}). 
 Focusing on the euclidean distance, we find that using it as input to the gravity model results in better predictions than geographic distance using both the exponential model (RMSE $= 0.803$, Table~\ref{supp:table:rmse_exp_table}) and power law models, (RMSE $= 0.78$, Table~\ref{supp:table:rmse_power_table}), though it performs slightly better with the power law formulation.
 
+\paragraph*{S8 Text}
+\label{si:text:levy}
+{\bf Why do neural embedings outperform direct matrix factorization?}
+
+Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially seeing as \textit{word2vec} implicitly approximates factorization?
+An issue in the matrix factorization approach is that it is extremely sensitive to small flows between affiliations. The matrix factorization approach embeds affiliations $i$ and $j$ such that their dot similarity is as close as to $\log (T_{ij} / P(i) P(j))$. If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes $-\infty$, pushing $i$ and $j$ very far from the other affiliations in the embedding space~\autocite{levy2014neural, Qui2018}. This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. To circumvent this problem, the previous studies~\autocite{levy2014neural, Qui2018} add a constant flow between the affiliation pairs with no flow. However, this changes the data to which we fit the model, and small flows still have a considerably strong impact on the embedding.
+
+Also, it is well known that SVD itself is vulnerable to outliers \autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
+The stochastic gradient descent algorithm (SGD), which is employed in SGNS \textit{word2vec}, is more robust than SVD and can enhance generalization and effectiveness of {\it word2vec} model \autocite{ma2018power, smith2020generalization, zhang2019algorithmic}.
+
 %
 % S8 TEXT
 \paragraph*{S8 Text}
