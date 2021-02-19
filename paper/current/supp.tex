@@ -238,7 +238,7 @@ First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ give
 Then, we apply truncated singular vector decomposition with $d=300$ on the flow matrix $A$ directly.
 
 We calculate distance between organizations in the SVD embedding space using cosine distance, finding that it explains slighly more of the flux between organizations than does geographic distance ($R^2=0.247$, Table~\ref{supp:table:r2_table}).
-When used as an input to the gravity model, this distance produces better predictions than geographic distance using both the exponential and power-law models. 
+When used as an input to the gravity model, this distance produces better predictions than geographic distance using both the exponential (RMSE $= 0.859$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE $= 0.839$, Table~\ref{supp:table:rmse_exp_table}), performing slightly better with the power-law formulation. 
 
 
 %
@@ -251,7 +251,7 @@ We also consider Laplacian Eigenmap embeddings~\autocite{belkin2003laplacian} as
 First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory and degree matrix $D$ which is the diagonal matrix for which $D_{ii}=\sum_j {A_{ij}}$. Then we construct graph Lapalcian matrix $L = D-A$  and apply truncated singular vector decomposition in the matrix $L$ with $d=300$.
 
 We only report results based on the cosine distance between Laplacian embedding vectors, finding that it explains less of the total flux than geographic distance ($R^{2} = 0.212$, Table~\ref{supp:table:r2_table}). 
-When used as an input to the gravity model, the Laplacian cosine distance produces marginally-better predictions than geographic distance using both the exponential (RMSE $= 0.859$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE = $0.839$, Table~\ref{supp:table:rmse_power_table}), performing slightly better with the power-law model.  
+When used as an input to the gravity model, the Laplacian cosine distance produces marginally-better predictions than geographic distance using both the exponential (RMSE $= 0.878$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE = $0.87$, Table~\ref{supp:table:rmse_power_table}), performing slightly better with the power-law formulation.  
 
 
 %
@@ -260,14 +260,22 @@ When used as an input to the gravity model, the Laplacian cosine distance produc
 \label{si:text:levy}
 {\bf Levy's  symmetric SVD \textit{word2vec} distance}
 
-Furthermore, We examine the gravity model with embedding vector with the symmetric SVD  \textit{word2vec} method\autocite{levy2014neural} as the third benchmark on the matrix factorization. Based on idea of \textit{word2vec} is just implciity matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding. First, we construct the matrix of $N$ organization,
+
+Finally, we also compare the \textit{word2vec} embedding distnace against a baseline of direct matrix factorization approach, using the symmetric SVD  \textit{word2vec} method~\autocite{levy2014neural}.
+Based on idea of \textit{word2vec} is just implicit matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding, which should directly compute the embedding that \textit{word2vec} only attempts to efficiently approximate.
+First, we construct the matrix of $N$ organization,
 
 \begin{equation}
  M_{ij} = \log(\frac{N(i,j) |D|}{N(i) N(j)}) - \log(k)
 \end{equation}
 
-We report the result with euclidean distance ($R^2=0.341$, Table~\ref{supp:table:r2_table}), which is the best performance among cosine distance, euclidean distances and dot product. The performance is much bettern that the performance of the model with geographical distance, still below the performance of our suggested way.
-\todo{@dakoda can you write down the performance with other distance measures simply here?}
+\todo{Finish the text here...}
+
+For this baseline, we report results using the cosine distance, euclidean distance, and dot product between the embedding vectors. 
+We find that the dot product performs by far the worst, worse than any other baseline considered $R^{2} = 0.004$, Table~\ref{supp:table:r2_table}). 
+The cosine distance performs better, but worse than geographic distance ($R^{2} = 0.212$, Table~\ref{supp:table:r2_table}). 
+The euclidean distance performs best, explaining more of the flux than geographic distance, and only being below the embedding distance ($R^{2} = 0.341$, Table~\ref{supp:table:r2_table}). 
+Focusing on the euclidean distance, we find that using it as input to the gravity model results in better predictions than geographic distance using both the exponential model (RMSE $= 0.803$, Table~\ref{supp:table:rmse_exp_table}) and power law models, (RMSE $= 0.78$, Table~\ref{supp:table:rmse_power_table}), though it performs slightly better with the power law formulation.
 
 %
 % S8 TEXT
