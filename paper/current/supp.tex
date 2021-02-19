@@ -239,7 +239,7 @@ Then, we apply truncated singular vector decomposition with $d=300$ on the flow 
 
 We calculate distance between organizations in the SVD embedding space using cosine distance, finding that it explains slighly more of the flux between organizations than does geographic distance ($R^2=0.247$, Table~\ref{supp:table:r2_table}).
 When used as an input to the gravity model, this distance produces better predictions than geographic distance using both the exponential (RMSE $= 0.859$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE $= 0.839$, Table~\ref{supp:table:rmse_exp_table}), performing slightly better with the power-law formulation. 
-
+\todo{@dakoda other distance measures?}
 
 %
 % S6 Text
@@ -252,6 +252,7 @@ First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ give
 
 We only report results based on the cosine distance between Laplacian embedding vectors, finding that it explains less of the total flux than geographic distance ($R^{2} = 0.212$, Table~\ref{supp:table:r2_table}). 
 When used as an input to the gravity model, the Laplacian cosine distance produces marginally-better predictions than geographic distance using both the exponential (RMSE $= 0.878$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE = $0.87$, Table~\ref{supp:table:rmse_power_table}), performing slightly better with the power-law formulation.  
+\todo{@dakoda other distance measures?}
 
 
 %
@@ -263,13 +264,12 @@ When used as an input to the gravity model, the Laplacian cosine distance produc
 
 Finally, we also compare the \textit{word2vec} embedding distnace against a baseline of direct matrix factorization approach, using the symmetric SVD  \textit{word2vec} method~\autocite{levy2014neural}.
 Based on idea of \textit{word2vec} is just implicit matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding, which should directly compute the embedding that \textit{word2vec} only attempts to efficiently approximate.
-First, we construct the matrix of $N$ organization,
+First, we construct the matrix of $N$ organization
 
 \begin{equation}
- M_{ij} = \log(\frac{N(i,j) |D|}{N(i) N(j)}) - \log(k)
+ M_{ij} = \log(\frac{N(i,j) |D|}{N(i) N(j)}) - \log(k),
 \end{equation}
-
-\todo{Finish the text here...}
+where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given the window size $w$ in the total corpus $D$ ,$N(i)=\sum_{j=N}^i N(i,j)$ as the number of items $i$ occurred given the window size $w$ in $D$, and k is the number of negative samples. We used $w=1$ and $k=5$ which is same setting in the our main result. Then, we factorized matrix $M$ with truncated singular vector decomposition in the matrix with $d=300$ into $U_d \Sigma_d V_d$, and used the embedding vector as $U_d\sqrt{\Sigma_d}$.
 
 For this baseline, we report results using the cosine distance, euclidean distance, and dot product between the embedding vectors. 
 We find that the dot product performs by far the worst, worse than any other baseline considered $R^{2} = 0.004$, Table~\ref{supp:table:r2_table}). 
