@@ -278,10 +278,10 @@ The euclidean distance performs best, explaining more of the flux than geographi
 Focusing on the euclidean distance, we find that using it as input to the gravity model results in better predictions than geographic distance using both the exponential model (RMSE $= 0.803$, Table~\ref{supp:table:rmse_exp_table}) and power law models, (RMSE $= 0.78$, Table~\ref{supp:table:rmse_power_table}), though it performs slightly better with the power law formulation.
 
 \paragraph*{S8 Text}
-\label{si:text:levy}
+\label{si:text:whynueralbetter}
 {\bf Why do neural embedings outperform direct matrix factorization?}
 
-Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially seeing as \textit{word2vec} implicitly approximates factorization?
+Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
 An issue in the matrix factorization approach is that it is extremely sensitive to small flows between affiliations. The matrix factorization approach embeds affiliations $i$ and $j$ such that their dot similarity is as close as to $\log (T_{ij} / P(i) P(j))$. If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes $-\infty$, pushing $i$ and $j$ very far from the other affiliations in the embedding space~\autocite{levy2014neural, Qui2018}. This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. To circumvent this problem, the previous studies~\autocite{levy2014neural, Qui2018} add a constant flow between the affiliation pairs with no flow. However, this changes the data to which we fit the model, and small flows still have a considerably strong impact on the embedding.
 
 Also, it is well known that SVD itself is vulnerable to outliers \autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
@@ -289,7 +289,7 @@ The stochastic gradient descent algorithm (SGD), which is employed in SGNS \text
 
 %
 % S8 TEXT
-\paragraph*{S8 Text}
+\paragraph*{S9 Text}
 \label{si:text:organizations}
 {\bf Organization disambiguation and metadata.}
 
@@ -319,7 +319,7 @@ trajectories containing only a general designation are not altered.
 
 %
 % S9 TEXT
-\paragraph*{S9 Text}
+\paragraph*{S10 Text}
 \label{si:text:disambiguation}
 {\bf Author name dismabiguation.}
 
@@ -333,7 +333,7 @@ Past studies have validated this data and shown that the disambiguated authors a
 
 %
 % S10 TEXT
-\paragraph*{S10 Text}
+\paragraph*{S11 Text}
 \label{si:text:network_ranking}
 {\bf Reconstructing Times ranking with network measure.}
 
@@ -346,7 +346,7 @@ This suggests that the embedding encodes information on prestige hierarchy at le
 
 %
 % S11 TEXT
-\paragraph*{S11 Text}
+\paragraph*{S12 Text}
 \label{si:text:boomerang_speculation}
 {\bf Speculation on variations of the convex-curve pattern.}
 
