@@ -322,9 +322,9 @@ The \textit{word2vec} model  implicitly approximates this matrix-factorization p
 
 
 \subsection{New experimental parameters}
-In addition to the new baselines, we have also incorporate additional experimental parameters into our analysis.
+In addition to the new baselines, we have also incorporated additional experimental parameters into our analysis.
 The first is $\gamma$, a hyper-parameter of the \textit{word2vec} model, which defines the exponent which shapes the negative sampling distribution.
-The default of the `\texttt{gensim} implementation of \textit{word2vec} is to set $\gamma = 0.75$, and this was the value used in our original manuscript.
+The default of `\texttt{gensim's} implementation of \textit{word2vec} is to set $\gamma = 0.75$, and this was the value used in our original manuscript.
 However, to connect \textit{word2vec} to the gravity model of mobility, we assume $\gamma = 1.0$ (see section 1).
 We now report all main results using $\gamma = 1.0$, however we also compare its performance to embeddings learned using $\gamma = 0.75$, as we do with the number of embedded dimensions and window size.
 
@@ -347,10 +347,11 @@ The second definition defines the population akin to language, as simply its fre
 	{Neural embeddings outperform baselines for scientific mobility.}
 	{
 		Cosine distance between embedding vectors generated with \textit{word2vec} explains more of the flux, and better predicts flux when used in the gravity model of mobility than geographic distance and other baselines.
-		Shown is the correlation between the flux and embedding distances, measured with $r^{2}$ (left), and the prediction error when using the distance as input to the gravity model of mobility.
+		Shown is the correlation between the flux and embedding distances, measured with $R^{2}$ (left), and the prediction error when using the distance as input to the gravity model of mobility.
 		For prediction error, we show results based on both the exponential and power-law forms of the gravity model.
 		All embedding-based methods use dimensions of 300.
-		Here, embedding distance is obtained from neural embeddings learned with window size of 1 and $\gamma = 1$.
+		Embedding distance is obtained from neural embeddings learned with window size of 1 and $\gamma = 1$.
+		The metric with the highest correlation and lowest prediction error are marked with an asterisk. 
 		In all cases, organization population is defined as the mean annualized number of unique mobile and non-mobile authors, and flux is calculated for all global mobility.
 		Baselines include the top-performing distance metrics calculated between vectors obtained by personalized-page rank (PPR), singular value decomposition (SVD), laplacian eigenmap, and direct-factorization~\autocite{levy2014neural} approaches, as well as the geographic distance between organizations.
 		Embedding distance better explains and predicts flux than any other baseline, though there is some variation by experimental parameters (Table~\ref{supp:table:r2_table}, Table~\ref{supp:table:rmse_exp_table}, and Table~\ref{supp:table:rmse_power_table}).
@@ -360,11 +361,11 @@ The second definition defines the population akin to language, as simply its fre
 
 
 We find that, using the best performing dimensions (300) and window size (1),  $\gamma = 1.0$, and for default experimental parameters (global mobility, population defined using all mobile and non-mobile scholars), that the embedding distance, or cosine distance between vectors learned through neural embedding, explains more of the flux, and leads to better predictions than other baselines (Fig.~\ref{fig:supp:distancemetrics}).
-This performance held when considering both the exponential and the power-law forms of the gravity model of mobility.
-The euclidean distance between directly-factorized vectors performs comparably, and even beats out the embedding distance under certain experimental conditions (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+This performance advantage holds when considering both the exponential and the power-law forms of the gravity model of mobility.
+Although the euclidean distance between directly-factorized vectors performs comparably, and even narrowly beats out the embedding distance under certain experimental conditions (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}); \textit{word2vec} shows the msot consistent and robust performance, as suggested by Levy \& Goldberg~\autocite{levy2014neural}. 
 
 
-\subsection{Why do neural embeddings outperform direct matrix factorization?}% why sgd is better?
+\subsection{Why do neural embeddings outperform direct matrix factorization?}
 Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
 An issue in the matrix factorization approach is that it is extremely sensitive to small flows between affiliations. The matrix factorization approach embeds affiliations $i$ and $j$ such that their dot similarity is as close as to $\log (T_{ij} / P(i) P(j))$. If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes $-\infty$, pushing $i$ and $j$ very far from the other affiliations in the embedding space~\autocite{levy2014neural, Qui2018}. This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. To circumvent this problem, the previous studies~\autocite{levy2014neural, Qui2018} add a constant flow between the affiliation pairs with no flow. However, this changes the data to which we fit the model, and small flows still have a considerably strong impact on the embedding.
 
@@ -384,6 +385,7 @@ To reflect these additional experiments, we have made the following changes to o
 %
 % SECTION- POINT-BY-POINT DISCUSSION
 %
+\clearpage
 \section{Point-by-point discussion}
 All of the referees presented us with excellent, insightful comments and we feel that the changes implemented as a consequence have signiﬁcantly strengthened the manuscript. Here we offer further discussion, and introduce several results and figures to support certain arguments.
 
