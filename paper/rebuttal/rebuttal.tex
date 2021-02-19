@@ -503,14 +503,15 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{Thank you for pointing this out.
 	We carefully read out the Barthélemy, Physics Reports 499, 1, 2011, and referenced it in our manuscript.
-	Also, we report the performance of the flux estimation and prediction using different deterrence functions (see Section 2, above), finding that while performance differs, the embedding distance outperforms geographic distance no matter the function used.
+	Also, we report the performance of the flux estimation and prediction using different deterrence functions (see Section 2, above), finding that the absolute values vary, the pattern doesn't change---the embedding distance robustly outperforms geographic distance regardless of the function used.
 	We add the following line to the methods noting this point,
 
 	\medskip
 	\say{The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanism [...] such as the cost functions for a given distance and the spatial granularity of the observation.
-		For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case though the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
+		For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case though there is no qualitative difference---the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
 
-	We find the article that geographical distance ﬁts well with the power-law decay function because power-based gravity model can be more suitable for analyzing large, complex, and scale-free spatial systems theoretically and the exp`onential-based gravity model indicates simplicty rather than spatial complexity~\autocite{chen2015distance}. Meanwhile, embedding distance ﬁts well with the exponential decay function, which we demonstrate to correspond to an underlying mathematical relationship between \textit{word2vec} and the gravity model, a connection we recently discovered and included as a major finding in this revision (see our response to Referee 1).
+	We find the article that geographical distance ﬁts well with the power-law decay function because power-based gravity model can be more suitable for analyzing large, complex, and scale-free spatial systems, complexity which the exponential-based gravity model is not able to capture~\autocite{chen2015distance}. 
+	However, the embedding distance fits well with the exponential decay function, perhaps demonstrating that the real-world spatial complexity of mobility is encoded in the \textit{word2vec}embedding space as simpler pairwise distances, likely resulting from underlying connection we established between \textit{word2vec} and the gravity model (see section 1, above).
 
 }
 
@@ -529,11 +530,11 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 }
 
-\response{Thank you. We have added the following sentence to the introduction: “It works under the notion that a good representation should facilitate prediction, and so learns a mapping of target locations (words) that best predict locations that co-appear in the same trajectory (sentence).”
+\response{Thank you. 
+We have added the following sentence to the introduction: “It works under the notion that a good representation should facilitate prediction, and so learns a mapping of target locations (words) that best predict locations that co-appear in the same trajectory (sentence).”
 
-	In addition, we provided more explicit mathematical detail of word2vec in the new subsection entitled “word2vec and the gravity model”. You can read about this connection in Section 1 of this letter, above.
+	In addition, we provided more explicit mathematical detail of word2vec in the new subsection entitled “word2vec and the gravity model” (see section 1, above).
 
-	We believe that these details are sufficient in the main text of the manuscript, and refer readers to the Methods for a deeper explanation.
 }
 
 \rcomment{
@@ -545,13 +546,13 @@ All of the referees presented us with excellent, insightful comments and we feel
 \response{
 	Thank you for this comment.
 	We however, do not believe that this is a problem in our analysis.
-	Raw co-occurrence, which is used to define our 'flux' between organizations, is always calculated using all organizations in a trajectory, and so window size does not affect flux.
+	Raw co-occurrence, which is used to define our ``flux'' between organizations, is always calculated using all organizations in a trajectory, and so window size does not affect flux.
 	Window size does affect \textit{word2vec}, however setting a smaller/larger window size should not make results incomparable.
 	When we set $w = 1$, \textit{word2vec} will generate training pairs at most 1 position away from each target location, for all possible targets.
-	When we instead set $w = 2$, \textit{word2vec} will generate training pairs the same way, but at most 2 positions away from each target---this means that the data for $w = 2$ will be \textit{larger}, containing as a subset all training pairs used for $w = 1$.
+	When we instead set $w = 2$, \textit{word2vec} will generate training pairs the same way, but at most 2 positions away from each target---this means that the data for $w = 2$ will be \textit{larger}, containing all training pairs used for $w = 1$ as a subset.
 	The same follows for all $w > 1$, each generating a larger and larger set of training examples up until $w$ is larger than the length of the longest trajectory.
 
-	What is notable about our findings, therefore, is that even though a model trained with $w = 1$ generates fewer training samples, it still outperforms $w > 1$ settings, which use more training samples, and which should capture higher-order structures in the data.
+	What is notable about our findings, therefore, is that even though a model trained with $w = 1$ generates fewer training samples, it still outperforms settings with $w > 1$, which use more training samples, and which should capture higher-order structures in the data.
 	We speculate that this is because the word2vec model with $w = 1$ is equvelant to the gravity model of mobility (see Section 1).
 }
 
@@ -561,8 +562,12 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 }
 \response{
-	Thank you for these comments. First, we added a line to the methods section detailing the \textit{word2vec} we used, and noting that these achieved the bst performance: \say{\textit{For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig....)}}.
+	Thank you for these comments. 
+	First, we added a line to the methods section detailing the \textit{word2vec} we used, and noting that these achieved the best performance: \say{\textit{For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig....)}}.
+	
 	A full search of the parameter space would certainly be interesting and useful, however we believe that set of parameters we considered here is sufficient to establish the utility of the approach, and demonstrate that performance is only slightly different based on different parameters.
+	We note that in previous work from our group, we explored the optimal dimensions for graph embedding~\autocite{gu2020dimensions}, finding that while a minimum number of dimensions is necessary, increasing the dimensions does not detract from performance, a property common across deep learning methods. 
+	Given that there is little performance difference between $d = 100$ and $d = 300$, we opt to use the larger embeddings at $d = 300$, which are large enough to capture the complexity of mobility, yet small enough to allow an efficient computational workflow.  
 }
 
 \rcomment{
@@ -607,6 +612,10 @@ All of the referees presented us with excellent, insightful comments and we feel
 	“The gravity model with the exponential decay function slightly outperforms that with a power-decay function except in the case of international-only mobility, for which power-decay performs slightly better.”
 }
 
+%
+%
+% Response to reviewer 3
+\clearpage
 \subsection{Response to Referee 3}
 
 \rcomment{The analysis does not compare embeddings, which would not be a problem if they were making
