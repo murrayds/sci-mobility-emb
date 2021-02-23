@@ -33,12 +33,10 @@ opt = parse_args(OptionParser(option_list=option_list))
 
 # Read the trajectories
 corr <- read_csv(opt$input, col_types = readr::cols()) %>%
-  filter(traj == "precedence") %>%
   filter(dim == opt$dim) %>%
   filter(ws == opt$ws) %>%
   filter(ranking == opt$ranking) %>%
   tidyr::gather(key, value, rho, rho.excluded)
-
 
 plot <- corr %>%
   mutate(
