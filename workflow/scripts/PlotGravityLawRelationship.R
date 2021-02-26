@@ -76,7 +76,7 @@ if (opt$geo == "same-country") {
 dist <- dist %>%
   select(geo_distance, emb_distance, dot_distance,
          pprcos_distance, pprjsd_distance,
-         svdcos_distance, lapcos_distance,
+         svdcos_distance, lapcos_distance, gravsvd_distance, gravmds_distance,
          levycos_distance, levyeuc_distance, levydot_distance, gravity)
 
 axislabel <- "DEFAULT"
@@ -144,6 +144,18 @@ if (opt$distance == "geo") {
 
   # Provide axis label
   axislabel <- "Levy's dot distance"
+} else if (opt$distance == "gravsvd") {
+  dist <- dist %>%
+    rename(distance = gravsvd_distance)
+
+  # Provide axis label
+  axislabel <- "Gravity SVD cosine distance"
+} else if (opt$distance == "gravmds") {
+  dist <- dist %>%
+    rename(distance = gravmds_distance)
+
+  # Provide axis label
+  axislabel <- "Gravity MDS euclidean distance"
 }
 
 # Calculate the logged gravity and select only relevant columns

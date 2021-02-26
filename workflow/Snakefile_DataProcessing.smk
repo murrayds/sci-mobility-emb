@@ -177,6 +177,8 @@ rule build_aggregate_org_distances:
            levycos = ancient(ORG_LEVY_COS_DISTANCE),
            levydot = ancient(ORG_LEVY_DOT_DISTANCE),
            levyeuc = ancient(ORG_LEVY_EUC_DISTANCE),
+           gravsvd = ancient(ORG_GRAVITY_SVD_DISTANCE),
+           gravmds = ancient(ORG_GRAVITY_MDS_DISTANCE),
            sizes = ORG_SIZES
     # This can eat up a lot of memory which is a problem when running paralell.
     # Set a maximum, say 2.5-gb
@@ -189,7 +191,9 @@ rule build_aggregate_org_distances:
                  --pprcos {input.pprcos} --pprjsd {input.pprjsd} --dot {input.dot} \
                  --lapcos {input.lapcos} --svdcos {input.svdcos} \
                  --levycos {input.levycos} --levydot {input.levydot} \
-                 --levyeuc {input.levyeuc} --orgs {input.orgs} --out {output}"
+                 --levyeuc {input.levyeuc} --gravsvd {input.gravsvd} \
+                 --gravmds {input.gravmds} \
+                 --orgs {input.orgs} --out {output}"
 
 ###############################################################################
 # MISC

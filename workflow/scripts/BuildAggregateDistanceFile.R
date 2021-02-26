@@ -38,6 +38,10 @@ option_list = list(
               help="Path to file containing organization euclidean distance, calculated using levy's factorization"),
   make_option(c("--levydot"), action="store", default=NA, type='character',
               help="Path to file containing organization dot product similarities, calculated using levy's factorization"),
+  make_option(c("--gravsvd"), action="store", default=NA, type='character',
+              help="Path to file containing organization direct gravity-optimized distances with SVD"),
+  make_option(c("--gravmds"), action="store", default=NA, type='character',
+              help="Path to file containing organization direct gravity-optimized distances with MDS"),
   make_option(c("-o", "--out"), action="store", default=NA, type='character',
               help="Path to save aggregated distance file")
 ) # end option_list
@@ -268,6 +272,38 @@ distance_all <- data.table::rbindlist(list(levydot1, levydot2)) %>%
 remove("levydot", "levydot1", "levydot2")
 
 
+# Gravity SVD COS
+gravsvd <- read_csv(opt$gravsvd, col_types = cols()) %>%
+  select(org1, org2, distance) %>%
+  rename(gravsvd_distance = distance)
+
+gravsvd1 <- distance_all %>%
+  inner_join(gravsvd, by = c("org1" = "org1", "org2" = "org2"))
+
+gravsvd2 <- distance_all %>%
+  inner_join(gravsvd, by = c("org2" = "org1", "org1" = "org2"))
+
+distance_all <- data.table::rbindlist(list(gravsvd1, gravsvd2)) %>%
+  distinct(org1, org2, .keep_all = TRUE)
+
+remove("gravsvd", "gravsvd1", "gravsvd2")
+
+
+# Gravity SVD COS
+gravmds <- read_csv(opt$gravmds, col_types = cols()) %>%
+  select(org1, org2, distance) %>%
+  rename(gravmds_distance = distance)
+
+gravmds1 <- distance_all %>%
+  inner_join(gravmds, by = c("org1" = "org1", "org2" = "org2"))
+
+gravmds2 <- distance_all %>%
+  inner_join(gravmds, by = c("org2" = "org1", "org1" = "org2"))
+
+distance_all <- data.table::rbindlist(list(gravmds1, gravmds2)) %>%
+  distinct(org1, org2, .keep_all = TRUE)
+
+remove("gravmds", "gravmds1", "gravmds2")
 
 #
 # ORG LOOKUP TABLES
@@ -295,6 +331,7 @@ distance_all <- distance_all %>%
          pprcos_distance, pprjsd_distance,
          lapcos_distance, svdcos_distance,
          levycos_distance, levyeuc_distance, levydot_distance,
+         gravsvd_distance, gravmds_distance,
          gravity,
          org1_city, org1_region, org1_country,
          org2_city, org2_region, org2_country

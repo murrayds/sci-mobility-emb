@@ -9,7 +9,7 @@
 
 # Plot dimensions
 FIG_WIDTH = 6
-FIG_HEIGHT = 3.5
+FIG_HEIGHT = 4.5
 
 
 library(readr)
@@ -44,7 +44,7 @@ rmse <- read_csv(opt$rmse, col_types = readr::cols()) %>%
   mutate(performance = "Root mean squared error")
 
 # The metrics to focus on for this plot
-metric_levels <- c("emb", 'levyeuc', "svdcos", "lapcos", "pprjsd", "geo")
+metric_levels <- c("emb", 'gravmds', 'levyeuc', "svdcos", "lapcos", "pprjsd", 'gravsvd', "geo")
 
 plotdata <- data.table::rbindlist(list(r2, rmse), use.names = T) %>%
   filter(dim == 300) %>%
@@ -57,10 +57,12 @@ plotdata <- data.table::rbindlist(list(r2, rmse), use.names = T) %>%
     metric = factor(metric,
                     levels = rev(metric_levels),
                     labels = rev(c("Embedding\ncosine distance",
+                               "Gravity MDS\neuc. distance",
                                "Factorized euc.\ndistance",
                                "SVD distance",
                                "Laplacian\neigenmap\ndistance",
                                "PPR JSD",
+                               "Gravity SVD\ncosine distance",
                                "Geographic\ndistance"))),
     type = factor(type,
                   levels = c("r2", "error.power", "error.exp"),
@@ -87,7 +89,7 @@ plot <- plotdata %>%
             position = position_dodge(0.75)) +
   facet_wrap(~performance) +
   scale_x_continuous(
-    limits = c(0, 1.1),
+    limits = c(0, 1.15),
     breaks = c(0, 0.25, 0.5, 0.75, 1.0)
   ) +
   scale_shape_manual(values = c(23, 24, 25)) +

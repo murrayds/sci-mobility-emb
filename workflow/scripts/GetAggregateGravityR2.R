@@ -7,7 +7,7 @@
 # stores them all into a single file
 #
 
-NUM_REPLICATIONS = 10
+NUM_REPLICATIONS = 5
 NUM_WORKERS = 4
 
 
@@ -172,8 +172,27 @@ agg <- data.table::rbindlist(lapply(DISTANCE_FILES, function(path) {
   df10 <- get_correlations(distance_data)
   df10$metric = "levydot"
 
+
+  # Rename svdcos_distance to "distance", remove the old column
+  distance_data <- distance_data %>%
+    mutate(distance = log(gravsvd_distance)) %>%
+    select(-gravsvd_distance)
+
+  df11 <- get_correlations(distance_data)
+  df11$metric = "gravsvd"
+
+
+  # Rename svdcos_distance to "distance", remove the old column
+  distance_data <- distance_data %>%
+    mutate(distance = log(gravmds_distance)) %>%
+    select(-gravmds_distance)
+
+  df12 <- get_correlations(distance_data)
+  df12$metric = "gravmds"
+
+
   # merge the two mini data frames
-  df <- data.table::rbindlist(list(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10))
+  df <- data.table::rbindlist(list(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11, df12))
 
   # Specity the parameters of the file, including the embedding dimensions
   # and window size

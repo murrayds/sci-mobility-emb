@@ -32,6 +32,7 @@ agg <- readr::read_csv(opt$input, col_types = readr::cols()) %>%
          count, gravity,
          geo_distance, pprcos_distance, pprjsd_distance, emb_distance,
          dot_distance, svdcos_distance, lapcos_distance,
+         gravsvd_distance, gravmds_distance,
          levycos_distance, levyeuc_distance, levydot_distance) %>%
   rename(actual = count)
 
@@ -108,6 +109,18 @@ if (opt$distance == "geo") {
       distance = levydot_distance,
       distance.log = log(levydot_distance)
     )
+} else if (opt$distance == "gravsvd") {
+  agg <- agg %>%
+    mutate(
+      distance = gravsvd_distance,
+      distance.log = log(gravsvd_distance)
+    )
+} else if (opt$distance == "gravmds") {
+  agg <- agg %>%
+    mutate(
+      distance = gravmds_distance,
+      distance.log = log(gravmds_distance)
+    )
 }
 
 fit.power <- summary(lm(log(gravity) ~ log(distance), data = agg))
@@ -131,7 +144,9 @@ agg <- agg %>%
   select(-c(org1_size, org2_size,
             gravity, geo_distance, emb_distance,
             pprcos_distance, pprjsd_distance, dot_distance,
-            svdcos_distance, lapcos_distance))
+            svdcos_distance, lapcos_distance, levydot_distance,
+            levyeuc_distance, levycos_distance,
+            gravsvd_distance, gravmds_distance))
 
 print(head(agg))
 
