@@ -239,7 +239,6 @@ Then, we apply truncated singular vector decomposition with $d=300$ on the flow 
 
 We calculate distance between organizations in the SVD embedding space using cosine distance, finding that it explains slighly more of the flux between organizations than does geographic distance ($R^2=0.247$, Table~\ref{supp:table:r2_table}).
 When used as an input to the gravity model, this distance produces better predictions than geographic distance using both the exponential (RMSE $= 0.859$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE $= 0.839$, Table~\ref{supp:table:rmse_exp_table}), performing slightly better with the power-law formulation.
-\todo{@dakoda other distance measures?}
 
 %
 % S6 Text
@@ -252,7 +251,6 @@ First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ give
 
 We only report results based on the cosine distance between Laplacian embedding vectors, finding that it explains less of the total flux than geographic distance ($R^{2} = 0.212$, Table~\ref{supp:table:r2_table}).
 When used as an input to the gravity model, the Laplacian cosine distance produces marginally-better predictions than geographic distance using both the exponential (RMSE $= 0.878$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE = $0.87$, Table~\ref{supp:table:rmse_power_table}), performing slightly better with the power-law formulation.
-\todo{@dakoda other distance measures?}
 
 
 %
@@ -262,7 +260,7 @@ When used as an input to the gravity model, the Laplacian cosine distance produc
 {\bf Levy's  symmetric SVD \textit{word2vec} distance}
 
 
-Finally, we also compare the \textit{word2vec} embedding distnace against a baseline of direct matrix factorization approach, using the symmetric SVD  \textit{word2vec} method~\autocite{levy2014neural}.
+We also compare the \textit{word2vec} embedding distnace against a baseline of direct matrix factorization approach, using the symmetric SVD  \textit{word2vec} method~\autocite{levy2014neural}.
 Based on idea of \textit{word2vec} is just implicit matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding, which should directly compute the embedding that \textit{word2vec} only attempts to efficiently approximate.
 First, we construct the matrix of $N$ organization
 
@@ -277,31 +275,45 @@ The cosine distance performs better, but worse than geographic distance ($R^{2} 
 The euclidean distance performs best, explaining more of the flux than geographic distance, and only being below the embedding distance ($R^{2} = 0.341$, Table~\ref{supp:table:r2_table}).
 Focusing on the euclidean distance, we find that using it as input to the gravity model results in better predictions than geographic distance using both the exponential model (RMSE $= 0.803$, Table~\ref{supp:table:rmse_exp_table}) and power law models, (RMSE $= 0.78$, Table~\ref{supp:table:rmse_power_table}), though it performs slightly better with the power law formulation.
 
+
+%
+% S8 Text
 \paragraph*{S8 Text}
 \label{si:text:direct}
 {\bf Direct optimization of gravity model}
 
+Finally, we create an embedding by optimizing for the gravity law directly. 
+Specifically, we construct a gravity matrix of $N$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual member of unique mobile and non-mobile authors affiliated.
 
-We also try the embedding with the direct optimization of the gravity model.
-First, we construct the gravity matrix of $N$ organizations, $T_{ij}/m_i m_j$, where $T_{ij}$ is occurrence of organizations $i$ and $j$ in the same affiliation trajectory divided by multiplication of each location's population (mean annual member of unique mobile and non-mobile author).
+We then embed the gravity matrix using two approaches: a truncated singular-vector decomposition (SVD), and with multidimensional scaling (MDS), which embeds each location in a N-dimensional space such that pairwise distances are preserved as well as possible. 
+Typically, MDS uses euclidean distance to measure distance between vectors. 
 
-Then, we try two approximation methods to get the embedding. The first method is  truncated singular vector decomposition (SVD) and the second method is a multi-dimensional scaling (MDS), which places each entity into N-dimensional space that the distance between entities preserved as well as possible.  Usually, MDS uses the euclidean distance of original vector as a distance measure.
-
-\todo{@dakoda, please report the performace here}
-
-
-\paragraph*{S9 Text}
-\label{si:text:whynueralbetter}
-{\bf Why do neural embedings outperform direct matrix factorization?}
-
-Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
-An issue in the matrix factorization approach is that it is extremely sensitive to small flows between affiliations. The matrix factorization approach embeds affiliations $i$ and $j$ such that their dot similarity is as close as to $\log (T_{ij} / P(i) P(j))$. If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes $-\infty$, pushing $i$ and $j$ very far from the other affiliations in the embedding space~\autocite{levy2014neural, Qui2018}. This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. To circumvent this problem, the previous studies~\autocite{levy2014neural, Qui2018} add a constant flow between the affiliation pairs with no flow. However, this changes the data to which we fit the model, and small flows still have a considerably strong impact on the embedding.
-
-Also, it is well known that SVD itself is vulnerable to outliers \autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
-The stochastic gradient descent algorithm (SGD), which is employed in SGNS \textit{word2vec}, is more robust than SVD and can enhance generalization and effectiveness of {\it word2vec} model \autocite{ma2018power, smith2020generalization, zhang2019algorithmic}.
+For this result, we report results using the cosine distance between embedding vectors for the SVD embedding, and the logged euclidean distance for the MDS embedding. 
+We observe that the gravity-optimized SVD cosine distance has poor performance, more weakly correlated with actual flux than geographic distance ($R^{2} = 0.122$, Table~\ref{supp:table:r2_table}), and similarly poor prediction error when used as input to the gravity mode.
+In contrast, the cosine distance between MDS vectors has the second-highest correlation with actual flux, after only the embedding distance ($R^{2} = 0.355$, Table~\ref{supp:table:r2_table}), and third best for predicting actual flux using both the power-law version of the gravity model (RMSE = $0.795$, Table~\ref{supp:table:rmse_power_table}), though performance is much lower using the exponential form (RMSE = $0.904$, Table~\ref{supp:table:rmse_exp_table}). 
+We note that the MDS embedding actually has the lowest prediction error when organizations' populations are defined as the raw frequency during prediction with the power-law model (RMSE = $0.691$, Table~\ref{supp:table:rmse_power_table});
+however, we note that the MDS distnace is defined with a population of``All'' mobile and non-mobile scholars, whereas the predictions made in Table~\ref{supp:table:rmse_power_table} use the raw frequency, which likely confounds this result. 
 
 %
-% S8 TEXT
+% S9 Text
+\paragraph*{S9 Text}
+\label{si:text:whynueralbetter}
+{\bf Why do neural embeddings outperform direct matrix factorization?}
+
+Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform Levy's direct matrix factorization~\autocite{levy2014neural}, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
+We speculate that is stems, in part, from the sensitivity of matrix factorization to small flows between locations.  
+Levy's matrix factorization embeds affiliations $i$ and $j$ such that their dot similarity is as close as possible to $\log (T_{ij} / P(i) P(j))$. 
+If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes to $-\infty$, pushing $i$ and $j$ very far from other affiliations in the embedding space~\autocite{levy2014neural, Qui2018}. 
+This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. 
+To circumvent this problem, previous studies~\autocite{levy2014neural, Qui2018} added a constant flow between the affiliation pairs with no flow. 
+However, this alters the underlying data, and these small flows can still have a strong impact on the embedding.
+
+It is also well known that singular-vector decomposition (SVD) is vulnerable to outliers~\autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
+The stochastic gradient descent algorithm, which is employed in SGNS \textit{word2vec}, is more robust than SVD and can enhance generalization and effectiveness of {\it word2vec} model \autocite{ma2018power, smith2020generalization, zhang2019algorithmic}.
+
+
+%
+% S10 TEXT
 \paragraph*{S10 Text}
 \label{si:text:organizations}
 {\bf Organization disambiguation and metadata.}
@@ -331,7 +343,7 @@ trajectories containing only a general designation are not altered.
 
 
 %
-% S9 TEXT
+% S11 TEXT
 \paragraph*{S11 Text}
 \label{si:text:disambiguation}
 {\bf Author name dismabiguation.}
@@ -345,7 +357,7 @@ Past studies have validated this data and shown that the disambiguated authors a
 
 
 %
-% S10 TEXT
+% S12 TEXT
 \paragraph*{S12 Text}
 \label{si:text:network_ranking}
 {\bf Reconstructing Times ranking with network measure.}
@@ -358,7 +370,7 @@ This suggests that the embedding encodes information on prestige hierarchy at le
 
 
 %
-% S11 TEXT
+% S13 TEXT
 \paragraph*{S13 Text}
 \label{si:text:boomerang_speculation}
 {\bf Speculation on variations of the convex-curve pattern.}
@@ -374,6 +386,7 @@ The vector norms of organizations in some countries are even more skewed, such a
 For some countries, their organizations are positively-skewed, though seemingly for different reasons.
 For example, Austria has a balanced distribution of organization vector norms, suggesting a diverse range of organizations with most being well connected ($\bar{l} =2.64$, $s = 0.18$);
 Russia, in contrast, has a number of organization vectors of moderate norms, but also several isolated organizations with large vector norms ($\bar{l} = 3.08$, $s = 0.67$).
+
 
 
 \newpage
@@ -512,9 +525,8 @@ Taiwan           & 3.67             & 72
 % R2 Table
 %
 \clearpage
+
 \begin{landscape}
-
-
 
   \providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}
   \providecommand{\huxvb}[2]{\color[RGB]{#1}\vrule width #2pt}
@@ -524,13 +536,13 @@ Taiwan           & 3.67             & 72
 \begin{table}[ht]
 \caption{
 	\textbf{Correlation between flux and distance over metrics, experimental parameters}.
-	Each cell corresponds to the correlation (measured with $r^{2}$) between the real-world flux between scientific organizations, comparing the embedding distance against baseline metrics, and across subsets of mobility data and by definitions of organization population.
+	Each cell corresponds to the correlation (measured with $R^{2}$) between the real-world flux between scientific organizations, comparing the embedding distance against baseline metrics, and across subsets of mobility data and by definitions of organization population.
 	The asterisk denotes the top-performing distance metric by column.
-	Distance metrics are ordered from highest $r^{2}$ to lowest, based on global mobility with organization population defined using all mobile and non-mobile authors.
+	Distance metrics are ordered from highest $R^{2}$ to lowest, based on global mobility with organization population defined using all mobile and non-mobile authors.
 	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
 		population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
 		``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-		Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct-factorization approaches~\autocite{levy2014neural} work better.
+		Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct optimization of the gravity law works better, as well as Levy's factorization~\autocite{levy2014neural} for domestic and international only mobility.
 }
 \label{supp:table:r2_table}
 \begin{centerbox}
@@ -538,7 +550,6 @@ Taiwan           & 3.67             & 72
 \small
  \setlength{\tabcolsep}{0pt}
 \begin{tabular}{l l l l l l l l l l}
-
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
@@ -574,7 +585,7 @@ Taiwan           & 3.67             & 72
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.492 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.456 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.489 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.325 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.325 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.251 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.252 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
@@ -582,7 +593,22 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.355 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.165 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.161 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.328 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.112 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.115 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.369 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.174 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.164 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.341 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.369 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.382 \hspace{6pt}\huxbpad{6pt}} &
@@ -657,7 +683,7 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.208 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.227 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.231 \hspace{6pt}\huxbpad{6pt}} &
@@ -702,27 +728,41 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.122 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.118 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.122 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.118 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.133 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.138 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.056 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.047 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.05 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.004 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.013 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.004 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.004 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.039 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.034 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.035 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\hhline{}
 \arrayrulecolor{black}
 \end{tabular}
 \end{threeparttable}\par\end{centerbox}
 
 \end{table}
 
-
-\end{landscape} % End r2 table page
+\end{landscape}
 
 
 
@@ -737,6 +777,7 @@ Taiwan           & 3.67             & 72
   \providecommand{\huxtpad}[1]{\rule{0pt}{#1}}
   \providecommand{\huxbpad}[1]{\rule[-#1]{0pt}{#1}}
 
+
 \begin{table}[ht]
 \caption{
 	\textbf{Prediction error between actual and predicted mobility with exponential gravity model, by metrics and experimental parameters}.
@@ -747,7 +788,7 @@ Taiwan           & 3.67             & 72
 	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
 		population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
 		``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-		Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions of mobility than baselines in nearly every case, however direct-factorization approaches~\autocite{levy2014neural} perform better for domestic and international mobility when raw frequency is used to define populations.
+		Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions of mobility than baselines in nearly every case, however Levy's 's factorization~\autocite{levy2014neural} perform better in the case of international and domestic only mobility when using raw frequency populations.
 }
 \label{supp:table:rmse_exp_table}
 \begin{centerbox}
@@ -799,7 +840,7 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.803 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.791 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.771 \hspace{6pt}\huxbpad{6pt}} &
@@ -859,7 +900,7 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.881 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.875 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}} &
@@ -884,6 +925,21 @@ Taiwan           & 3.67             & 72
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.904 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.944 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.907 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.972 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.955 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.793 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.838 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.821 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
@@ -919,26 +975,41 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.939 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.923 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.92 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.946 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.987 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.995 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.98 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.98 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.979 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.014 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.996 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.996 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.849 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\hhline{}
 \arrayrulecolor{black}
 \end{tabular}
 \end{threeparttable}\par\end{centerbox}
 
 \end{table}
 
-\end{landscape}
+\end{landscape} % End r2 table page
 
 
 
@@ -964,7 +1035,7 @@ Taiwan           & 3.67             & 72
 	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
 		population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
 		``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-		Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions for global mobility with ``All'; and ``Mobile only'' definitions of population, though the direct-factorization approach~\autocite{levy2014neural} perform better for in other cases.
+		Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions for global mobility with ``All'; and ``Mobile only'' definitions of population, though direvt gravity-law opimization with MDS performs better when using raw frequencies to measure organization population, and Levy's factorization~\autocite{levy2014neural} perform better here with domestic and international only mobility. 
 }
 \label{supp:table:rmse_power_table}
 \begin{centerbox}
@@ -1016,16 +1087,31 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.78 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.776 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.755 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.703 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.703 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.711 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.808 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.957 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.939 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.802 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.79 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
@@ -1121,7 +1207,7 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.926 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.911 \hspace{6pt}\huxbpad{6pt}} &
@@ -1136,19 +1222,34 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.95 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.955 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.958 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.941 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.873 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.883 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.866 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.99 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.998 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.977 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.015 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.997 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.997 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.845 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\hhline{}
 \arrayrulecolor{black}
 \end{tabular}
 \end{threeparttable}\par\end{centerbox}
@@ -1285,13 +1386,13 @@ Taiwan           & 3.67             & 72
 	\caption{
 	\textbf{Neural embeddings outperform baselines for scientific mobility.}
 		Cosine distance between embedding vectors generated with \textit{word2vec} explains more of the flux, and better predicts flux when used in the gravity model of mobility than geographic distance and other baselines.
-		Shown is the correlation between the flux and embedding distances, measured with $r^{2}$ (left), and the prediction error when using the distance as input to the gravity model of mobility.
+		Shown is the correlation between the flux and embedding distances, measured with $R^{2}$ (left), and the prediction error when using the distance as input to the gravity model of mobility.
     The asterisk denotes the top-performing metric.
 		For prediction error, we show results based on both the exponential and power-law forms of the gravity model.
 		All embedding-based methods use dimensions of 300.
 		Here, embedding distance is obtained from neural embeddings learned with window size of 1 and $\gamma = 1$.
 		In all cases, organization population is defined as the mean annualized number of unique mobile and non-mobile authors, and flux is calculated for all global mobility.
-		Baselines include the top-performing distance metrics calculated between vectors obtained by personalized-page rank (PPR), singular value decomposition (SVD), laplacian eigenmap, and direct-factorization~\autocite{levy2014neural} approaches, as well as the geographic distance between organizations.
+		Baselines include the top-performing distance metrics calculated between vectors obtained by personalized-page rank (PPR), singular value decomposition (SVD), laplacian eigenmap, direct-factorization following Levy's approach~\autocite{levy2014neural}, and direct optimization of the gravity model using SVD and multidimensional scaling (MDS), as well as the geographic distance between organizations.
 		Embedding distance better explains and predicts flux than any other baseline, though there is some variation by experimental parameters (Table~\ref{supp:table:r2_table}, Table~\ref{supp:table:rmse_exp_table}, and Table~\ref{supp:table:rmse_power_table}).
 	}
 	\label{fig:supp:distancemetrics}
