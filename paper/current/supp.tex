@@ -278,6 +278,19 @@ The euclidean distance performs best, explaining more of the flux than geographi
 Focusing on the euclidean distance, we find that using it as input to the gravity model results in better predictions than geographic distance using both the exponential model (RMSE $= 0.803$, Table~\ref{supp:table:rmse_exp_table}) and power law models, (RMSE $= 0.78$, Table~\ref{supp:table:rmse_power_table}), though it performs slightly better with the power law formulation.
 
 \paragraph*{S8 Text}
+\label{si:text:direct}
+{\bf Direct optimization of gravity model}
+
+
+We also try the embedding with the direct optimization of the gravity model.
+First, we construct the gravity matrix of $N$ organizations, $T_{ij}/m_i m_j$, where $T_{ij}$ is occurrence of organizations $i$ and $j$ in the same affiliation trajectory divided by multiplication of each location's population (mean annual member of unique mobile and non-mobile author).
+
+Then, we try two approximation methods to get the embedding. The first method is  truncated singular vector decomposition (SVD) and the second method is a multi-dimensional scaling (MDS), which places each entity into N-dimensional space that the distance between entities preserved as well as possible.  Usually, MDS uses the euclidean distance of original vector as a distance measure.
+
+\todo{@dakoda, please report the performace here}
+
+
+\paragraph*{S9 Text}
 \label{si:text:whynueralbetter}
 {\bf Why do neural embedings outperform direct matrix factorization?}
 
@@ -289,7 +302,7 @@ The stochastic gradient descent algorithm (SGD), which is employed in SGNS \text
 
 %
 % S8 TEXT
-\paragraph*{S9 Text}
+\paragraph*{S10 Text}
 \label{si:text:organizations}
 {\bf Organization disambiguation and metadata.}
 
@@ -319,7 +332,7 @@ trajectories containing only a general designation are not altered.
 
 %
 % S9 TEXT
-\paragraph*{S10 Text}
+\paragraph*{S11 Text}
 \label{si:text:disambiguation}
 {\bf Author name dismabiguation.}
 
@@ -333,7 +346,7 @@ Past studies have validated this data and shown that the disambiguated authors a
 
 %
 % S10 TEXT
-\paragraph*{S11 Text}
+\paragraph*{S12 Text}
 \label{si:text:network_ranking}
 {\bf Reconstructing Times ranking with network measure.}
 
@@ -346,7 +359,7 @@ This suggests that the embedding encodes information on prestige hierarchy at le
 
 %
 % S11 TEXT
-\paragraph*{S12 Text}
+\paragraph*{S13 Text}
 \label{si:text:boomerang_speculation}
 {\bf Speculation on variations of the convex-curve pattern.}
 

@@ -252,8 +252,8 @@ This performance is consistent in the case of scientific mobility:
 the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
 These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
 The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores calculated from the underlying mobility network (Fig.~\ref{fig:supp:distancemetrics}, Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baselines, such as distances derived from a singular-value decomposition and a Laplacian Eigenmap embedding~\autocite{belkin2003laplacian} of the underlying location co-occurence data (Fig.~\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and , in most cases, even outperforms a direct factorization approach~\autocite{levy2014neural}), which \textit{word2vec} is meant to approximate.
-In sum, our results demonstrate that, consistently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
+The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baselines, such as distances derived from a singular-value decomposition and a Laplacian Eigenmap embedding~\autocite{belkin2003laplacian} of the underlying location co-occurence matrix, Levy's symmetric \textit{word2vec}\autocite{levy2014neural}, and even direct optimization of the gravity model (Fig.~\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+In sum, our results demonstrate that, consistently and efficiently , the embedding distance better captures patterns of actual mobility than does the geographic distance.
 
 
 %
@@ -264,13 +264,13 @@ In sum, our results demonstrate that, consistently, the embedding distance bette
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
 	\caption{
 		\textbf{Embedding distance encodes functional distance and better predicts mobility in flights, accommodation reservations, and global scientific mobility.}
-		\textbf{a} Embedding distance (cosine distance between organization vectors, top) better explains the expected flux of passengers between U.S. airports than does geographic distance (bottom).
+		\textbf{a.} Embedding distance (cosine distance between organization vectors, top) better explains the expected flux of passengers between U.S. airports than does geographic distance (bottom).
 		The red line is the line of the best fit.
 		Black dots are mean flux across binned distances.
 		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution.
 		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
 		The lightness of each hex bin indicates the frequency of organization pairs within it.
-		\textbf{b} Predictions of flux between airport pairs made using embedding distance (top) outperform those made using geographic distance (bottom).
+		\textbf{b.} Predictions of flux between airport pairs made using embedding distance (top) outperform those made using geographic distance (bottom).
 		Boxplots show the distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps with $y = x$;
 		a perfect prediction yields all points on the black line.

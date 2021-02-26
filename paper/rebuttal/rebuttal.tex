@@ -275,7 +275,7 @@ Setting $\gamma = 1$ and substituting $\bm{u}_i = \bm{v}_j$ into Eq.~\ref{eq:pro
 	\hat{T_{ij}}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
 \end{align}
 
-The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) becausethe skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
+The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
 If we swap $i$ and $j$ in Eq.~\ref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
 Therefore, to ensure $\hat{T}_{ij} = \hat{T}_{ji}$, the denominator $Z_i$ should be a constant.
 
@@ -315,10 +315,10 @@ These alternatives included the geographic distance between locations, the dista
 
 Following the advice of the referees, we also add additional baselines to illustrate how the embedding distance performs compared to simpler embedding alternatives.
 The first of these baselines uses the distance between vectors in an embedding space produced through a singular-value decomposition of the underlying location co-occurrence matrix.
-The second baseline is the distance between vectors obtained through a Laplacian eigenmap embedding of the location of the matrix.
+The third baseline is the distance between vectors obtained through a Laplacian eigenmap embedding of the location of the matrix.
 
 In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}.
-The \textit{word2vec} model  implicitly approximates this matrix-factorization procedure, and so comparison to these ``Levy'' distances can demonstrate whether the approximation of neural embeddings outperform direct-calculations.
+The \textit{word2vec} model  implicitly approximates this matrix-factorization procedure, and so comparison to these ``Levy'' distances can demonstrate whether the approximation of neural embeddings outperform direct-calculations. Furthermore, we examined the embedding with the direct optimization of the gravity model with SVD and multidimensional scaling (MDS).
 
 
 \subsection{New experimental parameters}
@@ -364,7 +364,7 @@ The second definition defines the population akin to language, as simply its fre
 We find that, using the best performing dimensions (300) and window size (1),  $\gamma = 1.0$, and for default experimental parameters (global mobility, population defined using all mobile and non-mobile scholars), that the embedding distance, or cosine distance between vectors learned through neural embedding, explains more of the flux, and leads to better predictions than other baselines (Fig.~\ref{fig:supp:distancemetrics}).
 This performance advantage holds when considering both the exponential and the power-law forms of the gravity model of mobility.
 Although the euclidean distance between directly-factorized vectors performs comparably, and even narrowly beats out the embedding distance under certain experimental conditions (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}); \textit{word2vec} shows the msot consistent and robust performance, as suggested by Levy \& Goldberg~\autocite{levy2014neural}.
-
+\todo{@dakoda please write the new result with direct optimization of gravity law}
 
 \subsection{Why do neural embeddings outperform direct matrix factorization?}
 Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
@@ -511,8 +511,9 @@ All of the referees presented us with excellent, insightful comments and we feel
 	\say{The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanism [...] such as the cost functions for a given distance and the spatial granularity of the observation.
 		For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case though there is no qualitative difference---the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
 
-	We find the article that geographical distance ﬁts well with the power-law decay function because power-based gravity model can be more suitable for analyzing large, complex, and scale-free spatial systems, complexity which the exponential-based gravity model is not able to capture~\autocite{chen2015distance}.
-	However, the embedding distance fits well with the exponential decay function, perhaps demonstrating that the real-world spatial complexity of mobility is encoded in the \textit{word2vec}embedding space as simpler pairwise distances, likely resulting from underlying connection we established between \textit{word2vec} and the gravity model (see section 1, above).
+	We find the article that geographical distance ﬁts well with the power-law decay function because power-based gravity model can be more suitable for analyzing large, complex, and scale-free spatial systems with long-range spatial memory, while exponential-based gravity model
+	fits well with the simple system with no spatial memory~\autocite{chen2015distance}.
+	However, the embedding distance fits well with the exponential decay function, perhaps demonstrating that the real-world spatial complexity of mobility is encoded in the \textit{word2vec} embedding space as simpler pairwise distances, likely resulting from underlying connection we established between \textit{word2vec} and the gravity model (see section 1, above).
 
 }
 
