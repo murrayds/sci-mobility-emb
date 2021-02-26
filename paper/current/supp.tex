@@ -240,21 +240,10 @@ Then, we apply truncated singular vector decomposition with $d=300$ on the flow 
 We calculate distance between organizations in the SVD embedding space using cosine distance, finding that it explains slighly more of the flux between organizations than does geographic distance ($R^2=0.247$, Table~\ref{supp:table:r2_table}).
 When used as an input to the gravity model, this distance produces better predictions than geographic distance using both the exponential (RMSE $= 0.859$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE $= 0.839$, Table~\ref{supp:table:rmse_exp_table}), performing slightly better with the power-law formulation. 
 
-\paragraph*{S6 Text}
-\label{si:text:direct}
-{\bf Direct optimization of gravity model}
-
-
-We also try the embedding with the direct optimization of the gravity model.
-First, we construct the gravity matrix of $N$ organizations, $T_{ij}/m_i m_j$, where $T_{ij}$ is occurrence of organizations $i$ and $j$ in the same affiliation trajectory divided by multiplication of each location's population (mean annual member of unique mobile and non-mobile author). 
-
-Then, we try two approximation methods to get the embedding. The first method is  truncated singular vector decomposition (SVD) and the second method is a multi-dimensional scaling (MDS), which places each entity into N-dimensional space that the distance between entities preserved as well as possible.  Usually, MDS uses the euclidean distance of original vector as a distance measure.
-
-\todo{@dakoda, please report the performace here}
 
 %
 % S6 Text
-\paragraph*{S7 Text}
+\paragraph*{S6 Text}
 \label{si:text:Laplacian}
 {\bf Laplacian Eigenmap distance.}
 
@@ -268,7 +257,7 @@ When used as an input to the gravity model, the Laplacian cosine distance produc
 
 %
 % S7 Text
-\paragraph*{S8 Text}
+\paragraph*{S7 Text}
 \label{si:text:levy}
 {\bf Levy's  symmetric SVD \textit{word2vec} distance}
 
@@ -287,6 +276,18 @@ We find that the dot product performs by far the worst, worse than any other bas
 The cosine distance performs better, but worse than geographic distance ($R^{2} = 0.212$, Table~\ref{supp:table:r2_table}). 
 The euclidean distance performs best, explaining more of the flux than geographic distance, and only being below the embedding distance ($R^{2} = 0.341$, Table~\ref{supp:table:r2_table}). 
 Focusing on the euclidean distance, we find that using it as input to the gravity model results in better predictions than geographic distance using both the exponential model (RMSE $= 0.803$, Table~\ref{supp:table:rmse_exp_table}) and power law models, (RMSE $= 0.78$, Table~\ref{supp:table:rmse_power_table}), though it performs slightly better with the power law formulation.
+
+\paragraph*{S8 Text}
+\label{si:text:direct}
+{\bf Direct optimization of gravity model}
+
+
+We also try the embedding with the direct optimization of the gravity model.
+First, we construct the gravity matrix of $N$ organizations, $T_{ij}/m_i m_j$, where $T_{ij}$ is occurrence of organizations $i$ and $j$ in the same affiliation trajectory divided by multiplication of each location's population (mean annual member of unique mobile and non-mobile author). 
+
+Then, we try two approximation methods to get the embedding. The first method is  truncated singular vector decomposition (SVD) and the second method is a multi-dimensional scaling (MDS), which places each entity into N-dimensional space that the distance between entities preserved as well as possible.  Usually, MDS uses the euclidean distance of original vector as a distance measure.
+
+\todo{@dakoda, please report the performace here}
 
 
 \paragraph*{S9 Text}
