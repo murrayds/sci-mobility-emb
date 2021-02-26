@@ -112,13 +112,13 @@ if (opt$distance == "geo") {
 } else if (opt$distance == "gravsvd") {
   agg <- agg %>%
     mutate(
-      distance = gravsvd_distance,
+      distance = log(gravsvd_distance),
       distance.log = log(gravsvd_distance)
     )
 } else if (opt$distance == "gravmds") {
   agg <- agg %>%
     mutate(
-      distance = gravmds_distance,
+      distance = log(gravmds_distance),
       distance.log = log(gravmds_distance)
     )
 }

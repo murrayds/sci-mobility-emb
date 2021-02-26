@@ -58,7 +58,7 @@ plotdata <- data.table::rbindlist(list(r2, rmse), use.names = T) %>%
                     levels = rev(metric_levels),
                     labels = rev(c("Embedding\ncosine distance",
                                "Gravity MDS\neuc. distance",
-                               "Factorized euc.\ndistance",
+                               "Levy's euc.\ndistance",
                                "SVD distance",
                                "Laplacian\neigenmap\ndistance",
                                "PPR JSD",
