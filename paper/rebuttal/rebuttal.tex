@@ -318,8 +318,8 @@ The first of these baselines uses the distance between vectors in an embedding s
 The third baseline is the distance between vectors obtained through a Laplacian eigenmap embedding of the location of the matrix.
 
 In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}.
-The \textit{word2vec} model  implicitly approximates this matrix-factorization procedure, and so comparison to these ``Levy'' distances can demonstrate whether the approximation of neural embeddings outperform direct-calculations. Furthermore, we examined the embedding with the direct optimization of the gravity model with SVD and multidimensional scaling (MDS).
-
+The \textit{word2vec} model  implicitly approximates this matrix-factorization procedure, and so comparison to these ``Levy'' distances can demonstrate whether the approximation of neural embeddings outperform direct-calculations. 
+Furthermore, we computed an embedding that attempts to directly-optimize for a gravity-law relationship between relations, one created using singular-vector decomposition (SVD) and another with multidimensional scaling (MDS). 
 
 \subsection{New experimental parameters}
 In addition to the new baselines, we have also incorporated additional experimental parameters into our analysis.
@@ -348,13 +348,12 @@ The second definition defines the population akin to language, as simply its fre
 	{
 		Cosine distance between embedding vectors generated with \textit{word2vec} explains more of the flux, and better predicts flux when used in the gravity model of mobility than geographic distance and other baselines.
 		Shown is the correlation between the flux and embedding distances, measured with $R^{2}$ (left), and the prediction error when using the distance as input to the gravity model of mobility.
-		The asterisk denotes the top-performing metric.
+    The asterisk denotes the top-performing metric.
 		For prediction error, we show results based on both the exponential and power-law forms of the gravity model.
 		All embedding-based methods use dimensions of 300.
-		Embedding distance is obtained from neural embeddings learned with window size of 1 and $\gamma = 1$.
-		The metric with the highest correlation and lowest prediction error are marked with an asterisk.
+		Here, embedding distance is obtained from neural embeddings learned with window size of 1 and $\gamma = 1$.
 		In all cases, organization population is defined as the mean annualized number of unique mobile and non-mobile authors, and flux is calculated for all global mobility.
-		Baselines include the top-performing distance metrics calculated between vectors obtained by personalized-page rank (PPR), singular value decomposition (SVD), laplacian eigenmap, and direct-factorization~\autocite{levy2014neural} approaches, as well as the geographic distance between organizations.
+		Baselines include the top-performing distance metrics calculated between vectors obtained by personalized-page rank (PPR), singular value decomposition (SVD), laplacian eigenmap, direct-factorization following Levy's approach~\autocite{levy2014neural}, and direct optimization of the gravity model using SVD and multidimensional scaling (MDS), as well as the geographic distance between organizations.
 		Embedding distance better explains and predicts flux than any other baseline, though there is some variation by experimental parameters (Table~\ref{supp:table:r2_table}, Table~\ref{supp:table:rmse_exp_table}, and Table~\ref{supp:table:rmse_power_table}).
 	}
 	\label{fig:supp:distancemetrics}
@@ -364,7 +363,8 @@ The second definition defines the population akin to language, as simply its fre
 We find that, using the best performing dimensions (300) and window size (1),  $\gamma = 1.0$, and for default experimental parameters (global mobility, population defined using all mobile and non-mobile scholars), that the embedding distance, or cosine distance between vectors learned through neural embedding, explains more of the flux, and leads to better predictions than other baselines (Fig.~\ref{fig:supp:distancemetrics}).
 This performance advantage holds when considering both the exponential and the power-law forms of the gravity model of mobility.
 Although the euclidean distance between directly-factorized vectors performs comparably, and even narrowly beats out the embedding distance under certain experimental conditions (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}); \textit{word2vec} shows the msot consistent and robust performance, as suggested by Levy \& Goldberg~\autocite{levy2014neural}.
-\todo{@dakoda please write the new result with direct optimization of gravity law}
+Directly-optimizing the gravity model results in comparable performance to Levy's factorization approach, narroly beating out both in prediction error for certain definitions of organization population. 
+Still, the embedding distance, with its stochastic optimization algortihm reliably outperforms these directly-optimized  baselines. 
 
 \subsection{Why do neural embeddings outperform direct matrix factorization?}
 Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
@@ -741,222 +741,248 @@ We have added the following sentence to the introduction: “It works under the 
 
 
 
+
+
+
 %
 % R2 Table
 %
 \clearpage
+
 \begin{landscape}
 
+  \providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}
+  \providecommand{\huxvb}[2]{\color[RGB]{#1}\vrule width #2pt}
+  \providecommand{\huxtpad}[1]{\rule{0pt}{#1}}
+  \providecommand{\huxbpad}[1]{\rule[-#1]{0pt}{#1}}
+
+\begin{table}[ht]
+\caption{
+	\textbf{Correlation between flux and distance over metrics, experimental parameters}.
+	Each cell corresponds to the correlation (measured with $R^{2}$) between the real-world flux between scientific organizations, comparing the embedding distance against baseline metrics, and across subsets of mobility data and by definitions of organization population.
+	The asterisk denotes the top-performing distance metric by column.
+	Distance metrics are ordered from highest $R^{2}$ to lowest, based on global mobility with organization population defined using all mobile and non-mobile authors.
+	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+		population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
+		``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
+		Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct optimization of the gravity law works better, as well as Levy's factorization~\autocite{levy2014neural} for domestic and international only mobility.
+}
+\label{supp:table:r2_table}
+\begin{centerbox}
+\begin{threeparttable}
+\small
+ \setlength{\tabcolsep}{0pt}
+\begin{tabular}{l l l l l l l l l l}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{All} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Mobile only} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Raw freq} \hspace{6pt}\huxbpad{0pt}} \tabularnewline[-0.5pt]
 
 
-	\providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}
-	\providecommand{\huxvb}[2]{\color[RGB]{#1}\vrule width #2pt}
-	\providecommand{\huxtpad}[1]{\rule{0pt}{#1}}
-	\providecommand{\huxbpad}[1]{\rule[-#1]{0pt}{#1}}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-	\begin{table}[ht]
-		\caption{
-			\textbf{Correlation between flux and distance over metrics, experimental parameters}.
-			Each cell corresponds to the correlation (measured with $r^{2}$) between the real-world flux between scientific organizations, comparing the embedding distance against baseline metrics, and across subsets of mobility data and by definitions of organization population.
-			The asterisk denotes the top-performing distance metric by column.
-			Distance metrics are ordered from highest $r^{2}$ to lowest, based on global mobility with organization population defined using all mobile and non-mobile authors.
-			``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
-			population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
-			``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-			Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct-factorization approaches~\autocite{levy2014neural} work better.
-		}
-		\label{supp:table:r2_table}
-		\begin{centerbox}
-			\begin{threeparttable}
-				\setlength{\tabcolsep}{0pt}
-				\begin{tabular}{l l l l l l l l l l}
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{ } \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}-}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{} \hspace{6pt}\huxbpad{0pt}}                       &
-					\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{All} \hspace{6pt}\huxbpad{0pt}}                                         &
-					\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Mobile only} \hspace{6pt}\huxbpad{0pt}}                                 &
-					\multicolumn{3}{c!{\huxvb{0, 0, 0}{0}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Raw freq} \hspace{6pt}\huxbpad{0pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{ } \hspace{6pt}\huxbpad{6pt}}                    &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}}                                       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}}                                     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}}                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}}                                       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}}                                     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}}                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}}                                       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}}                                     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.481 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.418 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.435 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.492 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.456 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.489 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.325 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.251 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.252 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}-}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}}     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.481 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.418 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.435 \hspace{6pt}\huxbpad{6pt}}                                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.492 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.456 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.489 \hspace{6pt}\huxbpad{6pt}}                                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.325 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.251 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.252 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized euclidean} \hspace{6pt}\huxbpad{6pt}} &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.341 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.369 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.382 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.213 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.271 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.284 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.305 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.323 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.334 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.355 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.165 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.161 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.328 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.112 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.115 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.369 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.174 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.164 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}}        &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.341 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.313 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.316 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.254 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.265 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.267 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.218 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.181 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.177 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}}           &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.247 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.297 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.309 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.213 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.314 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.325 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.111 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.152 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.16 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.341 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.369 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.382 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.213 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.271 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.284 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.305 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.323 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.334 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}}           &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.219 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.174 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.197 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.188 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.157 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.176 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.04 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.019 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.03 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}}     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.212 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.199 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.218 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.176 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.157 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.18 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.079 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.1 \hspace{6pt}\huxbpad{6pt}}                                                   &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.111 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.341 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.313 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.316 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.254 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.265 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.267 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.218 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.181 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.177 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized cosine} \hspace{6pt}\huxbpad{6pt}}    &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.208 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.227 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.231 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.169 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.246 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.246 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.057 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.054 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.053 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}}              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.194 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.276 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.276 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.218 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.335 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.335 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.012 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.077 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.069 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.247 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.297 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.309 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.213 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.314 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.325 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.111 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.152 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.16 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}}           &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.138 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.136 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.143 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.196 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.186 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.197 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.13 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.149 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.152 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized dot} \hspace{6pt}\huxbpad{6pt}}       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.004 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.013 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.004 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.039 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.034 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.035 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.219 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.174 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.197 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.188 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.157 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.176 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.04 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.019 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.03 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-				\end{tabular}
-			\end{threeparttable}\par\end{centerbox}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-	\end{table}
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.212 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.199 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.218 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.176 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.157 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.18 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.079 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.1 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.111 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-\end{landscape} % End r2 table page
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.208 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.227 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.231 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.169 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.246 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.246 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.057 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.054 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.053 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.194 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.276 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.276 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.218 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.335 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.335 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.012 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.077 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.069 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.138 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.136 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.143 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.196 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.186 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.197 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.13 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.149 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.152 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.122 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.118 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.122 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.118 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.133 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.138 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.056 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.047 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.05 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.004 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.013 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.004 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.039 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.034 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.035 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+\end{tabular}
+\end{threeparttable}\par\end{centerbox}
+
+\end{table}
+
+\end{landscape}
 
 
 
@@ -966,212 +992,245 @@ We have added the following sentence to the introduction: “It works under the 
 \clearpage
 \begin{landscape}
 
-	\providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}
-	\providecommand{\huxvb}[2]{\color[RGB]{#1}\vrule width #2pt}
-	\providecommand{\huxtpad}[1]{\rule{0pt}{#1}}
-	\providecommand{\huxbpad}[1]{\rule[-#1]{0pt}{#1}}
-
-	\begin{table}[ht]
-		\caption{
-			\textbf{Prediction error between actual and predicted mobility with exponential gravity model, by metrics and experimental parameters}.
-			Each cell corresponds to the prediction error (measured with root mean squared error) between the real-world flux between scientific organizations and predictions made with the exponential form of the gravity model of mobility.
-			The prediction error is shown for the embedding distance compared against baselines, subsets of mobility data, and definitions of organization population.
-			The asterisk denotes the top-performing distance metric by column (lowest prediction error).
-			Distance metrics are ordered from lowest prediction error to highest, based on global mobility with organization population defined using all mobile and non-mobile authors.
-			``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
-			population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
-			``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-			Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions of mobility than baselines in nearly every case, however direct-factorization approaches~\autocite{levy2014neural} perform better for domestic and international mobility when raw frequency is used to define populations.
-		}
-		\label{supp:table:rmse_exp_table}
-		\begin{centerbox}
-			\begin{threeparttable}
-				\setlength{\tabcolsep}{0pt}
-				\begin{tabular}{l l l l l l l l l l}
+  \providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}
+  \providecommand{\huxvb}[2]{\color[RGB]{#1}\vrule width #2pt}
+  \providecommand{\huxtpad}[1]{\rule{0pt}{#1}}
+  \providecommand{\huxbpad}[1]{\rule[-#1]{0pt}{#1}}
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{} \hspace{6pt}\huxbpad{0pt}}                       &
-					\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{All} \hspace{6pt}\huxbpad{0pt}}                                         &
-					\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Mobile only} \hspace{6pt}\huxbpad{0pt}}                                 &
-					\multicolumn{3}{c!{\huxvb{0, 0, 0}{0}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Raw freq} \hspace{6pt}\huxbpad{0pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{ } \hspace{6pt}\huxbpad{6pt}}                    &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}}                                       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}}                                     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}}                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}}                                       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}}                                     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}}                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}}                                       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}}                                     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\begin{table}[ht]
+\caption{
+	\textbf{Prediction error between actual and predicted mobility with exponential gravity model, by metrics and experimental parameters}.
+	Each cell corresponds to the prediction error (measured with root mean squared error) between the real-world flux between scientific organizations and predictions made with the exponential form of the gravity model of mobility.
+	The prediction error is shown for the embedding distance compared against baselines, subsets of mobility data, and definitions of organization population.
+	The asterisk denotes the top-performing distance metric by column (lowest prediction error).
+	Distance metrics are ordered from lowest prediction error to highest, based on global mobility with organization population defined using all mobile and non-mobile authors.
+	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+		population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
+		``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
+		Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions of mobility than baselines in nearly every case, however Levy's 's factorization~\autocite{levy2014neural} perform better in the case of international and domestic only mobility when using raw frequency populations.
+}
+\label{supp:table:rmse_exp_table}
+\begin{centerbox}
+\begin{threeparttable}
+\small
+ \setlength{\tabcolsep}{0pt}
+\begin{tabular}{l l l l l l l l l l}
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}-}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}}     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.713 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.76 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.737 \hspace{6pt}\huxbpad{6pt}}                                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.702 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.749 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.713 \hspace{6pt}\huxbpad{6pt}}                                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.715 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.764 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.748 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{All} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Mobile only} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Raw freq} \hspace{6pt}\huxbpad{0pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized euclidean} \hspace{6pt}\huxbpad{6pt}} &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.803 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.791 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.771 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.725 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.726 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.705 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}}        &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.803 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.825 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.811 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.851 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.87 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.854 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.769 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.798 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.784 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{ } \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}-}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}}           &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.859 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.82 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.82 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.792 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}}     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.878 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.891 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.894 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.904 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.837 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.743 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.784 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.76 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.73 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.784 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.749 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.714 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.762 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.745 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized cosine} \hspace{6pt}\huxbpad{6pt}}    &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.881 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.875 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.882 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.866 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.858 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}}              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.871 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.828 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.814 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.78 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.776 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.755 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.703 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.711 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}}           &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.918 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.925 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.908 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.884 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.916 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.894 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.814 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.796 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}}           &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.929 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.951 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.928 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.973 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.002 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.856 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.875 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.808 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.957 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.939 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.802 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.79 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized dot} \hspace{6pt}\huxbpad{6pt}}       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.987 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.995 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.98 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.979 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.014 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.996 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.849 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.831 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.864 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.863 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.783 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.809 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-				\end{tabular}
-			\end{threeparttable}\par\end{centerbox}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-	\end{table}
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.839 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.785 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.761 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.89 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.81 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.792 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.752 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.728 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
-\end{landscape}
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.87 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.837 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.801 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.937 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.919 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.886 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.804 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.772 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.735 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.905 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.906 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.852 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.851 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.889 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.85 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.838 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.871 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.819 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.92 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.885 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.918 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.896 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.797 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.926 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.911 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.924 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.909 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.861 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.872 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.854 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.95 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.955 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.958 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.941 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.873 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.883 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.866 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.99 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.998 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.977 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.015 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.997 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.845 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+\end{tabular}
+\end{threeparttable}\par\end{centerbox}
+
+\end{table}
+
+\end{landscape} % End r2 table page
+
 
 
 
@@ -1181,215 +1240,247 @@ We have added the following sentence to the introduction: “It works under the 
 \clearpage
 \begin{landscape}
 
+  \providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}
+  \providecommand{\huxvb}[2]{\color[RGB]{#1}\vrule width #2pt}
+  \providecommand{\huxtpad}[1]{\rule{0pt}{#1}}
+  \providecommand{\huxbpad}[1]{\rule[-#1]{0pt}{#1}}
+
+\begin{table}[ht]
+\caption{
+	\textbf{Prediction error between actual and predicted mobility with power-law gravity model, by metrics and experimental parameters}.
+	Each cell corresponds to the prediction error (measured with root mean squared error) between the real-world flux between scientific organizations and predictions made with the power-law form of the gravity model of mobility.
+	The prediction error is shown for the embedding distance compared against baselines, subsets of mobility data, and definitions of organization population.
+	The asterisk denotes the top-performing distance metric by column (lowest prediction error).
+	Distance metrics are ordered from lowest prediction error to highest, based on global mobility with organization population defined using all mobile and non-mobile authors.
+	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+		population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
+		``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
+		Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions for global mobility with ``All'; and ``Mobile only'' definitions of population, though direvt gravity-law opimization with MDS performs better when using raw frequencies to measure organization population, and Levy's factorization~\autocite{levy2014neural} perform better here with domestic and international only mobility. 
+}
+\label{supp:table:rmse_power_table}
+\begin{centerbox}
+\begin{threeparttable}
+\small
+ \setlength{\tabcolsep}{0pt}
+\begin{tabular}{l l l l l l l l l l}
 
 
-	\providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}
-	\providecommand{\huxvb}[2]{\color[RGB]{#1}\vrule width #2pt}
-	\providecommand{\huxtpad}[1]{\rule{0pt}{#1}}
-	\providecommand{\huxbpad}[1]{\rule[-#1]{0pt}{#1}}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-	\begin{table}[ht]
-		\caption{
-			\textbf{Prediction error between actual and predicted mobility with power-law gravity model, by metrics and experimental parameters}.
-			Each cell corresponds to the prediction error (measured with root mean squared error) between the real-world flux between scientific organizations and predictions made with the power-law form of the gravity model of mobility.
-			The prediction error is shown for the embedding distance compared against baselines, subsets of mobility data, and definitions of organization population.
-			The asterisk denotes the top-performing distance metric by column (lowest prediction error).
-			Distance metrics are ordered from lowest prediction error to highest, based on global mobility with organization population defined using all mobile and non-mobile authors.
-			``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
-			population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
-			``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-			Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions for global mobility with ``All'; and ``Mobile only'' definitions of population, though the direct-factorization approach~\autocite{levy2014neural} perform better for in other cases.
-		}
-		\label{supp:table:rmse_power_table}
-		\begin{centerbox}
-			\begin{threeparttable}
-				\setlength{\tabcolsep}{0pt}
-				\begin{tabular}{l l l l l l l l l l}
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{All} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Mobile only} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Raw freq} \hspace{6pt}\huxbpad{0pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{} \hspace{6pt}\huxbpad{0pt}}                       &
-					\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{All} \hspace{6pt}\huxbpad{0pt}}                                         &
-					\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Mobile only} \hspace{6pt}\huxbpad{0pt}}                                 &
-					\multicolumn{3}{c!{\huxvb{0, 0, 0}{0}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Raw freq} \hspace{6pt}\huxbpad{0pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{ } \hspace{6pt}\huxbpad{6pt}}                    &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}}                                       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}}                                     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}}                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}}                                       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}}                                     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}}                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}}                                       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}}                                     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{ } \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}-}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}-}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}}     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.743 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.784 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.76 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.73 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.784 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.749 \hspace{6pt}\huxbpad{6pt}}                                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.714 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.762 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.745 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized euclidean} \hspace{6pt}\huxbpad{6pt}} &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.78 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.776 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.755 \hspace{6pt}\huxbpad{6pt}}                                              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.703 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.711 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.743 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.784 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.76 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.73 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.784 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.749 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.714 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.762 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.745 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}}        &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.831 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.864 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.863 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.783 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.809 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}}           &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.839 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.785 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.761 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.89 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.81 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.792 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.752 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.728 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.78 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.776 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.755 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.703 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.711 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}}     &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.87 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.837 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.801 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.937 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.919 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.886 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.804 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.772 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.735 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}}           &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.905 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.906 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.852 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.851 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.808 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.957 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.939 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.802 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.79 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}}              &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.889 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.85 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.838 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.871 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.819 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}}           &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.92 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.885 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.918 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.896 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.797 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.831 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.864 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.863 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.783 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.809 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized cosine} \hspace{6pt}\huxbpad{6pt}}    &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.926 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.911 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.924 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.909 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.861 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.872 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.854 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Factorized dot} \hspace{6pt}\huxbpad{6pt}}       &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.99 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.998 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.977 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.015 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.997 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.845 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.839 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.785 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.761 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.89 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.81 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.792 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.752 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.728 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-				\end{tabular}
-			\end{threeparttable}\par\end{centerbox}
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
 
-	\end{table}
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.87 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.837 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.801 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.937 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.919 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.886 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.804 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.772 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.735 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.905 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.906 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.852 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.851 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.889 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.85 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.838 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.871 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.819 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.92 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.885 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.918 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.896 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.797 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.926 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.911 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.924 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.909 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.861 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.872 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.854 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.95 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.955 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.958 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.941 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.873 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.883 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.866 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.99 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.998 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.977 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.015 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.997 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.845 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+\end{tabular}
+\end{threeparttable}\par\end{centerbox}
+
+\end{table}
 
 
 \end{landscape}
+
+
+
 
 %
 % BIBLIOGRAPHY
