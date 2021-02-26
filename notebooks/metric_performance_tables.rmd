@@ -1,0 +1,193 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+
+```{r}
+library(tidyverse)
+library(readr)
+library(huxtable)
+rmse <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Stat/aggregate_rmse.csv")
+```
+
+
+
+
+```{r}
+r2 <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Stat/aggregate_r2.csv")
+
+metric_levels <- c("emb", "levyeuc", "dot", "pprjsd", "svdcos", "levycos", "geo",
+                   "lapcos", "pprcos", "levydot")
+
+metric_labels <- c("Embedding cosine", "Factorized euclidean", "Embedding dot", "PPR JSD", 
+                   "SVD cosine", "Factorized cosine", "Geographic", "Laplacian cosine", "PPR cosine", "Factorized dot")
+
+
+r2.tab <- r2 %>%
+  filter(traj == "precedence") %>%
+  filter(dim == 300) %>%
+  filter(ws == 1) %>%
+  filter(gamma == 1.0) %>%
+  select(metric, case, sizetype, r2) %>%
+  arrange(desc(r2)) %>%
+  mutate(
+    case = factor(case, levels = c("global", "same-country", "diff-country")),
+    sizetype = factor(sizetype, levels = c("all", "mobile", "freq"))
+  ) %>%
+  arrange(case, sizetype, desc(r2)) %>%
+  group_by(case, sizetype) %>%
+  mutate(
+    r2 = ifelse(max(r2) == r2, paste0("*", round(r2, 3)), as.character(round(r2, 3)))
+  ) %>%
+  group_by(metric, case, sizetype) %>%
+  ungroup() %>%
+  pivot_wider(names_from = c("case", "sizetype"), values_from = "r2") %>%
+  #select(-id) %>%
+  mutate(
+    metric = factor(metric, metric_levels, metric_labels)
+  ) %>%
+  rename(" " = metric)
+  
+  
+r2.hux <- as_hux(r2.tab) %>%
+  set_contents(1, 2:10, rep(c("Global", "Domestic", "International"), 3)) %>%
+  insert_row("", "All", "", "", "Mobile only", "", "", "Raw freq", "", "", after = 0) %>% 
+  merge_cells(1, 2:4) %>% 
+  merge_cells(1, 5:7) %>% 
+  merge_cells(1, 8:10) %>%
+  set_tb_padding(1, everywhere, 0) %>% 
+  set_bold(1, everywhere) %>%
+  map_align(by_cols(c("left", rep("right", 9)))) %>%
+  set_align(1, everywhere, "center") %>% 
+  #map_align(row = 1, by_cols(rep("center", 10))) %>%
+  set_header_rows(1:2, TRUE) %>% 
+  set_header_cols(1, TRUE) %>% 
+  style_headers(bold = TRUE) %>%
+  set_right_border(1:12, 1, value = 0.5) %>%
+  set_right_border(1:12, 4, value = 0.5) %>%
+  set_right_border(1:12, 7, value = 0.5) %>%
+  set_bottom_border(2, 1:10, value = 0.5)
+  
+
+r2.hux %>%
+  print_latex()
+```
+
+
+```{r}
+rmse <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Stat/aggregate_rmse.csv")
+
+
+metric_levels <- c("emb", "levyeuc", "dot", "pprjsd", "svdcos", "levycos", "geo",
+                   "lapcos", "pprcos", "levydot")
+
+metric_labels <- c("Embedding cosine", "Factorized euclidean", "Embedding dot", "PPR JSD", 
+                   "SVD cosine", "Factorized cosine", "Geographic", "Laplacian cosine", "PPR cosine", "Factorized dot")
+
+
+rmse.tab <- rmse %>%
+  filter(dim == 300) %>%
+  filter(ws == 1) %>%
+  filter(gamma == 1.0) %>%
+  rename(rmse = error.exp) %>%
+  #gather(model, rmse, error.exp, error.power) %>%
+  select(metric, case, sizetype, rmse) %>%
+  arrange(rmse) %>%
+  mutate(
+    case = factor(case, levels = c("global", "same", "different")),
+    sizetype = factor(sizetype, levels = c("all", "mobile", "freq"))
+  ) %>%
+  arrange(case, sizetype, rmse) %>%
+  group_by(case, sizetype) %>%
+  mutate(
+    rmse = ifelse(min(rmse) == rmse, paste0("*", round(rmse, 3)), as.character(round(rmse, 3)))
+  ) %>%
+  group_by(metric, case, sizetype) %>%
+  ungroup() %>%
+  pivot_wider(names_from = c("case", "sizetype"), values_from = "rmse") %>%
+  #select(-id) %>%
+  mutate(
+    metric = factor(metric, metric_levels, metric_labels)
+  ) %>%
+  rename(" " = metric)
+  
+  
+rmse.hux <- as_hux(rmse.tab) %>%
+  set_contents(1, 2:10, rep(c("Global", "Domestic", "International"), 3)) %>%
+  insert_row("", "All", "", "", "Mobile only", "", "", "Raw freq", "", "", after = 0) %>% 
+  merge_cells(1, 2:4) %>% 
+  merge_cells(1, 5:7) %>% 
+  merge_cells(1, 8:10) %>%
+  set_tb_padding(1, everywhere, 0) %>% 
+  set_bold(1, everywhere) %>%
+  map_align(by_cols(c("left", rep("right", 9)))) %>%
+  set_align(1, everywhere, "center") %>% 
+  #map_align(row = 1, by_cols(rep("center", 10))) %>%
+  set_header_rows(1:2, TRUE) %>% 
+  set_header_cols(1, TRUE) %>% 
+  style_headers(bold = TRUE) %>%
+  set_right_border(1:12, 1, value = 0.5) %>%
+  set_right_border(1:12, 4, value = 0.5) %>%
+  set_right_border(1:12, 7, value = 0.5) %>%
+  set_bottom_border(2, 1:10, value = 0.5)
+
+rmse.hux %>%
+  print_latex()
+
+```
+
+
+Now the same table, with the power-law model
+```{r}
+rmse.tab <- rmse %>%
+  filter(dim == 300) %>%
+  filter(ws == 1) %>%
+  filter(gamma == 1.0) %>%
+  rename(rmse = error.power) %>%
+  #gather(model, rmse, error.exp, error.power) %>%
+  select(metric, case, sizetype, rmse) %>%
+  arrange(rmse) %>%
+  mutate(
+    case = factor(case, levels = c("global", "same", "different")),
+    sizetype = factor(sizetype, levels = c("all", "mobile", "freq"))
+  ) %>%
+  arrange(case, sizetype, rmse) %>%
+  group_by(case, sizetype) %>%
+  mutate(
+    rmse = ifelse(min(rmse) == rmse, paste0("*", round(rmse, 3)), as.character(round(rmse, 3)))
+  ) %>%
+  group_by(metric, case, sizetype) %>%
+  ungroup() %>%
+  pivot_wider(names_from = c("case", "sizetype"), values_from = "rmse") %>%
+  #select(-id) %>%
+  mutate(
+    metric = factor(metric, metric_levels, metric_labels)
+  ) %>%
+  rename(" " = metric)
+  
+  
+rmse.hux <- as_hux(rmse.tab) %>%
+  set_contents(1, 2:10, rep(c("Global", "Domestic", "International"), 3)) %>%
+  insert_row("", "All", "", "", "Mobile only", "", "", "Raw freq", "", "", after = 0) %>% 
+  merge_cells(1, 2:4) %>% 
+  merge_cells(1, 5:7) %>% 
+  merge_cells(1, 8:10) %>%
+  set_tb_padding(1, everywhere, 0) %>% 
+  set_bold(1, everywhere) %>%
+  map_align(by_cols(c("left", rep("right", 9)))) %>%
+  set_align(1, everywhere, "center") %>% 
+  #map_align(row = 1, by_cols(rep("center", 10))) %>%
+  set_header_rows(1:2, TRUE) %>% 
+  set_header_cols(1, TRUE) %>% 
+  style_headers(bold = TRUE) %>%
+  set_right_border(1:12, 1, value = 0.5) %>%
+  set_right_border(1:12, 4, value = 0.5) %>%
+  set_right_border(1:12, 7, value = 0.5) %>%
+  set_bottom_border(2, 1:10, value = 0.5)
+  
+rmse.hux %>%
+  print_latex()
+```

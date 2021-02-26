@@ -76,7 +76,8 @@ if (opt$geo == "same-country") {
 dist <- dist %>%
   select(geo_distance, emb_distance, dot_distance,
          pprcos_distance, pprjsd_distance,
-         svdcos_distance, lapcos_distance, gravity)
+         svdcos_distance, lapcos_distance, gravsvd_distance, gravmds_distance,
+         levycos_distance, levyeuc_distance, levydot_distance, gravity)
 
 axislabel <- "DEFAULT"
 # Select the appropriate metric using the --distance command line argument
@@ -125,6 +126,36 @@ if (opt$distance == "geo") {
 
   # Provide axis label
   axislabel <- "Laplacian cosine distance"
+} else if (opt$distance == "levycos") {
+  dist <- dist %>%
+    rename(distance = levycos_distance)
+
+  # Provide axis label
+  axislabel <- "Levy's cosine distance"
+} else if (opt$distance == "levyeuc") {
+  dist <- dist %>%
+    rename(distance = levyeuc_distance)
+
+  # Provide axis label
+  axislabel <- "Levy's euclidean distance"
+} else if (opt$distance == "levydot") {
+  dist <- dist %>%
+    rename(distance = levydot_distance)
+
+  # Provide axis label
+  axislabel <- "Levy's dot distance"
+} else if (opt$distance == "gravsvd") {
+  dist <- dist %>%
+    rename(distance = gravsvd_distance)
+
+  # Provide axis label
+  axislabel <- "Gravity SVD cosine distance"
+} else if (opt$distance == "gravmds") {
+  dist <- dist %>%
+    rename(distance = gravmds_distance)
+
+  # Provide axis label
+  axislabel <- "Gravity MDS euclidean distance"
 }
 
 # Calculate the logged gravity and select only relevant columns

@@ -31,7 +31,7 @@ params <- read_csv(opt$input, col_types = readr::cols())
 
 plotdata <- params %>%
   filter(metric == "emb") %>%
-  filter(sizetype == "mobile") %>%
+  filter(sizetype == "all") %>%
   filter(traj == "precedence") %>%
   mutate(
     dim = factor(dim),

@@ -31,7 +31,9 @@ agg <- readr::read_csv(opt$input, col_types = readr::cols()) %>%
          org1_country, org2_country,
          count, gravity,
          geo_distance, pprcos_distance, pprjsd_distance, emb_distance,
-         dot_distance, svdcos_distance, lapcos_distance) %>%
+         dot_distance, svdcos_distance, lapcos_distance,
+         gravsvd_distance, gravmds_distance,
+         levycos_distance, levyeuc_distance, levydot_distance) %>%
   rename(actual = count)
 
 # If the geographic constraint (--geo) is set, then filter the
@@ -89,6 +91,36 @@ if (opt$distance == "geo") {
       distance = lapcos_distance,
       distance.log = log(lapcos_distance)
     )
+} else if (opt$distance == "levycos") {
+  agg <- agg %>%
+    mutate(
+      distance = levycos_distance,
+      distance.log = log(levycos_distance)
+    )
+} else if (opt$distance == "levyeuc") {
+  agg <- agg %>%
+    mutate(
+      distance = levyeuc_distance,
+      distance.log = log(levyeuc_distance)
+    )
+} else if (opt$distance == "levydot") {
+  agg <- agg %>%
+    mutate(
+      distance = levydot_distance,
+      distance.log = log(levydot_distance)
+    )
+} else if (opt$distance == "gravsvd") {
+  agg <- agg %>%
+    mutate(
+      distance = log(gravsvd_distance),
+      distance.log = log(gravsvd_distance)
+    )
+} else if (opt$distance == "gravmds") {
+  agg <- agg %>%
+    mutate(
+      distance = log(gravmds_distance),
+      distance.log = log(gravmds_distance)
+    )
 }
 
 fit.power <- summary(lm(log(gravity) ~ log(distance), data = agg))
@@ -112,7 +144,9 @@ agg <- agg %>%
   select(-c(org1_size, org2_size,
             gravity, geo_distance, emb_distance,
             pprcos_distance, pprjsd_distance, dot_distance,
-            svdcos_distance, lapcos_distance))
+            svdcos_distance, lapcos_distance, levydot_distance,
+            levyeuc_distance, levycos_distance,
+            gravsvd_distance, gravmds_distance))
 
 print(head(agg))
 

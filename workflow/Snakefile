@@ -120,6 +120,11 @@ ORG_PPR_COS_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_cosine_with_0_9.
 ORG_PPR_JSD_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'ppr_jsd_with_0_9.csv')
 ORG_SVD_COS_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'svd_cos.csv')
 ORG_LAP_COS_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'lap_cos.csv')
+ORG_LEVY_EUC_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'levy_emb_euc.csv')
+ORG_LEVY_DOT_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'levy_emb_dot.csv')
+ORG_LEVY_COS_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'levy_emb_cos.csv')
+ORG_GRAVITY_SVD_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'gravity_svd_cos.csv')
+ORG_GRAVITY_MDS_DISTANCE = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'gravity_mds_euc.csv')
 ORG_TYPES = osjoin(ADDITIONAL_DATA_DIR, 'org_types.csv')
 ORGS_TO_EXCLUDE = osjoin(ADDITIONAL_DATA_DIR, 'orgs_not_government.csv')
 CARNEGIE_INFO = osjoin(ADDITIONAL_DATA_DIR, 'CCIHE2018-PublicData.xlsx')
@@ -253,7 +258,8 @@ SECTORS = ['Teaching', 'Government', 'Institute']
 
 # Gravity law parameters
 TO_FILTER = ["filter"]
-DISTANCE_PARAMS = ['geo', 'emb', 'pprcos', 'pprjsd', 'dot', 'svdcos', 'lapcos']
+DISTANCE_PARAMS = ['geo', 'emb', 'pprcos', 'pprjsd', 'dot', 'svdcos', 'lapcos',
+                   'levycos', 'levyeuc', 'levydot', 'gravsvd', 'gravmds']
 OTHER_DISTANCES = ['geo', 'emb']
 GEO_CONSTRAINTS = ['global',
                    'same-country',
@@ -417,7 +423,7 @@ rule all:
                model = GRAVITY_MODEL_TYPES,
                sizetype = SIZETYPE),
         GRADIENT_LEGEND,
-        AGGREGATE_SLOPES,
+        #AGGREGATE_SLOPES,
         AGGREGATE_RMSE,
         AGGREGATE_R2,
 

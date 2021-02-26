@@ -174,6 +174,11 @@ rule build_aggregate_org_distances:
            pprjsd = ancient(ORG_PPR_JSD_DISTANCE),
            lapcos = ancient(ORG_LAP_COS_DISTANCE),
            svdcos = ancient(ORG_SVD_COS_DISTANCE),
+           levycos = ancient(ORG_LEVY_COS_DISTANCE),
+           levydot = ancient(ORG_LEVY_DOT_DISTANCE),
+           levyeuc = ancient(ORG_LEVY_EUC_DISTANCE),
+           gravsvd = ancient(ORG_GRAVITY_SVD_DISTANCE),
+           gravmds = ancient(ORG_GRAVITY_MDS_DISTANCE),
            sizes = ORG_SIZES
     # This can eat up a lot of memory which is a problem when running paralell.
     # Set a maximum, say 2.5-gb
@@ -184,7 +189,11 @@ rule build_aggregate_org_distances:
         "Rscript scripts/BuildAggregateDistanceFile.R --sizes {input.sizes} \
                  --flows {input.flows} --geo {input.geo} --emb {input.emb} \
                  --pprcos {input.pprcos} --pprjsd {input.pprjsd} --dot {input.dot} \
-                 --lapcos {input.lapcos} --svdcos {input.svdcos} --orgs {input.orgs} --out {output}"
+                 --lapcos {input.lapcos} --svdcos {input.svdcos} \
+                 --levycos {input.levycos} --levydot {input.levydot} \
+                 --levyeuc {input.levyeuc} --gravsvd {input.gravsvd} \
+                 --gravmds {input.gravmds} \
+                 --orgs {input.orgs} --out {output}"
 
 ###############################################################################
 # MISC
