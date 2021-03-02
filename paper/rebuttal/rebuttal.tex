@@ -315,21 +315,21 @@ In our original manuscript, we compared the performance of what we call the embe
 These alternatives included the geographic distance between locations, the distance most commonly used in definitions of the gravity model of mobility, along with the dot product similarity between embedding vectors, and the cosine distance and Jensen-Shannon divergence between vectors obtained from a personalized-page-ranking procedure on the underlying mobility network. Following the advice of the referees, we also add additional baselines to illustrate how the embedding distance performs compared to simpler embedding alternatives and also more advanced approach as follow:
 
 \vspace{-0.5cm}
-\paragraph{SVD on concurrence matrix}The first of these baselines uses the distance between vectors in an embedding space produced through a singular-value decomposition of the underlying location co-occurrence matrix. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
+\paragraph{SVD on co-occurrence matrix:}The first of these baselines uses the distance between vectors in an embedding space produced through a singular-value decomposition of the underlying location co-occurrence matrix. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
 Then, we apply truncated singular vector decomposition with $d=300$ on the flow matrix $A$ directly.
 
 \vspace{-0.3cm}
-\paragraph{Laplacian Eigenmap} Similarly, we consider Laplacian Eigenmap embeddings~\autocite{belkin2003laplacian} as a baseline, which is one of the most fundamental approaches for graph embedding. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory and degree matrix $D$ which is the diagonal matrix for which $D_{ii}=\sum_j {A_{ij}}$. Then we construct graph Lapalcian matrix $L = D-A$  and apply truncated singular vector decomposition in the matrix $L$ with $d=300$.
+\paragraph{Laplacian Eigenmap:} Similarly, we consider Laplacian Eigenmap embeddings~\autocite{belkin2003laplacian} as a baseline, which is one of the most fundamental approaches for graph embedding. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory and degree matrix $D$ which is the diagonal matrix for which $D_{ii}=\sum_j {A_{ij}}$. Then we construct graph Lapalcian matrix $L = D-A$  and apply truncated singular vector decomposition in the matrix $L$ with $d=300$.
 
 \vspace{-0.3cm}
-\paragraph{Levy's  symmetric SVD \textit{word2vec} distance} In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}. Based on idea of \textit{word2vec} is just implicit matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding, which should directly compute the embedding that \textit{word2vec} only attempts to efficiently approximate. First, we construct the matrix of $N$ organization
+\paragraph{Levy's  symmetric SVD \textit{word2vec} distance:} In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}. Based on idea of \textit{word2vec} is implicit matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding, which should directly compute the embedding that \textit{word2vec} only attempts to efficiently approximate. First, we construct the matrix of $N$ organization
 \begin{equation}
- M_{ij} = \log(\frac{N(i,j) |D|}{N(i) N(j)}) - \log(k),
+ M_{ij} = \log\left(\frac{N(i,j) |D|}{N(i) N(j)}\right) - \log(k),
 \end{equation}
 where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given the window size $w$ in the total corpus $D$ ,$N(i)=\sum_{j=N}^i N(i,j)$ as the number of items $i$ occurred given the window size $w$ in $D$, and k is the number of negative samples. We used $w=1$ and $k=5$ which is same setting in the our main result. Then, we factorized matrix $M$ with truncated singular vector decomposition in the matrix with $d=300$ into $U_d \Sigma_d V_d$, and used the embedding vector as $U_d\sqrt{\Sigma_d}$.
 
 \vspace{-0.3cm}
-\paragraph{Direct optimization of gravity model} Finally, we create an embedding by optimizing for the gravity law directly. 
+\paragraph{Direct optimization of gravity model:} Finally, we create an embedding by optimizing for the gravity law directly. 
 Specifically, we construct a gravity matrix of $N$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual member of unique mobile and non-mobile authors affiliated. We then embed the gravity matrix using two approaches: a truncated singular-vector decomposition (SVD), and with multidimensional scaling (MDS), which embeds each location in a N-dimensional space such that pairwise distances are preserved as well as possible. 
 Typically, MDS uses euclidean distance to measure distance between vectors. 
 
@@ -338,7 +338,34 @@ In addition to the new baselines, we have also incorporated additional experimen
 The first is $\gamma$, a hyper-parameter of the \textit{word2vec} model, which defines the exponent which shapes the negative sampling distribution.
 The default of `\texttt{gensim's} implementation of \textit{word2vec} is to set $\gamma = 0.75$, and this was the value used in our original manuscript.
 However, to connect \textit{word2vec} to the gravity model of mobility, we assume $\gamma = 1.0$ (see section 1).
-We now report all main results using $\gamma = 1.0$, however we also compare its performance to embeddings learned using $\gamma = 0.75$, as we do with the number of embedded dimensions and window size. \todo{@dakoda could you update here on comparing two results?}
+We now report all main results using $\gamma = 1.0$, however we also compare its performance to embeddings learned using $\gamma = 0.75$, as we do with the number of embedded dimensions and window size.
+We plot the performance of each combination of hyperparemters by their ability to explain real-world flux of scientific mobility (Fig.~\ref{fig:supp:hyperparameter}), and observe no noticeable difference in performance between values of $\gamma = 0.75$ and $\gamma = 1.0$. 
+Figures in the updated manuscript have been re-drawn with $\gamma = 1.0$, and the findings remain qualitatively similar.
+As a side benefit, including the hyperparemter of $\gamma$ also effectively doubles the number of embeddings trained, and that results are so similar across different embedding provides further evidence of the robustness of the approach applied to our data.
+
+%
+% Figure - Hyperparameter performance
+%
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
+	\caption{
+		\textbf{Larger dimensions, smaller window size improves embedding performance.}
+		The correlation, or amount of flux explained by the embedding distance with varying skip-gram negative sampling hyperparameters.
+		Window size refers to $w$, the size of the context window that defines the context in a trajectory.
+		Smaller window sizes result in an embedding that explain more flux.
+		Embedding dimensions refer to the size of the embedding vector.
+		Larger vectors perform better, though little difference between 200 and 300.
+		Gamma refers to the $\gamma$ parameter in word2vec, which shapes the negative sampling distribution.
+		A value of $\gamma = 0.75$ is the default for word2vec.
+		There is virtually no difference in performance based on $\gamma$.
+		All variants perform better on same-country pairs of organizations than on all organizations.
+		All variants perform worse on different-country pairs on organizations.
+		Embeddings with larger dimensions outperform mid-size embeddings for the different-country case.
+	}
+
+	\label{fig:supp:hyperparameter}
+\end{figure}
 
 We also consider an experimental parameter differentiating between definitions of \textit{population}, in the context of scientific mobility.
 Our original manuscript defined the population of an organization as its average annual number of unique mobile and non-mobile authors who publish with that organizational affiliation.
@@ -385,6 +412,7 @@ The stochastic gradient descent algorithm (SGD), which is employed in SGNS \text
 \subsection{Changes to the manuscript}
 To reflect these additional experiments, we have made the following changes to our manuscript:
 \begin{itemize}
+	\item Re-drawn figures with embeddings using $\gamma = 1.0$, and included performance differences in Fig.~\ref{fig:supp:hyperparameter}, which was added to the supporting materials. 
 	\item Added Fig~\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table} to the manuscript.
 	\item We have added sentence speculating on SGD performance differences into supporting materials
 \end{itemize}
