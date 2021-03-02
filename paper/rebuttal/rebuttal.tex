@@ -311,15 +311,26 @@ To reflect our new findings, we have made the following changes to the manuscrip
 \section{Performance of \textit{word2vec} compared with baselines}
 \subsection{Alternatives considered}
 In our original manuscript, we compared the performance of what we call the embedding distance---the cosine distance between vectors learned by \textit{word2vec}---to a range of alternatives.
-These alternatives included the geographic distance between locations, the distance most commonly used in definitions of the gravity model of mobility, along with the dot product similarity between embedding vectors, and the cosine distance and Jensen-Shannon divergence between vectors obtained from a personalized-page-ranking procedure on the underlying mobility network.
+These alternatives included the geographic distance between locations, the distance most commonly used in definitions of the gravity model of mobility, along with the dot product similarity between embedding vectors, and the cosine distance and Jensen-Shannon divergence between vectors obtained from a personalized-page-ranking procedure on the underlying mobility network. Following the advice of the referees, we also add additional baselines to illustrate how the embedding distance performs compared to simpler embedding alternatives and also more advanced approach as follow:
 
-Following the advice of the referees, we also add additional baselines to illustrate how the embedding distance performs compared to simpler embedding alternatives.
-The first of these baselines uses the distance between vectors in an embedding space produced through a singular-value decomposition of the underlying location co-occurrence matrix.
-The third baseline is the distance between vectors obtained through a Laplacian eigenmap embedding of the location of the matrix.
+\vspace{-0.5cm}
+\paragraph{SVD on concurrence matrix}The first of these baselines uses the distance between vectors in an embedding space produced through a singular-value decomposition of the underlying location co-occurrence matrix. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
+Then, we apply truncated singular vector decomposition with $d=300$ on the flow matrix $A$ directly.
 
-In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}.
-The \textit{word2vec} model  implicitly approximates this matrix-factorization procedure, and so comparison to these ``Levy'' distances can demonstrate whether the approximation of neural embeddings outperform direct-calculations. 
-Furthermore, we computed an embedding that attempts to directly-optimize for a gravity-law relationship between locations, one created using singular-vector decomposition (SVD) and another with multidimensional scaling (MDS). 
+\vspace{-0.3cm}
+\paragraph{Laplacian Eigenmap} Similarly, we consider Laplacian Eigenmap embeddings~\autocite{belkin2003laplacian} as a baseline, which is one of the most fundamental approaches for graph embedding. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory and degree matrix $D$ which is the diagonal matrix for which $D_{ii}=\sum_j {A_{ij}}$. Then we construct graph Lapalcian matrix $L = D-A$  and apply truncated singular vector decomposition in the matrix $L$ with $d=300$.
+
+\vspace{-0.3cm}
+\paragraph{Levy's  symmetric SVD \textit{word2vec} distance} In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}. Based on idea of \textit{word2vec} is just implicit matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding, which should directly compute the embedding that \textit{word2vec} only attempts to efficiently approximate. First, we construct the matrix of $N$ organization
+\begin{equation}
+ M_{ij} = \log(\frac{N(i,j) |D|}{N(i) N(j)}) - \log(k),
+\end{equation}
+where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given the window size $w$ in the total corpus $D$ ,$N(i)=\sum_{j=N}^i N(i,j)$ as the number of items $i$ occurred given the window size $w$ in $D$, and k is the number of negative samples. We used $w=1$ and $k=5$ which is same setting in the our main result. Then, we factorized matrix $M$ with truncated singular vector decomposition in the matrix with $d=300$ into $U_d \Sigma_d V_d$, and used the embedding vector as $U_d\sqrt{\Sigma_d}$.
+
+\vspace{-0.3cm}
+\paragraph{Direct optimization of gravity model} Finally, we create an embedding by optimizing for the gravity law directly. 
+Specifically, we construct a gravity matrix of $N$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual member of unique mobile and non-mobile authors affiliated. We then embed the gravity matrix using two approaches: a truncated singular-vector decomposition (SVD), and with multidimensional scaling (MDS), which embeds each location in a N-dimensional space such that pairwise distances are preserved as well as possible. 
+Typically, MDS uses euclidean distance to measure distance between vectors. 
 
 \subsection{New experimental parameters}
 In addition to the new baselines, we have also incorporated additional experimental parameters into our analysis.
@@ -425,7 +436,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	We refer you to Section 1 of this letter, above, for an investigation of this connection, and how we adjusted our manuscript given this breakthrough.
 
 	Additionally, we compared the performance of SGNS to several baselines, including the distances between vectors obtained with the singular-value decomposition, the Laplacian eigenmap, the Levy
-	\& Goldberg's~\autocite{levy2014neural} matrix factorization \textit{word2vec}, and directly optimization of the gravity model with singular-value decomposition and multidimensional scaling.
+	\& Goldberg's~\autocite{levy2014neural} matrix factorization \textit{word2vec}, and the directly optimization of the gravity model with singular-value decomposition and multidimensional scaling.
 	We find that in nearly every setting, SGNS outperforms all of these baselines, further illustrating the potential of such models for embedding and studying mobility.
 	We refer you to Section 2 of this rebuttal letter, above, for more detailed results and the changes we made to our manuscript.
 }
@@ -685,7 +696,7 @@ We have added the following sentence to the introduction: “It works under the 
 
 \response{Thank you, we have edited the text to read as “We quantify the relative importance of geography (by region), and language (by the most widely-spoken language of each country) using the element-centric clustering similarity, a method that can compare hierarchical clustering and disjoint clustering (geography, language...) at the different level of hierarchy by explicitly adjusting a scaling parameter $r$, acting like a zooming lens”
 }
-
+\clearpage
 \subsection{Response to Referee 4}
 
 \rcomment{
