@@ -231,7 +231,7 @@ A target-context word pair $(i,j)$ is sampled from the given data as a positive 
 Then, given a target-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using a sigmoid function:
 \begin{align}
 	\label{eq:sigmoid}
-	 p(positive|j,i) = \frac{1}{1 + f(x)^{-1}}
+	 p_{NS}(positive|j,i) = \frac{1}{1 + f(x)^{-1}}
 \end{align}
 where $x=\vect{u}_i \cdot \vect{v}_j$,  $f(x)=\exp(x)$.
 
@@ -241,16 +241,16 @@ This problem is addressed by the noise contrastive estimation (NCE) \autocite{Ch
 	\label{eq:nce}
 	f(x) / \sum_{x'} f(x'),
 \end{align}
-where $f(x)$ is the unnormalized probability for an instance $x$. As in negative sampling, NCE fits the model based on a binary classification task, with positive and negative samples randomly drawn from the given data and a noise distribution $p_0$, respectively, using a bias-corrected sigmoid function:
+where $f(x)$ is the unnormalized probability for an instance $x$. As in negative sampling, NCE optimize actual $f(x)$ based on a binary classification task, with positive and negative samples randomly drawn from the given data and a noise distribution $p_0$, respectively, using a bias-corrected sigmoid function:
 \begin{align}
 	\label{eq:sigmoid2}
-	p(positive|j,i) = \frac{1}{1 + p_0(x)f(x)^{-1}}.
+	p_{NCE}(positive|j,i) = \frac{1}{1 + p_0(x)f(x)^{-1}}.
 \end{align}
 
-Define $\tilde f(x) = f(x) p_0(x)$ and rewriting the sigmoid function for the negative sampling (Eq.~\ref{eq:sigmoid}) in terms of bias-corrected sigmoid function yields
+Defining $\tilde f(x) = f(x) p_0(x)$ and rewriting the sigmoid function for the negative sampling (Eq.~\ref{eq:sigmoid}) in terms of bias-corrected sigmoid function yields
 \begin{align}
 	\label{eq:sigmoid3}
-	\frac{1}{1 + p_0(x) \tilde f(x)^{-1}}
+	p_{NS}(positive|j,i)  = \frac{1}{1 + p_0(x) \tilde f(x)^{-1}}
 \end{align}
 
 So, the model with the negative sampling optimizes $\tilde f(x)$, not $f(x)$. In case of the {\it word2vec}, the instance is the dot similarity $x=\vect{u}_i \cdot \vect{v}_j$,  $f(x)=\exp(x)$, and $p_0(j)=P^\gamma(j)$, and the SGNS word2vec actually optimize the following conditional probability:
@@ -319,14 +319,14 @@ The third baseline is the distance between vectors obtained through a Laplacian 
 
 In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}.
 The \textit{word2vec} model  implicitly approximates this matrix-factorization procedure, and so comparison to these ``Levy'' distances can demonstrate whether the approximation of neural embeddings outperform direct-calculations. 
-Furthermore, we computed an embedding that attempts to directly-optimize for a gravity-law relationship between relations, one created using singular-vector decomposition (SVD) and another with multidimensional scaling (MDS). 
+Furthermore, we computed an embedding that attempts to directly-optimize for a gravity-law relationship between locations, one created using singular-vector decomposition (SVD) and another with multidimensional scaling (MDS). 
 
 \subsection{New experimental parameters}
 In addition to the new baselines, we have also incorporated additional experimental parameters into our analysis.
 The first is $\gamma$, a hyper-parameter of the \textit{word2vec} model, which defines the exponent which shapes the negative sampling distribution.
 The default of `\texttt{gensim's} implementation of \textit{word2vec} is to set $\gamma = 0.75$, and this was the value used in our original manuscript.
 However, to connect \textit{word2vec} to the gravity model of mobility, we assume $\gamma = 1.0$ (see section 1).
-We now report all main results using $\gamma = 1.0$, however we also compare its performance to embeddings learned using $\gamma = 0.75$, as we do with the number of embedded dimensions and window size.
+We now report all main results using $\gamma = 1.0$, however we also compare its performance to embeddings learned using $\gamma = 0.75$, as we do with the number of embedded dimensions and window size. \todo{@dakoda could you update here on comparing two results?}
 
 We also consider an experimental parameter differentiating between definitions of \textit{population}, in the context of scientific mobility.
 Our original manuscript defined the population of an organization as its average annual number of unique mobile and non-mobile authors who publish with that organizational affiliation.
@@ -361,16 +361,12 @@ The second definition defines the population akin to language, as simply its fre
 
 
 We find that, using the best performing dimensions (300) and window size (1),  $\gamma = 1.0$, and for default experimental parameters (global mobility, population defined using all mobile and non-mobile scholars), that the embedding distance, or cosine distance between vectors learned through neural embedding, explains more of the flux, and leads to better predictions than other baselines (Fig.~\ref{fig:supp:distancemetrics}).
-This performance advantage holds when considering both the exponential and the power-law forms of the gravity model of mobility.
-Although the euclidean distance between directly-factorized vectors performs comparably, and even narrowly beats out the embedding distance under certain experimental conditions (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}); \textit{word2vec} shows the msot consistent and robust performance, as suggested by Levy \& Goldberg~\autocite{levy2014neural}.
-Directly-optimizing the gravity model results in comparable performance to Levy's factorization approach, narroly beating out both in prediction error for certain definitions of organization population. 
-Still, the embedding distance, with its stochastic optimization algortihm reliably outperforms these directly-optimized  baselines. 
+This performance advantage holds across the exponential and the power-law forms of the gravity model of mobility.
+Although the euclidean distance between directly-factorized vectors performs comparably, and even narrowly beats out the embedding distance under few experimental conditions (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}); our approach shows the most consistent and robust performance and even outperform the direct optimization of the gravity models. 
 
 \subsection{Why do neural embeddings outperform direct matrix factorization?}
 Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
-An issue in the matrix factorization approach is that it is extremely sensitive to small flows between affiliations. The matrix factorization approach embeds affiliations $i$ and $j$ such that their dot similarity is as close as to $\log (T_{ij} / P(i) P(j))$. If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes $-\infty$, pushing $i$ and $j$ very far from the other affiliations in the embedding space~\autocite{levy2014neural, Qui2018}. This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. To circumvent this problem, the previous studies~\autocite{levy2014neural, Qui2018} add a constant flow between the affiliation pairs with no flow. However, this changes the data to which we fit the model, and small flows still have a considerably strong impact on the embedding.
-
-Also, it is well known that SVD itself is vulnerable to outliers \autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
+An issue in the matrix factorization approach is that it is sensitive to small values. The matrix factorization approach embeds affiliations $i$ and $j$ such that their dot similarity is as close as to $\log (T_{ij} / P(i) P(j))$. If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes $-\infty$, pushing $i$ and $j$ away in the embedding space~\autocite{levy2014neural, Qui2018}. This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. To circumvent this problem, the previous studies~\autocite{levy2014neural, Qui2018} add a constant flow between the affiliation pairs with no flow. However, this changes the data to which we fit the model, and small flows still have a considerably strong impact on the embedding. Also, it is well known that SVD itself is vulnerable to outliers \autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
 The stochastic gradient descent algorithm (SGD), which is employed in SGNS \textit{word2vec}, is more robust than SVD and can enhance generalization and effectiveness of {\it word2vec} model \autocite{ma2018power, smith2020generalization, zhang2019algorithmic}.
 
 
