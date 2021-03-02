@@ -231,8 +231,9 @@ A target-context word pair $(i,j)$ is sampled from the given data as a positive 
 Then, given a target-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using a sigmoid function:
 \begin{align}
 	\label{eq:sigmoid}
-	\frac{1}{1 + \exp\left( - \vect{u}_j \cdot \vect{v}_i \right)}.
+	 p(positive|j,i) = \frac{1}{1 + f(x)^{-1}}
 \end{align}
+where $x=\vect{u}_i \cdot \vect{v}_j$,  $f(x)=\exp(x)$.
 
 This procedure does not guarantee that the embedding optimally converges to the original conditional probability from Eq.~\ref{eq:cond_prob_w2v}, even when increasing the training samples and iterations~\autocite{Chia2010,Dyer2014} because negative sampling has implicit bias.
 This problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010}, which fits the following probability model,
@@ -243,19 +244,15 @@ This problem is addressed by the noise contrastive estimation (NCE) \autocite{Ch
 where $f(x)$ is the unnormalized probability for an instance $x$. As in negative sampling, NCE fits the model based on a binary classification task, with positive and negative samples randomly drawn from the given data and a noise distribution $p_0$, respectively, using a bias-corrected sigmoid function:
 \begin{align}
 	\label{eq:sigmoid2}
-	\frac{1}{1 + \exp\left( -f(x) + \log p_0(x) \right)}.
+	p(positive|j,i) = \frac{1}{1 + p_0(x)f(x)^{-1}}.
 \end{align}
 
-Rewriting the sigmoid function for the negative sampling (Eq.~\ref{eq:sigmoid}) where the bias-corrected sigmoid function yields
+Define $\tilde f(x) = f(x) p_0(x)$ and rewriting the sigmoid function for the negative sampling (Eq.~\ref{eq:sigmoid}) in terms of bias-corrected sigmoid function yields
 \begin{align}
 	\label{eq:sigmoid3}
-	\frac{1}{1 + \exp\left[ - \tilde f(x) + \log p_0(x)  \right]},
+	\frac{1}{1 + p_0(x) \tilde f(x)^{-1}}
 \end{align}
-where we have defined
-\begin{align}
-	\label{eq:unnormalized}
-	\tilde f(x) = f(x) p_0(x).
-\end{align}
+
 So, the model with the negative sampling optimizes $\tilde f(x)$, not $f(x)$. In case of the {\it word2vec}, the instance is the dot similarity $x=\vect{u}_i \cdot \vect{v}_j$,  $f(x)=\exp(x)$, and $p_0(j)=P^\gamma(j)$, and the SGNS word2vec actually optimize the following conditional probability:
 \begin{align}
 	P\left(j \given i \right):= \frac{P^\gamma (j)\exp(\vect{u}_j \cdot \vect{v}_{i})}{Z_i},
