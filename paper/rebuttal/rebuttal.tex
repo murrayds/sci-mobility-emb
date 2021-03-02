@@ -13,6 +13,7 @@
 \definecolor{purple}{RGB}{170, 0, 255}
 \definecolor{mygreen}{RGB}{76, 175, 80}
 \usepackage{framed}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
 \definecolor{shadecolor}{RGB}{210, 210, 210}
 
 \setlength{\parindent}{0em}
@@ -25,7 +26,7 @@
 \def\given{\mid}
 \usepackage{bm}
 \def\tnull{{\text{null}}}
-\def\vec#1{{\bm #1}}
+\def\vec#1{{\vect #1}}
 \def\mat#1{\mathbf{#1}}
 
 %
@@ -195,7 +196,7 @@ Dakota, Jisung, Sadamori, Rodrigo, Woo-Sung, Staša, and YY
 
 \section{Theoretical justification of \textit{word2vec} and the Gravity Model}
 \label{sec:theory}
-Why does \textit{word2vec} with the skip-gram with negative sampling model (SGNS) work so well to model human mobility?
+Why does \textit{word2vec} with the skip-gram with negative sampling model (SGNS) work so well to model mobility?
 Here, we demonstrate that the SGNS model and the gravity model of mobility are mathematically equivalent.
 This connection provides strong theoretical justification to our choice of \textit{word2vec}, and constitutes a major breakthrough of our understanding of neural embeddings.
 In addition, this motivates the use of SGNS for future study of human mobility.
@@ -215,22 +216,22 @@ where,
 % CONDITIONAL PROBABILITY EQ
 %
 \begin{equation}
-	p(j \given i) = \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:cond_prob_w2v}
+	p(j \given i) = \frac{\exp(\vect{u}_j \cdot \vect{v}_{i})}{Z_i}, \label{eq:cond_prob_w2v}
 \end{equation}
-where $\bm{v}$ and $\bm{u}$ are the ``in-vector'' and ``out-vector'', respectively,  $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations. In general, calculating $Z_i$ is computationally expensive and there are two common approximation:
+where $\vect{v}$ and $\vect{u}$ are the ``in-vector'' and ``out-vector'', respectively,  $Z_i=\sum_{j' \in \mathcal{A}} \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations. In general, calculating $Z_i$ is computationally expensive and there are two common approximation:
 hierarchical softmax \autocite{morin2005hierarchical} and negative sampling \autocite{mikolov2013word2vec}.
 Due to its simplicity and performance, negative sampling is the most widely used strategy, which we also adopt in our study.
 
 
 \subsection{An implicit bias in the negative sampling}
-Although negative sampling is the most common approximation, it is known that it is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes an objective function different from {\it word2vec}.
+Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a different objective function.
 
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
-A target-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a parameter).
+A target-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a hyper-parameter).
 Then, given a target-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using a sigmoid function:
 \begin{align}
 	\label{eq:sigmoid}
-	\frac{1}{1 + \exp\left( - \bm{u}_j \cdot \bm{v}_i \right)}.
+	\frac{1}{1 + \exp\left( - \vect{u}_j \cdot \vect{v}_i \right)}.
 \end{align}
 
 This procedure does not guarantee that the embedding optimally converges to the original conditional probability from Eq.~\ref{eq:cond_prob_w2v}, even when increasing the training samples and iterations~\autocite{Chia2010,Dyer2014} because negative sampling has implicit bias.
@@ -255,26 +256,26 @@ where we have defined
 	\label{eq:unnormalized}
 	\tilde f(x) = f(x) p_0(x).
 \end{align}
-So, the model with the negative sampling optimizes $\tilde f(x)$, not $f(x)$. In case of the {\it word2vec}, the instance is the dot similarity $x=\bm{u}_i \cdot \bm{v}_j$,  $f(x)=\exp(x)$, and $p_0(j)=P^\gamma(j)$, and the SGNS word2vec actually optimize the following conditional probability:
+So, the model with the negative sampling optimizes $\tilde f(x)$, not $f(x)$. In case of the {\it word2vec}, the instance is the dot similarity $x=\vect{u}_i \cdot \vect{v}_j$,  $f(x)=\exp(x)$, and $p_0(j)=P^\gamma(j)$, and the SGNS word2vec actually optimize the following conditional probability:
 \begin{align}
-	P\left(j \given i \right):= \frac{P^\gamma (j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
+	P\left(j \given i \right):= \frac{P^\gamma (j)\exp(\vect{u}_j \cdot \vect{v}_{i})}{Z_i},
 	\label{eq:real_cond}
 \end{align}
-where $Z_i=\sum_{j' \in \mathcal{A}} P^\gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$.
+where $Z_i=\sum_{j' \in \mathcal{A}} P^\gamma (j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
 
 
 \subsection{\textit{word2vec} and the gravity model}
 
 Taking into account the implicit bias in the negative sampling  and setting $w=1$, the \textit{word2vec} predicts the flow between locations with
 \begin{align}
-	\hat{T}_{ij}= P(i) P(j\given i) = \frac{P(i)P^\gamma (j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:prob_w2v_ng0}
+	\hat{T}_{ij}= P(i) P(j\given i) = \frac{P(i)P^\gamma (j)\exp(\vect{u}_j \cdot \vect{v}_{i})}{Z_i}. \label{eq:prob_w2v_ng0}
 \end{align}
-where we have redefined $Z_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$.
+where we have redefined $Z_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
 
-Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\bm{u}_i = \bm{v}_i$ \autocite{levy2014neural}.
-Setting $\gamma = 1$ and substituting $\bm{u}_i = \bm{v}_j$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
+Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\vect{u}_i = \vect{v}_i$ \autocite{levy2014neural}.
+Setting $\gamma = 1$ and substituting $\vect{u}_i = \vect{v}_j$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
 \begin{align}
-	\hat{T_{ij}}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
+	\hat{T_{ij}}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
 \end{align}
 
 The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
@@ -283,7 +284,7 @@ Therefore, to ensure $\hat{T}_{ij} = \hat{T}_{ji}$, the denominator $Z_i$ should
 
 Taken together, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
 \begin{align}
-	\hat{T_{ij}}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}), \label{eq:flow_w2v_ng0}
+	\hat{T_{ij}}=  C P(i) P(j)  \exp(\vect{v}_j \cdot \vect{v}_{i}), \label{eq:flow_w2v_ng0}
 \end{align}
 where $C$ is a positive constant.
 
