@@ -410,7 +410,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 \response{Thank you for pointing out the missing references!
 	We have carefully read through each, and learned a lot in the process.
 	They have now been incorporated into our manuscript's introduction.
-	Although there are existing work on trajectory-based mobility embedding, we argue that our new result establishing the mathematical equivalence of \textit{word2vec} and the gravity law represents a novel and substantial contribution.
+	Although there are existing work on trajectory-based mobility embedding, we argue that our new result establishing the mathematical equivalence of \textit{word2vec} and the gravity law, as well as our extensive evaluation with many baselines represents a novel and substantial contribution.
 }
 
 \rcomment{
@@ -421,12 +421,12 @@ All of the referees presented us with excellent, insightful comments and we feel
 	Thank you for the suggestion!
 	Since our original submission, we have uncovered a mathematical connection between the skip-gram model with negative sampling, and the gravity model of mobility.
 	Namely, we find that \emph{SGNS is a gravity model}.
-	This finding demonstrates why SGNS performs so well, and demonstrates the utility of the model for studying contexts where gravity relationships are expected, such as in human mobility.
+	This finding explains why SGNS performs so well, and demonstrates the utility of the model for studying contexts where gravity relationships are expected, such as in human mobility.
 	We refer you to Section 1 of this letter, above, for an investigation of this connection, and how we adjusted our manuscript given this breakthrough.
 
-	Additionally, we compared the performance of SGNS to several baselines, including the distances between vectors obtained with singular-value decomposition, Laplacian eigenmap, and also Levy
-	\& Goldberg's~\autocite{levy2014neural} matrix factorization, the last of which directly calculates what SGNS only approximates.
-	We find that in nearly every case, SGNS outperforms all of these baselines, further illustrating the potential of such models for embedding and studying mobility.
+	Additionally, we compared the performance of SGNS to several baselines, including the distances between vectors obtained with the singular-value decomposition, the Laplacian eigenmap, the Levy
+	\& Goldberg's~\autocite{levy2014neural} matrix factorization \textit{word2vec}, and directly optimization of the gravity model with singular-value decomposition and multidimensional scaling.
+	We find that in nearly every setting, SGNS outperforms all of these baselines, further illustrating the potential of such models for embedding and studying mobility.
 	We refer you to Section 2 of this rebuttal letter, above, for more detailed results and the changes we made to our manuscript.
 }
 
