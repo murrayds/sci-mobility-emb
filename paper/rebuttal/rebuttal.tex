@@ -236,7 +236,7 @@ Then, given a target-context word pair $(i,j)$, the model predicts whether it is
 where $x=\vect{u}_i \cdot \vect{v}_j$,  $f(x)=\exp(x)$.
 
 This procedure does not guarantee that the embedding optimally converges to the original conditional probability from Eq.~\ref{eq:cond_prob_w2v}, even when increasing the training samples and iterations~\autocite{Chia2010,Dyer2014} because negative sampling has implicit bias.
-This problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010}, which fits the following probability model,
+This problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010, dyer2014notes}, which fits the following probability model,
 \begin{align}
 	\label{eq:nce}
 	f(x) / \sum_{x'} f(x'),
