@@ -250,17 +250,16 @@ where ${\cal D}$ is the set of all sampled words.
 
 An underappreciated fact is that maximizing ${\cal J}^{\text{NG}}$ does not guarantee
 to yield the optimum embedding in terms of the original word2vec objective function ${\cal J}^{\text{SGNS}}$ even if we increase the training samples and iterations~\autocite{Chia2010,Dyer2014}.
-To make this bias more explicit, let us consider an unbiased estimator similar to negative sampling, \ie the noise contrastive estimation (NCE).
-
-NCE is an unbiased estimator for probability models of the form:
+To make this bias explicit, let us consider the unbiased variant of negative samplig, \ie the noise contrastive estimation (NCE)~\autocite{Chia2010,Dyer2014}.
+NCE is an unbiased estimator for a probability model $P_m$ of the form:
 \begin{align}
-	\label{eq:prior}
-	\frac{ \exp\left( f(x) \right) }{ \sum_{ x' \in {\cal X}} \exp\left( f(x') \right) }
+	\label{eq:nce-model}
+	P_m(x) = \frac{ f(x) }{\sum_{ x' \in {\cal X}} f(x') },
 \end{align}
-
-
-NCE trains a model using a binary classification task in the same way as in negative sampling but using Bayesian formalism for logistic regression.
-Specifically, before the training, we have a prior belief that $1$ in $1+k$ words is sampled from the given data, which can be modeled as prior probabilities
+where $f$ is the non-negative likelihood function of data $x$, and ${\cal X}$ is the set of all data.
+This general form includes the word2vec model (Eq.~\eqref{eq:cond_prob_w2v}), where $f(x) = \exp(x)$ and $x = \vect{u}_j \cdot \vect{v}_{i}$.
+NCE trains the probability model using a binary classification task in the same way as in negative sampling but using a Bayesian formalism for logistic regression.
+Specifically, before the training, we know that $1$ in $1+k$ words is sampled from the given data, which can be modeled as prior probabilities
 \begin{align}
 	\label{eq:prior}
 	P_0(Y_{j} = 1) = \frac{1}{k + 1},\quad P_0(Y_{j} = 0) = \frac{k}{k + 1},
@@ -271,13 +270,14 @@ Using the Bayes rule, the posterior probability for $Y_{j}$ given word $j$ is gi
 	P\left(Y_{j} \vert j\right) = \frac{
 		P\left(j \vert Y_{j}\right)P(Y_{j})
 	}{
-		P_0(j)
+		P_0(Y_j)
 	}.
 \end{align}
-Bearing in mind that word $j$ is sampled from the given data if $Y_{j}=1$ and from the noise distribution $p_0$ if $Y_j = 0$. Therefore, the class-conditional probability, $P\left(j \vert Y_{j}\right)$, is given by
+Bearing in mind that word $j$ is sampled from the given data if $Y_{j}=1$ and from the noise distribution $p_0$ if $Y_j = 0$.
+Assuming that the given data is generated from the probability model to be fit, the class-conditional probability, $P\left(j \vert Y_{j}\right)$, is given by
 \begin{align}
 	\label{eq:class-cond}
-	P(j \vert Y_{j} = 1) & = \frac{\exp(\vect{u}_j \cdot \vect{v}_{i})}{Z_i},
+	P(j \vert Y_{j} = 1) & = P_m(\vect{u}_j \cdot \vect{v}_{i}),
 	\quad
 	P(j \vert Y_{j} = 0)  = p_0 (j).
 \end{align}
@@ -285,9 +285,9 @@ Putting Eqs.~\eqref{eq:prior}, \eqref{eq:posterior} and \eqref{eq:class-cond} to
 \begin{align}
 	\label{eq:nce}
 	P\left(Y_{j} = 1 \vert j\right) = \frac{
-		\exp(\vect{u}_j \cdot \vect{v}_{i})/Z_i
+		P_m(\vect{u}_j \cdot \vect{v}_{i})
 	}{
-		\exp(\vect{u}_j \cdot \vect{v}_{i})/Z_i  + kp_0(j)
+		P_m(\vect{u}_j \cdot \vect{v}_{i})  + kp_0(j)
 	},
 \end{align}
 which can be rewritten in form of sigmoid function:
@@ -296,40 +296,56 @@ which can be rewritten in form of sigmoid function:
 	P\left(Y_{j}=1 \vert j\right) = \frac{
 		1
 	}{
-		1 + \exp\left[ - \vect{u}_j \cdot \vect{v}_{i}  + \ln p_0(j) - c \right]
+		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i})  + \ln p_0(j) + c \right]
 	},
 \end{align}
-where $c = \ln Z_i - \ln k$ is a constant.
-NCE uses the posterior probability to predict the label of individual word.
-The log-likelihood for the posterior probability is given by
+where $c = -\ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant.
+NCE maximizes the log-likelihood
 \begin{align}
 	\label{eq:log-likelihood-logistic-regress}
 	{\cal J}^{\text{NCE}} _j = \sum_{j \in {\cal D}} \left[ Y_{j} \log P(Y_{j} = 1\vert j) + (1-Y_{j}) \log P(Y_{j} = 0 \vert j)\right].
 \end{align}
-Crucially, NCE is an unbiased estimator that ensures the convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}^{\text{SGNS}}$~\autocite{Chia2010,Dyer2014}.
+by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them.
+An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}^{\text{SGNS}}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
 
-Returning to negative sampling, what model does negative sampling train?
-The logistic regression model of negative sampling (Eq.~\eqref{eq:logistic-regress}) can be rewritten in form of that of NCE as follow:
+Let us revisit negative sampling from the perspective of NCE.
+We rewrite the logistic regression model in negative sampling (Eq.~\eqref{eq:logistic-regress}) in form of the posterior probability:
 \begin{align}
-	P\left(Y_{j}=1 \vert j\right) = \frac{
+	P\left(Y_{j}=1 \vert j\right) & = \frac{
 		1
 	}{
-		1 + \exp\left[ - \left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) - c \right) + \ln p_0(j) - c \right]
-	},
+		1 + \exp\left[ - \left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c \right) + \ln p_0(j) + c \right]
+	}                                        \\
+	                              & = \frac{
+		1
+	}{
+		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i}) + \ln p_0(j) + c \right]
+	}.
 \end{align}
+where we define the likelihood function $f$ by
+\begin{align}
+	f(\vect{u}_j \cdot \vect{v}_{i}) = \exp\left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c\right).
+\end{align}
+which is the unbiased estimator for the probability model
+\begin{align}
+	\label{eq:unbiasef}
+	P_m(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) }, \\
+	                                   & = \frac{  p_0(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{Z' _i},
+\end{align}
+where $Z'_i=\sum_{j' \in \mathcal{A}}  p_0(j')^\gamma \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
 
 \subsection{\textit{word2vec} and the gravity model}
 
 Taking into account the implicit bias in the negative sampling  and setting $w=1$, the \textit{word2vec} predicts the flow between locations with
 \begin{align}
-	\hat{T}_{ij}= P(i) P(j\given i) = \frac{P(i)P^\gamma (j)\exp(\vect{u}_j \cdot \vect{v}_{i})}{Z_i}. \label{eq:prob_w2v_ng0}
+	\hat{T}_{ij}= N(i) P(j\given i) = \frac{N(i) N(j)^\gamma \exp(\vect{u}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:prob_w2v_ng0}
 \end{align}
-where we have redefined $Z_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
+where we have redefined $Z'_i=\sum_{j' \in \mathcal{A}}  N(j)^\gamma \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
 
 Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\vect{u}_i = \vect{v}_i$ \autocite{levy2014neural}.
 Setting $\gamma = 1$ and substituting $\vect{u}_i = \vect{v}_j$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
 \begin{align}
-	\hat{T_{ij}}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
+	\hat{T_{ij}}= N(i) P(j\given i) = \frac{N(i)N(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
 \end{align}
 
 The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
@@ -338,11 +354,11 @@ Therefore, to ensure $\hat{T}_{ij} = \hat{T}_{ji}$, the denominator $Z_i$ should
 
 Taken together, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
 \begin{align}
-	\hat{T_{ij}}=  C P(i) P(j)  \exp(\vect{v}_j \cdot \vect{v}_{i}), \label{eq:flow_w2v_ng0}
+	\hat{T_{ij}}=  C N(i) N(j)  \exp(\vect{v}_j \cdot \vect{v}_{i}), \label{eq:flow_w2v_ng0}
 \end{align}
 where $C$ is a positive constant.
 
-In other words, \emph{word2vec with the negative sampling is a equivalent to a gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
+In other words, \emph{word2vec with the negative sampling is a equivalent to a gravity model}, with the mass given by the location's frequency $f(i)$, and the distance measured by their dot similarities.
 While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
 Therefore, the embedding distance is inherently tied to mobility flow, and hence, has greater predictive power than the geographic distance.
 
