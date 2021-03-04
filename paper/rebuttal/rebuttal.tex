@@ -244,12 +244,12 @@ Then, for the sampled words, we fit a logistic regression model:
 by maximizing the log-likelihood:
 \begin{align}
 	\label{eq:log-likelihood-logistic-regress}
-	{\cal J}^{\text{NG}} _j = \sum_{j \in {\cal D}} \left[ Y_{j} \log P(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) + (1-Y_{j}) \log P(Y_{j} = 0; \vect{v}_{i}, \vect{u}_j)\right],
+	{\cal J}^{\text{NS}} _j = \sum_{j \in {\cal D}} \left[ Y_{j} \log P(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) + (1-Y_{j}) \log P(Y_{j} = 0; \vect{v}_{i}, \vect{u}_j)\right],
 \end{align}
 where ${\cal D}$ is the set of all sampled words.
 
-An underappreciated fact is that maximizing ${\cal J}^{\text{NG}}$ does not guarantee
-to yield the optimum embedding in terms of the original word2vec objective function ${\cal J}^{\text{SGNS}}$ even if we increase the training samples and iterations~\autocite{Chia2010,Dyer2014}.
+An underappreciated fact is that maximizing ${\cal J}^{\text{NS}}$ does not guarantee
+to yield the optimum embedding in terms of the original skip-gram word2vec objective function ${\cal J}$ even if we increase the training samples and iterations~\autocite{Chia2010,Dyer2014}.
 To make this bias explicit, let us consider the unbiased variant of negative samplig, \ie the noise contrastive estimation (NCE)~\autocite{Chia2010,Dyer2014}.
 NCE is an unbiased estimator for a probability model $P_m$ of the form:
 \begin{align}
@@ -284,7 +284,7 @@ Assuming that the given data is generated from the probability model to be fit, 
 Putting Eqs.~\eqref{eq:prior}, \eqref{eq:posterior} and \eqref{eq:class-cond} together, the posterior probability for $Y_j$ is given by
 \begin{align}
 	\label{eq:nce}
-	P\left(Y_{j} = 1 \vert j\right) = \frac{
+	P^{NCE}\left(Y_{j} = 1 \vert j\right) = \frac{
 		P_m(\vect{u}_j \cdot \vect{v}_{i})
 	}{
 		P_m(\vect{u}_j \cdot \vect{v}_{i})  + kp_0(j)
@@ -293,7 +293,7 @@ Putting Eqs.~\eqref{eq:prior}, \eqref{eq:posterior} and \eqref{eq:class-cond} to
 which can be rewritten in form of sigmoid function:
 \begin{align}
 	\label{eq:nce}
-	P\left(Y_{j}=1 \vert j\right) = \frac{
+	P^{NCE}\left(Y_{j}=1 \vert j\right) = \frac{
 		1
 	}{
 		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i})  + \ln p_0(j) + c \right]
@@ -303,15 +303,15 @@ where $c = -\ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant.
 NCE maximizes the log-likelihood
 \begin{align}
 	\label{eq:log-likelihood-logistic-regress}
-	{\cal J}^{\text{NCE}} _j = \sum_{j \in {\cal D}} \left[ Y_{j} \log P(Y_{j} = 1\vert j) + (1-Y_{j}) \log P(Y_{j} = 0 \vert j)\right].
+	{\cal J}^{\text{NCE}} _j = \sum_{j \in {\cal D}} \left[ Y_{j} \log P^{NCE}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{NCE}(Y_{j} = 0 \vert j)\right].
 \end{align}
 by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them.
-An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}^{\text{SGNS}}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
+An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
 
 Let us revisit negative sampling from the perspective of NCE.
 We rewrite the logistic regression model in negative sampling (Eq.~\eqref{eq:logistic-regress}) in form of the posterior probability:
 \begin{align}
-	P\left(Y_{j}=1 \vert j\right) & = \frac{
+	P^{NS}\left(Y_{j}=1 \vert j\right) & = \frac{
 		1
 	}{
 		1 + \exp\left[ - \left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c \right) + \ln p_0(j) + c \right]
@@ -329,16 +329,22 @@ where we define the likelihood function $f$ by
 which is the unbiased estimator for the probability model
 \begin{align}
 	\label{eq:unbiasef}
-	P_m(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) }, \\
-	                                   & = \frac{  p_0(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{Z' _i},
+	P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) }, \\
+	                                   & = \frac{  p_0(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  p_0(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})}, \\
+	                                   & = \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})} \hspace{0.3cm}(\because p_0(\ell) \propto P^\gamma (\ell)),
 \end{align}
-where $Z'_i=\sum_{j' \in \mathcal{A}}  p_0(j')^\gamma \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
+where  $P(j)$ is the fraction of $j$ in the data. Taking together, conditional probability of SGNS \textit{word2vec} actually optimize is
+\begin{align}
+	P^{NS}(j\given i) = P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i})  =  \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{Z'_i},
+\end{align}
+ where $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
 
 \subsection{\textit{word2vec} and the gravity model}
 
+
 Taking into account the implicit bias in the negative sampling  and setting $w=1$, the \textit{word2vec} predicts the flow between locations with
 \begin{align}
-	\hat{T}_{ij}= N(i) P(j\given i) = \frac{N(i) N(j)^\gamma \exp(\vect{u}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:prob_w2v_ng0}
+	\hat{T}_{ij} \propto  P(i) P(j\given i) \propto  \frac{P(i) P(j)^\gamma \exp(\vect{u}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:prob_w2v_ng0}
 \end{align}
 where we have redefined $Z'_i=\sum_{j' \in \mathcal{A}}  N(j)^\gamma \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
 
