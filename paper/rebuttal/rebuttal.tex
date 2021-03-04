@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper,draft]{article}
+\documentclass[12pt,a4paper]{article}
 \usepackage{graphicx}
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -207,12 +207,12 @@ In addition, this motivates the use of SGNS for future study of human mobility.
 
 \subsection{\textit{word2vec} algorithm}
 Imagine a trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th location in the trajectory. A location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$.
-Then, the SGNS model learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
+Then, the skip-gram \textit{word2vec} learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
 %
 % MAIN W2V Equation
 %
 \begin{equation}
-	{\cal J}^{\text{SGNS}} = \frac{1}{T}\sum_{t = 1}^{T} \sum_{-w \leq \tau \leq w, \tau \neq 0} \log P(a_{t + \tau} \vert a_{t}), \label{eq:word2vec-obj}
+	{\cal J} = \frac{1}{T}\sum_{t = 1}^{T} \sum_{-w \leq \tau \leq w, \tau \neq 0} \log P(a_{t + \tau} \vert a_{t}), \label{eq:word2vec-obj}
 \end{equation}
 where,
 
@@ -229,13 +229,13 @@ Due to its simplicity and performance, negative sampling is the most widely used
 
 \subsection{An implicit bias in the negative sampling}
 
-Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that does not ensure to yield the optimal embeddings in terms of the objective function, ${\cal J}^{\text{SGNS}}$.
+Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that does not ensure to yield the optimal embeddings in terms of the objective function, ${\cal J}$.
 This bias in negative sampling is the indispensable piece between wor2vec and the gravity model.
 
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
 For each target word $i$, we sample a context word $j$ from the given data and label it as positive, denoted by $Y_{j}=1$.
 Then, we sample $k$ words $\ell$ from a noise distribution $p_0(\ell)$ and label them as negative, denoted by $Y_{\ell}=0$.
-In word2vec, the noise distribution is given by $p_0(\ell) \propto P^\gamma (\ell)$, where $P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a hyper-parameter.
+In \textit{word2vec}, the noise distribution is given by $p_0(\ell) \propto P^\gamma (\ell)$, where $P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a hyper-parameter.
 Then, for the sampled words, we fit a logistic regression model:
 \begin{align}
 	\label{eq:logistic-regress}
