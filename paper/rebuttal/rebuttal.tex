@@ -345,32 +345,32 @@ where  $P(j)$ is the fraction of $j$ in the data. Taking together, conditional p
 
 Taking into account the implicit bias in the negative sampling  and setting $w=1$, the \textit{word2vec} predicts the flow between locations with
 \begin{align}
-	\hat{T}_{ij} \propto  P(i) P(j\given i) \propto  \frac{P(i) P(j)^\gamma \exp(\vect{u}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:prob_w2v_ng0}
+	\widehat{T}_{ij} \propto  P(i) P(j\given i) \propto  \frac{P(i) P(j)^\gamma \exp(\vect{u}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:prob_w2v_ng0}
 \end{align}
 where we have redefined $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
 
-Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\vect{u}_i = \vect{v}_i$ \autocite{levy2014neural}.
-Setting $\gamma = 1$ and substituting $\vect{u}_i = \vect{v}_j$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
+Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\vect{v}_i = \vect{u}_i$ \autocite{levy2014neural}.
+Setting $\gamma = 1$ and substituting $\vect{v}_i = \vect{u}_i$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
 \begin{align}
-	\hat{T_{ij}} \propto  P(i) P(j\given i) = \frac{P(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
+	\widehat{T}_{ij} \propto  P(i) P(j\given i) = \frac{P(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
 \end{align}
 
-The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
+The flow $\widehat{T}_{ij}$ is symmetric (\ie $\widehat{T}_{ij}=\widehat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
 If we swap $i$ and $j$ in Eq.~\ref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
-Therefore, to ensure $\hat{T}_{ij} = \hat{T}_{ji}$, the denominator $Z_i$ should be a constant.
+Therefore, to ensure $\widehat{T}_{ij}=\widehat{T}_{ji}$, the denominator $Z_i$ should be a constant.
 
 Taken together, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
 \begin{align}
-	\hat{T_{ij}} \propto  P(i) P(j)  \exp(\vect{v}_j \cdot \vect{v}_{i}), \label{eq:flow_w2v_ng0}
+	\widehat{T}_{ij} \propto  P(i) P(j)  \exp(\vect{v}_j \cdot \vect{v}_{i}), \label{eq:flow_w2v_ng0}
 \end{align}
 where $C$ is a positive constant.
 
-In other words, \emph{word2vec with the negative sampling is a equivalent to a gravity model}, with the mass given by the location's frequency $f(i)$, and the distance measured by their dot similarities.
+In other words, \emph{word2vec with the skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $f(i)$, and the distance measured by their dot similarities.
 While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
 Therefore, the embedding distance is inherently tied to mobility flow, and hence, has greater predictive power than the geographic distance.
 
-In practice, because we do not have unlimited amounts of data (which is also noisy) and the optimization may not find the true optimum, the idealized result may not hold.
-Indeed, we tend to find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
+In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may not hold.
+Indeed, we find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
 Nevertheless, a model with dot similarity is still the second best after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
 
 \subsection{Changes to the manuscript}
