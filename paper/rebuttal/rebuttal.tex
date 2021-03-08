@@ -363,7 +363,6 @@ Taken together, the {\it word2vec} model with the negative sampling predicts a f
 \begin{align}
 	\widehat{T}_{ij} \propto  P(i) P(j)  \exp(\vect{v}_j \cdot \vect{v}_{i}), \label{eq:flow_w2v_ng0}
 \end{align}
-where $C$ is a positive constant.
 
 In other words, \emph{word2vec with the skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $f(i)$, and the distance measured by their dot similarities.
 While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
@@ -415,8 +414,8 @@ Typically, MDS uses euclidean distance to measure distance between vectors.
 \subsection{New experimental parameters}
 In addition to the new baselines, we have also incorporated additional experimental parameters into our analysis.
 The first is $\gamma$, a hyper-parameter of the \textit{word2vec} model, which defines the exponent which shapes the negative sampling distribution.
-The default of `\texttt{gensim's} implementation of \textit{word2vec} is to set $\gamma = 0.75$, and this was the value used in our original manuscript.
-However, to connect \textit{word2vec} to the gravity model of mobility, we assume $\gamma = 1.0$ (see section 1).
+The default of \texttt{gensim} implementation of \textit{word2vec} is to set $\gamma = 0.75$, and this was the value used in our original manuscript.
+However, to connect \textit{word2vec} to the gravity model of mobility, we assume $\gamma = 1.0$ (see Section 1).
 We now report all main results using $\gamma = 1.0$, however we also compare its performance to embeddings learned using $\gamma = 0.75$, as we do with the number of embedded dimensions and window size.
 We plot the performance of each combination of hyperparemters by their ability to explain real-world flux of scientific mobility (Fig.~\ref{fig:supp:hyperparameter}), and observe no noticeable difference in performance between values of $\gamma = 0.75$ and $\gamma = 1.0$.
 Figures in the updated manuscript have been re-drawn with $\gamma = 1.0$, and the findings remain qualitatively similar.
@@ -479,7 +478,7 @@ The second definition defines the population akin to language, as simply its fre
 
 
 We find that, using the best performing dimensions (300) and window size (1),  $\gamma = 1.0$, and for default experimental parameters (global mobility, population defined using all mobile and non-mobile scholars), that the embedding distance, or cosine distance between vectors learned through neural embedding, explains more of the flux, and leads to better predictions than other baselines (Fig.~\ref{fig:supp:distancemetrics}).
-This performance advantage holds across the exponential and the power-law forms of the gravity model of mobility.
+This performance advantage holds across \emph{the exponential and the power-law forms of the gravity model of mobility}.
 Although the euclidean distance between directly-factorized vectors performs comparably, and even narrowly beats out the embedding distance under few experimental conditions (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}); our approach shows the most consistent and robust performance and even outperform the direct optimization of the gravity models.
 
 \subsection{Why do neural embeddings outperform direct matrix factorization?}
