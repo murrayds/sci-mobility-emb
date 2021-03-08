@@ -156,12 +156,13 @@ s #1
 \noindent Dear Dr. Sutherland and Referees,\\
 \vspace{-0.25cm}
 
-We thank all the referees for their thoughtful and helpful comments and critiques, all of which provided valuable insights.
+We thank all the referees for their thoughtful and helpful comments and critiques.
 We acknowledge that our initial submission had a substantial gap regarding the choice of the \textit{word2vec} model, its connection with the gravity model of mobility, and its evaluation.
 While reflecting on these comments and our manuscript, we have made a theoretical breakthrough that addresses the primary issues;
-namely, we have discovered a mathematical equivalence between the \textit{word2vec} (skip-gram) model and the gravity model.
-Furthermore, our subsequent experiments show that our approach's performance is robust, exceeding many other baselines.
-Therefore, with these changes, we are confident that our paper is significantly stronger, and its contribution more wide-reaching and impactful.
+namely, we have discovered \emph{a mathematical equivalence between the \textit{word2vec} (skip-gram with negative sampling) model and the gravity model.}
+
+Furthermore, our subsequent experiments show that our approach's performance is robust, exceeding many other baselines, even direct optimization of the gravity model.
+Therefore, with these changes, we are confident that our paper is substantially stronger with a qualitative leap.
 Thus, we would like to request a reconsideration of our manuscript.
 Again, we are incredibly appreciative of these comments, which provided the insight and motivation needed to make these breakthroughs.
 
@@ -169,20 +170,20 @@ We have developed the mathematical and theoretical basis of our approach for emb
 \vspace{-0.1cm}
 \begin{enumerate}
 	\itemsep0em
-	\item Our approach and analysis lacked theoretical justification and grounding, and the application of \textit{word2vec} to mobility was arbitrary
-	\item Performance of \textit{word2vec} is not well understood in the context of other, simpler embedding techniques
-	\item Our findings were not sufficiently grounded in the literature of neural embeddings and mobility
+	\item The lack of theoretical justification and grounding for the application of \textit{word2vec} to mobility
+	\item The lack of simpler baselines to understand the performance of \textit{word2vec} 
+	\item The lack of sufficient grounding in the literature of neural embeddings and mobility
 \end{enumerate}
 \vspace{-0.1cm}
-Addressing the first point, we have identified an underlying mathematical equivalence between the Gravity Model of Mobility and the neural embedding technique \textit{word2vec}.
-Namely, we demonstrate that \textit{word2vec} 's objective function is equivalent to the gravity law and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
+We address the first point by presenting the mathematical equivalence between the Gravity Model of Mobility and the skip-gram negative sampling \textit{word2vec} model.
+Namely, we demonstrate that \textit{word2vec}'s objective function is equivalent to the gravity law and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
 This development constitutes a major breakthrough in our understanding of neural embeddings, and provides theoretical justification for their application to mobility.
 
-For the second point, we have also conducted experiments comparing the performance of neural embedding to (\romannum{1}) a singular value decomposition of the mobility network,  (\romannum{2}) a Laplacian eigenmap embedding  (\romannum{3}) a \textit{word2vec} model with matrix factorization,  and  (\romannum{4}) a direct optimization according to the gravity law. We find that the embedding distance from \textit{word2vec} outperforms all baselines, even the direct optimization of gravity law with the multidimensional scaling, in explaining and predicting real-world mobility.
+For the second point, we have conducted experiments comparing the performance of neural embedding to (\romannum{1}) a singular value decomposition of the mobility network,  (\romannum{2}) a Laplacian eigenmap embedding  (\romannum{3}) a \textit{word2vec} model with matrix factorization,  and  (\romannum{4}) a direct optimization according at the gravity law. We find that the embedding distance from \textit{word2vec} outperforms all baselines, even the direct optimization of gravity law with the multidimensional scaling, in explaining and predicting real-world mobility.
 
-Finally, addressing the third point, we take steps to better ground our manuscript in the existing literature, integrating the reviewer's suggested articles into our manuscript.
+Finally, addressing the third point, we have cooperated relevant literature to better ground our manuscript in the existing studies.
 
-In the attached detailed response, we outline the connection between \textit{word2vec} and the gravity model (section 1), and comparisons to baselines (section 2). We then provide a point-by-point response to each of the reviewer's comments in section 3.
+In the attached detailed response, we outline the connection between \textit{word2vec} and the gravity model (Section 1), and comparisons to baselines (Section 2). We then provide a point-by-point response to each of the reviewer's comments in Section 3.
 
 We thank you for your time, attention, and insight, and look forward to hearing back from you!\\
 
