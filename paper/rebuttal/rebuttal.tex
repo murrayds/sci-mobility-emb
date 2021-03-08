@@ -101,7 +101,7 @@
  				       												 colframe=black,
  				       												 colbacktitle=white!50!gray,
  				       												 coltitle=black,
- 				       												 fonttitle=\bfseries, 
+ 				       												 fonttitle=\bfseries,
  				       												 phantom=\refstepcounter{comment},
  				       												 title={Comment \arabic{section}.\arabic{comment}},
  				       												 list entry={Comment \arabic{section}.\arabic{comment}\quad}, breakable}
@@ -174,7 +174,7 @@ We have developed the mathematical and theoretical basis of our approach for emb
 \begin{enumerate}
 	\itemsep0em
 	\item The lack of theoretical justification and grounding for the application of \textit{word2vec} to mobility
-	\item The lack of simpler baselines to understand the performance of \textit{word2vec} 
+	\item The lack of simpler baselines to understand the performance of \textit{word2vec}
 	\item The lack of sufficient grounding in the literature of neural embeddings and mobility
 \end{enumerate}
 \vspace{-0.1cm}
@@ -233,13 +233,13 @@ Due to its simplicity and performance, negative sampling is the most widely used
 
 \subsection{An implicit bias in the negative sampling}
 
-Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that does not ensure to yield the optimal embeddings in terms of the objective function, ${\cal J}$.
-This bias in negative sampling is the indispensable piece between wor2vec and the gravity model.
+Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that does not yield the optimal embeddings in terms of the objective function, ${\cal J}$.
+This bias in negative sampling turns out to be a critical piece that connects wor2vec and the gravity model.
 
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
 For each target word $i$, we sample a context word $j$ from the given data and label it as positive, denoted by $Y_{j}=1$.
 Then, we sample $k$ words $\ell$ from a noise distribution $p_0(\ell)$ and label them as negative, denoted by $Y_{\ell}=0$.
-In \textit{word2vec}, the noise distribution is given by $p_0(\ell) \propto P^\gamma (\ell)$, where $P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a hyper-parameter.
+In \textit{word2vec}, the noise distribution is given by $p_0(\ell) \propto P^\gamma (\ell)$, where $P(j)$ is the fraction of $j$ in the data, and $\gamma$ is a hyper-parameter.
 Then, for the sampled words, we fit a logistic regression model:
 \begin{align}
 	\label{eq:logistic-regress}
@@ -248,13 +248,13 @@ Then, for the sampled words, we fit a logistic regression model:
 by maximizing the log-likelihood:
 \begin{align}
 	\label{eq:log-likelihood-logistic-regress}
-	{\cal J}^{\text{NS}} _j = \sum_{j \in {\cal D}} \left[ Y_{j} \log P(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) + (1-Y_{j}) \log P(Y_{j} = 0; \vect{v}_{i}, \vect{u}_j)\right],
+	{\cal J}^{\text{NS}} = \sum_{i \in {\cal A}} \sum_{j \in {\cal D}} \left[ Y_{j} \log P(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) + (1-Y_{j}) \log P(Y_{j} = 0; \vect{v}_{i}, \vect{u}_j)\right],
 \end{align}
-where ${\cal D}$ is the set of all sampled words.
+where ${\cal D}$ is the set of all sampled context words.
 
 An underappreciated fact is that maximizing ${\cal J}^{\text{NS}}$ does not guarantee
 to yield the optimum embedding in terms of the original skip-gram word2vec objective function ${\cal J}$ even if we increase the training samples and iterations~\autocite{Chia2010,Dyer2014}.
-To make this bias explicit, let us consider the unbiased variant of negative samplig, \ie the noise contrastive estimation (NCE)~\autocite{Chia2010,Dyer2014}.
+To make this bias explicit, let us consider the unbiased variant of negative sampling, \ie the noise contrastive estimation (NCE)~\autocite{Chia2010,Dyer2014}.
 NCE is an unbiased estimator for a probability model $P_m$ of the form:
 \begin{align}
 	\label{eq:nce-model}
@@ -262,11 +262,11 @@ NCE is an unbiased estimator for a probability model $P_m$ of the form:
 \end{align}
 where $f$ is the non-negative likelihood function of data $x$, and ${\cal X}$ is the set of all data.
 This general form includes the word2vec model (Eq.~\eqref{eq:cond_prob_w2v}), where $f(x) = \exp(x)$ and $x = \vect{u}_j \cdot \vect{v}_{i}$.
-NCE trains the probability model using a binary classification task in the same way as in negative sampling but using a Bayesian formalism for logistic regression.
+NCE fits the probability model using a binary classification task in the same way as in negative sampling but using a Bayesian formalism for logistic regression.
 Specifically, before the training, we know that $1$ in $1+k$ words is sampled from the given data, which can be modeled as prior probabilities
 \begin{align}
 	\label{eq:prior}
-	P_0(Y_{j} = 1) = \frac{1}{k + 1},\quad P_0(Y_{j} = 0) = \frac{k}{k + 1},
+	P_0(Y_{j} = 1) = \frac{1}{k + 1},\quad P_0(Y_{j} = 0) = \frac{k}{k + 1}.
 \end{align}
 Using the Bayes rule, the posterior probability for $Y_{j}$ given word $j$ is given by
 \begin{align}
@@ -274,11 +274,12 @@ Using the Bayes rule, the posterior probability for $Y_{j}$ given word $j$ is gi
 	P\left(Y_{j} \vert j\right) = \frac{
 		P\left(j \vert Y_{j}\right)P(Y_{j})
 	}{
-		P_0(Y_j)
+		P\left(j \vert Y_{j} = 0\right)P(Y_{j} = 0)
+		+ P\left(j \vert Y_{j} = 1\right)P(Y_{j} = 1)
 	}.
 \end{align}
 Bearing in mind that word $j$ is sampled from the given data if $Y_{j}=1$ and from the noise distribution $p_0$ if $Y_j = 0$.
-Assuming that the given data is generated from the probability model to be fit, the class-conditional probability, $P\left(j \vert Y_{j}\right)$, is given by
+Assuming that the given data is generated from the probability model to fit, the class-conditional probability, $P\left(j \vert Y_{j}\right)$, is given by
 \begin{align}
 	\label{eq:class-cond}
 	P(j \vert Y_{j} = 1) & = P_m(\vect{u}_j \cdot \vect{v}_{i}),
@@ -288,7 +289,13 @@ Assuming that the given data is generated from the probability model to be fit, 
 Putting Eqs.~\eqref{eq:prior}, \eqref{eq:posterior} and \eqref{eq:class-cond} together, the posterior probability for $Y_j$ is given by
 \begin{align}
 	\label{eq:nce}
-	P^{NCE}\left(Y_{j} = 1 \vert j\right) = \frac{
+	P\left(Y_{j} = 1 \vert j\right) & =
+	\frac{
+		P_m(\vect{u}_j \cdot \vect{v}_{i}) / (k + 1)
+	}{
+		P_m(\vect{u}_j \cdot \vect{v}_{i}) / (k + 1)  + kp_0(j) / (k + 1)
+	}                                          \\
+	                                & = \frac{
 		P_m(\vect{u}_j \cdot \vect{v}_{i})
 	}{
 		P_m(\vect{u}_j \cdot \vect{v}_{i})  + kp_0(j)
@@ -297,17 +304,28 @@ Putting Eqs.~\eqref{eq:prior}, \eqref{eq:posterior} and \eqref{eq:class-cond} to
 which can be rewritten in form of sigmoid function:
 \begin{align}
 	\label{eq:nce}
-	P^{NCE}\left(Y_{j}=1 \vert j\right) = \frac{
+	P\left(Y_{j}=1 \vert j\right) =
+	 & = \frac{
+		1
+	}{
+		1 + kp_0(j) / P_m(\vect{u}_j \cdot \vect{v}_{i})
+	}           \\
+	 & = \frac{
+		1
+	}{
+		1 + \exp\left[ \ln kp_0(j) - \ln P_m(\vect{u}_j \cdot \vect{v}_{i}) \right]
+	}           \\
+	 & = \frac{
 		1
 	}{
 		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i})  + \ln p_0(j) + c \right]
 	},
 \end{align}
-where $c = -\ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant.
+where $c = \ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant.
 NCE maximizes the log-likelihood
 \begin{align}
 	\label{eq:log-likelihood-logistic-regress}
-	{\cal J}^{\text{NCE}} _j = \sum_{j \in {\cal D}} \left[ Y_{j} \log P^{NCE}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{NCE}(Y_{j} = 0 \vert j)\right].
+	{\cal J}^{\text{NCE}} = \sum_{i \in {\cal A}}\sum_{j \in {\cal D}} \left[ Y_{j} \log P(Y_{j} = 1\vert j) + (1-Y_{j}) \log P(Y_{j} = 0 \vert j)\right].
 \end{align}
 by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them.
 An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
@@ -319,29 +337,29 @@ We rewrite the logistic regression model in negative sampling (Eq.~\eqref{eq:log
 		1
 	}{
 		1 + \exp\left[ - \left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c \right) + \ln p_0(j) + c \right]
-	}                                        \\
-	                              & = \frac{
+	}                                             \\
+	                                   & = \frac{
 		1
 	}{
 		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i}) + \ln p_0(j) + c \right]
-	}.
+	},
 \end{align}
 where we define the likelihood function $f$ by
 \begin{align}
-	f(\vect{u}_j \cdot \vect{v}_{i}) = \exp\left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c\right).
+	f(\vect{u}_j \cdot \vect{v}_{i}) = \exp\left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c\right),
 \end{align}
 which is the unbiased estimator for the probability model
 \begin{align}
 	\label{eq:unbiasef}
-	P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) }, \\
-	                                   & = \frac{  p_0(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  p_0(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})}, \\
-	                                   & = \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})} \hspace{0.3cm}(\because p_0(\ell) \propto P^\gamma (\ell)),
+	P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) },                                                                                               \\
+	                                        & = \frac{  p_0(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  p_0(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})},                                                                      \\
+	                                        & = \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})} \hspace{0.3cm}(\because p_0(\ell) \propto P^\gamma (\ell)).
 \end{align}
-where  $P(j)$ is the fraction of $j$ in the data. Taking together, conditional probability of SGNS \textit{word2vec} actually optimize is
+Taken together, the conditional probability that SGNS \textit{word2vec} actually optimizes is
 \begin{align}
 	P^{NS}(j\given i) = P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i})  =  \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{Z'_i},
 \end{align}
- where $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
+where $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
 
 \subsection{\textit{word2vec} and the gravity model}
 
@@ -689,7 +707,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	First, we added a line to the methods section detailing the \textit{word2vec} we used, and noting that these achieved the best performance: \say{\textit{For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig....)}}.
 
 	A full search of the hyper-parameter space would certainly be interesting and useful, however we believe that set of hyper-parameters we considered here is sufficient to establish the utility of the approach, and demonstrate that performance is only slightly different based on different hyper-parameters.
-	There are previous studies on the optimal dimensionality of word embedding \autocite{yin2018understand, yin2018dimensionality}. Also, 
+	There are previous studies on the optimal dimensionality of word embedding \autocite{yin2018understand, yin2018dimensionality}. Also,
 	we note that in previous work from our group, we explored the optimal dimensions for graph embedding~\autocite{gu2020dimensions}, finding that while a sufficient number of dimensions is necessary to capture the structure, increasing the dimensions does not detract from performance, a property common across deep learning methods.
 	Given that there is little performance difference between $d = 100$ and $d = 300$, we opt to use the larger embeddings at $d = 300$, which are large enough to capture the complexity of mobility, yet small enough to allow an efficient computational workflow.
 }
