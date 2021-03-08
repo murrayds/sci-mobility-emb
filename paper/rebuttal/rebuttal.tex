@@ -89,21 +89,22 @@
 \chead{}
 
 
+\newcounter{comment}[subsection]
+
 
 %
 % COLORBOX
 %
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable}
-\newtcolorbox[auto counter,
-					  number within=subsection,
- 				       list type=subsubsection,
- 				       list inside=toc]{sectionbox}[1]{colback=white,
- 				       												colframe=black,
- 				       												colbacktitle=white!50!gray,
- 				       												coltitle=black,
- 				       												fonttitle=\bfseries, title={Comment \thetcbcounter},
- 				       												list entry={Comment \thetcbcounter\quad}, breakable}
+\newtcolorbox[list inside=toc]{sectionbox}[1]{colback=white,
+ 				       												 colframe=black,
+ 				       												 colbacktitle=white!50!gray,
+ 				       												 coltitle=black,
+ 				       												 fonttitle=\bfseries, 
+ 				       												 phantom=\refstepcounter{comment},
+ 				       												 title={Comment \arabic{section}.\arabic{comment}},
+ 				       												 list entry={Comment \arabic{section}.\arabic{comment}\quad}, breakable}
 
 
 \DeclareUnicodeCharacter{FB01}{fi}
@@ -119,12 +120,14 @@
 \newcommand{\del}[1]{{\leavevmode\color{red}\sout{#1}}}
 \newcommand{\response}[1]{{\noindent \textbf{Response:} \\ \\ \noindent #1}}
 %\newcommand{\rcomment}[1]{{\bigskip\begin{snugshade}\begin{quotation}\noindent #1 \end{quotation}\end{snugshade} }}
+
 \newcommand{\rcomment}[1]{%
 \vspace{10pt}
 \begin{sectionbox}
 s #1
 \end{sectionbox}
 }
+
 \newcommand{\correction}[2]{{\begin{quotation}\noindent {#1}{\it #2} \end{quotation} }}
 %\newcommand{\correction}[2]{{\bigskip\begin{quotation}\noindent {#1}{\it #2} \end{quotation} }}
 
@@ -503,8 +506,9 @@ To reflect these additional experiments, we have made the following changes to o
 \clearpage
 \section{Point-by-point response}
 All of the referees presented us with excellent, insightful comments and we feel that the changes implemented as a consequence have signiﬁcantly strengthened the manuscript. Here we offer further discussion, and introduce several results and figures to support certain arguments.
-\todo{@dakoda, could you check the numbering comment from yy?}
 \subsection{Response to Referee 1}
+\setcounter{section}{1}
+
 
 \rcomment{%
 	To the best of my knowledge, this is the first work providing a thorough analysis of the structure encoded by latent mobility embeddings (e.g., the prestige hierarchy), and this is the first work I am aware of to propose embeddings as an explanatory/exploratory tool in this context. In this way, the work has some originality and significance.
@@ -610,7 +614,10 @@ All of the referees presented us with excellent, insightful comments and we feel
 % Response to reviewer 2
 %
 \clearpage
+\setcounter{section}{3}
 \subsection{Response to Referee 2}
+\setcounter{section}{2}
+
 
 \rcomment{%
 	Although the paper is well written and explores a very interesting problem, I have certain criticism for the used methodology. After obtaining a representation of each dataset, the authors defined an embedding distance as the cosine distance between vectors in the space, while defining distance as the geographical distance in the original, spatially embedded datasets. Subsequently they used the Gravity Law to estimate the flux between location pairs of vector pairs in the spatial and embedded space respectively. The Gravity Law, applied on mobility, assumes that the number of people moving between two populations is proportional to the multiplicative of the sizes of the populations and a deterrence function. Research during the last decades on transportation, spatial networks and human mobility suggests that this deterrence function may take a functional form of an inverse exponential or an inverse power-law, as it has been acknowledged by the authors. However, the emergence of these different deterrence functions can be due to fundamentally different mechanisms (for a review on the topic see Barthélemy, Physics Reports 499, 1, 2011, a paper not cited in the manuscript). For example, the different cost functions (linear or logarithmic) to create link at a given distance, the spatial granularity of the observation, or even the heterogeneity of the moving individuals in terms of various factors, just to mention a few examples. Instead, the authors of the actual paper arbitrarily assumed a power-law deterrence function in the spatial case and an exponential deterrence function in the embedding space without further arguing their choice (other than fitting on the data). Furthermore, assuming different deterrence functions for the flux estimation using Gravity Law makes the estimated fluxes incomparable, resulting the invalidation of results depicted in Figure 2.
@@ -733,7 +740,9 @@ All of the referees presented us with excellent, insightful comments and we feel
 %
 % Response to reviewer 3
 \clearpage
+\setcounter{section}{3}
 \subsection{Response to Referee 3}
+\setcounter{section}{3}
 
 \rcomment{The analysis does not compare embeddings, which would not be a problem if they were making
 	an inference other than we can embed micro-mobility to trace macro-mobility. They use an
@@ -804,8 +813,15 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{Thank you, we have edited the text to read as “We quantify the relative importance of geography (by region), and language (by the most widely-spoken language of each country) using the element-centric clustering similarity, a method that can compare hierarchical clustering and disjoint clustering (geography, language...) at the different level of hierarchy by explicitly adjusting a scaling parameter $r$, acting like a zooming lens”
 }
+
+
+%
+% Response to referee 4
+%
 \clearpage
+\setcounter{section}{3}
 \subsection{Response to Referee 4}
+\setcounter{section}{4}
 
 \rcomment{
 	The authors define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space. The increase in R2, as they switch to the embedding distance, is rather convincing. One of the models they use as a reference is the gravity model, but they also mention the radiation model. I am curious if they tried a comparison with that, and what was the outcome. I suspect that the radiation model would have a comparable performance to the gravity one. But as distance is not the only factor there, is a comparison at all feasible?
