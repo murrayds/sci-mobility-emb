@@ -234,7 +234,7 @@ Due to its simplicity and performance, negative sampling is the most widely used
 \subsection{An implicit bias in the negative sampling}
 
 Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that does not yield the optimal embeddings in terms of the objective function, ${\cal J}$.
-This bias in negative sampling turns out to be a critical piece that connects wor2vec and the gravity model.
+This bias in negative sampling turns out to be the critical piece that connects wor2vec and the gravity model.
 
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
 For each target word $i$, we sample a context word $j$ from the given data and label it as positive, denoted by $Y_{j}=1$.
