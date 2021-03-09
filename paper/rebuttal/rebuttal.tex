@@ -234,21 +234,21 @@ Due to its simplicity and performance, negative sampling is the most widely used
 \subsection{An implicit bias in the negative sampling}
 
 Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that does not yield the optimal embeddings in terms of the objective function, ${\cal J}$.
-This bias in negative sampling turns out to be a critical piece that connects wor2vec and the gravity model.
+This bias in negative sampling turns out to be the critical piece that connects word2vec and the gravity model.
 
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
 For each target word $i$, we sample a context word $j$ from the given data and label it as positive, denoted by $Y_{j}=1$.
 Then, we sample $k$ words $\ell$ from a noise distribution $p_0(\ell)$ and label them as negative, denoted by $Y_{\ell}=0$.
 In \textit{word2vec}, the noise distribution is given by $p_0(\ell) \propto P^\gamma (\ell)$, where $P(j)$ is the fraction of $j$ in the data, and $\gamma$ is a hyper-parameter.
-Then, for the sampled words, we fit a logistic regression model:
+Then, for the sampled words, we fit a logistic regression model
 \begin{align}
 	\label{eq:logistic-regress}
-	P(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) = \frac{1}{1 + \exp(-\vect{u}_j \cdot \vect{v}_{i})},
+	P^{\text{NS}}(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) = \frac{1}{1 + \exp(-\vect{u}_j \cdot \vect{v}_{i})},
 \end{align}
 by maximizing the log-likelihood:
 \begin{align}
 	\label{eq:log-likelihood-logistic-regress}
-	{\cal J}^{\text{NS}} = \sum_{i \in {\cal A}} \sum_{j \in {\cal D}} \left[ Y_{j} \log P(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) + (1-Y_{j}) \log P(Y_{j} = 0; \vect{v}_{i}, \vect{u}_j)\right],
+	{\cal J}^{\text{NS}} = \sum_{i \in {\cal A}} \sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NS}}(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) + (1-Y_{j}) \log P^{\text{NS}}(Y_{j} = 0; \vect{v}_{i}, \vect{u}_j)\right],
 \end{align}
 where ${\cal D}$ is the set of all sampled context words.
 
@@ -260,13 +260,13 @@ NCE is an unbiased estimator for a probability model $P_m$ of the form:
 	\label{eq:nce-model}
 	P_m(x) = \frac{ f(x) }{\sum_{ x' \in {\cal X}} f(x') },
 \end{align}
-where $f$ is the non-negative likelihood function of data $x$, and ${\cal X}$ is the set of all data.
+where $f$ is a non-negative likelihood function of data $x$, and ${\cal X}$ is the set of all data.
 This general form includes the word2vec model (Eq.~\eqref{eq:cond_prob_w2v}), where $f(x) = \exp(x)$ and $x = \vect{u}_j \cdot \vect{v}_{i}$.
 NCE fits the probability model using a binary classification task in the same way as in negative sampling but using a Bayesian formalism for logistic regression.
 Specifically, before the training, we know that $1$ in $1+k$ words is sampled from the given data, which can be modeled as prior probabilities
 \begin{align}
 	\label{eq:prior}
-	P_0(Y_{j} = 1) = \frac{1}{k + 1},\quad P_0(Y_{j} = 0) = \frac{k}{k + 1}.
+	P(Y_{j} = 1) = \frac{1}{k + 1},\quad P(Y_{j} = 0) = \frac{k}{k + 1}.
 \end{align}
 Using the Bayes rule, the posterior probability for $Y_{j}$ given word $j$ is given by
 \begin{align}
@@ -304,7 +304,7 @@ Putting Eqs.~\eqref{eq:prior}, \eqref{eq:posterior} and \eqref{eq:class-cond} to
 which can be rewritten in form of sigmoid function:
 \begin{align}
 	\label{eq:nce}
-	P\left(Y_{j}=1 \vert j\right) =
+	P^{\text{NCE}}\left(Y_{j}=1 \vert j\right) =
 	 & = \frac{
 		1
 	}{
@@ -325,7 +325,7 @@ where $c = \ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant.
 NCE maximizes the log-likelihood
 \begin{align}
 	\label{eq:log-likelihood-logistic-regress}
-	{\cal J}^{\text{NCE}} = \sum_{i \in {\cal A}}\sum_{j \in {\cal D}} \left[ Y_{j} \log P(Y_{j} = 1\vert j) + (1-Y_{j}) \log P(Y_{j} = 0 \vert j)\right].
+	{\cal J}^{\text{NCE}} = \sum_{i \in {\cal A}}\sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NCE}}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{\text{NCE}}(Y_{j} = 0 \vert j)\right].
 \end{align}
 by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them.
 An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
