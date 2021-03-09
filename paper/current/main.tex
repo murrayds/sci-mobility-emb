@@ -678,7 +678,7 @@ where $c = \ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant and maximize
 	\label{eq:log-likelihood-logistic-regress}
 	{\cal J}^{\text{NCE}} = \sum_{i \in {\cal A}}\sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NCE}}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{\text{NCE}}(Y_{j} = 0 \vert j)\right].
 \end{align}
-by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them. Note that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
+by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them (see Supporting Information for full derivation). Note that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
 
 Let us revisit negative sampling from the perspective of NCE.
 We rewrite the logistic regression model in negative sampling (Eq.~\eqref{eq:logistic-regress}) in form of the posterior probability:
