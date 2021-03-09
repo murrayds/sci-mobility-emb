@@ -17,7 +17,7 @@
         \setcounter{figure}{0}
         \renewcommand{\thefigure}{S\arabic{figure}}%
      }
-
+\newcommand{\vect}[1]{\boldsymbol{#1}}
 
 % Math
 \usepackage{amsmath}
@@ -287,58 +287,56 @@ In sum, our results demonstrate that, consistently and efficiently , the embeddi
 
 \subsection*{word2vec and the gravity model}
 
-Why does the embedding distance predict actual mobility flows better than the geographic distance?
-Here, we demonstrate that the SGNS model and the gravity model of mobility are mathematically equivalent, explaining its ability to learn gravity-like relationships between locations. 
+Why does \textit{word2vec} with the skip-gram with negative sampling model (SGNS) work so well to model mobility?
+Here, we demonstrate that the SGNS model and the gravity model of mobility are mathematically equivalent.
 
 The {\it word2vec} model takes a location trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), as input.
 A target location $a_t=i$ is considered to have a context location $a_{t'}=j$ that appears in the previous or subsequent $w$ locations in the trajectory, \ie  $j \in [a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}]$.
-	{\it Word2vec} learns an embedding by estimating the probability that location $i$ has context $j$:
+	{\it word2vec} learns an embedding by estimating the probability that location $i$ has context $j$:
 \begin{align}
 	P\left(j \given i \right):= \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:prob_w2v_ng}
 \end{align}
 where the denominator $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
-Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---referred to as the in-vector and out-vector, respectively---we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$.
+Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---referred to as the in-vector and out-vector, respectively---we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$. 
 
 Our experiments show that {\it word2vec} best explains real-world mobility flow when $w=1$ (Fig.~\ref{fig:supp:hyperparameter}), with the flow predicted by
 \begin{align}
 	\label{eq:flow_w2v}
-	\hat{T}_{ij} = P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
+	\hat{T}_{ij} \propto P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 \end{align}
-where $P(i)$ is the probability that location $i$ appears in the trajectory.
-Because computing $Z_i$ is computationally demanding, multiple approximation methods have been proposed, the most popular being negative sampling~\autocite{mikolov2013word2vec}.
-Negative sampling finds embedding vectors by solving a binary classification task in which the model classifies whether a given target-context location pair $(i, j)$ comes from the data or from artificially generated ``negative'' samples.
-The negative pair $(i,j)$ is sampled in proportion to $P^\gamma(j)$ with parameter $\gamma \geq 0$.
+where $P(j)$ is the fraction of $j$ in the data.
+In general, calculating $Z_i$ is computationally expensive and there are two common approximation: hierarchical softmax \autocite{morin2005hierarchical} and negative sampling \autocite{mikolov2013word2vec}.
+Due to its simplicity and performance, negative sampling is the most widely used strategy, which we also adopt in our study.
 
-As a heuristic, the negative sampling has a bias and maximizes a different objective function~\autocite{Gutmann2010}.
-When taking into account this bias, {\it word2vec} with the negative sampling fits a probability model given by
+Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} and fits the different probability model. When taking into account this bias, {\it word2vec} with the skip-gram and negative sampling fits a probability model given by
 \begin{align}
-	P\left(j \given i \right):= \frac{P^ \gamma(j) \exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:prob_w2v_ng0}
+	P\left(j \given i \right):= \frac{P^ \gamma(j) \exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}, \label{eq:prob_w2v_ng0}
 \end{align}
-where we redefine the normalization constant as $Z_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$. (See the Methods for the full derivation).
+where we redefine the normalization constant as $Z'_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$. (See the Methods and Supporting Information for the full derivation).
 
-Parameter $\gamma=1$ is a choice that ensures that when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\bm{u}_i = \bm{v}_i$~\autocite{levy2014neural}.
-Setting $\gamma = 1$ and substituting $\bm{u}_i = \bm{v}_j$ into Eq.~\eqref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
+Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\vect{v}_i = \vect{u}_i$ \autocite{levy2014neural}.
+Setting $\gamma = 1$ and substituting $\vect{v}_i = \vect{u}_i$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
 \begin{align}
-	\hat{T}_{ij}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
+	\widehat{T}_{ij} \propto  P(i) P(j\given i) = \frac{P(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
 \end{align}
-The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) because {\it word2vec} neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
-If we swap $i$ and $j$ in Eq.~\eqref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
-Therefore, to ensure $\hat{T}_{ij} = \hat{T}_{ji}$, the denominator $Z_i$ must be a constant.
+
+The flow $\widehat{T}_{ij}$ is symmetric (\ie $\widehat{T}_{ij}=\widehat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
+If we swap $i$ and $j$ in Eq.~\ref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
+Therefore, to ensure $\widehat{T}_{ij}=\widehat{T}_{ji}$, the denominator $Z_i$ should be a constant.
 
 Taken together, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
 \begin{align}
-	\hat{T}_{ij}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}), \label{eq:flow_w2v_ng0}
+	\hat{T}_{ij}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}). \label{eq:flow_w2v_ng0}
 \end{align}
-where $C$ is a positive constant.
-In other words, \emph{word2vec with the negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
-While the gravity model generates mobility flow from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
+
+In other words, \emph{word2vec with the skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
+While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
 Therefore, the embedding distance is inherently tied to the mobility flow, and hence, has greater predictive power than the geographic distance and other baselines.
 
-In practice, because we do not have unlimited amounts of data (which is also noisy) and the optimization may not find the true optimum, the idealized result may not hold. 
-Indeed, we tend to find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
+In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may not hold.
+Indeed, we find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
 This result echos other applications of word embedding, such as word analogy testing~\autocite{levy2015improving}, in which cosine distance also outperformed dot similarity.
-Nevertheless, a model with dot similarity is still the second best after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered. 
-Although finding an optimal embedding is difficult in practice, careful tuning of the optimization algorithm would close the gap between our mathematical and numerical results.
+Nevertheless, a model with dot similarity is still the second best after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
 
 
 \subsection*{Embeddings capture global structure of mobility}
@@ -655,7 +653,7 @@ Our simulations show that, in the prediction task of mobility flow, \texttt{gens
 
 Negative sampling is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a distinct model  from {\it word2vec}.
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
-A target-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a parameter).
+A target-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=f(\ell)^\gamma / \sum_{\ell'}{f(\ell')^\gamma} $. ($f(\ell)$ is frequency of $\ell$ in the dataset, $\gamma>0$ is a parameter).
 Then, given a target-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using sigmoid function:
 \begin{align}
 	\label{eq:sigmoid}
