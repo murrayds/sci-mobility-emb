@@ -9,7 +9,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \def\figdir{../Figs}
-
+\newcommand{\vect}[1]{\boldsymbol{#1}}
 % define a command to setup the format of supporting infomration figures and tables.
 % source: http://bytesizebio.net/2013/03/11/adding-supplementary-tables-and-figures-in-latex/
 \newcommand{\beginsupplement}{%
@@ -265,7 +265,7 @@ Based on idea of \textit{word2vec} is just implicit matrix factorization, Levy p
 First, we construct the matrix of $N$ organization
 
 \begin{equation}
- M_{ij} = \log(\frac{N(i,j) |D|}{N(i) N(j)}) - \log(k),
+ M_{ij} = \log\left( \frac{N(i,j) |D|}{N(i) N(j)} \right)- \log k,
 \end{equation}
 where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given the window size $w$ in the total corpus $D$ ,$N(i)=\sum_{j=N}^i N(i,j)$ as the number of items $i$ occurred given the window size $w$ in $D$, and k is the number of negative samples. We used $w=1$ and $k=5$ which is same setting in the our main result. Then, we factorized matrix $M$ with truncated singular vector decomposition in the matrix with $d=300$ into $U_d \Sigma_d V_d$, and used the embedding vector as $U_d\sqrt{\Sigma_d}$.
 
@@ -355,10 +355,92 @@ The disambiguation algorithm is conservative, favoring splitting clusters over m
 Past studies have validated this data and shown that the disambiguated authors are comparable to ground-truth records such as those from ORCID and useful for a wide range of bibliometric studies~\autocite{sugimoto2017mostimpact, robinson2019mobility, chinchilla2018global, chinchilla2018travelban}.
 
 
+% S11 TEXT
+\paragraph*{S12 Text}
+\label{si:text:disambiguation}
+{\bf Derivation of Eq.\ref{eq:nce} - Noise Contrastive Estimation}
+
+The noise contrastive estimation (NCE)~\autocite{Chia2010,Dyer2014}.
+NCE is an unbiased estimator for a probability model $P_m$ of the form:
+\begin{align}
+	\label{eq:nce-model}
+	P_m(x) = \frac{ f(x) }{\sum_{ x' \in {\cal X}} f(x') },
+\end{align}
+where $f$ is a non-negative likelihood function of data $x$, and ${\cal X}$ is the set of all data.
+This general form includes the word2vec model (Eq.~\eqref{eq:cond_prob_w2v}), where $f(x) = \exp(x)$ and $x = \vect{u}_j \cdot \vect{v}_{i}$.
+NCE fits the probability model using a binary classification task in the same way as in negative sampling but using a Bayesian formalism for logistic regression.
+Specifically, before the training, we know that $1$ in $1+k$ words is sampled from the given data, which can be modeled as prior probabilities
+\begin{align}
+	\label{eq:prior}
+	P(Y_{j} = 1) = \frac{1}{k + 1},\quad P(Y_{j} = 0) = \frac{k}{k + 1}.
+\end{align}
+Using the Bayes rule, the posterior probability for $Y_{j}$ given word $j$ is given by
+\begin{align}
+	\label{eq:posterior}
+	P\left(Y_{j} \vert j\right) = \frac{
+		P\left(j \vert Y_{j}\right)P(Y_{j})
+	}{
+		P\left(j \vert Y_{j} = 0\right)P(Y_{j} = 0)
+		+ P\left(j \vert Y_{j} = 1\right)P(Y_{j} = 1)
+	}.
+\end{align}
+Bearing in mind that word $j$ is sampled from the given data if $Y_{j}=1$ and from the noise distribution $p_0$ if $Y_j = 0$.
+Assuming that the given data is generated from the probability model to fit, the class-conditional probability, $P\left(j \vert Y_{j}\right)$, is given by
+\begin{align}
+	\label{eq:class-cond}
+	P(j \vert Y_{j} = 1) & = P_m(\vect{u}_j \cdot \vect{v}_{i}),
+	\quad
+	P(j \vert Y_{j} = 0)  = p_0 (j).
+\end{align}
+Putting Eqs.~\eqref{eq:prior}, \eqref{eq:posterior} and \eqref{eq:class-cond} together, the posterior probability for $Y_j$ is given by
+\begin{align}
+	\label{eq:nce}
+	P\left(Y_{j} = 1 \vert j\right) & =
+	\frac{
+		P_m(\vect{u}_j \cdot \vect{v}_{i}) / (k + 1)
+	}{
+		P_m(\vect{u}_j \cdot \vect{v}_{i}) / (k + 1)  + kp_0(j) / (k + 1)
+	}                                          \\
+	                                & = \frac{
+		P_m(\vect{u}_j \cdot \vect{v}_{i})
+	}{
+		P_m(\vect{u}_j \cdot \vect{v}_{i})  + kp_0(j)
+	},
+\end{align}
+which can be rewritten in form of sigmoid function:
+\begin{align}
+	\label{eq:nce}
+	P^{\text{NCE}}\left(Y_{j}=1 \vert j\right) =
+	 & = \frac{
+		1
+	}{
+		1 + kp_0(j) / P_m(\vect{u}_j \cdot \vect{v}_{i})
+	}           \\
+	 & = \frac{
+		1
+	}{
+		1 + \exp\left[ \ln kp_0(j) - \ln P_m(\vect{u}_j \cdot \vect{v}_{i}) \right]
+	}           \\
+	 & = \frac{
+		1
+	}{
+		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i})  + \ln p_0(j) + c \right]
+	},
+\end{align}
+where $c = \ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant.
+NCE maximizes the log-likelihood
+\begin{align}
+	\label{eq:log-likelihood-logistic-regress}
+	{\cal J}^{\text{NCE}} = \sum_{i \in {\cal A}}\sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NCE}}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{\text{NCE}}(Y_{j} = 0 \vert j)\right].
+\end{align}
+by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them.
+An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~ if we increase the number of words to sample and the training iterations \autocite{Chia2010,Dyer2014}.
+
+
 
 %
 % S12 TEXT
-\paragraph*{S12 Text}
+\paragraph*{S13 Text}
 \label{si:text:network_ranking}
 {\bf Reconstructing Times ranking with network measure.}
 
@@ -371,7 +453,7 @@ This suggests that the embedding encodes information on prestige hierarchy at le
 
 %
 % S13 TEXT
-\paragraph*{S13 Text}
+\paragraph*{S14 Text}
 \label{si:text:boomerang_speculation}
 {\bf Speculation on variations of the convex-curve pattern.}
 
@@ -525,7 +607,7 @@ Taiwan           & 3.67             & 72
 % R2 Table
 %
 \clearpage
-
+\todo{@dakoda, could you update the table?}
 \begin{landscape}
 
   \providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}

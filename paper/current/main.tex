@@ -17,7 +17,7 @@
         \setcounter{figure}{0}
         \renewcommand{\thefigure}{S\arabic{figure}}%
      }
-
+\newcommand{\vect}[1]{\boldsymbol{#1}}
 
 % Math
 \usepackage{amsmath}
@@ -287,58 +287,56 @@ In sum, our results demonstrate that, consistently and efficiently , the embeddi
 
 \subsection*{word2vec and the gravity model}
 
-Why does the embedding distance predict actual mobility flows better than the geographic distance?
-Here, we demonstrate that the SGNS model and the gravity model of mobility are mathematically equivalent, explaining its ability to learn gravity-like relationships between locations. 
+Why does \textit{word2vec} with the skip-gram with negative sampling model (SGNS) work so well to model mobility?
+Here, we demonstrate that the SGNS model and the gravity model of mobility are mathematically equivalent.
 
 The {\it word2vec} model takes a location trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), as input.
 A target location $a_t=i$ is considered to have a context location $a_{t'}=j$ that appears in the previous or subsequent $w$ locations in the trajectory, \ie  $j \in [a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}]$.
-	{\it Word2vec} learns an embedding by estimating the probability that location $i$ has context $j$:
+	{\it word2vec} learns an embedding by estimating the probability that location $i$ has context $j$:
 \begin{align}
 	P\left(j \given i \right):= \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:prob_w2v_ng}
 \end{align}
 where the denominator $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
-Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---referred to as the in-vector and out-vector, respectively---we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$.
+Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---referred to as the in-vector and out-vector, respectively---we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$. 
 
 Our experiments show that {\it word2vec} best explains real-world mobility flow when $w=1$ (Fig.~\ref{fig:supp:hyperparameter}), with the flow predicted by
 \begin{align}
 	\label{eq:flow_w2v}
-	\hat{T}_{ij} = P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
+	\hat{T}_{ij} \propto P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
 \end{align}
-where $P(i)$ is the probability that location $i$ appears in the trajectory.
-Because computing $Z_i$ is computationally demanding, multiple approximation methods have been proposed, the most popular being negative sampling~\autocite{mikolov2013word2vec}.
-Negative sampling finds embedding vectors by solving a binary classification task in which the model classifies whether a given target-context location pair $(i, j)$ comes from the data or from artificially generated ``negative'' samples.
-The negative pair $(i,j)$ is sampled in proportion to $P^\gamma(j)$ with parameter $\gamma \geq 0$.
+where $P(j)$ is the fraction of $j$ in the data.
+In general, calculating $Z_i$ is computationally expensive and there are two common approximation: hierarchical softmax \autocite{morin2005hierarchical} and negative sampling \autocite{mikolov2013word2vec}.
+Due to its simplicity and performance, negative sampling is the most widely used strategy, which we also adopt in our study.
 
-As a heuristic, the negative sampling has a bias and maximizes a different objective function~\autocite{Gutmann2010}.
-When taking into account this bias, {\it word2vec} with the negative sampling fits a probability model given by
+Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} and fits the different probability model. When taking into account this bias, {\it word2vec} with the skip-gram and negative sampling fits a probability model given by
 \begin{align}
-	P\left(j \given i \right):= \frac{P^ \gamma(j) \exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:prob_w2v_ng0}
+	P\left(j \given i \right):= \frac{P^ \gamma(j) \exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}, \label{eq:prob_w2v_ng0}
 \end{align}
-where we redefine the normalization constant as $Z_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$. (See the Methods for the full derivation).
+where we redefine the normalization constant as $Z'_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$. (See the Methods and Supporting Information for the full derivation).
 
-Parameter $\gamma=1$ is a choice that ensures that when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\bm{u}_i = \bm{v}_i$~\autocite{levy2014neural}.
-Setting $\gamma = 1$ and substituting $\bm{u}_i = \bm{v}_j$ into Eq.~\eqref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
+Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\vect{v}_i = \vect{u}_i$ \autocite{levy2014neural}.
+Setting $\gamma = 1$ and substituting $\vect{v}_i = \vect{u}_i$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
 \begin{align}
-	\hat{T}_{ij}= P(i) P(j\given i) = \frac{P(i)P(j)\exp(\bm{v}_j \cdot \bm{v}_{i})}{Z_i}. \label{eq:flow_w2v_ng1}
+	\widehat{T}_{ij} \propto  P(i) P(j\given i) = \frac{P(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
 \end{align}
-The flow $\hat{T}_{ij}$ is symmetric (\ie $\hat{T}_{ij}=\hat{T}_{ji}$) because {\it word2vec} neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
-If we swap $i$ and $j$ in Eq.~\eqref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
-Therefore, to ensure $\hat{T}_{ij} = \hat{T}_{ji}$, the denominator $Z_i$ must be a constant.
+
+The flow $\widehat{T}_{ij}$ is symmetric (\ie $\widehat{T}_{ij}=\widehat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
+If we swap $i$ and $j$ in Eq.~\ref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
+Therefore, to ensure $\widehat{T}_{ij}=\widehat{T}_{ji}$, the denominator $Z_i$ should be a constant.
 
 Taken together, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
 \begin{align}
-	\hat{T}_{ij}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}), \label{eq:flow_w2v_ng0}
+	\hat{T}_{ij}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}). \label{eq:flow_w2v_ng0}
 \end{align}
-where $C$ is a positive constant.
-In other words, \emph{word2vec with the negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
-While the gravity model generates mobility flow from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
+
+In other words, \emph{word2vec with the skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
+While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
 Therefore, the embedding distance is inherently tied to the mobility flow, and hence, has greater predictive power than the geographic distance and other baselines.
 
-In practice, because we do not have unlimited amounts of data (which is also noisy) and the optimization may not find the true optimum, the idealized result may not hold. 
-Indeed, we tend to find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
+In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may not hold.
+Indeed, we find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
 This result echos other applications of word embedding, such as word analogy testing~\autocite{levy2015improving}, in which cosine distance also outperformed dot similarity.
-Nevertheless, a model with dot similarity is still the second best after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered. 
-Although finding an optimal embedding is difficult in practice, careful tuning of the optimization algorithm would close the gap between our mathematical and numerical results.
+Nevertheless, a model with dot similarity is still the second best after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
 
 
 \subsection*{Embeddings capture global structure of mobility}
@@ -541,7 +539,7 @@ Future studies may also consider bi-directional embeddings, such as BERT~\autoci
 Second, the neural embedding approach is most useful in cases of mobility between discrete geographic units such as between countries, cities, and businesses; this approach is less useful in the case of mobility between locations represented using geographic coordinates, such as in the modeling of animal movements.
 Neither of these methodological limitations is insurmountable, and future work can aim to incorporate directionality and identify meaningful representations of continuous mobility data.
 Third, neural embeddings are an inherently stochastic procedure, and so results may change across different iterations.
-We however, note that all results shown here are robust to this stochasticity, likely emerging from the limited ``vocabulary'' of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories).
+We note that all results shown here are robust to this stochasticity, likely emerging from the limited ``vocabulary'' of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories).
 Applications of \textit{word2vec }to problem domains where the ratio of the vocabulary to data is smaller, however, should take caution to ensure that findings are not the result of random fluctuations.
 Finally, the case of scientific mobility presents domain-specific limitations.
 Reliance on bibliometric metadata means that we capture only long-term mobility such as migration, rather than the array or more frequent short-term mobility such as conference travel and temporary visits.
@@ -614,7 +612,7 @@ Suppose a trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ 
 % MAIN W2V Equation
 %
 \begin{equation}
-	\frac{1}{T}\sum_{t = 1}^{T} \sum_{-w \leq \tau \leq w, \tau \neq 0} \log p(a_{t + \tau} \vert a_{t}),
+	{\cal J} = \frac{1}{T}\sum_{t = 1}^{T} \sum_{-w \leq \tau \leq w, \tau \neq 0} \log p(a_{t + \tau} \vert a_{t}),
 \end{equation}
 where,
 
@@ -640,61 +638,80 @@ To mitigate the effect of less common locations, we set $f_{\min} = 50$, limitin
 We set $\alpha$ to its default value of 0.025 and iterate five times over all training trajectories.
 For scientific mobility, across each training iteration, the order of organizations within a single year is randomized to remove unclear sequential order.
 
-There is an alternative implementation of \textit{word2vec} based on a matrix factorization~\autocite{levy2014neural,Qiu2018}, which optimizes the same objective function as for \texttt{gensim} but in a different way.
-The matrix factorization approach generates embedding vectors such that the dot similarity for locations $i$ and $j$ is as close as $q_{ij}= \log(T_{ij} / s_i s_j) + \text{const}$.
-An issue is that the generated embedding vectors can be largely affected by small flows $T_{ij}$ in the data.
-For example, if there is no flow between locations $i$ and $j$ (\ie, $T_{ij} = 0$), then $q_{ij} = -\infty$, pushing $i$ and $j$ to the infinite horizon of the embedding space.
-To remedy this problem, one can add a small amount of flow between such locations or exclude them from the embedding~\autocite{levy2014neural,Qiu2018}.
-However, this may change the data to which we fit the model, and small flows may still have profound impact on the embedding space.
-Therefore, we adopt the \texttt{gensim} implementation of the \textit{word2vec}.
-Our simulations show that, in the prediction task of mobility flow, \texttt{gensim}'s word2vec performs better than the matrix factorization approach in xxx out of the xxx datasets (Fig.~??).
-
 
 \subsection*{An implicit bias in the negative sampling}
 \label{sec:sg_and_word2vec}
 
-Negative sampling is a biased estimator~\autocite{Chia2010,Dyer2014} that optimizes a distinct model  from {\it word2vec}.
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
-A target-context word pair $(i,j)$ is sampled from the given data as a positive pair, and $k$ negative pairs $(i,\ell)$ are sampled from a noise distribution $p_0(\ell)=P^\gamma(\ell)$. ($P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a parameter).
-Then, given a target-context word pair $(i,j)$, the model predicts whether it is a positive or negative sample using sigmoid function:
+For each target word $i$, we sample a context word $j$ from the given data and label it as positive, denoted by $Y_{j}=1$.
+Then, we sample $k$ words $\ell$ from a noise distribution $p_0(\ell)$ and label them as negative, denoted by $Y_{\ell}=0$.
+In \textit{word2vec}, the noise distribution is given by $p_0(\ell) \propto P^\gamma (\ell)$, where $P(j)$ is the fraction of $j$ in the data, and $\gamma$ is a hyper-parameter.
+Then, for the sampled words, we fit a logistic regression model
 \begin{align}
-	\label{eq:sigmoid}
-	\frac{1}{1 + \exp\left( - \bm{u}_j \cdot \bm{v}_i \right)}.
+	\label{eq:logistic-regress}
+	P^{\text{NS}}(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) = \frac{1}{1 + \exp(-\vect{u}_j \cdot \vect{v}_{i})},
 \end{align}
+by maximizing the log-likelihood:
+\begin{align}
+	\label{eq:log-likelihood-logistic-regress}
+	{\cal J}^{\text{NS}} = \sum_{i \in {\cal A}} \sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NS}}(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) + (1-Y_{j}) \log P^{\text{NS}}(Y_{j} = 0; \vect{v}_{i}, \vect{u}_j)\right],
+\end{align}
+where ${\cal D}$ is the set of all sampled context words.
 
-This procedure does not guarantee that the embedding optimally converges, even when increasing the training samples and iterations~\autocite{Chia2010,Dyer2014}.
-This problem is addressed by the noise contrastive estimation (NCE) \autocite{Chia2010}, which fits a probability model in the form:
+This procedure does not guarantee that the embedding optimally converges, even when increasing the training samples and iterations~\autocite{Chia2010,Dyer2014}. To make this bias explicit, let us consider the unbiased variant of negative sampling, \ie the noise contrastive estimation (NCE)~\autocite{Chia2010,Dyer2014}.
+NCE is an unbiased estimator for a probability model $P_m$ of the form:
+\begin{align}
+	\label{eq:nce-model}
+	P_m(x) = \frac{ f(x) }{\sum_{ x' \in {\cal X}} f(x') },
+\end{align}
+where $f$ is a non-negative likelihood function of data $x$, and ${\cal X}$ is the set of all data. NCE fits a logistic regression model:
 \begin{align}
 	\label{eq:nce}
-	f(x) / \sum_{x'} f(x'),
+	P^{\text{NCE}}\left(Y_{j}=1 \vert j\right) = \frac{
+		1
+	}{
+		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i})  + \ln p_0(j) + c \right]
+	},
 \end{align}
-where $f(x)$ is the non-normalized probability for an instance $x$.
-As in negative sampling, NCE fits the model based on a binary classification task, with positive and negative samples randomly drawn from the given data and a noise distribution $p_0$, respectively, using a bias-corrected sigmoid function:
+where $c = \ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant and maximizes the log-likelihood
 \begin{align}
-	\label{eq:sigmoid2}
-	\frac{1}{1 + \exp\left( -f(x) + \log p_0(x) \right)}.
+	\label{eq:log-likelihood-logistic-regress}
+	{\cal J}^{\text{NCE}} = \sum_{i \in {\cal A}}\sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NCE}}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{\text{NCE}}(Y_{j} = 0 \vert j)\right].
 \end{align}
-In case of the {\it word2vec}, the instance is the dot similarity $x=\bm{u}_i \cdot \bm{v}_j$,  $f(x)=\exp(x)$, and $p_0(j)=P^\gamma(j)$.
+by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them (see Supporting Information for full derivation). Note that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
 
-Rewriting the sigmoid function for the negative sampling (Eq.~\eqref{eq:sigmoid}) in form of the bias-corrected sigmoid function yields
+Let us revisit negative sampling from the perspective of NCE.
+We rewrite the logistic regression model in negative sampling (Eq.~\eqref{eq:logistic-regress}) in form of the posterior probability:
 \begin{align}
-	\label{eq:sigmoid3}
-	\frac{1}{1 + \exp\left[ - \tilde f(x) + \log p_0(x)  \right]},
+	P^{NS}\left(Y_{j}=1 \vert j\right) & = \frac{
+		1
+	}{
+		1 + \exp\left[ - \left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c \right) + \ln p_0(j) + c \right]
+	}                                             \\
+	                                   & = \frac{
+		1
+	}{
+		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i}) + \ln p_0(j) + c \right]
+	},
 \end{align}
-where we have defined
+where we define the likelihood function $f$ by
 \begin{align}
-	\label{eq:unnormalized}
-	\tilde f(x) = f(x) p_0(x).
+	f(\vect{u}_j \cdot \vect{v}_{i}) = \exp\left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c\right),
 \end{align}
-This bias-corrected sigmoid function fits a probability model:
+which is the unbiased estimator for the probability model
 \begin{align}
-	f'(x) / \sum_{x'} f'(x),
+	\label{eq:unbiasef}
+	P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) },                                                                                               \\
+	                                        & = \frac{  p_0(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  p_0(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})},                                                                      \\
+	                                        & = \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})} \hspace{0.3cm}(\because p_0(\ell) \propto P^\gamma (\ell)).
 \end{align}
-or, by substituting $x=\bm{u}_i \cdot \bm{v}_j$, $f(x)=\exp(x)$, and $p_0(j)=P^\gamma (j)$,
+Taken together, the conditional probability that SGNS \textit{word2vec} actually optimizes is
 \begin{align}
-	P\left(j \given i \right):= \frac{P^\gamma (j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
+	P^{NS}(j\given i) = P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i})  =  \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{Z'_i},
 \end{align}
-where $Z_i=\sum_{j' \in \mathcal{A}} P^\gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$.
+where $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
+
+
 
 
 %
