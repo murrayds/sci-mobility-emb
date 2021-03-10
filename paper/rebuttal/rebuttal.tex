@@ -175,7 +175,7 @@ We have developed the mathematical and theoretical basis of our approach for emb
 \end{enumerate}
 \vspace{-0.1cm}
 We address the first point by presenting the mathematical equivalence between the Gravity Model of Mobility and the skip-gram negative sampling \textit{word2vec} model.
-Namely, we demonstrate that \textit{word2vec}'s objective function is equivalent to the gravity law and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
+Namely, we demonstrate that \textit{word2vec}'s objective function is equivalent to the gravity model and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
 This development constitutes a major breakthrough in our understanding of neural embeddings and provides a theoretical justification for their application to mobility.
 
 For the second point, we have conducted experiments comparing the performance of neural embedding to (\romannum{1}) a singular value decomposition of the mobility network,  (\romannum{2}) a Laplacian eigenmap embedding  (\romannum{3}) a \textit{word2vec} model with matrix factorization,  and  (\romannum{4}) a direct optimization of the gravity model. We find that the embedding distance from \textit{word2vec} outperforms all baselines, even the direct optimization of gravity model with the multidimensional scaling, in explaining and predicting real-world mobility.
@@ -427,7 +427,7 @@ Then, we apply truncated singular vector decomposition with $d=300$ on the flow 
 where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given the window size $w$ in the total corpus $D$, $N(i)=\sum_{j=N}^i N(i,j)$ as the number of items $i$ occurred given the window size $w$ in $D$, and k is the number of negative samples. We used $w=1$ and $k=5$ which is same setting in the our main result. Then, we factorized matrix $M$ with truncated singular vector decomposition in the matrix with $d=300$ into $U_d \Sigma_d V_d$, and used the embedding vector as $U_d\sqrt{\Sigma_d}$.
 
 \vspace{-0.3cm}
-\paragraph{Direct optimization of gravity model:} Finally, we create an embedding by optimizing for the gravity law directly.
+\paragraph{Direct optimization of gravity model:} Finally, we create an embedding by optimizing for the gravity model directly.
 Specifically, we construct a gravity matrix of $N$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual member of unique mobile and non-mobile authors affiliated. We then embed the gravity matrix using two approaches: a truncated singular-vector decomposition (SVD), and multidimensional scaling (MDS), which embeds each location in an N-dimensional space such that pairwise distances are preserved as well as possible.
 Typically, MDS uses euclidean distance to measure the distance between vectors.
 
@@ -550,7 +550,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 \response{Thank you for pointing out the missing references!
 	We have carefully read through each, and learned a lot in the process.
 	They have now been incorporated into our manuscript's introduction.
-	Although there are existing works on trajectory-based mobility embedding, we argue that our new result establishing the mathematical equivalence of \textit{word2vec} and the gravity law, as well as our extensive evaluation with many baselines represents a novel and substantial contribution.
+	Although there are existing works on trajectory-based mobility embedding, we argue that our new result establishing the mathematical equivalence of \textit{word2vec} and the gravity model, as well as our extensive evaluation with many baselines represents a novel and substantial contribution.
 }
 
 \rcomment{
@@ -914,7 +914,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 			``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
 			population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
 			``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-			Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct optimization of the gravity law works better, as well as Levy's factorization~\autocite{levy2014neural} for domestic and international only mobility.
+			Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct optimization of the gravity model works better, as well as Levy's factorization~\autocite{levy2014neural} for domestic and international only mobility.
 		}
 		\label{supp:table:r2_table}
 		\begin{centerbox}
@@ -1404,7 +1404,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 			``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
 			population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
 			``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-			Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions for global mobility with ``All'; and ``Mobile only'' definitions of population, though direvt gravity-law opimization with MDS performs better when using raw frequencies to measure organization population, and Levy's factorization~\autocite{levy2014neural} perform better here with domestic and international only mobility.
+			Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions for global mobility with ``All'; and ``Mobile only'' definitions of population, though direct optimization of the gravity model with MDS performs better when using raw frequencies to measure organization population, and Levy's factorization~\autocite{levy2014neural} perform better here with domestic and international only mobility.
 		}
 		\label{supp:table:rmse_power_table}
 		\begin{centerbox}
