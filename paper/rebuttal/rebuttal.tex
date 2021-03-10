@@ -157,7 +157,7 @@ s #1
 
 We thank all the referees for their thoughtful and helpful comments and critiques.
 We acknowledge that our initial submission had a substantial gap regarding the choice of the \textit{word2vec} model, its connection with the gravity model of mobility, and its evaluation.
-While reflecting on these comments and our manuscript, we have made a theoretical breakthrough that addresses the fundamental issues;
+While reflecting on these comments and our manuscript, we have made a theoretical breakthrough that addresses the fundamental issues, and dramatically expands the scope of our contribution;
 namely, we have discovered \emph{a mathematical equivalence between the \textit{word2vec} (skip-gram with negative sampling) model and the gravity model.}
 
 Furthermore, our subsequent experiments show that our approach's performance is robust, exceeding many other baselines, even direct optimization of the gravity model.
@@ -176,7 +176,7 @@ We have developed the mathematical and theoretical basis of our approach for emb
 \vspace{-0.1cm}
 We address the first point by presenting the mathematical equivalence between the Gravity Model of Mobility and the skip-gram negative sampling \textit{word2vec} model.
 Namely, we demonstrate that \textit{word2vec}'s objective function is equivalent to the gravity model and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
-This development constitutes a major breakthrough in our understanding of neural embeddings and provides a theoretical justification for their application to mobility.
+This development constitutes a major breakthrough in our understanding of neural embeddings, and in addition to justifying their use in our study, also opens the door for further research applying them to the study of mobility.
 
 For the second point, we have conducted experiments comparing the performance of neural embedding to (\romannum{1}) a singular value decomposition of the mobility network,  (\romannum{2}) a Laplacian eigenmap embedding  (\romannum{3}) a \textit{word2vec} model with matrix factorization,  and  (\romannum{4}) a direct optimization of the gravity model. We find that the embedding distance from \textit{word2vec} outperforms all baselines, even the direct optimization of gravity model with the multidimensional scaling, in explaining and predicting real-world mobility.
 
@@ -559,7 +559,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	Since our original submission, we have uncovered a mathematical connection between the skip-gram model with negative sampling, and the gravity model of mobility.
 	Namely, we find that \emph{SGNS is a gravity model}.
 	This finding explains why SGNS performs so well and demonstrates the utility of the model for studying contexts where gravity relationships are expected, such as in human mobility.
-	We refer you to Section 1 of this letter, above, for an investigation of this connection, and how we adjusted our manuscript given this breakthrough.
+	We refer you to Section 1 of this letter, above, for an investigation of this connection, which we believe to be not only a justification of our choice of the \textit{word2vec} model to study mobility, but also a major contribution to the understanding of neural embeddings and the gravity model themselves. 
 
 	Additionally, we compared the performance of SGNS to several baselines, including the distances between vectors obtained with the singular-value decomposition, the Laplacian eigenmap, the Levy
 	\& Goldberg's~\autocite{levy2014neural} matrix factorization \textit{word2vec}, and the directly optimization of the gravity model with singular-value decomposition and multidimensional scaling.
