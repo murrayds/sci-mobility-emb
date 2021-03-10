@@ -292,7 +292,9 @@ For this result, we report results using the cosine distance between embedding v
 We observe that the gravity-optimized SVD cosine distance has poor performance, more weakly correlated with actual flux than geographic distance ($R^{2} = 0.122$, Table~\ref{supp:table:r2_table}), and similarly poor prediction error when used as input to the gravity mode.
 In contrast, the cosine distance between MDS vectors has the second-highest correlation with actual flux, after only the embedding distance ($R^{2} = 0.355$, Table~\ref{supp:table:r2_table}), and third best for predicting actual flux using both the power-law version of the gravity model (RMSE = $0.795$, Table~\ref{supp:table:rmse_power_table}), though performance is much lower using the exponential form (RMSE = $0.904$, Table~\ref{supp:table:rmse_exp_table}). 
 We note that the MDS embedding actually has the lowest prediction error when organizations' populations are defined as the raw frequency during prediction with the power-law model (RMSE = $0.691$, Table~\ref{supp:table:rmse_power_table});
-however, we note that the MDS distnace is defined with a population of ``All'' mobile and non-mobile scholars, whereas the predictions made in Table~\ref{supp:table:rmse_power_table} use the raw frequency, which likely confounds this result. Also, running time of MDS ($\sim$ 30 mins) is substantially longer than that of \textit{word2vec} ($\sim$ 5 mins), which indicates our approach has advantages in terms of efficiency as well.
+however, we note that the MDS distance is defined with a population of ``All'' mobile and non-mobile scholars, whereas the predictions made in Table~\ref{supp:table:rmse_power_table} using the raw frequency, which likely confounds this result. 
+MDS is also computationally-intensive, requiring upwards of 6 times more time to compute (on the machine used in this analysis) than the more computationally efficient \textit{word2vec} model.
+
 
 %
 % S9 Text
@@ -905,117 +907,102 @@ Taiwan           & 3.67             & 72
 \arrayrulecolor{black}
 
 \multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.743 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.784 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.76 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.73 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.784 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.749 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.714 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.762 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.745 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.713 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.76 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.737 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.702 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.749 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.713 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.715 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.764 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.748 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
 \multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.78 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.776 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.755 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.703 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.711 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-\arrayrulecolor{black}
-
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.808 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.957 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.939 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.802 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.79 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.803 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.791 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.771 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.725 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.726 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.705 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
 \multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.831 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.864 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.863 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.783 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.809 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.803 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.825 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.811 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.851 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.87 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.854 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.769 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.798 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.784 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
 \multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.839 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.785 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.761 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.89 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.81 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.792 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.752 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.728 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.859 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.82 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.82 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.792 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
 \multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.87 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.878 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.891 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.894 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.904 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.837 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.801 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.937 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.919 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.886 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.804 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.772 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.735 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.905 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.906 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.852 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.851 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.881 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.875 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.882 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.866 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.858 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
 \multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.889 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.85 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.838 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.871 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.819 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.828 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.814 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
@@ -1024,61 +1011,76 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.92 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.885 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.918 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.896 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.797 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.904 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.944 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.907 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.972 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.955 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.793 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.838 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.821 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.926 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.911 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.924 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.909 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.861 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.872 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.854 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.918 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.925 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.908 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.884 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.916 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.894 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.814 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.796 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.929 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.951 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.928 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.973 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.002 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.856 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.875 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
 \multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.95 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.955 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.958 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.941 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.873 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.883 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.866 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.939 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.923 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.92 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.946 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
 \multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.99 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.998 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.977 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.015 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.997 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.845 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.987 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.995 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.98 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.979 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.014 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.996 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.849 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
