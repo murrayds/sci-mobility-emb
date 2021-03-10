@@ -196,14 +196,17 @@ Dakota, Jisung, Sadamori, Rodrigo, Woo-Sung, Staša, and YY
 
 \pagenumbering{arabic}
 \clearpage
+\thispagestyle{empty}
 \newgeometry{margin=1in}
 \setcounter{page}{1}
 \tableofcontents
+\thispagestyle{empty}
 \clearpage
 
 
 \section{Theoretical justification of \textit{word2vec} and the Gravity Model}
 \label{sec:theory}
+\thispagestyle{empty}
 Why does \textit{word2vec} with the skip-gram with negative sampling model (SGNS) work so well to model mobility?
 Here, we demonstrate that the SGNS model and the gravity model of mobility are mathematically equivalent.
 This connection provides strong theoretical justification to our choice of \textit{word2vec}, and constitutes a major breakthrough of our understanding of neural embeddings.
@@ -234,7 +237,7 @@ Due to its simplicity and performance, negative sampling is the most widely used
 \subsection{An implicit bias in the negative sampling}
 
 Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that does not yield the optimal embeddings in terms of the objective function, ${\cal J}$.
-This bias in negative sampling turns out to be the critical piece that connects word2vec and the gravity model.
+This bias in negative sampling turns out to be the key piece that connects word2vec and the gravity model.
 
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
 For each target word $i$, we sample a context word $j$ from the given data and label it as positive, denoted by $Y_{j}=1$.
@@ -328,12 +331,12 @@ NCE maximizes the log-likelihood
 	{\cal J}^{\text{NCE}} = \sum_{i \in {\cal A}}\sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NCE}}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{\text{NCE}}(Y_{j} = 0 \vert j)\right].
 \end{align}
 by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them.
-An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
+An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014}, if we increase the number of words to sample and the training iterations.
 
 Let us revisit negative sampling from the perspective of NCE.
 We rewrite the logistic regression model in negative sampling (Eq.~\eqref{eq:logistic-regress}) in form of the posterior probability:
 \begin{align}
-	P^{NS}\left(Y_{j}=1 \vert j\right) & = \frac{
+	P^{\text{NS}}\left(Y_{j}=1 \vert j\right) & = \frac{
 		1
 	}{
 		1 + \exp\left[ - \left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c \right) + \ln p_0(j) + c \right]
@@ -351,13 +354,13 @@ where we define the likelihood function $f$ by
 which is the unbiased estimator for the probability model
 \begin{align}
 	\label{eq:unbiasef}
-	P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) },                                                                                               \\
+	P_m^{\text{NS}}(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) },                                                                                               \\
 	                                        & = \frac{  p_0(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  p_0(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})},                                                                      \\
 	                                        & = \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})} \hspace{0.3cm}(\because p_0(\ell) \propto P^\gamma (\ell)).
 \end{align}
 Taken together, the conditional probability that SGNS \textit{word2vec} actually optimizes is
 \begin{align}
-	P^{NS}(j\given i) = P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i})  =  \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{Z'_i},
+	P^{\text{NS}}(j\given i) = P_m^{\text{NS}}(\vect{u}_j \cdot \vect{v}_{i})  =  \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{Z'_i},\
 \end{align}
 where $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
 
@@ -389,7 +392,7 @@ In other words, \emph{word2vec with the skip-gram negative sampling is equivalen
 While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
 Therefore, the embedding distance is inherently tied to mobility flow, and hence, has greater predictive power than the geographic distance.
 
-In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may not hold.
+In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may only approximately hold.
 Indeed, we find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
 Nevertheless, a model with dot similarity is still the second best after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
 
@@ -643,16 +646,14 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{Thank you for pointing this out.
 	We carefully read out the Barthélemy, Physics Reports 499, 1, 2011, and referenced it in our manuscript.
-	Also, we report the performance of the flux estimation and prediction using different deterrence functions (see Section 2, above), finding that although the absolute values vary, the pattern doesn't change---the embedding distance robustly outperforms geographic distance regardless of the function used.
+		It has been argued that the power-law decay function fits well with the geographical distance because power-law gravity model is more suitable for analyzing large, complex, and scale-free spatial systems with long-range spatial memory, whereas exponential gravity model
+	fits well with the simpler system with no spatial memory~\autocite{chen2015distance}.
+	We report the performance of the flux estimation and prediction using different deterrence functions (see Section 2, above), finding that although the absolute values vary, the pattern doesn't change---the embedding distance robustly outperforms geographic distance regardless of the function used. Also, we shows why embedding distance fits well with exponential gravity model with the underling connection between \textit{word2vec} and the gravity model (see Section 1, above).
 	We add the following line to the methods noting this point,
 
 	\medskip
 	\say{The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanism [...] such as the cost functions for a given distance and the spatial granularity of the observation.
 		For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each cases though there is no qualitative difference---the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
-
-	We find the article that geographical distance ﬁts well with the power-law decay function because power-based gravity model can be more suitable for analyzing large, complex, and scale-free spatial systems with long-range spatial memory, while exponential-based gravity model
-	fits well with the simple system with no spatial memory~\autocite{chen2015distance}.
-	However, the embedding distance fits well with the exponential decay function, perhaps demonstrating that the real-world spatial complexity of mobility is encoded in the \textit{word2vec} embedding space as simpler pairwise distances, likely resulting from underlying connection we established between \textit{word2vec} and the gravity model (see Section 1, above).
 
 }
 
@@ -686,7 +687,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{
 	Thank you for this comment.
-	We however, do not believe that this is a problem in our analysis.
+	We do not, however, believe that this is a problem in our analysis.
 	Raw co-occurrence, which is used to define our ``flux'' between organizations, is always calculated using all organizations in a trajectory, and so window size does not affect flux.
 	Window size does affect \textit{word2vec}, however setting a smaller/larger window size should not make results incomparable.
 	When we set $w = 1$, \textit{word2vec} will generate training pairs at most 1 position away from each target location, for all possible targets.
@@ -694,7 +695,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	The same follows for all $w > 1$, each generating a larger and larger set of training examples up until $w$ is larger than the length of the longest trajectory.
 
 	What is notable about our findings, therefore, is that even though a model trained with $w = 1$ generates fewer training samples, it still outperforms settings with $w > 1$, which use more training samples, and which should capture higher-order structures in the data.
-	We speculate that this is because the word2vec model with $w = 1$ is equvelant to the gravity model of mobility (see Section 1).
+	We speculate that this is because the word2vec model with $w = 1$ is equivalent to the gravity model of mobility (see Section 1).
 }
 
 \rcomment{
@@ -708,7 +709,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 	A full search of the hyper-parameter space would certainly be interesting and useful, however we believe that set of hyper-parameters we considered here is sufficient to establish the utility of the approach, and demonstrate that performance is only slightly different based on different hyper-parameters.
 	There are previous studies on the optimal dimensionality of word embedding \autocite{yin2018understand, yin2018dimensionality}. Also,
-	we note that in previous work from our group, we explored the optimal dimensions for graph embedding~\autocite{gu2020dimensions}, finding that while a sufficient number of dimensions is necessary to capture the structure, increasing the dimensions does not detract from performance, a property common across deep learning methods.
+	we note that in previous work from our group, we explored the optimal dimensions for graph embedding~\autocite{gu2020dimensions}, finding that while a sufficient number of dimensions is necessary to capture the structure, increasing the dimensions does not heavily deteriorate from performance, a property common across deep learning methods.
 	Given that there is little performance difference between $d = 100$ and $d = 300$, we opt to use the larger embeddings at $d = 300$, which are large enough to capture the complexity of mobility, yet small enough to allow an efficient computational workflow.
 }
 
@@ -773,9 +774,9 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{Thank you for this insightful comment!
 	We think that there is a great deal of potential in methods like BERT for representing mobility data.
-	What initially drew us to \textit{word2vec}, however, was its simplicity, its ubiquity, and its mathematical tractability (at least compared to other, more sophisticated approaches).
-	This last attribute proved very useful, as in exploring the mathematical properties of the model, we discovered a deep connection between \textit{word2vec} and the gravity model of mobility, which explains why it learns such effective gravity-like relationships between entities (see Section 1, this letter).
-	We believe hat this new discovery, now included in the manuscript, justifies our use of \textit{word2vec} here.
+	What initially drew us to \textit{word2vec}, however, was its simplicity, ubiquity, and mathematical tractability (at least compared to other, more sophisticated approaches).
+	This last attribute proved very useful, as in exploring the mathematical properties of the model, we discovered a deep connection between \textit{word2vec} and the gravity model of mobility, which explains why it learns gravity-like relationships between entities (see Section 1, this letter).
+	We believe that this new discovery, now included in the manuscript, strongly ground our use of \textit{word2vec} here.
 
 	We agree that the revolution in neural embeddings offers great promise in mobility and look forward to reading and also working on these future studies; however, we argue that our contribution is most well-founded, and best serves the scientific community, by working with simpler and more established models (see Section 2, this letter), especially concerning the mathematical link we uncovered. Moreover, these deep models require a tremendous amount of training data ($\sim$3 billion words in Bert) and model parameters, making their use infeasible in applicants most.
 
@@ -812,7 +813,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 }
 
 \response{Thank you for this suggestion.
-	We looked into this, using UMAP to reduce the country-level embeddings from 300 down to 30 dimensions, however the results from this were incomprehensible, and inferior to those using 300 dimensions.
+	We looked into this, using UMAP to reduce the country-level embeddings from 300 down to 30 dimensions, however the results from this were incomprehensible, much inferior to those using 300 dimensions.
 	Many dimensionality reduction techniques reduce the number of dimensions by maintaining pairwise distances between vectors, so that the result can be well-suited for clustering algorithms.
 	However, our approach already uses raw pairwise similarities to perform hierarchical clustering, so approximating this distance in 30 dimensions, and then using the new distances to perform clustering is redundant.
 	We also find that the curse of dimensional is not a major issue in our analysis, at least given the size of our data and the number of locations represented---\textit{word2vec} seems able to learn dense vector-space representations.
@@ -863,7 +864,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 \response{Thank you for this idea!
 	We believe that this is an interesting topic and we hope to investigate it in the future.
 	In your particular example, an embedding distance trained using sequences of co-authorship on the same paper might be better to capture the \textit{collaborative} distance between institutions.
-	Then, using that distance, one could measure the ``embedding distance'' spanned by all authors in the byline, and relate this to questions impact to determine whether (a)typical collaborations relate to impact.
+	Then, using that distance, one could measure the ``embedding distance'' spanned by all authors in the byline, and answer the question whether typical collaborations relate to impact or not.
 	This is certainly a topic that is in our mind for future study.
 	In the case of scientific mobility, we might also consider the ``embedding distance'' spanned by an individual's career, and relate this to their demographics and scientific impact.
 
