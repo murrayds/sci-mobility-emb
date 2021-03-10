@@ -230,9 +230,9 @@ where $m=\frac{1}{2}(p_i+p_j)$. We report the result with cosine distance ($R^2=
 % S5 Text
 \paragraph*{S5 Text}
 \label{si:text:Raw SVD}
-{\bf Singular vector decomposition distance.}
+{\bf Singular valuer decomposition distance.}
 
-We use the truncated singular vector decomposition (SVD) on the underlying mobility co-occurrence matrix as a baseline embedding.
+We use the truncated singular value decomposition (SVD) on the underlying mobility co-occurrence matrix as a baseline embedding.
 In short, truncated SVD performs linear low-rank approximation of the matrix with given dimensions, $d$.
 First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
 Then, we apply truncated singular vector decomposition with $d=300$ on the flow matrix $A$ directly.
@@ -292,7 +292,7 @@ For this result, we report results using the cosine distance between embedding v
 We observe that the gravity-optimized SVD cosine distance has poor performance, more weakly correlated with actual flux than geographic distance ($R^{2} = 0.122$, Table~\ref{supp:table:r2_table}), and similarly poor prediction error when used as input to the gravity mode.
 In contrast, the cosine distance between MDS vectors has the second-highest correlation with actual flux, after only the embedding distance ($R^{2} = 0.355$, Table~\ref{supp:table:r2_table}), and third best for predicting actual flux using both the power-law version of the gravity model (RMSE = $0.795$, Table~\ref{supp:table:rmse_power_table}), though performance is much lower using the exponential form (RMSE = $0.904$, Table~\ref{supp:table:rmse_exp_table}). 
 We note that the MDS embedding actually has the lowest prediction error when organizations' populations are defined as the raw frequency during prediction with the power-law model (RMSE = $0.691$, Table~\ref{supp:table:rmse_power_table});
-however, we note that the MDS distnace is defined with a population of``All'' mobile and non-mobile scholars, whereas the predictions made in Table~\ref{supp:table:rmse_power_table} use the raw frequency, which likely confounds this result. 
+however, we note that the MDS distnace is defined with a population of ``All'' mobile and non-mobile scholars, whereas the predictions made in Table~\ref{supp:table:rmse_power_table} use the raw frequency, which likely confounds this result. Also, running time of MDS ($\sim$ 30 mins) is substantially longer than that of \textit{word2vec} ($\sim$ 5 mins), which indicates our approach has advantages in terms of efficiency as well.
 
 %
 % S9 Text
