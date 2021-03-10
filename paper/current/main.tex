@@ -149,7 +149,7 @@
 	Historically, human mobility has been strongly constrained by physical separation---geographic distance~\autocite{zipf1946gravity}.
 	However, geographic distance is becoming less relevant in the increasingly-globalized world~\autocite{czaika2018globalisation, buchan2009globalization} in which physical barriers are shrinking while linguistic, cultural, and historical relationships are becoming more important.
 	As understanding mobility is becoming critical for contemporary society, finding frameworks that can capture this complexity is of paramount importance.
-	Here, we illustrate a mathematical connection between the neural embedding model \textit{word2ec}~\autocite{mikolov2013word2vec} and the gravity model of mobility and, using three distinct human trajectory datasets, demonstrate that a neural embedding model can encode nuanced relationships between locations into a vector-space, providing an effective measure of distance that reflects the multi-faceted structure of human mobility.
+	Here, we reveal a mathematical connection between the neural embedding model \textit{word2ec}~\autocite{mikolov2013word2vec} and the gravity model of mobility and, using three distinct human trajectory datasets, demonstrate that a neural embedding model can encode nuanced relationships between locations into a vector-space, providing an effective measure of distance that reflects the multi-faceted structure of human mobility.
 	Focusing on the case of scientific mobility, we show that embeddings of scientific organizations uncover cultural and linguistic relations, and even academic prestige, at multiple levels of granularity.
 	Furthermore, the embedding vectors reveal universal relationships between organizational characteristics and their place in the global landscape of scientific mobility.
 	The ability to learn scalable, dense, and meaningful representations of mobility directly from the data can open up a new avenue of studying mobility across domains.
@@ -308,7 +308,7 @@ where $P(j)$ is the fraction of $j$ in the data.
 In general, calculating $Z_i$ is computationally expensive and there are two common approximation: hierarchical softmax \autocite{morin2005hierarchical} and negative sampling \autocite{mikolov2013word2vec}.
 Due to its simplicity and performance, negative sampling is the most widely used strategy, which we also adopt in our study.
 
-Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} and fits a different probability model. When taking into account this bias, {\it word2vec} with the skip-gram and negative sampling fits a probability model given by
+Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} and fits a different probability model. When taking into account this bias, {\it word2vec} with skip-gram and negative sampling fits a probability model given by
 \begin{align}
 	P\left(j \given i \right):= \frac{P^ \gamma(j) \exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}, \label{eq:prob_w2v_ng0}
 \end{align}
@@ -336,7 +336,7 @@ Therefore, the embedding distance is inherently tied to the mobility flow, and h
 In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may only approximately hold.
 Indeed, we find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
 This result echos other applications of word embedding, such as word analogy testing~\autocite{levy2015improving}, in which cosine distance also outperformed dot similarity.
-Nevertheless, a model with dot similarity is still the second-best after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
+Nevertheless, a model with dot similarity has the second-best performance after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
 
 
 \subsection*{Embeddings capture global structure of mobility}
