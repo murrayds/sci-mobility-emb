@@ -200,14 +200,14 @@ Dakota, Jisung, Sadamori, Rodrigo, Woo-Sung, Staša, and YY
 \section{Theoretical justification of \textit{word2vec} and the Gravity Model}
 \label{sec:theory}
 \thispagestyle{empty}
-Why does \textit{word2vec} with the skip-gram with negative sampling model (SGNS) work so well to model mobility?
-Here, we demonstrate that the SGNS model and the gravity model of mobility are mathematically equivalent.
-This connection provides strong theoretical justification to our choice of \textit{word2vec}, and constitutes a major breakthrough of our understanding of neural embeddings.
+Why does the \textit{word2vec} with skip-gram and negative sampling (SGNS) model work so well to model mobility?
+Here, we demonstrate that SGNS and the gravity model of mobility are mathematically equivalent.
+This connection provides strong theoretical justification to our choice of \textit{word2vec} to model mobility, and constitutes a major breakthrough of our understanding of neural embeddings.
 In addition, this motivates the use of SGNS for the future study of human mobility.
 
 \subsection{\textit{word2vec} algorithm}
-Imagine a trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th location in the trajectory. A location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$.
-Then, the skip-gram \textit{word2vec} learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
+Imagine a trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$\textsuperscript{th} location in the trajectory. A location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$.
+Then, the skip-gram \textit{word2vec} model learns probabilities $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
 %
 % MAIN W2V Equation
 %
@@ -222,7 +222,7 @@ where,
 \begin{equation}
 	P(j \given i) = \frac{\exp(\vect{u}_j \cdot \vect{v}_{i})}{Z_i}, \label{eq:cond_prob_w2v}
 \end{equation}
-where $\vect{v}$ and $\vect{u}$ are the ``in-vector'' and ``out-vector'', respectively,  $Z_i=\sum_{j' \in \mathcal{A}} \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations. In general, calculating $Z_i$ is computationally expensive and there are two common approximation:
+where $\vect{v}$ and $\vect{u}$ are the ``in-vector'' and ``out-vector'', respectively,  $Z_i=\sum_{j' \in \mathcal{A}} \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations. In general, calculating $Z_i$ is computationally expensive, so two kinds of approximations are commonly used:
 hierarchical softmax \autocite{morin2005hierarchical} and negative sampling \autocite{mikolov2013word2vec}.
 Due to its simplicity and performance, negative sampling is the most widely used strategy, which we also adopt in our study.
 
@@ -230,7 +230,7 @@ Due to its simplicity and performance, negative sampling is the most widely used
 \subsection{An implicit bias in the negative sampling}
 
 Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that does not yield the optimal embeddings in terms of the objective function, ${\cal J}$.
-This bias in negative sampling turns out to be the key piece that connects word2vec and the gravity model.
+This bias in negative sampling turns out to be key to the connection between word2vec and the gravity model.
 
 Negative sampling trains {\it word2vec} using a binary classification task as follows.
 For each target word $i$, we sample a context word $j$ from the given data and label it as positive, denoted by $Y_{j}=1$.
@@ -395,7 +395,7 @@ To reflect our new findings, we have made the following changes to the manuscrip
 	\itemsep0em
 	\item Following results demonstrating the performance of the embedding distance compared to geographic distance, we add the section \textbf{word2vec and the gravity model}, which summarizes the link between the two models.
 	\item We also added the section \textbf{An implicit bias in the negative sampling} to the methods section of our manuscript.
-	\item Since the formulation of the gravity used in the above derivations assumes $\gamma = 1$, we use $\gamma = 1$ for all reported results. No results have been substantively changed.
+	\item Since the formulation of the gravity used in the above derivations assumes $\gamma = 1$, we use $\gamma = 1$ for all reported results. No findings have substantively changed.
 	\item We added a sentence to the paper speculating on why cosine similarity works best.
 	\item We also added a sentence noting the in-vector and out-vector issue, and speculating on reasons/consequences.
 \end{itemize}
@@ -582,7 +582,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 	We believe that the ratio of the number of organizations represented in our dataset to the total number of mobility trajectories makes our results especially robust.
 	About 8,661 organizations are represented across over three million career trajectories of scientists, such that nearly every organization appears enough times, and in enough contexts, to produce a robust vector representation.
-	However, this may not hold true for all problem domains—for example, the natural language includes many millions of tokens, many of which will occur only a few times, allowing stochasticity to have a much stronger effect on the final representation.
+	However, this may not hold true for all problem domains—for example, natural language includes many millions of tokens, many of which will occur only a few times, allowing stochasticity to have a much stronger effect on the final representation.
 	Heeding this as a general concern, we have added the following sentence to our limitations paragraph in our conclusion:
 
 	“We note that all results shown here are robust to this stochasticity, likely emerging from the limited ``vocabulary'' of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories). Applications of word2vec to problem domains where the ratio of the vocabulary to data is smaller, however, should take caution to ensure that findings are not the result of random fluctuations.”
@@ -639,11 +639,12 @@ All of the referees presented us with excellent, insightful comments and we feel
 	Although the paper is well written and explores a very interesting problem, I have certain criticism for the used methodology. After obtaining a representation of each dataset, the authors defined an embedding distance as the cosine distance between vectors in the space, while defining distance as the geographical distance in the original, spatially embedded datasets. Subsequently they used the Gravity Law to estimate the flux between location pairs of vector pairs in the spatial and embedded space respectively. The Gravity Law, applied on mobility, assumes that the number of people moving between two populations is proportional to the multiplicative of the sizes of the populations and a deterrence function. Research during the last decades on transportation, spatial networks and human mobility suggests that this deterrence function may take a functional form of an inverse exponential or an inverse power-law, as it has been acknowledged by the authors. However, the emergence of these different deterrence functions can be due to fundamentally different mechanisms (for a review on the topic see Barthélemy, Physics Reports 499, 1, 2011, a paper not cited in the manuscript). For example, the different cost functions (linear or logarithmic) to create link at a given distance, the spatial granularity of the observation, or even the heterogeneity of the moving individuals in terms of various factors, just to mention a few examples. Instead, the authors of the actual paper arbitrarily assumed a power-law deterrence function in the spatial case and an exponential deterrence function in the embedding space without further arguing their choice (other than fitting on the data). Furthermore, assuming different deterrence functions for the flux estimation using Gravity Law makes the estimated fluxes incomparable, resulting the invalidation of results depicted in Figure 2.
 }
 
-\response{Thank you for pointing this out.
-	We carefully read out the Barthélemy, Physics Reports 499, 1, 2011, and referenced it in our manuscript.
-		It has been argued that the power-law decay function fits well with the geographical distance because the power-law gravity model is more suitable for analyzing large, complex, and scale-free spatial systems with long-range spatial memory, whereas the exponential gravity model fits well with the simpler system with no spatial memory~\autocite{chen2015distance}.
-	We report the performance of the flux estimation and prediction using different deterrence functions (see Section 2, above), finding that although the absolute values vary, the pattern doesn't change---the embedding distance robustly outperforms geographic distance regardless of the function used. Also, we show why embedding distance fits well with the exponential gravity model with the underlying connection between \textit{word2vec} and the gravity model (see Section 1, above).
-	We add the following line to the methods noting this point,
+\response{Thank you for noting this.
+	We carefully read out the Barthélemy, Physics Reports 499, 1, 2011, and found it incredibly educational, referencing it in our manuscript.		
+	It has been argued that the power-law decay function is appropriate for modelling geographic distance the model is more suitable for analyzing large, complex, and scale-free spatial systems with long-range spatial memory, whereas the exponential gravity model fits well with the simpler system with no spatial memory~\autocite{chen2015distance}.
+	We report the performance of the flux estimation and prediction using both deterrence functions (see Section 2, above), finding that although the absolute values vary, the qualitative pattern remains the same---the embedding distance outperforms geographic distance regardless of the function used.
+	 We also elaborate on the connection between the embedding distance and exponential model during out discussion on \textit{word2vec} and the gravity model of mobility (see Section 1, above).
+	 In addition, we add the following line to our manuscript, noting these considerations,
 
 	\medskip
 	\say{The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanism [...] such as the cost functions for a given distance and the spatial granularity of the observation.
@@ -704,7 +705,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 	A full search of the hyper-parameter space would certainly be interesting and useful, however we believe that set of hyper-parameters we considered here is sufficient to establish the utility of the approach, and demonstrate that performance is only slightly different based on different hyper-parameters.
 	There are previous studies on the optimal dimensionality of word embedding \autocite{yin2018understand, yin2018dimensionality}. Also,
-	we note that in previous work from our group, we explored the optimal dimensions for graph embedding~\autocite{gu2020dimensions}, finding that while a sufficient number of dimensions is necessary to capture the structure, increasing the dimensions does not heavily deteriorate from performance, a property common across deep learning methods.
+	we note that in previous work from our group, we explored the optimal dimensions for graph embedding~\autocite{gu2020dimensions}, finding that while a sufficient number of dimensions is necessary to capture the structure, increasing the dimensions does not heavily deteriorate the performance, a property common across deep learning methods.
 	Given that there is little performance difference between $d = 100$ and $d = 300$, we opt to use the larger embeddings at $d = 300$, which are large enough to capture the complexity of mobility, yet small enough to allow an efficient computational workflow.
 }
 
@@ -771,7 +772,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	We think that there is a great deal of potential in methods like BERT for representing mobility data.
 	What initially drew us to \textit{word2vec}, however, was its simplicity, ubiquity, and mathematical tractability (at least compared to other, more sophisticated approaches).
 	This last attribute proved very useful, as in exploring the mathematical properties of the model, we discovered a deep connection between \textit{word2vec} and the gravity model of mobility, which explains why it learns gravity-like relationships between entities (see Section 1, this letter).
-	We believe that this new discovery, now included in the manuscript, strongly ground our use of \textit{word2vec} here.
+	We believe that this new discovery, now included in the manuscript, strongly grounds our use of \textit{word2vec} here.
 
 	We agree that the revolution in neural embeddings offers great promise in mobility and look forward to reading and also working on these future studies; however, we argue that our contribution is most well-founded, and best serves the scientific community, by working with simpler and more established models (see Section 2, this letter), especially concerning the mathematical link we uncovered. Moreover, these deep models require a tremendous amount of training data ($\sim$3 billion words in Bert) and model parameters, making their use infeasible in applicants most.
 
