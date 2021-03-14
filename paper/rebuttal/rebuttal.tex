@@ -161,7 +161,7 @@ While reflecting on these comments and our manuscript, we have made a theoretica
 namely, we have discovered \emph{a mathematical equivalence between the \textit{word2vec} (skip-gram with negative sampling) model and the gravity model.}
 
 Furthermore, our subsequent experiments show that our approach's performance is robust, exceeding many other baselines, even direct optimization of the gravity model.
-Therefore, with these changes, we are confident that our paper is substantially stronger with a qualitative leap.
+Therefore, with these changes, we are confident that our paper is substantially stronger, exhibiting a qualitative leap.
 Thus, we would like to request a reconsideration of our manuscript.
 Again, we are incredibly appreciative of these comments, which provided the insight and motivation needed to make these breakthroughs.
 
@@ -174,9 +174,9 @@ We have developed the mathematical and theoretical basis of our approach for emb
 	\item The lack of sufficient grounding in the literature of neural embeddings and mobility
 \end{enumerate}
 \vspace{-0.1cm}
-We address the first point by presenting the mathematical equivalence between the Gravity Model of Mobility and the skip-gram negative sampling \textit{word2vec} model.
-Namely, we demonstrate that \textit{word2vec}'s objective function is equivalent to the gravity model and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
-This development constitutes a major breakthrough in our understanding of neural embeddings, and in addition to justifying their use in our study, also opens the door for further research applying them to the study of mobility.
+We address the first point by presenting the mathematical equivalence between the gravity model of mobility and the skip-gram negative sampling \textit{word2vec} model.
+Namely, we demonstrate that \textit{word2vec}'s objective function is equivalent to the gravity model due to the implicit bias of negative sampling,  and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
+We believe that this development constitutes a major breakthrough in our understanding of neural embeddings, and in addition to justifying their use in our study, also opens the door for further research applying them to the study of mobility.
 
 For the second point, we have conducted experiments comparing the performance of neural embedding to (\romannum{1}) a singular value decomposition of the mobility network,  (\romannum{2}) a Laplacian eigenmap embedding  (\romannum{3}) a \textit{word2vec} model with matrix factorization,  and  (\romannum{4}) a direct optimization of the gravity model. We find that the embedding distance from \textit{word2vec} outperforms all baselines, even the direct optimization of gravity model with the multidimensional scaling, in explaining and predicting real-world mobility.
 
@@ -395,7 +395,7 @@ To reflect our new findings, we have made the following changes to the manuscrip
 	\itemsep0em
 	\item Following results demonstrating the performance of the embedding distance compared to geographic distance, we add the section \textbf{word2vec and the gravity model}, which summarizes the link between the two models.
 	\item We also added the section \textbf{An implicit bias in the negative sampling} to the methods section of our manuscript.
-	\item Since the formulation of the gravity used in the above derivations assumes $\gamma = 1$, we use $\gamma = 1$ for all reported results. No findings have substantively changed.
+	\item Since the formulation of the gravity used in the above derivations assumes $\gamma = 1$, we use $\gamma = 1$ for all reported evaluation results. No findings have substantively changed.
 	\item We added a sentence to the paper speculating on why cosine similarity works best.
 	\item We also added a sentence noting the in-vector and out-vector issue, and speculating on reasons/consequences.
 \end{itemize}
