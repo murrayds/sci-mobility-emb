@@ -619,13 +619,13 @@ Taiwan           & 3.67             & 72
 \begin{table}[ht]
 \caption{
 	\textbf{Correlation between flux and distance over metrics, experimental parameters}.
-	Each cell corresponds to the correlation (measured with $R^{2}$) between the real-world flux between scientific organizations, comparing the embedding distance against baseline metrics, and across subsets of mobility data and by definitions of organization population.
-	The asterisk denotes the top-performing distance metric by column.
-	Distance metrics are ordered from highest $R^{2}$ to lowest, based on global mobility with organization population defined using all mobile and non-mobile authors.
-	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
-		population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
-		``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-		Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct optimization of the gravity law works better, as well as Levy's factorization~\autocite{levy2014neural} for domestic and international only mobility.
+			Each cell corresponds to the correlation between the real-world flux between scientific organizations (measured with $R^{2}$) and baseline metrics, shown by subsets of mobility data and by definitions of organization population.
+			The asterisk denotes the top-performing distance metric by column.
+			Distance metrics are ordered from highest $R^{2}$ to lowest, based on global mobility with organization population defined using all mobile and non-mobile authors.
+			``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+			population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
+			``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
+			Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct optimization of the gravity model works better, as well as Levy's factorization~\autocite{levy2014neural} for domestic and international only mobility.
 }
 \label{supp:table:r2_table}
 \begin{centerbox}
@@ -861,8 +861,7 @@ Taiwan           & 3.67             & 72
 \begin{table}[ht]
 \caption{
 	\textbf{Prediction error between actual and predicted mobility with exponential gravity model, by metrics and experimental parameters}.
-	Each cell corresponds to the prediction error (measured with root mean squared error) between the real-world flux between scientific organizations and predictions made with the exponential form of the gravity model of mobility.
-	The prediction error is shown for the embedding distance compared against baselines, subsets of mobility data, and definitions of organization population.
+	Each cell corresponds to the prediction error (measured with root mean squared error) when using each distance as input to the exponential form of the gravity model of mobility to predict the flux between organizations, shown by subsets of mobility data, and by definitions of organization population.
 	The asterisk denotes the top-performing distance metric by column (lowest prediction error).
 	Distance metrics are ordered from lowest prediction error to highest, based on global mobility with organization population defined using all mobile and non-mobile authors.
 	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
@@ -1108,8 +1107,7 @@ Taiwan           & 3.67             & 72
 \begin{table}[ht]
 \caption{
 	\textbf{Prediction error between actual and predicted mobility with power-law gravity model, by metrics and experimental parameters}.
-	Each cell corresponds to the prediction error (measured with root mean squared error) between the real-world flux between scientific organizations and predictions made with the power-law form of the gravity model of mobility.
-	The prediction error is shown for the embedding distance compared against baselines, subsets of mobility data, and definitions of organization population.
+	Each cell corresponds to the prediction error (measured with root mean squared error) when using each distance as input to the power-law form of the gravity model of mobility to predict the flux between organizations, shown by subsets of mobility data, and by definitions of organization population.
 	The asterisk denotes the top-performing distance metric by column (lowest prediction error).
 	Distance metrics are ordered from lowest prediction error to highest, based on global mobility with organization population defined using all mobile and non-mobile authors.
 	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
@@ -1442,14 +1440,13 @@ Taiwan           & 3.67             & 72
 		\textbf{Larger dimensions, smaller window size improves embedding performance.}
 		The correlation, or amount of flux explained by the embedding distance with varying skip-gram negative sampling hyperparameters.
 		Window size refers to $w$, the size of the context window that defines the context in a trajectory.
-		Smaller window sizes result in an embedding that explain more flux.
+		Smaller window sizes result in an embedding that explains more flux.
 		Embedding dimensions refer to the size of the embedding vector.
-		Larger vectors perform better, though little difference between 200 and 300.
-		Gamma refers to the $\gamma$ parameter in word2vec, which shapes the negative sampling distribution.
-		A value of $\gamma = 0.75$ is the default for word2vec.
+		Larger vectors perform better, though with little difference between 200 and 300.
+		Gamma refers to the $\gamma$ parameter in \textit{word2vec}, which shapes the negative sampling distribution.
+		A value of $\gamma = 0.75$ is the default for \textit{word2vec}.
 		There is virtually no difference in performance based on $\gamma$.
-		All variants perform better on same-country pairs of organizations than on all organizations.
-		All variants perform worse on different-country pairs on organizations.
+		All variants perform better on same-country organization pairs, and worse on different-country pairs, than on all pairs of  of organizations than on all pairs.
 		Embeddings with larger dimensions outperform mid-size embeddings for the different-country case.
 	}
 
