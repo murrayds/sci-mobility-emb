@@ -505,17 +505,17 @@ Although the Euclidean distance between directly-factorized vectors performs com
 
 \subsection{Why do neural embeddings outperform matrix factorization?}
 Why do neural embedding approaches outperform Levy's {\it word2vec} based on matrix factorization?
-%Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
-We find that Levy's {\it word2vec} suffers from extreme values in the matrix to factorize, which are numerous when window size is small.
-Remind that Levy's {\it word2vec} generates embeddings by factorizing matrix $M$ with entries
-$M_{ij} = \log\left[N(i,j)|D|/ (N(i) N(j))\right] - \log k$ based on the SVD (Eq.~\eqref{eq:levyword2vec}), where
-$N(i,j)$ is the number of co-occurrences of organizations $i$ and $j$ in the context window.
+We find that Levy's {\it word2vec} suffers from extreme values in the matrix to factorize, which are numerous when the context window size is small.
+Remind that Levy's {\it word2vec} generates embeddings by factorizing matrix $M$ given by Eq.~\eqref{eq:levyword2vec}, i.e.,
+\begin{equation}
+	M_{ij} = \log\left(\frac{N(i,j) |D|}{N(i) N(j)}\right) - \log k, \nonumber
+\end{equation}
+based on the SVD where $N(i,j)$ is the number of co-occurrences of organizations $i$ and $j$ in the context window.
 An issue is that when $N(i,j)$ is closer to zero, $M_{ij}$ goes to $-\infty$.
 To prevent such extreme values, a constant is added to $N(i,j)$ if $N(i,j)=0$ in Levy's {\it word2vec}~\autocite{levy2014neural, Qui2018}.
 However, this changes the data to which we fit the model, and small $N(i,j)$ values, which are likely to arise due to noise in data, still have a profound impact on the embedding.
-The problem is aggravated when the size, $w$, of context window is small.
-As the window size becomes smaller, two institutions are less likely to co-appear in the same window, yielding more affiliation pairs with $N(i,j)=0$, which is the case in our experiment (i.e., we set the context window size $w=1$).
-%This is particularly problematic when the context window is small and most affiliation pairs would have no direct flow, leading to $N(i,j)=0$ for most affiliation pairs $(i,j)$.
+This problem is aggravated when the context window size $w$ is small.
+As the window size $w$ becomes smaller, two institutions are less likely to co-appear in the same window, yielding more affiliation pairs with $N(i,j)=0$, which is the case in our experiment (i.e., we set the context window size $w=1$).
 Also, it is well known that SVD itself is vulnerable to outliers \autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
 The stochastic gradient descent algorithm (SGD), which is employed in neural embedding approaches, is more robust than SVD and can enhance the generalization and effectiveness of {\it word2vec}~\autocite{ma2018power, smith2020generalization, zhang2019algorithmic}.
 
