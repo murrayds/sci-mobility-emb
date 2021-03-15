@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[12pt,draft,a4paper]{article}
 \usepackage{graphicx}
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -178,7 +178,7 @@ We address the first point by presenting the mathematical equivalence between th
 Namely, we demonstrate that \textit{word2vec}'s objective function is equivalent to the gravity model due to the implicit bias of negative sampling,  and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
 We believe that this development constitutes a major breakthrough in our understanding of neural embeddings, and in addition to justifying their use in our study, also opens the door for further research applying them to the study of mobility.
 
-For the second point, we have conducted experiments comparing the performance of neural embedding to (\romannum{1}) a singular value decomposition of the mobility network,  (\romannum{2}) a Laplacian eigenmap embedding  (\romannum{3}) a \textit{word2vec} model with matrix factorization,  and  (\romannum{4}) a direct optimization of the gravity model. We find that the embedding distance provided by \textit{word2vec} outperforms all baselines, including the direct optimization of gravity model with the multidimensional scaling, in explaining and predicting real-world mobility.
+For the second point, we have conducted experiments comparing the performance of neural embedding to (\romannum{1}) the singular value decomposition of the mobility network,  (\romannum{2}) a Laplacian eigenmap embedding  (\romannum{3}) a \textit{word2vec} model with matrix factorization,  and  (\romannum{4}) a direct optimization of the gravity model. We find that the embedding distance provided by \textit{word2vec} outperforms all baselines, including the direct optimization of gravity model with the multidimensional scaling, in explaining and predicting real-world mobility.
 
 Finally, in order to address the third point, we have incorporated relevant literature to better ground our manuscript in the existing studies.
 
@@ -409,12 +409,12 @@ In our original manuscript, we compared the performance of what we call the embe
 These alternatives included the geographic distance between locations, the distance most commonly used in definitions of the gravity model of mobility, along with the dot product similarity between embedding vectors, and the cosine distance and Jensen-Shannon divergence between vectors obtained from a personalized-page-ranking procedure on the underlying mobility network. Following the advice of the referees, we also add additional baselines to illustrate how the embedding distance performs compared to simpler embedding alternatives and also to a more advanced approach as follows:
 
 \vspace{-0.5cm}
-\paragraph{SVD on co-occurrence matrix:}The first of these baselines uses the distance between vectors in an embedding space produced through a singular-value decomposition of the underlying location co-occurrence matrix. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
-Then, we apply truncated singular value decomposition with $d=300$ on the flow matrix $A$ directly.
+\paragraph{SVD on co-occurrence matrix:}The first of these baselines uses the distance between vectors in an embedding space produced through the singular value decomposition (SVD) of the underlying location co-occurrence matrix. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
+Then, we apply the truncated SVD with $d=300$ on the flow matrix $A$ directly.
 
 \vspace{-0.3cm}
 \paragraph{Laplacian Eigenmap:} As the second baseline, we consider Laplacian Eigenmap embeddings~\autocite{belkin2003laplacian}, which is one of the most fundamental approaches for graph embedding. We generate Laplacian Eigenmap embeddings by applying a truncated singular value decomposition to matrix $L$ given by $L=D - A$, where
-$A$ is the co-occurrence matrix of $N$ organizations with element $A_{ij}$ indicating the number of the co-occurrences of organizations $i$ and $j$ in the same affiliation trajectory, and $D$ is the diagonal matrix with diagonals $D_{ii}=\sum_j {A_{ij}}$. We set the dimension to $d=300$.
+$A$ is the co-occurrence matrix of $N$ organizations with element $A_{ij}$ indicating the number of co-occurrences of organizations $i$ and $j$ in the same affiliation trajectory, and $D$ is the diagonal matrix with diagonals $D_{ii}=\sum_j {A_{ij}}$. We set the dimension to $d=300$.
 
 \vspace{-0.3cm}
 \paragraph{Levy's  symmetric SVD \textit{word2vec} distance:} In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}.
@@ -422,13 +422,14 @@ They utilize SVD to train the {\it word2vec}'s model observing that training \te
 Here, we compare the performance of \textit{word2vec} embeddings against those calculated directly using Levy's SVD.
 First, we construct the matrix of $N$ organizations
 \begin{equation}
+	\label{eq:levyword2vec}
 	M_{ij} = \log\left(\frac{N(i,j) |D|}{N(i) N(j)}\right) - \log(k),
 \end{equation}
 where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given the window size $w$ in the total corpus $D$, $N(i)=\sum_{j=1}^N N(i,j)$ as the number of items $i$ occurred given the window size $w$ in $D$, and $k$ is the number of negative samples. We used $w=1$ and $k=5$ which is the same setting as in our main result. Then, we factorized matrix $M$  into $V_d \Sigma_d U_d$ using truncated SVD with $d=300$, and used $V_d\sqrt{\Sigma_d}$ as the in-vectors.
 
 \vspace{-0.3cm}
 \paragraph{Direct optimization of gravity model:} Finally, we create an embedding by optimizing for the gravity model directly.
-Specifically, we construct a gravity matrix of $N$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual number of unique mobile and non-mobile authors affiliated. We then embed the gravity matrix using two approaches: a truncated singular-value decomposition (SVD), and multidimensional scaling (MDS), which embeds each location in an N-dimensional space such that pairwise distances are preserved as well as possible.
+Specifically, we construct a gravity matrix of $N$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is the number of co-occurrences of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual number of unique mobile and non-mobile authors affiliated. We then embed the gravity matrix using two approaches: the truncated SVD, and multidimensional scaling (MDS), which embeds each location in an N-dimensional space such that pairwise distances are preserved as well as possible.
 Typically, MDS uses Euclidean distance to measure the distance between vectors.
 
 \subsection{New experimental parameters}
@@ -456,8 +457,8 @@ As a side benefit, including the hyperparameter of $\gamma$ also effectively dou
 		Larger vectors perform better, though with little difference between 200 and 300.
 		Gamma refers to the $\gamma$ parameter in \textit{word2vec}, which shapes the negative sampling distribution.
 		A value of $\gamma = 0.75$ is the default for \textit{word2vec}.
-		There is virtually no difference in performance based on $\gamma$.
-		All variants perform better on same-country organization pairs, and worse on different-country pairs, than on all pairs of  of organizations than on all pairs.
+		There is virtually no difference in performance for different $\gamma$ values.
+		All variants perform better on same-country organization pairs, and worse on different-country pairs, than on all pairs of organizations.
 		Embeddings with larger dimensions outperform mid-size embeddings for the different-country case.
 	}
 
@@ -497,15 +498,26 @@ The second definition defines the population akin to language, as simply its fre
 
 
 
-We observe that the cosine distance between embedding vectors, which we call here the "Embedding Distance", explains more of the flux, and results in lower prediction error than all baselines we considered (See Fig.~\ref{fig:supp:distancemetrics}).
+We observe that the cosine distance between embedding vectors, which we call here the ``Embedding Distance'', explains more of the flux, and results in lower prediction error than all baselines we considered (See Fig.~\ref{fig:supp:distancemetrics}).
 This performance advantage holds across \emph{the exponential and the power-law forms of the gravity model of mobility}.
 Although the Euclidean distance between directly-factorized vectors performs comparably, and even narrowly beats the embedding distance under certain experimental settings (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}); our approach shows the most consistent and robust performance, outperforming even the direct optimization of the gravity models.
 
 
-\subsection{Why do neural embeddings outperform direct matrix factorization?}
-Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
-An issue in the matrix factorization approach is that it is sensitive to small values. The matrix factorization approach embeds affiliations $i$ and $j$ such that their dot similarity is as close as to $\log (T_{ij} / P(i) P(j))$. If the flow $T_{ij}$ is considerably small or zero, the dot similarity approaches $-\infty$, pushing $i$ and $j$ away in the embedding space~\autocite{levy2014neural, Qui2018}. This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. To circumvent this problem, the previous studies~\autocite{levy2014neural, Qui2018} add a constant flow between the affiliation pairs with no flow. However, this changes the data to which we fit the model, and small flows still have a considerably strong impact on the embedding. Also, it is well known that SVD itself is vulnerable to outliers \autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
-The stochastic gradient descent algorithm (SGD), which is employed in SGNS \textit{word2vec}, is more robust than SVD and can enhance generalization and effectiveness of {\it word2vec} model \autocite{ma2018power, smith2020generalization, zhang2019algorithmic}.
+\subsection{Why do neural embeddings outperform matrix factorization?}
+Why do neural embedding approaches outperform Levy's {\it word2vec} based on matrix factorization?
+%Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
+We find that Levy's {\it word2vec} suffers from extreme values in the matrix to factorize, which are numerous when window size is small.
+Remind that Levy's {\it word2vec} generates embeddings by factorizing matrix $M$ with entries
+$M_{ij} = \log\left[N(i,j)|D|/ (N(i) N(j))\right] - \log k$ based on the SVD (Eq.~\eqref{eq:levyword2vec}), where
+$N(i,j)$ is the number of co-occurrences of organizations $i$ and $j$ in the context window.
+An issue is that when $N(i,j)$ is closer to zero, $M_{ij}$ goes to $-\infty$.
+To prevent such extreme values, a constant is added to $N(i,j)$ if $N(i,j)=0$ in Levy's {\it word2vec}~\autocite{levy2014neural, Qui2018}.
+However, this changes the data to which we fit the model, and small $N(i,j)$ values, which are likely to arise due to noise in data, still have a profound impact on the embedding.
+The problem is aggravated when the size, $w$, of context window is small.
+As the window size becomes smaller, two institutions are less likely to co-appear in the same window, yielding more affiliation pairs with $N(i,j)=0$, which is the case in our experiment (i.e., we set the context window size $w=1$).
+%This is particularly problematic when the context window is small and most affiliation pairs would have no direct flow, leading to $N(i,j)=0$ for most affiliation pairs $(i,j)$.
+Also, it is well known that SVD itself is vulnerable to outliers \autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
+The stochastic gradient descent algorithm (SGD), which is employed in neural embedding approaches, is more robust than SVD and can enhance the generalization and effectiveness of {\it word2vec}~\autocite{ma2018power, smith2020generalization, zhang2019algorithmic}.
 
 
 \subsection{Changes to the manuscript}
