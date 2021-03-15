@@ -269,11 +269,11 @@ First, we construct the matrix of $N$ organization
 \end{equation}
 where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given the window size $w$ in the total corpus $D$ ,$N(i)=\sum_{j=N}^i N(i,j)$ as the number of items $i$ occurred given the window size $w$ in $D$, and k is the number of negative samples. We used $w=1$ and $k=5$ which is same setting in the our main result. Then, we factorized matrix $M$ with truncated singular value decomposition in the matrix with $d=300$ into $U_d \Sigma_d V_d$, and used the embedding vector as $U_d\sqrt{\Sigma_d}$.
 
-For this baseline, we report results using the cosine distance, euclidean distance, and dot product between the embedding vectors.
+For this baseline, we report results using the cosine distance, Euclidean distance, and dot product between the embedding vectors.
 We find that the dot product performs by far the worst, worse than any other baseline considered $R^{2} = 0.004$, Table~\ref{supp:table:r2_table}).
 The cosine distance performs better, but worse than geographic distance ($R^{2} = 0.212$, Table~\ref{supp:table:r2_table}).
-The euclidean distance performs best, explaining more of the flux than geographic distance, and only being below the embedding distance ($R^{2} = 0.341$, Table~\ref{supp:table:r2_table}).
-Focusing on the euclidean distance, we find that using it as input to the gravity model results in better predictions than geographic distance using both the exponential model (RMSE $= 0.803$, Table~\ref{supp:table:rmse_exp_table}) and power law models, (RMSE $= 0.78$, Table~\ref{supp:table:rmse_power_table}), though it performs slightly better with the power law formulation.
+The Euclidean distance performs best, explaining more of the flux than geographic distance, and only being below the embedding distance ($R^{2} = 0.341$, Table~\ref{supp:table:r2_table}).
+Focusing on the Euclidean distance, we find that using it as input to the gravity model results in better predictions than geographic distance using both the exponential model (RMSE $= 0.803$, Table~\ref{supp:table:rmse_exp_table}) and power law models, (RMSE $= 0.78$, Table~\ref{supp:table:rmse_power_table}), though it performs slightly better with the power law formulation.
 
 
 %
@@ -286,9 +286,9 @@ Finally, we create an embedding by optimizing for the gravity law directly.
 Specifically, we construct a gravity matrix of $N$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual member of unique mobile and non-mobile authors affiliated.
 
 We then embed the gravity matrix using two approaches: a truncated singular value decomposition (SVD), and with multidimensional scaling (MDS), which embeds each location in a N-dimensional space such that pairwise distances are preserved as well as possible. 
-Typically, MDS uses euclidean distance to measure distance between vectors. 
+Typically, MDS uses Euclidean distance to measure distance between vectors. 
 
-For this result, we report results using the cosine distance between embedding vectors for the SVD embedding, and the logged euclidean distance for the MDS embedding. 
+For this result, we report results using the cosine distance between embedding vectors for the SVD embedding, and the logged Euclidean distance for the MDS embedding. 
 We observe that the gravity-optimized SVD cosine distance has poor performance, more weakly correlated with actual flux than geographic distance ($R^{2} = 0.122$, Table~\ref{supp:table:r2_table}), and similarly poor prediction error when used as input to the gravity mode.
 In contrast, the cosine distance between MDS vectors has the second-highest correlation with actual flux, after only the embedding distance ($R^{2} = 0.355$, Table~\ref{supp:table:r2_table}), and third best for predicting actual flux using both the power-law version of the gravity model (RMSE = $0.795$, Table~\ref{supp:table:rmse_power_table}), though performance is much lower using the exponential form (RMSE = $0.904$, Table~\ref{supp:table:rmse_exp_table}). 
 We note that the MDS embedding actually has the lowest prediction error when organizations' populations are defined as the raw frequency during prediction with the power-law model (RMSE = $0.691$, Table~\ref{supp:table:rmse_power_table});
@@ -688,7 +688,7 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's Euclidean} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.341 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.369 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.382 \hspace{6pt}\huxbpad{6pt}} &
@@ -919,7 +919,7 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's Euclidean} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.803 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.791 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.771 \hspace{6pt}\huxbpad{6pt}} &
@@ -1009,7 +1009,7 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS Euclidean} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.904 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.944 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}} &
@@ -1165,7 +1165,7 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's Euclidean} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.78 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.776 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.755 \hspace{6pt}\huxbpad{6pt}} &
@@ -1180,7 +1180,7 @@ Taiwan           & 3.67             & 72
 \hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 \arrayrulecolor{black}
 
-\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS Euclidean} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}} &
