@@ -53,7 +53,7 @@ def draw_figure(
 
     # Get representative vector, calculate pairwise similarity, and do hierarchical clustering.
     target_countries = [
-        k for k, v in Counter(country_list).items() if v >= 25 and k != "United States"
+        k for k, v in Counter(country_list).items() if v >= 27 
     ]
 
     # First, get all pairwise distances and save to a file
@@ -102,6 +102,7 @@ def draw_figure(
     name_convert_dict["Taiwan, Province of China"] = "Taiwan"
     name_convert_dict["Iran, Islamic Republic of"] = "Iran"
     name_convert_dict["United Kingdom"] = "U.K."
+    name_convert_dict["United States"] = "U.S."
     name_convert_dict["Russian Federation"] = "Russia"
     name_convert_dict["South Africa"] = "S. Africa"
     name_convert_dict["Czech Republic"] = "Czech"
@@ -122,7 +123,7 @@ def draw_figure(
         "zh": "#FF5722",
         "de": "#F5CC26",
         "pt": "#009688",
-        "nl": "#BDA661",
+        "nl": "#a18b47",
         "fr": "#d3d3d3",
         "es": "#d3d3d3",
         "it": "#d3d3d3",
@@ -201,7 +202,7 @@ def draw_figure(
         sim_mtx,
         cmap="viridis_r",
         yticklabels=target_countries,
-        vmax=0.776,
+        vmax=0.786,
         row_linkage=linked,
         col_linkage=linked,
         row_colors=[
@@ -235,29 +236,29 @@ def draw_figure(
     from matplotlib.patches import Rectangle
 
     ax.add_patch(
-        Rectangle((-4.6, 0), 4.6, 7, fill=False, clip_on=False, edgecolor="black", lw=3)
+        Rectangle((-4.7, 0), 4.7, 9, fill=False, clip_on=False, edgecolor="black", lw=3)
     )
     ax.add_patch(
-        Rectangle((-4.6, 7), 4.6, 4, fill=False, clip_on=False, edgecolor="black", lw=3)
+        Rectangle((-4.7, 9), 4.7, 4, fill=False, clip_on=False, edgecolor="black", lw=3)
     )
     ax.add_patch(
         Rectangle(
-            (-4.6, 11), 4.6, 6, fill=False, clip_on=False, edgecolor="black", lw=3
+            (-4.7, 13), 4.7, 5, fill=False, clip_on=False, edgecolor="black", lw=3
         )
     )
     ax.add_patch(
         Rectangle(
-            (-4.6, 17), 4.6, 8, fill=False, clip_on=False, edgecolor="black", lw=3
+            (-4.7, 18), 4.7, 8, fill=False, clip_on=False, edgecolor="black", lw=3
         )
     )
     ax.add_patch(
         Rectangle(
-            (-4.6, 25), 4.6, 6, fill=False, clip_on=False, edgecolor="black", lw=3
+            (-4.7, 26), 4.7, 3, fill=False, clip_on=False, edgecolor="black", lw=3
         )
     )
     ax.add_patch(
         Rectangle(
-            (-4.6, 31), 4.6, 5, fill=False, clip_on=False, edgecolor="black", lw=3
+            (-4.7, 29), 4.7, 8, fill=False, clip_on=False, edgecolor="black", lw=3
         )
     )
     lp = lambda i: plt.plot(
@@ -282,14 +283,14 @@ def draw_figure(
     ]
     continent_legend = plt.legend(
         handles=handles,
-        bbox_to_anchor=(-0.2, 1.74),
+        bbox_to_anchor=(0.1, 1.74),
         prop=prop,
         frameon=False,
         ncol=6,
         handlelength=0,
         handletextpad=1,
     )
-    plt.text(-11.2, 1.07, "Region", fontproperties=bold_prop)
+    plt.text(-11.3, 1.09, "Region", fontproperties=bold_prop)
 
     lp = lambda i: plt.plot(
         [],
@@ -310,7 +311,7 @@ def draw_figure(
         handlelength=0,
         handletextpad=1,
     )
-    plt.text(-11.2, 1, "Language Family", fontproperties=bold_prop)
+    plt.text(-11.45, 1.01, "Language Family", fontproperties=bold_prop)
 
     language_name_convert_dict = {
         "en": "English",
@@ -338,7 +339,7 @@ def draw_figure(
         handlelength=0,
         handletextpad=1,
     )
-    plt.text(-11.2, 0.93, "Language", fontproperties=bold_prop)
+    plt.text(-11.5, 0.945, "Language", fontproperties=bold_prop)
 
     plt.gca().add_artist(continent_legend)
     plt.gca().add_artist(language_family_legend)
