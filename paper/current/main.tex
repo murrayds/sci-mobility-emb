@@ -151,7 +151,7 @@
 	As understanding mobility is becoming critical for contemporary society, finding frameworks that can capture this complexity is of paramount importance.
 	Here, we reveal that the neural embedding model \textit{word2ec}~\autocite{mikolov2013word2vec} is mathematically equivalent to the gravity model of mobility and, using three distinct human trajectory datasets, demonstrate that a neural embedding model can encode nuanced relationships between locations into a vector-space, providing an effective measure of distance that reflects the multi-faceted structure of human mobility.
 	Focusing on the case of scientific mobility, we show that embeddings of scientific organizations uncover cultural and linguistic relations, and even academic prestige, at multiple levels of granularity.
-	Furthermore, the embedding vectors reveal universal relationships between organizational characteristics and their place in the global landscape of scientific mobility.	
+	Furthermore, the embedding vectors reveal universal relationships between organizational characteristics and their place in the global landscape of scientific mobility.
 	The ability to learn scalable, dense, and meaningful representations of mobility directly from the data can open up new avenues for the study of mobility across domains.
 
 
@@ -197,7 +197,7 @@ Thus, the trajectories encode both migration and co-affiliation---the holding of
 
 A vector-space embedding of locations (airports, accommodations, and organizations) is learned by using trajectories as input to the standard with skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
 This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
-It works under the notion that a good representation should facilitate prediction, learning a mapping between words that can predict a target word based on its context (surrounding words). 
+It works under the notion that a good representation should facilitate prediction, learning a mapping between words that can predict a target word based on its context (surrounding words).
 The model is also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
 
@@ -248,14 +248,14 @@ performance of the embedding distance is similar between the functional forms, t
 \subsection*{Embeddings provide functional distance between locations}
 
 We show that the embedding distance better predicts actual mobility flows than the geographic distance across three disparate datasets.
-In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$).  
+In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$).
 Also, the embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}b).
 In the case of Korean accommodation reservations, embedding distance better explains the expected flux ($R^{2} = 0.57$, Fig.~\ref{fig:gravity_performance}c) than does geographic distance ($R^{2} = 0.25$), and predictions made using the embedding distance outperform those made with geographic distance (Fig.~\ref{fig:gravity_performance}d).
 This performance is consistent in the case of scientific mobility:
 the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
 These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
 The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores calculated from the underlying mobility network (Fig.~\ref{fig:supp:distancemetrics}, Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baselines, such as distances derived from a singular-value decomposition and a Laplacian Eigenmap embedding~\autocite{belkin2003laplacian} of the underlying location co-occurence matrix, Levy's symmetric \textit{word2vec}\autocite{levy2014neural}, and even direct optimization of the gravity model (Fig.\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baselines, such as distances derived from a singular-value decomposition and a Laplacian Eigenmap embedding~\autocite{belkin2003laplacian} of the underlying location co-occurrence matrix, Levy's symmetric \textit{word2vec}\autocite{levy2014neural}, and even direct optimization of the gravity model (Fig.\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
 In sum, our results demonstrate that, consistently and efficiently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
 
 
@@ -274,7 +274,7 @@ In sum, our results demonstrate that, consistently and efficiently, the embeddin
 		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
 		The lightness of each hex bin indicates the frequency of organization pairs within it.
 		\textbf{b.} Predictions of flux between airport pairs made using embedding distance (top) outperform those made using geographic distance (bottom).
-		Boxplots show the distribution of actual flux for binned values of predicted flux.
+		Box-plots show the distribution of actual flux for binned values of predicted flux.
 		Box color corresponds to the degree to which the distribution overlaps with $y = x$;
 		a perfect prediction yields all points on the black line.
 		``RMSE'' is the root-mean-squared error between the actual and predicted values.
@@ -299,7 +299,7 @@ A target location $a_t=i$ is considered to have a context location $a_{t'}=j$ th
 	P\left(j \given i \right):= \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i}, \label{eq:prob_w2v_ng}
 \end{align}
 where the denominator $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
-Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---referred to as the in-vector and out-vector, respectively---we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$. 
+Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---referred to as the in-vector and out-vector, respectively---we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$.
 
 Our experiments show that {\it word2vec} best explains real-world mobility flow when $w=1$ (Fig.~\ref{fig:supp:hyperparameter}), with the flow predicted by
 \begin{align}
@@ -316,11 +316,12 @@ Although negative sampling is the most common approximation, it is a biased esti
 \end{align}
 where we redefine the normalization constant as $Z'_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$. (See the Methods and Supporting Information for the full derivation).
 
-Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\vect{v}_i = \vect{u}_i$ \autocite{levy2014neural}.
+Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimal in-vectors and out-vectors such that $\vect{v}_i = \vect{u}_i$ \autocite{levy2014neural}.
 Setting $\gamma = 1$ and substituting $\vect{v}_i = \vect{u}_i$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
 \begin{align}
-	\widehat{T}_{ij} \propto  P(i) P(j\given i) = \frac{P(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
+	\widehat{T}_{ij} \propto  N(i) P(j\given i) = \frac{NP(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
 \end{align}
+where $N(i) = NP(i)$ is the frequency of location $i$ in the data, and $N=\sum_{i \in {\cal A}} N(i)$ is the sum of frequencies of all locations.
 
 The flow $\widehat{T}_{ij}$ is symmetric (\ie $\widehat{T}_{ij}=\widehat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
 If we swap $i$ and $j$ in Eq.~\ref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
@@ -527,10 +528,10 @@ Embedding distance outperformed geographic distance across distinct and disparat
 We discover that this performance results from neural embeddings implicitly learning gravity law relationships between locations, making them particularly well suited to representing mobility.
 Focusing on scientific mobility, we find that the embedding successfully encodes many aspects of scientific mobility into a single representation, including global and regional geography, shared languages, and prestige hierarchies, even without explicit information on these factors.
 
-In revealing the correspondence between neural embeddings and the gravity model, the study of human mobility can move beyond geographic and network-based models of mobility, and instead leverage the high-order structure from individuals' mobility trajectories. 
+In revealing the correspondence between neural embeddings and the gravity model, the study of human mobility can move beyond geographic and network-based models of mobility, and instead leverage the high-order structure from individuals' mobility trajectories.
 While we focus on three domains of mobility, this approach could be applied to many different domains, such as general human migration, transit-network mobility, and more.
 Once learned, functional distances between locations, such as countries, cities, or organizations, can be published to support future research.
-Moreover, this approach can be used to learn a functional distance even between entities for which no geographic analog exists, such as between occupational categories based on individuals' career trajectories. 
+Moreover, this approach can be used to learn a functional distance even between entities for which no geographic analog exists, such as between occupational categories based on individuals' career trajectories.
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, the structure of the neural embedding space is amenable to a range of unique applications for studying mobility.
 As we have shown, the embedding space allows the visualization of the complex structure of scientific mobility at high resolution across multiple scales, providing a large and detailed map of the landscape of global scientific mobility.
 Embedding also allows us to quantitatively explore abstract notions such as academic prestige, and can potentially be generalized to other abstract axes.
@@ -538,7 +539,7 @@ Investigation of the structure of the embedding space, such as the vector norm, 
 
 This approach, and our study, also have several limitations.
 First, the skip-gram \textit{word2vec} model does not leverage directionality, meaning that embedding will be less effective at capturing mobility for which directionality is critical.
-Future studies may consider bi-directional embeddings, such as BERT~\autocite{devlin2018bert}, to incorporate directionality, as well as their correspondance to asymetric mobility models, such as the radiation model~\cite{simini2012universal}.
+Future studies may consider bi-directional embeddings, such as BERT~\autocite{devlin2018bert}, to incorporate directionality, as well as their correspondence to asymmetric mobility models, such as the radiation model~\cite{simini2012universal}.
 Second, the neural embedding approach is most useful in cases of mobility between discrete geographic units such as between countries, cities, and businesses; this approach is less useful in the case of mobility between locations represented using geographic coordinates, such as in the modeling of animal movements.
 Third, neural embeddings are an inherently stochastic procedure, and so results may change across different iterations.
 However, in this study we observe all results to be robust to stochasticity, likely emerging from the limited ``vocabulary'' of scientific mobility, airports, and accommodations (several thousand) and the relatively massive datasets used to learn representations (several million trajectories).
@@ -645,7 +646,7 @@ For scientific mobility, across each training iteration, the order of organizati
 \subsection*{An implicit bias in the negative sampling}
 \label{sec:sg_and_word2vec}
 
-Negative sampling trains {\it word2vec} using a binary classification task as follows.
+Negative sampling trains {\it word2vec} as follows.
 For each target word $i$, we sample a context word $j$ from the given data and label it as positive, denoted by $Y_{j}=1$.
 Then, we sample $k$ words $\ell$ from a noise distribution $p_0(\ell)$ and label them as negative, denoted by $Y_{\ell}=0$.
 In \textit{word2vec}, the noise distribution is given by $p_0(\ell) \propto P^\gamma (\ell)$, where $P(j)$ is the fraction of $j$ in the data, and $\gamma$ is a hyper-parameter.
@@ -684,7 +685,7 @@ where $c = \ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant and maximize
 by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them (see Supporting Information for full derivation). Note that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
 
 Let us revisit negative sampling from the perspective of NCE.
-We rewrite the logistic regression model in negative sampling (Eq.~\eqref{eq:logistic-regress}) in form of the posterior probability:
+We rewrite the logistic regression model in negative sampling (Eq.~\ref{eq:logistic-regress}) in form of the posterior probability:
 \begin{align}
 	P^{NS}\left(Y_{j}=1 \vert j\right) & = \frac{
 		1
@@ -740,7 +741,7 @@ We compare the performance of this cosine-based embedding distance against those
 We compare the performance of the embedding distance to many baselines.
 These include distances derived from simpler embedding approaches, such as Singular Value Decomposition (SVD) and a Laplacian Eigenmap embedding performed on the underlying location co-occurrence matrix.
 We also use network-based distances, calculating vectors using a Personalized Page Rank approach and measuring the distance between them using cosine distance and Jensen-Shannon Divergence (see \SI).
-Finally, we compare the embedding distance against embeddings calculated through direct matrix factorization, following the approach that \textit{word2vec} implicitley approximates~\autocite{levy2014neural}.
+Finally, we compare the embedding distance against embeddings calculated through direct matrix factorization, following the approach that \textit{word2vec} implicitly approximates~\autocite{levy2014neural}.
 
 
 %
@@ -748,7 +749,7 @@ Finally, we compare the embedding distance against embeddings calculated through
 %
 \subsection*{Gravity Law}
 
-We model co-occurences $T_{ij}$ for locations $i$ and $j$ (referred to as flux), using the gravity law of mobility~\autocite{zipf1946gravity}.
+We model co-occurrences $T_{ij}$ for locations $i$ and $j$ (referred to as flux), using the gravity law of mobility~\autocite{zipf1946gravity}.
 The gravity law of mobility, which was inspired by Newton's law of gravity, postulates that attraction between two locations is a function of their population and the distance between them.
 This formulation and variants have proven useful for modeling and predicting many kinds of mobility~\autocite{jung2008highwaygravity, curiel2018citygravity, truscott2012epidemicgravity, hong2016busgravity}.
 In the gravity law of mobility, the \textit{expected flux}, $\hat{T}_{ij}$ between two locations $i$ and $j$ is defined as,

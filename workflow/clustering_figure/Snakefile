@@ -7,7 +7,7 @@ FIGURE_DIR = osjoin(PROJ_HOME, 'Figures')
 ASSET_DIR = osjoin(PROJ_HOME, 'Assets')
 ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
-EMBEDDINGS_DIR = osjoin(PROJ_HOME, 'Archive','Embeddings_20191209','word2vec')
+EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings', 'precedence')
 CLUSTERING_FIGURE_DIR = osjoin(FIGURE_DIR, 'Clustering')
 
 # Assets
@@ -15,7 +15,7 @@ FONT_PATH = osjoin(ASSET_DIR, 'Helvetica.ttf')
 BOLD_FONT_PATH = osjoin(ASSET_DIR, 'helvetica-bold.ttf')
 
 # Meta_info_files
-EMBEDDING_FILE_DIR = osjoin(EMBEDDINGS_DIR, "2008-2019_word2vec_d200_ws2_model.bin")
+EMBEDDING_FILE_DIR = osjoin(EMBEDDINGS_DIR, "word2vec_d300_ws1_gamma1.0_model.bin")
 INST_LOOK_UP_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "institution_lookup_with_states.txt")
 COUNTRY_META_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "country_metadata.csv")
 
