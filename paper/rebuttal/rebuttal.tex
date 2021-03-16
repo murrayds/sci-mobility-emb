@@ -82,12 +82,10 @@
 %
 % HEADER
 %
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\lhead{Nature---Response to Reviews}
-\rhead{\thepage}
-\chead{}
 
+
+
+\newcounter{comment}[subsection]
 
 
 %
@@ -95,15 +93,14 @@
 %
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable}
-\newtcolorbox[auto counter,
-					  number within=subsection,
- 				       list type=subsubsection,
- 				       list inside=toc]{sectionbox}[1]{colback=white,
- 				       												colframe=black,
- 				       												colbacktitle=white!50!gray,
- 				       												coltitle=black,
- 				       												fonttitle=\bfseries, title={Comment \thetcbcounter},
- 				       												list entry={Comment \thetcbcounter\quad}, breakable}
+\newtcolorbox[]{sectionbox}[1]{colback=white,
+ 				       												 colframe=black,
+ 				       												 colbacktitle=white!50!gray,
+ 				       												 coltitle=black,
+ 				       												 fonttitle=\bfseries,
+ 				       												 phantom=\refstepcounter{comment},
+ 				       												 title={Comment \arabic{section}.\arabic{comment}},
+ 				       												 list entry={Comment \arabic{section}.\arabic{comment}\quad}, breakable}
 
 
 \DeclareUnicodeCharacter{FB01}{fi}
@@ -119,12 +116,14 @@
 \newcommand{\del}[1]{{\leavevmode\color{red}\sout{#1}}}
 \newcommand{\response}[1]{{\noindent \textbf{Response:} \\ \\ \noindent #1}}
 %\newcommand{\rcomment}[1]{{\bigskip\begin{snugshade}\begin{quotation}\noindent #1 \end{quotation}\end{snugshade} }}
+
 \newcommand{\rcomment}[1]{%
 \vspace{10pt}
 \begin{sectionbox}
 s #1
 \end{sectionbox}
 }
+
 \newcommand{\correction}[2]{{\begin{quotation}\noindent {#1}{\it #2} \end{quotation} }}
 %\newcommand{\correction}[2]{{\bigskip\begin{quotation}\noindent {#1}{\it #2} \end{quotation} }}
 
@@ -157,31 +156,31 @@ s #1
 \vspace{-0.25cm}
 
 We thank all the referees for their thoughtful and helpful comments and critiques.
-We acknowledge that our initial submission had a substantial gap regarding the choice of the \textit{word2vec} model, its connection with the gravity model of mobility, and its evaluation.
-While reflecting on these comments and our manuscript, we have made a theoretical breakthrough that addresses the primary issues;
+We acknowledge that our initial submission had a substantial gap regarding the choice of the \textit{word2vec} model, its relationship to the gravity model of mobility, and its evaluation.
+While reflecting on these comments and our manuscript, we have made a theoretical breakthrough that addresses the fundamental issues, and dramatically expands the scope of our contribution;
 namely, we have discovered \emph{a mathematical equivalence between the \textit{word2vec} (skip-gram with negative sampling) model and the gravity model.}
 
 Furthermore, our subsequent experiments show that our approach's performance is robust, exceeding many other baselines, even direct optimization of the gravity model.
-Therefore, with these changes, we are confident that our paper is substantially stronger with a qualitative leap.
+Therefore, we are confident that these changes have brought a qualitative leap in the significance of our findings.
 Thus, we would like to request a reconsideration of our manuscript.
-Again, we are incredibly appreciative of these comments, which provided the insight and motivation needed to make these breakthroughs.
+Again, we are incredibly appreciative of the referees' comments, which provided the insight and motivation needed to make these breakthroughs.
 
 We have developed the mathematical and theoretical basis of our approach for embedding mobility, and made additional updates to our experiments and manuscript, addressing the three main issues raised by referees:
 \vspace{-0.1cm}
 \begin{enumerate}
 	\itemsep0em
-	\item The lack of theoretical justification and grounding for the application of \textit{word2vec} to mobility
-	\item The lack of simpler baselines to understand the performance of \textit{word2vec} 
+	\item The lack of theoretical justification and grounding for the application of \textit{word2vec}
+	\item The lack of simpler baselines to understand the performance of \textit{word2vec}
 	\item The lack of sufficient grounding in the literature of neural embeddings and mobility
 \end{enumerate}
 \vspace{-0.1cm}
-We address the first point by presenting the mathematical equivalence between the Gravity Model of Mobility and the skip-gram negative sampling \textit{word2vec} model.
-Namely, we demonstrate that \textit{word2vec}'s objective function is equivalent to the gravity law and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
-This development constitutes a major breakthrough in our understanding of neural embeddings, and provides theoretical justification for their application to mobility.
+We address the first point by presenting the mathematical equivalence between the gravity model of mobility and the skip-gram negative sampling \textit{word2vec} model.
+Namely, we demonstrate that \textit{word2vec}'s objective function is equivalent to the gravity model due to the implicit bias of negative sampling,  and thus \textit{word2vec} learns gravity-like relationships between entities, whether it be language or locations.
+We believe that this development constitutes a major breakthrough in our understanding of neural embeddings, and in addition to justifying their use in our study, also opens the door for further research applying them to the study of mobility.
 
-For the second point, we have conducted experiments comparing the performance of neural embedding to (\romannum{1}) a singular value decomposition of the mobility network,  (\romannum{2}) a Laplacian eigenmap embedding  (\romannum{3}) a \textit{word2vec} model with matrix factorization,  and  (\romannum{4}) a direct optimization according at the gravity law. We find that the embedding distance from \textit{word2vec} outperforms all baselines, even the direct optimization of gravity law with the multidimensional scaling, in explaining and predicting real-world mobility.
+For the second point, we have conducted experiments comparing the performance of neural embedding to (\romannum{1}) the singular value decomposition of the mobility network,  (\romannum{2}) a Laplacian eigenmap embedding  (\romannum{3}) a \textit{word2vec} model with matrix factorization,  and  (\romannum{4}) a direct optimization of the gravity model. We find that the embedding distance provided by \textit{word2vec} outperforms all baselines, including the direct optimization of gravity model with the multidimensional scaling, in explaining and predicting real-world mobility.
 
-Finally, addressing the third point, we have cooperated relevant literature to better ground our manuscript in the existing studies.
+Finally, in order to address the third point, we have incorporated relevant literature to better ground our manuscript in the existing studies.
 
 In the attached detailed response, we outline the connection between \textit{word2vec} and the gravity model (Section 1), and comparisons to baselines (Section 2). We then provide a point-by-point response to each of the reviewer's comments in Section 3.
 
@@ -198,24 +197,24 @@ Dakota, Jisung, Sadamori, Rodrigo, Woo-Sung, Staša, and YY
 \tableofcontents
 \clearpage
 
-
 \section{Theoretical justification of \textit{word2vec} and the Gravity Model}
 \label{sec:theory}
-Why does \textit{word2vec} with the skip-gram with negative sampling model (SGNS) work so well to model mobility?
-Here, we demonstrate that the SGNS model and the gravity model of mobility are mathematically equivalent.
-This connection provides strong theoretical justification to our choice of \textit{word2vec}, and constitutes a major breakthrough of our understanding of neural embeddings.
-In addition, this motivates the use of SGNS for future study of human mobility.
+\thispagestyle{empty}
+Why does the \textit{word2vec} with skip-gram and negative sampling (SGNS) model work so well to model mobility?
+Here, we demonstrate that SGNS {\it word2vec} and the gravity model of mobility are mathematically equivalent.
+This connection provides strong theoretical justification to our choice of \textit{word2vec} to model mobility, and constitutes a major breakthrough of our understanding of neural embeddings.
+In addition, this motivates the use of SGNS {\it word2vec} for the future study of human mobility.
 
 \subsection{\textit{word2vec} algorithm}
-Imagine a trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$th location in the trajectory. A location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$.
-Then, the skip-gram \textit{word2vec} learns probability $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
+Imagine a trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), where $a_{t}$ is the $t$\textsuperscript{th} location in the trajectory. A location, $a_{t}$, is considered to have context locations, $a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}$, that appear in the window surrounding $a_t$ up to a time lag of $w$, where $w$ is the window size parameter truncated at $t - w \geq 0$ and $t + w \leq T$.
+Then, the skip-gram \textit{word2vec} model learns probabilities $p(a_{t + \tau} \vert a_{t})$, where $-w\leq \tau\leq w$ and $\tau \neq 0$,  by maximizing its log likelihood given by
 %
 % MAIN W2V Equation
 %
 \begin{equation}
-	{\cal J} = \frac{1}{T}\sum_{t = 1}^{T} \sum_{-w \leq \tau \leq w, \tau \neq 0} \log P(a_{t + \tau} \vert a_{t}), \label{eq:word2vec-obj}
+	{\cal J} = \frac{1}{T}\sum_{t = 1}^{T} \sum_{ \substack{-w \leq \tau \leq w, \\ 0 \leq t+\tau \leq T \\\tau \neq 0}} \log P(a_{t + \tau} \vert a_{t}), \label{eq:word2vec-obj}
 \end{equation}
-where,
+where
 
 %
 % CONDITIONAL PROBABILITY EQ
@@ -223,47 +222,47 @@ where,
 \begin{equation}
 	P(j \given i) = \frac{\exp(\vect{u}_j \cdot \vect{v}_{i})}{Z_i}, \label{eq:cond_prob_w2v}
 \end{equation}
-where $\vect{v}$ and $\vect{u}$ are the ``in-vector'' and ``out-vector'', respectively,  $Z_i=\sum_{j' \in \mathcal{A}} \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations. In general, calculating $Z_i$ is computationally expensive and there are two common approximation:
+where $\vect{v}$ and $\vect{u}$ are the ``in-vector'' and ``out-vector'', respectively,  $Z_i=\sum_{j' \in \mathcal{A}} \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations. In general, calculating $Z_i$ is computationally expensive, so two kinds of approximations are commonly used:
 hierarchical softmax \autocite{morin2005hierarchical} and negative sampling \autocite{mikolov2013word2vec}.
 Due to its simplicity and performance, negative sampling is the most widely used strategy, which we also adopt in our study.
 
 
 \subsection{An implicit bias in the negative sampling}
 
-Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that does not ensure to yield the optimal embeddings in terms of the objective function, ${\cal J}$.
-This bias in negative sampling is the indispensable piece between wor2vec and the gravity model.
+Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} that does not yield the optimal embeddings in terms of the objective function, ${\cal J}$.
+This bias in negative sampling turns out to be key to the connection between {\it word2vec} and the gravity model.
 
-Negative sampling trains {\it word2vec} using a binary classification task as follows.
+Negative sampling trains {\it word2vec} as follows.
 For each target word $i$, we sample a context word $j$ from the given data and label it as positive, denoted by $Y_{j}=1$.
 Then, we sample $k$ words $\ell$ from a noise distribution $p_0(\ell)$ and label them as negative, denoted by $Y_{\ell}=0$.
-In \textit{word2vec}, the noise distribution is given by $p_0(\ell) \propto P^\gamma (\ell)$, where $P(j)$ is the fraction of $j$ in the data, and $\gamma>0$ is a hyper-parameter.
-Then, for the sampled words, we fit a logistic regression model:
+In \textit{word2vec}, the noise distribution is given by $p_0(\ell) \propto P^\gamma (\ell)$, where $P(j)$ is the fraction of $j$ in the data, and $\gamma$ is a hyper-parameter.
+Then, for the sampled words, we fit a logistic regression model
 \begin{align}
 	\label{eq:logistic-regress}
-	P(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) = \frac{1}{1 + \exp(-\vect{u}_j \cdot \vect{v}_{i})},
+	P^{\text{NS}}(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) = \frac{1}{1 + \exp(-\vect{u}_j \cdot \vect{v}_{i})},
 \end{align}
 by maximizing the log-likelihood:
 \begin{align}
 	\label{eq:log-likelihood-logistic-regress}
-	{\cal J}^{\text{NS}} _j = \sum_{j \in {\cal D}} \left[ Y_{j} \log P(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) + (1-Y_{j}) \log P(Y_{j} = 0; \vect{v}_{i}, \vect{u}_j)\right],
+	{\cal J}^{\text{NS}} = \sum_{i \in {\cal A}} \sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NS}}(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) + (1-Y_{j}) \log P^{\text{NS}}(Y_{j} = 0; \vect{v}_{i}, \vect{u}_j)\right],
 \end{align}
-where ${\cal D}$ is the set of all sampled words.
+where ${\cal D}$ is the set of all sampled context words.
 
 An underappreciated fact is that maximizing ${\cal J}^{\text{NS}}$ does not guarantee
-to yield the optimum embedding in terms of the original skip-gram word2vec objective function ${\cal J}$ even if we increase the training samples and iterations~\autocite{Chia2010,Dyer2014}.
-To make this bias explicit, let us consider the unbiased variant of negative samplig, \ie the noise contrastive estimation (NCE)~\autocite{Chia2010,Dyer2014}.
+to yield the optimum embedding in terms of the original skip-gram {\it word2vec} objective function ${\cal J}$ even if we increase the training samples and iterations~\autocite{Chia2010,Dyer2014}.
+To make this bias explicit, let us consider the unbiased variant of negative sampling, \ie the noise contrastive estimation (NCE)~\autocite{Chia2010,Dyer2014}.
 NCE is an unbiased estimator for a probability model $P_m$ of the form:
 \begin{align}
 	\label{eq:nce-model}
 	P_m(x) = \frac{ f(x) }{\sum_{ x' \in {\cal X}} f(x') },
 \end{align}
-where $f$ is the non-negative likelihood function of data $x$, and ${\cal X}$ is the set of all data.
-This general form includes the word2vec model (Eq.~\eqref{eq:cond_prob_w2v}), where $f(x) = \exp(x)$ and $x = \vect{u}_j \cdot \vect{v}_{i}$.
-NCE trains the probability model using a binary classification task in the same way as in negative sampling but using a Bayesian formalism for logistic regression.
+where $f$ is a non-negative likelihood function of data $x$, and ${\cal X}$ is the set of all data.
+This general form includes the {\it word2vec} model (Eq.~\eqref{eq:cond_prob_w2v}), where $f(x) = \exp(x)$ and $x = \vect{u}_j \cdot \vect{v}_{i}$.
+NCE fits the probability model using a binary classification task in the same way as in negative sampling but using a Bayesian logistic regression.
 Specifically, before the training, we know that $1$ in $1+k$ words is sampled from the given data, which can be modeled as prior probabilities
 \begin{align}
 	\label{eq:prior}
-	P_0(Y_{j} = 1) = \frac{1}{k + 1},\quad P_0(Y_{j} = 0) = \frac{k}{k + 1},
+	P(Y_{j} = 1) = \frac{1}{k + 1},\quad P(Y_{j} = 0) = \frac{k}{k + 1}.
 \end{align}
 Using the Bayes rule, the posterior probability for $Y_{j}$ given word $j$ is given by
 \begin{align}
@@ -271,11 +270,12 @@ Using the Bayes rule, the posterior probability for $Y_{j}$ given word $j$ is gi
 	P\left(Y_{j} \vert j\right) = \frac{
 		P\left(j \vert Y_{j}\right)P(Y_{j})
 	}{
-		P_0(Y_j)
+		P\left(j \vert Y_{j} = 0\right)P(Y_{j} = 0)
+		+ P\left(j \vert Y_{j} = 1\right)P(Y_{j} = 1)
 	}.
 \end{align}
 Bearing in mind that word $j$ is sampled from the given data if $Y_{j}=1$ and from the noise distribution $p_0$ if $Y_j = 0$.
-Assuming that the given data is generated from the probability model to be fit, the class-conditional probability, $P\left(j \vert Y_{j}\right)$, is given by
+Assuming that the given data is generated from the probability model to fit, the class-conditional probability, $P\left(j \vert Y_{j}\right)$, is given by
 \begin{align}
 	\label{eq:class-cond}
 	P(j \vert Y_{j} = 1) & = P_m(\vect{u}_j \cdot \vect{v}_{i}),
@@ -285,7 +285,13 @@ Assuming that the given data is generated from the probability model to be fit, 
 Putting Eqs.~\eqref{eq:prior}, \eqref{eq:posterior} and \eqref{eq:class-cond} together, the posterior probability for $Y_j$ is given by
 \begin{align}
 	\label{eq:nce}
-	P^{NCE}\left(Y_{j} = 1 \vert j\right) = \frac{
+	P\left(Y_{j} = 1 \vert j\right) & =
+	\frac{
+		P_m(\vect{u}_j \cdot \vect{v}_{i}) / (k + 1)
+	}{
+		P_m(\vect{u}_j \cdot \vect{v}_{i}) / (k + 1)  + kp_0(j) / (k + 1)
+	}                                          \\
+	                                & = \frac{
 		P_m(\vect{u}_j \cdot \vect{v}_{i})
 	}{
 		P_m(\vect{u}_j \cdot \vect{v}_{i})  + kp_0(j)
@@ -294,83 +300,93 @@ Putting Eqs.~\eqref{eq:prior}, \eqref{eq:posterior} and \eqref{eq:class-cond} to
 which can be rewritten in form of sigmoid function:
 \begin{align}
 	\label{eq:nce}
-	P^{NCE}\left(Y_{j}=1 \vert j\right) = \frac{
+	P^{\text{NCE}}\left(Y_{j}=1 \vert j\right) =
+	 & = \frac{
+		1
+	}{
+		1 + kp_0(j) / P_m(\vect{u}_j \cdot \vect{v}_{i})
+	}           \\
+	 & = \frac{
+		1
+	}{
+		1 + \exp\left[ \ln kp_0(j) - \ln P_m(\vect{u}_j \cdot \vect{v}_{i}) \right]
+	}           \\
+	 & = \frac{
 		1
 	}{
 		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i})  + \ln p_0(j) + c \right]
 	},
 \end{align}
-where $c = -\ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant.
+where $c = \ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant.
 NCE maximizes the log-likelihood
 \begin{align}
 	\label{eq:log-likelihood-logistic-regress}
-	{\cal J}^{\text{NCE}} _j = \sum_{j \in {\cal D}} \left[ Y_{j} \log P^{NCE}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{NCE}(Y_{j} = 0 \vert j)\right].
+	{\cal J}^{\text{NCE}} = \sum_{i \in {\cal A}}\sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NCE}}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{\text{NCE}}(Y_{j} = 0 \vert j)\right],
 \end{align}
-by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them.
-An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014} if we increase the number of words to sample and the training iterations.
+by calculating the gradients of ${\cal J}^{\text{NCE}}$ with respect to $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them.
+An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original {\it word2vec}'s objective function, ${\cal J}$ if we increase the number of words to sample and the training iterations~\autocite{Chia2010,Dyer2014}.
 
 Let us revisit negative sampling from the perspective of NCE.
 We rewrite the logistic regression model in negative sampling (Eq.~\eqref{eq:logistic-regress}) in form of the posterior probability:
 \begin{align}
-	P^{NS}\left(Y_{j}=1 \vert j\right) & = \frac{
+	P^{\text{NS}}\left(Y_{j}=1 \vert j\right) & = \frac{
 		1
 	}{
 		1 + \exp\left[ - \left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c \right) + \ln p_0(j) + c \right]
-	}                                        \\
-	                              & = \frac{
+	}                                                    \\
+	                                          & = \frac{
 		1
 	}{
 		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i}) + \ln p_0(j) + c \right]
-	}.
+	},
 \end{align}
 where we define the likelihood function $f$ by
 \begin{align}
-	f(\vect{u}_j \cdot \vect{v}_{i}) = \exp\left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c\right).
+	f(\vect{u}_j \cdot \vect{v}_{i}) = \exp\left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c\right),
 \end{align}
 which is the unbiased estimator for the probability model
 \begin{align}
 	\label{eq:unbiasef}
-	P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) }, \\
-	                                   & = \frac{  p_0(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  p_0(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})}, \\
-	                                   & = \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})} \hspace{0.3cm}(\because p_0(\ell) \propto P^\gamma (\ell)),
+	P_m^{\text{NS}}(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) },                                                                                               \\
+	                                               & = \frac{  p_0(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  p_0(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})},                                                                      \\
+	                                               & = \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})} \hspace{0.3cm}(\because p_0(\ell) \propto P^\gamma (\ell)).
 \end{align}
-where  $P(j)$ is the fraction of $j$ in the data. Taking together, conditional probability of SGNS \textit{word2vec} actually optimize is
+Taken together, the conditional probability that SGNS \textit{word2vec} actually optimizes is
 \begin{align}
-	P^{NS}(j\given i) = P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i})  =  \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{Z'_i},
+	P^{\text{NS}}(j\given i) = P_m^{\text{NS}}(\vect{u}_j \cdot \vect{v}_{i})  =  \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{Z'_i},\
 \end{align}
- where $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
+where $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
 
 \subsection{\textit{word2vec} and the gravity model}
 
 
-Taking into account the implicit bias in the negative sampling  and setting $w=1$, the \textit{word2vec} predicts the flow between locations with
+Taking into account the implicit bias in the negative sampling  and setting $w=1$, \textit{word2vec} predicts the flow between locations with
 \begin{align}
-	\widehat{T}_{ij} \propto  P(i) P(j\given i) \propto  \frac{P(i) P(j)^\gamma \exp(\vect{u}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:prob_w2v_ng0}
+	\widehat{T}_{ij} =  N(i) P(j\given i) = \frac{N(i) P(j)^\gamma \exp(\vect{u}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:prob_w2v_ng0}
 \end{align}
-where we have redefined $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
-
+where $N(i) = N P(i)$ is the frequency of location $i$ in all trajectories, and $N$ is the sum of the frequencies of all locations.
 Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimial in-vectors and out-vectors such that $\vect{v}_i = \vect{u}_i$ \autocite{levy2014neural}.
-Setting $\gamma = 1$ and substituting $\vect{v}_i = \vect{u}_i$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
+Setting $\gamma = 1$ and substituting $\vect{v}_i = \vect{u}_i$ and $N(i) = N P(i)$ into Eq.~\eqref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
 \begin{align}
-	\widehat{T}_{ij} \propto  P(i) P(j\given i) = \frac{P(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
+	\widehat{T}_{ij} =  N \frac{P(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
 \end{align}
 
 The flow $\widehat{T}_{ij}$ is symmetric (\ie $\widehat{T}_{ij}=\widehat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
-If we swap $i$ and $j$ in Eq.~\ref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
+If we swap $i$ and $j$ in Eq.~\eqref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
 Therefore, to ensure $\widehat{T}_{ij}=\widehat{T}_{ji}$, the denominator $Z_i$ should be a constant.
 
-Taken together, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
+Taken together, the {\it word2vec} model with negative sampling predicts a flow in the same form as in the gravity model:
 \begin{align}
 	\widehat{T}_{ij} \propto  P(i) P(j)  \exp(\vect{v}_j \cdot \vect{v}_{i}), \label{eq:flow_w2v_ng0}
 \end{align}
 
-In other words, \emph{word2vec with the skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $f(i)$, and the distance measured by their dot similarities.
+In other words, \emph{word2vec with skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
 While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds the mass and locations that best explain the given mobility flow.
 Therefore, the embedding distance is inherently tied to mobility flow, and hence, has greater predictive power than the geographic distance.
 
-In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may not hold.
+In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may only approximately hold.
 Indeed, we find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
-Nevertheless, a model with dot similarity is still the second best after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
+Nevertheless, a model with dot similarity is still the second-best after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
 
 \subsection{Changes to the manuscript}
 To reflect our new findings, we have made the following changes to the manuscript:
@@ -378,7 +394,7 @@ To reflect our new findings, we have made the following changes to the manuscrip
 	\itemsep0em
 	\item Following results demonstrating the performance of the embedding distance compared to geographic distance, we add the section \textbf{word2vec and the gravity model}, which summarizes the link between the two models.
 	\item We also added the section \textbf{An implicit bias in the negative sampling} to the methods section of our manuscript.
-	\item Since the formulation of the gravity used in the above derivations assumes $\gamma = 1$, we use $\gamma = 1$ for all reported results. No results have been substantively changed.
+	\item Since the formulation of the gravity used in the above derivations assumes $\gamma = 1$, we use $\gamma = 1$ for all reported evaluation results. No findings have substantively changed.
 	\item We added a sentence to the paper speculating on why cosine similarity works best.
 	\item We also added a sentence noting the in-vector and out-vector issue, and speculating on reasons/consequences.
 \end{itemize}
@@ -390,36 +406,41 @@ To reflect our new findings, we have made the following changes to the manuscrip
 \section{Performance of \textit{word2vec} compared with baselines}
 \subsection{Alternatives considered}
 In our original manuscript, we compared the performance of what we call the embedding distance---the cosine distance between vectors learned by \textit{word2vec}---to a range of alternatives.
-These alternatives included the geographic distance between locations, the distance most commonly used in definitions of the gravity model of mobility, along with the dot product similarity between embedding vectors, and the cosine distance and Jensen-Shannon divergence between vectors obtained from a personalized-page-ranking procedure on the underlying mobility network. Following the advice of the referees, we also add additional baselines to illustrate how the embedding distance performs compared to simpler embedding alternatives and also more advanced approach as follow:
+These alternatives included the geographic distance between locations, the distance most commonly used in definitions of the gravity model of mobility, along with the dot product similarity between embedding vectors, and the cosine distance and Jensen-Shannon divergence between vectors obtained from a personalized-page-ranking procedure on the underlying mobility network. Following the advice of the referees, we also add additional baselines to illustrate how the embedding distance performs compared to simpler embedding alternatives and also to a more advanced approach as follows:
 
 \vspace{-0.5cm}
-\paragraph{SVD on co-occurrence matrix:}The first of these baselines uses the distance between vectors in an embedding space produced through a singular-value decomposition of the underlying location co-occurrence matrix. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
-Then, we apply truncated singular vector decomposition with $d=300$ on the flow matrix $A$ directly.
+\paragraph{SVD on co-occurrence matrix:}The first of these baselines uses the distance between vectors in an embedding space produced through the singular value decomposition (SVD) of the underlying location co-occurrence matrix. First, we construct the co-occurrence matrix of all organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
+Then, we apply the truncated SVD with $d=300$ on the flow matrix $A$ directly.
 
 \vspace{-0.3cm}
-\paragraph{Laplacian Eigenmap:} Similarly, we consider Laplacian Eigenmap embeddings~\autocite{belkin2003laplacian} as a baseline, which is one of the most fundamental approaches for graph embedding. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory and degree matrix $D$ which is the diagonal matrix for which $D_{ii}=\sum_j {A_{ij}}$. Then we construct graph Lapalcian matrix $L = D-A$  and apply truncated singular vector decomposition in the matrix $L$ with $d=300$.
+\paragraph{Laplacian Eigenmap:} As the second baseline, we consider Laplacian Eigenmap embeddings~\autocite{belkin2003laplacian}, which is one of the most fundamental approaches for graph embedding. We generate Laplacian Eigenmap embeddings by applying a truncated singular value decomposition to matrix $L$ given by $L=D - A$, where
+$A$ is the co-occurrence matrix of all organizations with element $A_{ij}$ indicating the number of co-occurrences of organizations $i$ and $j$ in the same affiliation trajectory, and $D$ is the diagonal matrix with diagonals $D_{ii}=\sum_j {A_{ij}}$. We set the dimension to $d=300$.
 
 \vspace{-0.3cm}
-\paragraph{Levy's  symmetric SVD \textit{word2vec} distance:} In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}. Based on idea of \textit{word2vec} is implicit matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding, which should directly compute the embedding that \textit{word2vec} only attempts to efficiently approximate. First, we construct the matrix of $N$ organization
+\paragraph{Levy's  symmetric SVD \textit{word2vec} distance:} In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}.
+They utilize SVD to train the {\it word2vec}'s model observing that training \textit{word2vec} can be understood as a factorization of a matrix.
+Here, we compare the performance of \textit{word2vec} embeddings against those calculated directly using Levy's SVD.
+First, we construct a matrix $M$ whose entries $M_{ij}$ are given by
 \begin{equation}
-	M_{ij} = \log\left(\frac{N(i,j) |D|}{N(i) N(j)}\right) - \log(k),
+	\label{eq:levyword2vec}
+	M_{ij} = \log\left(\frac{N(i,j) N}{N(i) N(j)}\right) - \log(k),
 \end{equation}
-where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given the window size $w$ in the total corpus $D$, $N(i)=\sum_{j=N}^i N(i,j)$ as the number of items $i$ occurred given the window size $w$ in $D$, and k is the number of negative samples. We used $w=1$ and $k=5$ which is same setting in the our main result. Then, we factorized matrix $M$ with truncated singular vector decomposition in the matrix with $d=300$ into $U_d \Sigma_d V_d$, and used the embedding vector as $U_d\sqrt{\Sigma_d}$.
+where $N(i,j)$ is the number of times that the center-context location pair $(i,j)$ appears in the context window, $N(i)=\sum_{j\in {\cal A}} N(i,j)$ is the number of times that $i$ appears as the center location in all center-context location pairs, $N=\sum_{i \in {\cal A}} N(i)$ is the number of all center-context location pairs, and $k$ is the number of negative samples. We used $w=1$ and $k=5$ which is the same setting as in our main result. Then, we factorized matrix $M$ into $V_d \Sigma_d U_d$ using truncated SVD with $d=300$, and used $V_d\sqrt{\Sigma_d}$ as the in-vectors.
 
 \vspace{-0.3cm}
-\paragraph{Direct optimization of gravity model:} Finally, we create an embedding by optimizing for the gravity law directly.
-Specifically, we construct a gravity matrix of $N$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual member of unique mobile and non-mobile authors affiliated. We then embed the gravity matrix using two approaches: a truncated singular-vector decomposition (SVD), and with multidimensional scaling (MDS), which embeds each location in a N-dimensional space such that pairwise distances are preserved as well as possible.
-Typically, MDS uses euclidean distance to measure distance between vectors.
+\paragraph{Direct optimization of gravity model:} Finally, we create an embedding by optimizing for the gravity model directly.
+Specifically, we construct a gravity matrix of all organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is the number of co-occurrences of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual number of unique mobile and non-mobile authors affiliated. We then embed the gravity matrix using two approaches: the truncated SVD, and multidimensional scaling (MDS), which embeds each location in an N-dimensional space such that pairwise distances are preserved as well as possible.
+Typically, MDS uses Euclidean distance to measure the distance between vectors.
 
 \subsection{New experimental parameters}
 In addition to the new baselines, we have also incorporated additional experimental parameters into our analysis.
 The first is $\gamma$, a hyper-parameter of the \textit{word2vec} model, which defines the exponent which shapes the negative sampling distribution.
-The default of \texttt{gensim} implementation of \textit{word2vec} is to set $\gamma = 0.75$, and this was the value used in our original manuscript.
+The default of \texttt{gensim} implementation of \textit{word2vec} is set to $\gamma = 0.75$, and this was the value used in our original manuscript.
 However, to connect \textit{word2vec} to the gravity model of mobility, we assume $\gamma = 1.0$ (see Section 1).
-We now report all main results using $\gamma = 1.0$, however we also compare its performance to embeddings learned using $\gamma = 0.75$, as we do with the number of embedded dimensions and window size.
-We plot the performance of each combination of hyperparemters by their ability to explain real-world flux of scientific mobility (Fig.~\ref{fig:supp:hyperparameter}), and observe no noticeable difference in performance between values of $\gamma = 0.75$ and $\gamma = 1.0$.
+We now report all main results using $\gamma = 1.0$ and also compare its performance to embeddings learned using $\gamma = 0.75$, as we do with the number of embedded dimensions and window size.
+We plot the performance of each combination of hyperparameters by their ability to explain real-world flux of scientific mobility (Fig.~\ref{fig:supp:hyperparameter}), and observe no noticeable difference in performance between values of $\gamma = 0.75$ and $\gamma = 1.0$.
 Figures in the updated manuscript have been re-drawn with $\gamma = 1.0$, and the findings remain qualitatively similar.
-As a side benefit, including the hyperparemter of $\gamma$ also effectively doubles the number of embeddings trained, and that results are so similar across different embedding provides further evidence of the robustness of the approach applied to our data.
+As a side benefit, including the hyperparameter of $\gamma$ also effectively doubles the number of embeddings trained, and that results are so similar across different embedding provides further evidence of the robustness of the approach applied to our data.
 
 %
 % Figure - Hyperparameter performance
@@ -431,14 +452,13 @@ As a side benefit, including the hyperparemter of $\gamma$ also effectively doub
 		\textbf{Larger dimensions, smaller window size improves embedding performance.}
 		The correlation, or amount of flux explained by the embedding distance with varying skip-gram negative sampling hyperparameters.
 		Window size refers to $w$, the size of the context window that defines the context in a trajectory.
-		Smaller window sizes result in an embedding that explain more flux.
+		Smaller window sizes result in an embedding that explains more flux.
 		Embedding dimensions refer to the size of the embedding vector.
-		Larger vectors perform better, though little difference between 200 and 300.
-		Gamma refers to the $\gamma$ parameter in word2vec, which shapes the negative sampling distribution.
-		A value of $\gamma = 0.75$ is the default for word2vec.
-		There is virtually no difference in performance based on $\gamma$.
-		All variants perform better on same-country pairs of organizations than on all organizations.
-		All variants perform worse on different-country pairs on organizations.
+		Larger vectors perform better, though with little difference between 200 and 300.
+		Gamma refers to the $\gamma$ parameter in \textit{word2vec}, which shapes the negative sampling distribution.
+		A value of $\gamma = 0.75$ is the default for \textit{word2vec}.
+		There is virtually no difference in performance for different $\gamma$ values.
+		All variants perform better on same-country organization pairs, and worse on different-country pairs, than on all pairs of organizations.
 		Embeddings with larger dimensions outperform mid-size embeddings for the different-country case.
 	}
 
@@ -447,7 +467,7 @@ As a side benefit, including the hyperparemter of $\gamma$ also effectively doub
 
 We also consider an experimental parameter differentiating between definitions of \textit{population}, in the context of scientific mobility.
 Our original manuscript defined the population of an organization as its average annual number of unique mobile and non-mobile authors who publish with that organizational affiliation.
-However, because non-mobile authors do not have mobility trajectories, and are thus not included in training of the embedding, this definition of population introduces additional, potentially confounding information into the experiment.
+However, because non-mobile authors do not have mobility trajectories, and are thus not included in the training of the embedding, this definition of population introduces additional, potentially confounding information into the experiment.
 To tease apart the impact of population definitions, we consider two additional definitions.
 The first defines an organization's population as the average annual number of unique mobile authors, only, who publish with the organization.
 The second definition defines the population akin to language, as simply its frequency across all mobility trajectories.
@@ -468,23 +488,36 @@ The second definition defines the population akin to language, as simply its fre
 		The asterisk denotes the top-performing metric.
 		For prediction error, we show results based on both the exponential and power-law forms of the gravity model.
 		All embedding-based methods use dimensions of 300.
-		Here, embedding distance is obtained from neural embeddings learned with window size of 1 and $\gamma = 1$.
+		Here, embedding distance is obtained from neural embeddings learned with a window size of 1 and $\gamma = 1$.
 		In all cases, organization population is defined as the mean annualized number of unique mobile and non-mobile authors, and flux is calculated for all global mobility.
-		Baselines include the top-performing distance metrics calculated between vectors obtained by personalized-page rank (PPR), singular value decomposition (SVD), laplacian eigenmap, direct-factorization following Levy's approach~\autocite{levy2014neural}, and direct optimization of the gravity model using SVD and multidimensional scaling (MDS), as well as the geographic distance between organizations.
+		Baselines include the top-performing distance metrics calculated between vectors obtained by personalized-page rank (PPR), singular value decomposition (SVD), Laplacian eigenmap, direct-factorization following Levy's approach~\autocite{levy2014neural}, and direct optimization of the gravity model using SVD and multidimensional scaling (MDS), as well as the geographic distance between organizations.
 		Embedding distance better explains and predicts flux than any other baseline, though there is some variation by experimental parameters (Table~\ref{supp:table:r2_table}, Table~\ref{supp:table:rmse_exp_table}, and Table~\ref{supp:table:rmse_power_table}).
 	}
 	\label{fig:supp:distancemetrics}
 \end{figure}
 
 
-We find that, using the best performing dimensions (300) and window size (1),  $\gamma = 1.0$, and for default experimental parameters (global mobility, population defined using all mobile and non-mobile scholars), that the embedding distance, or cosine distance between vectors learned through neural embedding, explains more of the flux, and leads to better predictions than other baselines (Fig.~\ref{fig:supp:distancemetrics}).
-This performance advantage holds across \emph{the exponential and the power-law forms of the gravity model of mobility}.
-Although the euclidean distance between directly-factorized vectors performs comparably, and even narrowly beats out the embedding distance under few experimental conditions (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}); our approach shows the most consistent and robust performance and even outperform the direct optimization of the gravity models.
 
-\subsection{Why do neural embeddings outperform direct matrix factorization?}
-Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform direct matrix factorization, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
-An issue in the matrix factorization approach is that it is sensitive to small values. The matrix factorization approach embeds affiliations $i$ and $j$ such that their dot similarity is as close as to $\log (T_{ij} / P(i) P(j))$. If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes $-\infty$, pushing $i$ and $j$ away in the embedding space~\autocite{levy2014neural, Qui2018}. This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. To circumvent this problem, the previous studies~\autocite{levy2014neural, Qui2018} add a constant flow between the affiliation pairs with no flow. However, this changes the data to which we fit the model, and small flows still have a considerably strong impact on the embedding. Also, it is well known that SVD itself is vulnerable to outliers \autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
-The stochastic gradient descent algorithm (SGD), which is employed in SGNS \textit{word2vec}, is more robust than SVD and can enhance generalization and effectiveness of {\it word2vec} model \autocite{ma2018power, smith2020generalization, zhang2019algorithmic}.
+We observe that the cosine distance between embedding vectors, which we call here the ``Embedding Distance'', explains more of the flux, and results in lower prediction error than all baselines we considered (See Fig.~\ref{fig:supp:distancemetrics}).
+This performance advantage holds across \emph{the exponential and the power-law forms of the gravity model of mobility}.
+Although the Euclidean distance between directly-factorized vectors performs comparably, and even narrowly beats the embedding distance under certain experimental settings (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}); our approach shows the most consistent and robust performance, outperforming even the direct optimization of the gravity models.
+
+
+\subsection{Why do neural embeddings outperform matrix factorization?}
+Why do neural embedding approaches outperform Levy's {\it word2vec} based on matrix factorization?
+We find that Levy's {\it word2vec} suffers from extreme values in the matrix to factorize, which are numerous when the context window size is small.
+Remind that Levy's {\it word2vec} generates embeddings by factorizing matrix $M$ given by Eq.~\eqref{eq:levyword2vec}, i.e.,
+\begin{equation}
+	M_{ij} = \log\left(\frac{N(i,j) |D|}{N(i) N(j)}\right) - \log k, \nonumber
+\end{equation}
+based on the SVD where $N(i,j)$ is the number of co-occurrences of organizations $i$ and $j$ in the context window.
+An issue is that when $N(i,j)$ is closer to zero, $M_{ij}$ goes to $-\infty$.
+To prevent such extreme values, a constant is added to $N(i,j)$ if $N(i,j)=0$ in Levy's {\it word2vec}~\autocite{levy2014neural, Qui2018}.
+However, this changes the data to which we fit the model, and small $N(i,j)$ values, which are likely to arise due to noise in data, still have a profound impact on the embedding.
+This problem is aggravated when the context window size $w$ is small.
+As the window size $w$ becomes smaller, two institutions are less likely to co-appear in the same window, yielding more affiliation pairs with $N(i,j)=0$, which is the case in our experiment (i.e., we set the context window size $w=1$).
+Also, it is well known that SVD itself is vulnerable to outliers \autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
+The stochastic gradient descent algorithm (SGD), which is employed in neural embedding approaches, is more robust than SVD and can enhance the generalization and effectiveness of {\it word2vec}~\autocite{ma2018power, smith2020generalization, zhang2019algorithmic}.
 
 
 \subsection{Changes to the manuscript}
@@ -492,7 +525,7 @@ To reflect these additional experiments, we have made the following changes to o
 \begin{itemize}
 	\item Re-drawn figures with embeddings using $\gamma = 1.0$, and included performance differences in Fig.~\ref{fig:supp:hyperparameter}, which was added to the supporting materials.
 	\item Added Fig~\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table} to the manuscript.
-	\item We have added sentence speculating on SGD performance differences into supporting materials
+	\item Added sentence speculating on SGD performance differences into supporting materials
 \end{itemize}
 
 
@@ -503,11 +536,14 @@ To reflect these additional experiments, we have made the following changes to o
 \clearpage
 \section{Point-by-point response}
 All of the referees presented us with excellent, insightful comments and we feel that the changes implemented as a consequence have signiﬁcantly strengthened the manuscript. Here we offer further discussion, and introduce several results and figures to support certain arguments.
-\todo{@dakoda, could you check the numbering comment from yy?}
 \subsection{Response to Referee 1}
+\setcounter{section}{1}
+
 
 \rcomment{%
 	To the best of my knowledge, this is the first work providing a thorough analysis of the structure encoded by latent mobility embeddings (e.g., the prestige hierarchy), and this is the first work I am aware of to propose embeddings as an explanatory/exploratory tool in this context. In this way, the work has some originality and significance.
+
+	However, the novelty of this work is quite narrow, as there are several prior works that develop trajectory-based embeddings of human mobility based on the word2vec algorithm. For example, the following references all propose word2vec-inspired embeddings of human mobility data:
 
 	\begin{itemize}
 		\item Liu, Xin, Yong Liu, and Xiaoli Li. ``Exploring the Context of Locations for Personalized Location Recommendations.'' IJCAI. 2016.
@@ -515,10 +551,6 @@ All of the referees presented us with excellent, insightful comments and we feel
 		\item Yao, Zijun, et al. ``Representing Urban Functions through Zone Embedding with Human Mobility Patterns.'' IJCAI. 2018.
 		\item Cao, Hancheng, et al. ``Habit2vec: Trajectory semantic embedding for living pattern recognition in population.'' IEEE Transactions on Mobile Computing 19.5 (2019): 1096-1108.
 	\end{itemize}
-
-
-	However, the novelty of this work is quite narrow, as there are several prior works that develop trajectory-based embeddings of human mobility based on the word2vec algorithm. For example, the following references all propose word2vec-inspired embeddings of human mobility data:
-
 
 	Notably, the location embedding methodology in Liu et al (2016) (see Section 3.1) is essentially the same as the approach used in the submitted manuscript, and the work by Liu et al (2016) is well-known with over 100 citations.
 }
@@ -528,7 +560,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 \response{Thank you for pointing out the missing references!
 	We have carefully read through each, and learned a lot in the process.
 	They have now been incorporated into our manuscript's introduction.
-	Although there are existing work on trajectory-based mobility embedding, we argue that our new result establishing the mathematical equivalence of \textit{word2vec} and the gravity law, as well as our extensive evaluation with many baselines represents a novel and substantial contribution.
+	Although there are existing works on trajectory-based mobility embedding, we argue that our new result establishing the mathematical equivalence of \textit{word2vec} and the gravity model, together with our extensive evaluation of baselines, represents a novel and substantial contribution.
 }
 
 \rcomment{
@@ -539,8 +571,8 @@ All of the referees presented us with excellent, insightful comments and we feel
 	Thank you for the suggestion!
 	Since our original submission, we have uncovered a mathematical connection between the skip-gram model with negative sampling, and the gravity model of mobility.
 	Namely, we find that \emph{SGNS is a gravity model}.
-	This finding explains why SGNS performs so well, and demonstrates the utility of the model for studying contexts where gravity relationships are expected, such as in human mobility.
-	We refer you to Section 1 of this letter, above, for an investigation of this connection, and how we adjusted our manuscript given this breakthrough.
+	This finding explains why SGNS performs so well and demonstrates the utility of the model for studying contexts where gravity relationships are expected, such as in human mobility.
+	We refer you to Section 1 of this letter, above, for an investigation of this connection, which we believe to be not only a justification of our choice of the \textit{word2vec} model to study mobility, but also a major contribution to the understanding of neural embeddings and the gravity model themselves.
 
 	Additionally, we compared the performance of SGNS to several baselines, including the distances between vectors obtained with the singular-value decomposition, the Laplacian eigenmap, the Levy
 	\& Goldberg's~\autocite{levy2014neural} matrix factorization \textit{word2vec}, and the directly optimization of the gravity model with singular-value decomposition and multidimensional scaling.
@@ -554,7 +586,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	The methodology has potential limitations in terms of reproducibility and robustness, which should be addressed. This is no specific fault of the authors, but both the SGNS/word2vec algorithm and the UMAP algorithm are inherently stochastic. This means that these approaches involve inherent randomness, and for researchers to replicate the exact effect seen in this manuscript, one would need to ensure the exact same random seeds etc. were used. In my view, this is a serious limitation, especially given that the UMAP results and learned embeddings are reified and treated as first-class objects of scientific study.
 }
 
-\response{Thank you for this comment. While robustness is a general concern for these methods, we found that their application to our datasets were in fact quite robust, and observed no evidence that findings were the result of methodological artefacts. This is confirmed in extra work done in response to these reviews.
+\response{Thank you for this comment. While robustness is a general concern for these methods, we found that their application to our datasets were in fact quite robust, and observed no evidence that findings were the result of methodological artifacts. This is confirmed in extra work done in response to these reviews.
 
 	We re-ran all of our results using different starting seeds and found all results were qualitatively similar, and almost quantitatively identical.
 	In addition, we expanded the set of experimental parameters, training 18 different embeddings with different dimensions, window sizes, and now, $\gamma$.
@@ -566,9 +598,10 @@ All of the referees presented us with excellent, insightful comments and we feel
 	However, this may not hold true for all problem domains—for example, natural language includes many millions of tokens, many of which will occur only a few times, allowing stochasticity to have a much stronger effect on the final representation.
 	Heeding this as a general concern, we have added the following sentence to our limitations paragraph in our conclusion:
 
-	“We note that all results shown here are robust to this stochasticity, likely emerging from the limited ``vocabulary'' of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories). Applications of word2vec to problem domains where the ratio of the vocabulary to data is smaller, however, should take caution to ensure that findings are not the result of random fluctuations.”
+	“We note that all results shown here are robust to this stochasticity, likely emerging from the limited ``vocabulary'' of scientific mobility, airports, and accommodations (several thousand) and the massive datasets used (several million trajectories). Applications of \textit{word2vec} to problem domains where the ratio of the vocabulary to data is smaller, however, should be implemented with caution to ensure that findings are not the result of random fluctuations.”
 
 }
+
 
 \rcomment{%
 	Another interesting point in this work is that the authors chose to not report p-values or the results of statistical significance tests (except confidence intervals). I presume this was a conscious decision, which I do not necessarily agree with. I see no critical error in the approach used by the authors, but I would have found aspects of the manuscript easier to understand in places with results of statistical tests (e.g., associated with goodness-of-fit tests formally test that the embedding-based distances are more correlated with the flux values). Given the sample sizes involved, I have no doubt that the results are statistically significant. However, I personally do see value in rigorously performed frequentist hypothesis testing, and I felt that this manuscript could be improved by employing such techniques.
@@ -584,9 +617,9 @@ All of the referees presented us with excellent, insightful comments and we feel
 	However, we recognize that $p$-values can help readers interpret results.
 	As such, we have opted to add to a sentence such as \say{\textit{Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits)}.} or similar to relevant figures in the main text and supporting materials.
 
-	We have also provided detail about how confidence intervals were calculated in relevant figure captions.
+	We have also provided information on how confidence intervals were calculated in relevant figure captions.
 	For example, we state in figure 2's caption that \say{\textit{99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution.}}, which should give readers enough information to reproduce the confidence intervals following their standard definition.
-	Other confidence intervals, such as intervals for the loess regression line in figure 6, are calculated using the smoothing functions in the \texttt{ggplot2} package of R, and refer readers to the relevant documentation.
+	Other confidence intervals, such as intervals for the loess regression line in figure 6, are calculated using the smoothing functions in the \texttt{ggplot2} package of R and we refer readers to the relevant documentation.
 }
 
 
@@ -599,7 +632,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 }
 
 
-\response{We believe that our new mathematical results substantially improve the manuscript and extend its contribution and demonstrates novel scientific insight, and justifies the use of word2vec towards mobility data. By adding this, and addressing your other points (above), we believe that the revised manuscript sufficiently remedies your concerns.
+\response{We believe that our new mathematical results substantially improve the manuscript, extends its contribution, demonstrates novel scientific insight, and justifies the use of \textit{word2vec} towards mobility data. By adding this, and addressing your other points (above), we believe that the revised manuscript sufficiently remedies your concerns.
 
 }
 
@@ -610,26 +643,28 @@ All of the referees presented us with excellent, insightful comments and we feel
 % Response to reviewer 2
 %
 \clearpage
+\setcounter{section}{3}
 \subsection{Response to Referee 2}
+\setcounter{section}{2}
+
 
 \rcomment{%
 	Although the paper is well written and explores a very interesting problem, I have certain criticism for the used methodology. After obtaining a representation of each dataset, the authors defined an embedding distance as the cosine distance between vectors in the space, while defining distance as the geographical distance in the original, spatially embedded datasets. Subsequently they used the Gravity Law to estimate the flux between location pairs of vector pairs in the spatial and embedded space respectively. The Gravity Law, applied on mobility, assumes that the number of people moving between two populations is proportional to the multiplicative of the sizes of the populations and a deterrence function. Research during the last decades on transportation, spatial networks and human mobility suggests that this deterrence function may take a functional form of an inverse exponential or an inverse power-law, as it has been acknowledged by the authors. However, the emergence of these different deterrence functions can be due to fundamentally different mechanisms (for a review on the topic see Barthélemy, Physics Reports 499, 1, 2011, a paper not cited in the manuscript). For example, the different cost functions (linear or logarithmic) to create link at a given distance, the spatial granularity of the observation, or even the heterogeneity of the moving individuals in terms of various factors, just to mention a few examples. Instead, the authors of the actual paper arbitrarily assumed a power-law deterrence function in the spatial case and an exponential deterrence function in the embedding space without further arguing their choice (other than fitting on the data). Furthermore, assuming different deterrence functions for the flux estimation using Gravity Law makes the estimated fluxes incomparable, resulting the invalidation of results depicted in Figure 2.
 }
 
-\response{Thank you for pointing this out.
-	We carefully read out the Barthélemy, Physics Reports 499, 1, 2011, and referenced it in our manuscript.
-	Also, we report the performance of the flux estimation and prediction using different deterrence functions (see Section 2, above), finding that although the absolute values vary, the pattern doesn't change---the embedding distance robustly outperforms geographic distance regardless of the function used.
-	We add the following line to the methods noting this point,
+\response{Thank you for noting this.
+	We carefully read out the Barthélemy, Physics Reports 499, 1, 2011, and found it incredibly educational, referencing it in our manuscript.
+	Past work has argued that the power-law decay function is appropriate for modelling geographic distance---being more suitable for the analysis of large, complex, and scale-free spatial systems with long-range spatial memory---whereas the exponential gravity model fits well with the simpler system with no spatial memory~\autocite{chen2015distance}, such as might be encoded in the \textit{word2vec} embedding space.
+	We report the performance of the flux estimation and prediction using both deterrence functions (see Section 2, above), finding that although the absolute values vary, the qualitative pattern remains the same---the embedding distance outperforms geographic distance regardless of the function used.
+	We also elaborate on the connection between the embedding distance and exponential model in our discussion on the relationship between \textit{word2vec} and the gravity model of mobility (see Section 1, above).
+	In addition, we add the following line to our manuscript, noting these considerations,
 
 	\medskip
-	\say{The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanism [...] such as the cost functions for a given distance and the spatial granularity of the observation.
-		For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each cases though there is no qualitative difference---the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
-
-	We find the article that geographical distance ﬁts well with the power-law decay function because power-based gravity model can be more suitable for analyzing large, complex, and scale-free spatial systems with long-range spatial memory, while exponential-based gravity model
-	fits well with the simple system with no spatial memory~\autocite{chen2015distance}.
-	However, the embedding distance fits well with the exponential decay function, perhaps demonstrating that the real-world spatial complexity of mobility is encoded in the \textit{word2vec} embedding space as simpler pairwise distances, likely resulting from underlying connection we established between \textit{word2vec} and the gravity model (see Section 1, above).
+	\say{The decay function $f(r_{ij})$ defines the effect of distance, and so different decay functions can model fundamentally different mechanisms [...] such as the cost functions for a given distance and the spatial granularity of the observation.
+		For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case though there is no qualitative difference---the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Supporting Information).}
 
 }
+
 
 
 
@@ -661,15 +696,15 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{
 	Thank you for this comment.
-	We however, do not believe that this is a problem in our analysis.
+	We do not, however, believe that this is a problem in our analysis.
 	Raw co-occurrence, which is used to define our ``flux'' between organizations, is always calculated using all organizations in a trajectory, and so window size does not affect flux.
-	Window size does affect \textit{word2vec}, however setting a smaller/larger window size should not make results incomparable.
+	Window size does affect \textit{word2vec} and setting a smaller/larger window size should not make results incomparable.
 	When we set $w = 1$, \textit{word2vec} will generate training pairs at most 1 position away from each target location, for all possible targets.
 	When we instead set $w = 2$, \textit{word2vec} will generate training pairs the same way, but at most 2 positions away from each target---this means that the data for $w = 2$ will be \textit{larger}, containing all training pairs used for $w = 1$ as a subset.
 	The same follows for all $w > 1$, each generating a larger and larger set of training examples up until $w$ is larger than the length of the longest trajectory.
 
 	What is notable about our findings, therefore, is that even though a model trained with $w = 1$ generates fewer training samples, it still outperforms settings with $w > 1$, which use more training samples, and which should capture higher-order structures in the data.
-	We speculate that this is because the word2vec model with $w = 1$ is equvelant to the gravity model of mobility (see Section 1).
+	We speculate that this is because the word2vec model with $w = 1$ is equivalent to the gravity model of mobility (see Section 1).
 }
 
 \rcomment{
@@ -682,8 +717,8 @@ All of the referees presented us with excellent, insightful comments and we feel
 	First, we added a line to the methods section detailing the \textit{word2vec} we used, and noting that these achieved the best performance: \say{\textit{For main results regarding scientific mobility, we used $d=300$ and $w=1$, which were the parameters that best explained the flux between locations, though results were robust across different settings (Fig....)}}.
 
 	A full search of the hyper-parameter space would certainly be interesting and useful, however we believe that set of hyper-parameters we considered here is sufficient to establish the utility of the approach, and demonstrate that performance is only slightly different based on different hyper-parameters.
-	There are previous studies on the optimal dimensionality of word embedding \autocite{yin2018understand, yin2018dimensionality}. Also, 
-	we note that in previous work from our group, we explored the optimal dimensions for graph embedding~\autocite{gu2020dimensions}, finding that while a sufficient number of dimensions is necessary to capture the structure, increasing the dimensions does not detract from performance, a property common across deep learning methods.
+	There are previous studies on the optimal dimensionality of word embedding \autocite{yin2018understand, yin2018dimensionality}. Also,
+	we note that in previous work from our group, we explored the optimal dimensions for graph embedding~\autocite{gu2020dimensions}, finding that while a sufficient number of dimensions is necessary to capture the structure, increasing the dimensions does not heavily deteriorate the performance, a property common across deep learning methods.
 	Given that there is little performance difference between $d = 100$ and $d = 300$, we opt to use the larger embeddings at $d = 300$, which are large enough to capture the complexity of mobility, yet small enough to allow an efficient computational workflow.
 }
 
@@ -701,13 +736,13 @@ All of the referees presented us with excellent, insightful comments and we feel
 		\item SI Page 2, S3: “. if” $\rightarrow$ “. If”
 	\end{enumerate}
 }
-\response{Thank you, we have remedied these comments and have updates the manuscript accordingly,
+\response{Thank you, we have addressed these comments and have updated the manuscript accordingly,
 }
 
 \rcomment{
 	SI Fig.S1c: Here the authors conclude that the proportions “decreased over time”. These proportions seem to be rather flat without strong decreasing trends. In any case, if the authors would like to indicate minor changes here, it would be helpful for the reader if a grid would be posted on the figure.
 }
-\response{Thank you, we agree that the trend is flat, rather than decreasing. We have adjusted the text accordingly, and also added a grid to the figure so that it can be more easily read.
+\response{Thank you, we agree that the trend is flat, rather than decreasing. We have adjusted the text accordingly, and also added a grid to the figure so that it can be read more easily.
 
 }
 
@@ -733,7 +768,9 @@ All of the referees presented us with excellent, insightful comments and we feel
 %
 % Response to reviewer 3
 \clearpage
+\setcounter{section}{3}
 \subsection{Response to Referee 3}
+\setcounter{section}{3}
 
 \rcomment{The analysis does not compare embeddings, which would not be a problem if they were making
 	an inference other than we can embed micro-mobility to trace macro-mobility. They use an
@@ -746,13 +783,16 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{Thank you for this insightful comment!
 	We think that there is a great deal of potential in methods like BERT for representing mobility data.
-	What initially drew us to \textit{word2vec}, however, was its simplicity, its ubiquity, and its mathematical tractability (at least compared to other, more sophisticated approaches).
-	This last attribute proved very useful, as in exploring the mathematical properties of the model, we discovered a deep connection between \textit{word2vec} and the gravity model of mobility, which explains why it learns such effective gravity-like relationships between entities (see Section 1, this letter).
-	We believe hat this new discovery, now included in the manuscript, justifies our use of \textit{word2vec} here.
+	What initially drew us to \textit{word2vec}, however, was its simplicity, ubiquity, and mathematical tractability (at least compared to other, more sophisticated approaches).
+	This last attribute proved very useful, as in exploring the mathematical properties of the model, we discovered a deep connection between \textit{word2vec} and the gravity model of mobility, which explains why it learns gravity-like relationships between entities (see Section 1, this letter).
+	We believe that this new discovery, now included in the manuscript, strongly grounds our use of \textit{word2vec} here.
 
-	We agree that the revolution in neural embeddings offers great promise in mobility and look forward to reading and also working on these future studies; however, we argue that our contribution is most well-founded, and best serves the scientific community, by working with simpler and more established models (see Section 2, this letter), especially concerning the mathematical link we uncovered. Moreover, these deep models require a tremendous amount of training data ($\sim$3 billion words in Bert) and model parameters, making their use infeasible in applicants most
+	We agree that the new revolutions in neural embeddings offer huge potential for the study of human mobility, however we argue that our contribution is dependent on \textit{word2vec}, both for its equivalence with the gravity model of mobility, as well as for the model's simplicity and ubiquity.
+	\textit{Word2vec} is also efficient; deep neural models often require tremendous amounts of training data ($\sim$3 billion words in BERT) and model parameters, making them infeasible for most studies of mobility.
+	We hope that this manuscript serves as a foundation that others can build upon, applying more and more sophisticated neural embedding techniques to gain deeper insights into mobility data.
 
-	To highlight the importance of altenrative models, however, we add the following line to our conclusion: \say{\textit{Future studies may also consider bi-directional embeddings, such as BERT~\autocite{devlin2018bert}, to incorporate directionality.}}.
+
+	To highlight the importance of alternative models, however, we added the following line to our conclusion: \say{\textit{Future studies may also consider bi-directional embeddings, such as BERT~\autocite{devlin2018bert}, to incorporate directionality.}}.
 
 }
 
@@ -768,9 +808,9 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{
 	Thank you for this comment!
-	We feel that applying these embeddings to other areas of scientific activity would be incredibly enlightening!
-	Your recommendation of collaboration (based on the author byline) and advisor-student pairs are especially interesting, and we would aim to address these areas in future studies.
-	However, given the importance of mobility to science, the importance of human mobility more generally, and the connection we discovered between \textit{word2vec} and the gravity model, that a focus of co-affiliation, which most closely aligns with ideas of mobility, is the most reasonable data to use for this manuscript.
+	We feel that applying these embeddings to other areas of scientific activity would be incredibly enlightening.
+	Your recommendation of collaboration (based on the author byline) and advisor-student pairs are especially interesting, and we intend to approach such questions in future studies.
+	However, for this manuscript, we believe that mobility is the most appropriate area of study, due to the importance of mobility to science, economics, and innovation, as well as the fundamental mathematical relationship between \textit{word2vec} and the gravity model of mobility, which we discovered since our first submission.
 }
 
 
@@ -785,10 +825,10 @@ All of the referees presented us with excellent, insightful comments and we feel
 }
 
 \response{Thank you for this suggestion.
-	We looked into this, using UMAP to reduce the country-level embeddings from 300 down to 30 dimensions, however the results from this were incomprehensible, and inferior to those using 300 dimensions.
+	We looked into this, using UMAP to reduce the country-level embeddings from 300 down to 30 dimensions, however, the results were incomprehensible, and much inferior to those using 300 dimensions.
 	Many dimensionality reduction techniques reduce the number of dimensions by maintaining pairwise distances between vectors, so that the result can be well-suited for clustering algorithms.
 	However, our approach already uses raw pairwise similarities to perform hierarchical clustering, so approximating this distance in 30 dimensions, and then using the new distances to perform clustering is redundant.
-	We also find that the curse of dimensional is not a major issue in our analysis, at least given the size of our data and the number of locations represented---\textit{word2vec} seems able to learn dense vector-space representations.
+	We also find that the curse of dimensionality is not a major issue in our analysis, at least given the size of our data and the number of locations represented---\textit{word2vec} seems able to learn dense vector-space representations.
 }
 
 \rcomment{
@@ -802,10 +842,17 @@ All of the referees presented us with excellent, insightful comments and we feel
 	P8Para1: “by explicitly the relative importance of different level of the hierarchy with a scaling parameter r ” which is never described or explained. Considering it was derived by the authors in a very recent paper, no one will know what it is.
 }
 
-\response{Thank you, we have edited the text to read as “We quantify the relative importance of geography (by region), and language (by the most widely-spoken language of each country) using the element-centric clustering similarity, a method that can compare hierarchical clustering and disjoint clustering (geography, language...) at the different level of hierarchy by explicitly adjusting a scaling parameter $r$, acting like a zooming lens”
+\response{Thank you, we have edited the text to read as “We quantify the relative importance of geography (by region), and language (by the most widely-spoken language of each country) using the element-centric clustering similarity, a method that can compare hierarchical clustering and disjoint clustering (geography, language...) at the different levels of hierarchy by explicitly adjusting a scaling parameter $r$, acting like a zooming lens”
 }
+
+
+%
+% Response to referee 4
+%
 \clearpage
+\setcounter{section}{3}
 \subsection{Response to Referee 4}
+\setcounter{section}{4}
 
 \rcomment{
 	The authors define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space. The increase in R2, as they switch to the embedding distance, is rather convincing. One of the models they use as a reference is the gravity model, but they also mention the radiation model. I am curious if they tried a comparison with that, and what was the outcome. I suspect that the radiation model would have a comparable performance to the gravity one. But as distance is not the only factor there, is a comparison at all feasible?
@@ -813,7 +860,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{Thank you for this suggestion.
 	We agree that comparing the radiation model would be incredibly interesting.
-	However, we originally did not use radiation model because our dataset on scientific mobility lacked clear directionality, which is required by the radiation model of mobility.
+	However, we originally did not use the radiation model because our dataset on scientific mobility lacked clear directionality, which is required by the radiation model of mobility.
 	Scientific mobility is incredibly complex, the most common form of mobility being co-affiliation, or a researcher holding multiple affiliations simultaneously.
 	In these cases, it is difficult to discern a researcher's main affiliation (where they start), and eventual affiliation (where they end up).
 	As such, we conceive of scientific mobility as having no direction (see S2 Text).
@@ -828,12 +875,12 @@ All of the referees presented us with excellent, insightful comments and we feel
 
 \response{Thank you for this idea!
 	We believe that this is an interesting topic and we hope to investigate it in the future.
-	In your particular example, an embedding distance trained using sequences of co-authorship on the same paper might be better to capture the \textit{collaborative} distance between institutions.
-	Then, using that distance, one could measure the ``embedding distance'' spanned by all authors in the byline, and relate this to questions impact to determine whether (a)typical collaborations relate to impact.
-	This is certainly a topic that is in our mind for future study.
+	In your particular example, an embedding distance trained using sequences of co-authorship on the same paper might better capture the \textit{collaborative} distance between institutions.
+	Then, using that distance, one could measure the ``embedding distance'' spanned by all authors in the byline and answer the question of whether typical collaborations relate to impact or not.
+	This is certainly a topic that  we intend to pursue in a future study.
 	In the case of scientific mobility, we might also consider the ``embedding distance'' spanned by an individual's career, and relate this to their demographics and scientific impact.
 
-	However, while these topics are exciting, we believe that that they fall outside the scope of the current manuscript, especially given the discoveries we made concerning a fundamental connection between the gravity law of mobility and \textit{word2vec}, which adds a substantial amount of new result to the manuscript.
+	However, while these topics are exciting, we believe that they fall outside the scope of the current manuscript, especially given the discoveries we made concerning a fundamental connection between the gravity law of mobility and \textit{word2vec}, which adds a substantial amount of new results to the manuscript.
 }
 
 
@@ -841,17 +888,18 @@ All of the referees presented us with excellent, insightful comments and we feel
 	Finally, one cannot escape the fact that COVID changes our mobility patterns. Many groups have used mobile phone data to explore these changes. I wonder, how would the pre-covid embeddings apply to post-covid mobility? Once again, I am mindful that this would require access to such data, but I would not be surprised at all if the authors have access to such data—in which case this is remains an intriguing question.
 }
 
-\response{This is an excellent idea, and one that we have been interesting in addressing as well.
-	Unfortunately, however, we do not have access to such data, at least not in large enough quantiaties to be representative.
+\response{This is an excellent idea and one that we have been interested in addressing as well.
+	Unfortunately, however, we do not have access to such data, at least not in large enough quantities to be representative.
 	Publications are on a time lag, compared to actual events.
 	For example, a researcher may write a paper while studying at university $A$, but then before the final paper is published, move to university $B$, so while they now have a $B$ affiliation, in our data all we see is the $A$ one.
-	As such, we would not necessarily expect to  see the impact of COVID on bibliometric data until later in 2021 or early 2022, when researchers have had the chance to publich with their new institution.
-	We also not that some activity will, of course, be visible, especially given the number of researchers rapidly publishing on the subject of COVID-19, however we consider this to be an unrepresentative sample, given that it is concentrated in a few disciplines.
+	As such, we would not necessarily expect to see the impact of COVID on bibliometric data until later in 2021 or early 2022, when researchers have had the chance to publish with their new institution.
+	We also note that some activity will, of course, be visible, especially given the number of researchers rapidly publishing on the subject of COVID-19, however, we consider this to be an unrepresentative sample, given that it is concentrated in a few disciplines.
 
 	In the future, however, we hope to have access to a fully-representative sample of mobility data to study the effects of COVID-19 on global scientific labor flows.
-	We can use techniqeus developed by other researchers, such as those used by Hamilton, Leskovec, \& Jurafsky \autocite{hamilton-etal-2016-diachronic}, to align embeddings trained on different data in order to quantify the changes in global mobility.
+	We can use techniques developed by other researchers, such as those used by Hamilton, Leskovec, \& Jurafsky \autocite{hamilton-etal-2016-diachronic}, to align embeddings trained on different data in order to quantify the changes in global mobility.
 	We look forward to approaching this, as well as other exciting projects in the future.
 }
+
 
 
 
@@ -874,13 +922,13 @@ All of the referees presented us with excellent, insightful comments and we feel
 	\begin{table}[ht]
 		\caption{
 			\textbf{Correlation between flux and distance over metrics, experimental parameters}.
-			Each cell corresponds to the correlation (measured with $R^{2}$) between the real-world flux between scientific organizations, comparing the embedding distance against baseline metrics, and across subsets of mobility data and by definitions of organization population.
+			Each cell corresponds to the correlation between the real-world flux between scientific organizations (measured with $R^{2}$) and baseline metrics, shown by subsets of mobility data and by definitions of organization population.
 			The asterisk denotes the top-performing distance metric by column.
 			Distance metrics are ordered from highest $R^{2}$ to lowest, based on global mobility with organization population defined using all mobile and non-mobile authors.
 			``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
 			population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
 			``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-			Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct optimization of the gravity law works better, as well as Levy's factorization~\autocite{levy2014neural} for domestic and international only mobility.
+			Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct optimization of the gravity model works better, as well as Levy's factorization~\autocite{levy2014neural} for domestic and international only mobility.
 		}
 		\label{supp:table:r2_table}
 		\begin{centerbox}
@@ -1116,8 +1164,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	\begin{table}[ht]
 		\caption{
 			\textbf{Prediction error between actual and predicted mobility with exponential gravity model, by metrics and experimental parameters}.
-			Each cell corresponds to the prediction error (measured with root mean squared error) between the real-world flux between scientific organizations and predictions made with the exponential form of the gravity model of mobility.
-			The prediction error is shown for the embedding distance compared against baselines, subsets of mobility data, and definitions of organization population.
+			Each cell corresponds to the prediction error (measured with root mean squared error) when using each distance as input to the exponential form of the gravity model of mobility to predict the flux between organizations, shown by subsets of mobility data, and by definitions of organization population.
 			The asterisk denotes the top-performing distance metric by column (lowest prediction error).
 			Distance metrics are ordered from lowest prediction error to highest, based on global mobility with organization population defined using all mobile and non-mobile authors.
 			``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
@@ -1131,7 +1178,6 @@ All of the referees presented us with excellent, insightful comments and we feel
 				\small
 				\setlength{\tabcolsep}{0pt}
 				\begin{tabular}{l l l l l l l l l l}
-
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
@@ -1161,117 +1207,102 @@ All of the referees presented us with excellent, insightful comments and we feel
 					\arrayrulecolor{black}
 
 					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}}      &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.743 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.784 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.76 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.73 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.784 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.749 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.714 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.762 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.745 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.713 \hspace{6pt}\huxbpad{6pt}}                                                 &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.76 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.737 \hspace{6pt}\huxbpad{6pt}}                                               &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.702 \hspace{6pt}\huxbpad{6pt}}                                                 &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.749 \hspace{6pt}\huxbpad{6pt}}                                                 &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.713 \hspace{6pt}\huxbpad{6pt}}                                               &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.715 \hspace{6pt}\huxbpad{6pt}}                                                 &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.764 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.748 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
 
 					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's euclidean} \hspace{6pt}\huxbpad{6pt}}      &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.78 \hspace{6pt}\huxbpad{6pt}}                                                   &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.776 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.755 \hspace{6pt}\huxbpad{6pt}}                                               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.703 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.711 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
-
-
-					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
-					\arrayrulecolor{black}
-
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}}                                                   &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.808 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.957 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.939 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.802 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.79 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.803 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.791 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.771 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.725 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.726 \hspace{6pt}\huxbpad{6pt}}                                                 &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.705 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
 
 					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}}         &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.831 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.864 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.863 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.783 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.809 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.803 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.825 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.811 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.851 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.87 \hspace{6pt}\huxbpad{6pt}}                                                   &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.854 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.769 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.798 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.784 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
 
 					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}}            &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.839 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.785 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.761 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.89 \hspace{6pt}\huxbpad{6pt}}                                                   &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.81 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.792 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.752 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.728 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.859 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.82 \hspace{6pt}\huxbpad{6pt}}                                                 &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.82 \hspace{6pt}\huxbpad{6pt}}                                                   &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.792 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
 
 					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}}      &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.87 \hspace{6pt}\huxbpad{6pt}}                                                   &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.878 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.891 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.894 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.904 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}}                                                  &
 					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.837 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.801 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.937 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.919 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.886 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.804 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.772 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.735 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}}            &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.905 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.906 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.852 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.851 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}}         &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.881 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.875 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}}                                                 &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.882 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.866 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.858 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
 
 					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}}               &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.889 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.85 \hspace{6pt}\huxbpad{6pt}}                                                   &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.838 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}}                                                &
 					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.871 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.819 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.828 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.814 \hspace{6pt}\huxbpad{6pt}}                                                &
 					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}}                                                  &
 					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}}                                                  &
 					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
@@ -1280,61 +1311,76 @@ All of the referees presented us with excellent, insightful comments and we feel
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}}            &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.92 \hspace{6pt}\huxbpad{6pt}}                                                   &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.885 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.918 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.896 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.797 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.904 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.944 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}}                                                 &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.907 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.972 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.955 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.793 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.838 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.821 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
 
-					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}}         &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.926 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.911 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}}                                                   &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.924 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.909 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.861 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.872 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.854 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}}            &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.918 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.925 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.908 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.884 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.916 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.894 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.814 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.796 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+					\arrayrulecolor{black}
+
+					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}}            &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.929 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.951 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.928 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.973 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.002 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.856 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.875 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
 
 					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}}    &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.95 \hspace{6pt}\huxbpad{6pt}}                                                 &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.955 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.958 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.941 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.873 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.883 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.866 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.939 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.923 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.92 \hspace{6pt}\huxbpad{6pt}}                                                   &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.946 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
 					\arrayrulecolor{black}
 
 					\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}}            &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.99 \hspace{6pt}\huxbpad{6pt}}                                                   &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.998 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.977 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.015 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.997 \hspace{6pt}\huxbpad{6pt}}                                                &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.845 \hspace{6pt}\huxbpad{6pt}}                                                  &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}}                                                   &
-					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.987 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.995 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.98 \hspace{6pt}\huxbpad{6pt}}                                                 &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.979 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.014 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.996 \hspace{6pt}\huxbpad{6pt}}                                                &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}}                                                  &
+					\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.849 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
 
 
 					\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
@@ -1363,14 +1409,13 @@ All of the referees presented us with excellent, insightful comments and we feel
 	\begin{table}[ht]
 		\caption{
 			\textbf{Prediction error between actual and predicted mobility with power-law gravity model, by metrics and experimental parameters}.
-			Each cell corresponds to the prediction error (measured with root mean squared error) between the real-world flux between scientific organizations and predictions made with the power-law form of the gravity model of mobility.
-			The prediction error is shown for the embedding distance compared against baselines, subsets of mobility data, and definitions of organization population.
+			Each cell corresponds to the prediction error (measured with root mean squared error) when using each distance as input to the power-law form of the gravity model of mobility to predict the flux between organizations, shown by subsets of mobility data, and by definitions of organization population.
 			The asterisk denotes the top-performing distance metric by column (lowest prediction error).
 			Distance metrics are ordered from lowest prediction error to highest, based on global mobility with organization population defined using all mobile and non-mobile authors.
 			``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
 			population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
 			``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
-			Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions for global mobility with ``All'; and ``Mobile only'' definitions of population, though direvt gravity-law opimization with MDS performs better when using raw frequencies to measure organization population, and Levy's factorization~\autocite{levy2014neural} perform better here with domestic and international only mobility.
+			Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions for global mobility with ``All'; and ``Mobile only'' definitions of population, though direct optimization of the gravity model with MDS performs better when using raw frequencies to measure organization population, and Levy's factorization~\autocite{levy2014neural} perform better here with domestic and international only mobility.
 		}
 		\label{supp:table:rmse_power_table}
 		\begin{centerbox}
