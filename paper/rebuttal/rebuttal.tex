@@ -409,18 +409,18 @@ In our original manuscript, we compared the performance of what we call the embe
 These alternatives included the geographic distance between locations, the distance most commonly used in definitions of the gravity model of mobility, along with the dot product similarity between embedding vectors, and the cosine distance and Jensen-Shannon divergence between vectors obtained from a personalized-page-ranking procedure on the underlying mobility network. Following the advice of the referees, we also add additional baselines to illustrate how the embedding distance performs compared to simpler embedding alternatives and also to a more advanced approach as follows:
 
 \vspace{-0.5cm}
-\paragraph{SVD on co-occurrence matrix:}The first of these baselines uses the distance between vectors in an embedding space produced through the singular value decomposition (SVD) of the underlying location co-occurrence matrix. First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
+\paragraph{SVD on co-occurrence matrix:}The first of these baselines uses the distance between vectors in an embedding space produced through the singular value decomposition (SVD) of the underlying location co-occurrence matrix. First, we construct the co-occurrence matrix of $C$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
 Then, we apply the truncated SVD with $d=300$ on the flow matrix $A$ directly.
 
 \vspace{-0.3cm}
 \paragraph{Laplacian Eigenmap:} As the second baseline, we consider Laplacian Eigenmap embeddings~\autocite{belkin2003laplacian}, which is one of the most fundamental approaches for graph embedding. We generate Laplacian Eigenmap embeddings by applying a truncated singular value decomposition to matrix $L$ given by $L=D - A$, where
-$A$ is the co-occurrence matrix of $N$ organizations with element $A_{ij}$ indicating the number of co-occurrences of organizations $i$ and $j$ in the same affiliation trajectory, and $D$ is the diagonal matrix with diagonals $D_{ii}=\sum_j {A_{ij}}$. We set the dimension to $d=300$.
+$A$ is the co-occurrence matrix of $C$ organizations with element $A_{ij}$ indicating the number of co-occurrences of organizations $i$ and $j$ in the same affiliation trajectory, and $D$ is the diagonal matrix with diagonals $D_{ii}=\sum_j {A_{ij}}$. We set the dimension to $d=300$.
 
 \vspace{-0.3cm}
 \paragraph{Levy's  symmetric SVD \textit{word2vec} distance:} In addition to these suggested baselines, we also consider distances derived from embeddings learned through matrix factorization following the procedure outlined by Levy \& Goldberg~\autocite{levy2014neural}.
 They utilize SVD to train the {\it word2vec}'s model observing that training \textit{word2vec} can be understood as a factorization of a matrix.
 Here, we compare the performance of \textit{word2vec} embeddings against those calculated directly using Levy's SVD.
-First, we construct the matrix of $N$ organizations
+First, we construct the $C\times C$ matrix $M$ whose entries $M_{ij}$ are given by
 \begin{equation}
 	\label{eq:levyword2vec}
 	M_{ij} = \log\left(\frac{N(i,j) |D|}{N(i) N(j)}\right) - \log(k),
@@ -429,7 +429,7 @@ where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given th
 
 \vspace{-0.3cm}
 \paragraph{Direct optimization of gravity model:} Finally, we create an embedding by optimizing for the gravity model directly.
-Specifically, we construct a gravity matrix of $N$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is the number of co-occurrences of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual number of unique mobile and non-mobile authors affiliated. We then embed the gravity matrix using two approaches: the truncated SVD, and multidimensional scaling (MDS), which embeds each location in an N-dimensional space such that pairwise distances are preserved as well as possible.
+Specifically, we construct a gravity matrix of $C$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is the number of co-occurrences of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual number of unique mobile and non-mobile authors affiliated. We then embed the gravity matrix using two approaches: the truncated SVD, and multidimensional scaling (MDS), which embeds each location in an N-dimensional space such that pairwise distances are preserved as well as possible.
 Typically, MDS uses Euclidean distance to measure the distance between vectors.
 
 \subsection{New experimental parameters}
