@@ -423,9 +423,9 @@ Here, we compare the performance of \textit{word2vec} embeddings against those c
 First, we construct a matrix $M$ whose entries $M_{ij}$ are given by
 \begin{equation}
 	\label{eq:levyword2vec}
-	M_{ij} = \log\left(\frac{N(i,j) |D|}{N(i) N(j)}\right) - \log(k),
+	M_{ij} = \log\left(\frac{N(i,j) N}{N(i) N(j)}\right) - \log(k),
 \end{equation}
-where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given the window size $w$ in the total corpus $D$, $N(i)=\sum_{j=1}^N N(i,j)$ as the number of items $i$ occurred given the window size $w$ in $D$, and $k$ is the number of negative samples. We used $w=1$ and $k=5$ which is the same setting as in our main result. Then, we factorized matrix $M$  into $V_d \Sigma_d U_d$ using truncated SVD with $d=300$, and used $V_d\sqrt{\Sigma_d}$ as the in-vectors.
+where $N(i,j)$ is the number of times that the center-context location pair $(i,j)$ appears in the context window, $N(i)=\sum_{j\in {\cal A}} N(i,j)$ is the number of times that $i$ appears as the center location in all center-context location pairs, $N=\sum_{i \in {\cal A}} N(i)$ is the number of all center-context location pairs, and $k$ is the number of negative samples. We used $w=1$ and $k=5$ which is the same setting as in our main result. Then, we factorized matrix $M$ into $V_d \Sigma_d U_d$ using truncated SVD with $d=300$, and used $V_d\sqrt{\Sigma_d}$ as the in-vectors.
 
 \vspace{-0.3cm}
 \paragraph{Direct optimization of gravity model:} Finally, we create an embedding by optimizing for the gravity model directly.
@@ -787,7 +787,7 @@ All of the referees presented us with excellent, insightful comments and we feel
 	This last attribute proved very useful, as in exploring the mathematical properties of the model, we discovered a deep connection between \textit{word2vec} and the gravity model of mobility, which explains why it learns gravity-like relationships between entities (see Section 1, this letter).
 	We believe that this new discovery, now included in the manuscript, strongly grounds our use of \textit{word2vec} here.
 
-	We agree that the new revolutions in neural embeddings offer huge potential for the study of human mobility, however we argue that our contribution is dependent on \textit{word2vec}, both for its equivelance with the gravity model of mobility, as well as for the model's simplicity and ubiquity.
+	We agree that the new revolutions in neural embeddings offer huge potential for the study of human mobility, however we argue that our contribution is dependent on \textit{word2vec}, both for its equivalence with the gravity model of mobility, as well as for the model's simplicity and ubiquity.
 	\textit{Word2vec} is also efficient; deep neural models often require tremendous amounts of training data ($\sim$3 billion words in BERT) and model parameters, making them infeasible for most studies of mobility.
 	We hope that this manuscript serves as a foundation that others can build upon, applying more and more sophisticated neural embedding techniques to gain deeper insights into mobility data.
 
