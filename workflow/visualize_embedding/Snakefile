@@ -26,7 +26,7 @@ SIZE_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR, "2008-2019_inst_sizes_all.txt")
 # Config
 LEVEL_LIST = ['global', 'nation', 'region', 'nation', 'nation', 'region', 'region', 'region', 'region']
 TARGET_LIST = ["global", "United_States", "Massachusetts","Brazil-Portugal-Argentina-Colombia-Chile-Mexico-Peru-Uruguay-Spain", "Viet_Nam-Philippines-Egypt-Indonesia-Thailand-Qatar-Saudi_Arabia-United_Arab_Emirates-Malaysia-Bangladesh-Oman-Jordan-Pakistan-Sri_Lanka-Iraq-Palestine,_State_of", "California", "New_York", "Pennsylvania", "Texas"]
-N_NEIGHBOR_LIST = [10, 10, 5, 7, 7, 7, 7, 7, 7]
+N_NEIGHBOR_LIST = [10, 10, 5, 7, 10, 7, 10, 7, 7]
 MIN_DIST_LIST = [0.3, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
 RANDOM_SEED_LIST = [35, 35, 35, 35, 35, 35, 35, 35, 35]
 
