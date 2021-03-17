@@ -440,6 +440,8 @@ However, to connect \textit{word2vec} to the gravity model of mobility, we assum
 We now report all main results using $\gamma = 1.0$ and also compare its performance to embeddings learned using $\gamma = 0.75$, as we do with the number of embedded dimensions and window size.
 We plot the performance of each combination of hyperparameters by their ability to explain real-world flux of scientific mobility (Fig.~\ref{fig:supp:hyperparameter}), and observe no noticeable difference in performance between values of $\gamma = 0.75$ and $\gamma = 1.0$.
 Figures in the updated manuscript have been re-drawn with $\gamma = 1.0$, and the findings remain qualitatively similar.
+The most notable differences are observed in figures 3 (the UMAP projection of all organizations) and 4 (the clustering of country-level vectors);
+still, the findings from these plots are largely similar, and quantitative measurements associated with these plots robust. 
 As a side benefit, including the hyperparameter of $\gamma$ also effectively doubles the number of embeddings trained, and that results are so similar across different embedding provides further evidence of the robustness of the approach applied to our data.
 
 %
