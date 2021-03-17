@@ -78,6 +78,7 @@ NETWORK_CENTRALITIES = osjoin(NETWORK_DATA_DIR, '{traj}_net_centralities.csv')
 # Embeddings #
 ##############
 WORD2VEC_EMBEDDINGS = osjoin(EMBEDDINGS_DIR, '{traj}', 'word2vec_d{dimensions}_ws{window}_gamma{gamma}_model.bin')
+WORD2VEC_EMBEDDINGS_TEST = osjoin(EMBEDDINGS_DIR, '{traj}', 'testing', 'word2vec_d{dimensions}_ws{window}_gamma{gamma}_model_{iter}.bin')
 ORG_W2V_COS_SIMS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', 'cos_{traj}_d{dimensions}_ws{window}_gamma{gamma}_sim.csv')
 ORG_W2V_DOT_SIMS = osjoin(DESCRIPTIVE_DATA_DIR, 'org', 'word2vec', 'dot_{traj}_d{dimensions}_ws{window}_gamma{gamma}_sim.csv')
 ORG_W2V_FACTORS = osjoin(EMBEDDINGS_DIR, '{traj}', 'factors', 'd{dimensions}_ws{window}_{traj}_gamma{gamma}_w2vfactors.csv')
@@ -281,6 +282,7 @@ COUNTRY_LIST = ["AUS", "AUT", "BEL", "BRA", "CAN", "CHE", "CHN", "CZE",
 
 DATASETS = ['airport', 'reservation']
 
+ITER = [1, 2, 3, 4, 5]
 ###############################################################################
 # Includes
 ###############################################################################
@@ -320,6 +322,13 @@ rule all:
                dimensions = W2V_DIMENSIONS,
                window = TARGET_WINDOW_SIZE,
                gamma = TARGET_GAMMA),
+
+        expand(WORD2VEC_EMBEDDINGS_TEST,
+               traj = TRAJECTORIES,
+               dimensions = TARGET_DIMENSIONS,
+               window = TARGET_WINDOW_SIZE,
+               gamma = TARGET_GAMMA,
+               iter = ITER),
 
         # UMAP projections
         expand(UMAP_VISUALIZATIONS_ORG,
