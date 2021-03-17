@@ -94,6 +94,22 @@ rule train_word2vec_model:
                 --minfrequency {params.wf} --numworkers {params.nw} \
                 --iterations {params.niter} --output {output}"
 
+rule train_word2vec_model_for_testing:
+    input: [expand(MOBILITY_SENTENCES, traj = TRAJECTORIES, year = ALL_YEARS)]
+    output: WORD2VEC_EMBEDDINGS_TEST
+    threads: W2V_NUM_WORKERS
+    params:
+        wf = W2V_MIN_WORD_FREQ,
+        nw = W2V_NUM_WORKERS,
+        niter = W2V_ITERATIONS
+    shell:
+        "python scripts/train_word2vec_embedding_from_sentences.py --files {input} \
+                --dimensions {wildcards.dimensions} --window {wildcards.window} \
+                --gamma {wildcards.gamma} \
+                --minfrequency {params.wf} --numworkers {params.nw} \
+                --iterations {params.niter} --output {output}"
+
+
 rule decompose_word2vec_model:
     input: rules.train_word2vec_model.output
     output: ORG_W2V_FACTORS
