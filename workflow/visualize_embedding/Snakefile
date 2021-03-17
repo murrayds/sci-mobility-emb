@@ -15,7 +15,7 @@ VIZ_FIGURE_DIR = osjoin(FIGURE_DIR, 'Viz')
 # Assets
 FONT_DIR = osjoin(ASSET_DIR, 'Helvetica.ttf')
 
-# Meta_info_files 
+# Meta_info_files
 EMBEDDING_FILE_DIR = osjoin(EMBEDDINGS_DIR, "word2vec_d300_ws1_gamma1.0_model.bin")
 INST_LOOK_UP_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "institution_lookup_with_states.txt")
 ISO_TO_CONTI_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "iso_to_country.txt")
@@ -24,11 +24,17 @@ USA_STATES_TO_REGION_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "usa_states_to_regi
 SIZE_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR, "2008-2019_inst_sizes_all.txt")
 
 # Config
-LEVEL_LIST = ['global', 'nation', 'region', 'nation', 'nation', 'region', 'region', 'region', 'region']
-TARGET_LIST = ["global", "United_States", "Massachusetts","Brazil-Portugal-Argentina-Colombia-Chile-Mexico-Peru-Uruguay-Spain", "Viet_Nam-Philippines-Egypt-Indonesia-Thailand-Qatar-Saudi_Arabia-United_Arab_Emirates-Malaysia-Bangladesh-Oman-Jordan-Pakistan-Sri_Lanka-Iraq-Palestine,_State_of", "California", "New_York", "Pennsylvania", "Texas"]
-N_NEIGHBOR_LIST = [10, 10, 5, 7, 10, 7, 10, 7, 7]
-MIN_DIST_LIST = [0.3, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
-RANDOM_SEED_LIST = [35, 35, 35, 35, 35, 35, 35, 35, 35]
+LEVEL_LIST = ['global', 'nation', 'region',
+              'nation', 'nation',
+              'region', 'region', 'region', 'region',
+              'nation']
+TARGET_LIST = ["global", "United_States", "Massachusetts",
+               "Brazil-Portugal-Argentina-Colombia-Chile-Mexico-Peru-Uruguay-Spain", "Viet_Nam-Philippines-Egypt-Indonesia-Thailand-Qatar-Saudi_Arabia-United_Arab_Emirates-Malaysia-Bangladesh-Oman-Jordan-Pakistan-Sri_Lanka-Iraq-Palestine,_State_of",
+               "California", "New_York", "Pennsylvania", "Texas",
+               'Netherlands']
+N_NEIGHBOR_LIST = [10, 10, 5, 7, 10, 7, 10, 7, 7, 7]
+MIN_DIST_LIST = [0.3, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
+RANDOM_SEED_LIST = [35, 35, 35, 35, 35, 35, 35, 35, 35, 35]
 
 
 # Reult Files
@@ -39,7 +45,7 @@ rule all:
     input:
         COORDS_FILES,
         VIZ_FIGURE_FILES
-        
+
 rule draw_texas_figure_si:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_region_Texas.pkl"),
@@ -47,10 +53,10 @@ rule draw_texas_figure_si:
         SIMPLIFIED_ORG_FILE_DIR,
         SIZE_FILE_DIR,
         FONT_DIR
-    
+
     output:
         osjoin(VIZ_FIGURE_DIR, "umap_coordinate_region_Texas.pdf"),
-    
+
     run:
         shell('python3 script/draw_texas_figure_si.py {input} {output}')
 
@@ -61,10 +67,10 @@ rule draw_pennsylvania_figure_si:
         SIMPLIFIED_ORG_FILE_DIR,
         SIZE_FILE_DIR,
         FONT_DIR
-    
+
     output:
         osjoin(VIZ_FIGURE_DIR, "umap_coordinate_region_Pennsylvania.pdf"),
-    
+
     run:
         shell('python3 script/draw_pennsylvania_figure_si.py {input} {output}')
 
@@ -75,13 +81,13 @@ rule draw_new_york_figure_si:
         SIMPLIFIED_ORG_FILE_DIR,
         SIZE_FILE_DIR,
         FONT_DIR
-    
+
     output:
         osjoin(VIZ_FIGURE_DIR, "umap_coordinate_region_New_York.pdf"),
-    
+
     run:
         shell('python3 script/draw_new_york_figure_si.py {input} {output}')
-        
+
 rule draw_california_figure_si:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_region_California.pkl"),
@@ -89,42 +95,42 @@ rule draw_california_figure_si:
         SIMPLIFIED_ORG_FILE_DIR,
         SIZE_FILE_DIR,
         FONT_DIR
-    
+
     output:
         osjoin(VIZ_FIGURE_DIR, "umap_coordinate_region_California.pdf"),
-    
+
     run:
         shell('python3 script/draw_california_figure_si.py {input} {output}')
-        
+
 rule draw_western_south_asia_figure:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_nation_Viet_Nam-Philippines-Egypt-Indonesia-Thailand-Qatar-Saudi_Arabia-United_Arab_Emirates-Malaysia-Bangladesh-Oman-Jordan-Pakistan-Sri_Lanka-Iraq-Palestine,_State_of.pkl"),
         INST_LOOK_UP_FILE_DIR,
         SIZE_FILE_DIR,
         FONT_DIR
-    
+
     output:
         osjoin(VIZ_FIGURE_DIR, "umap_coordinate_nation_Viet_Nam-Philippines-Egypt-Indonesia-Thailand-Qatar-Saudi_Arabia-United_Arab_Emirates-Malaysia-Bangladesh-Oman-Jordan-Pakistan-Sri_Lanka-Iraq-Palestine,_State_of.pdf"),
-    
+
     run:
         shell('python3 script/draw_western_south_asia_figure.py {input} {output}')
-        
-        
+
+
 rule draw_south_america_figure:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_nation_Brazil-Portugal-Argentina-Colombia-Chile-Mexico-Peru-Uruguay-Spain.pkl"),
         INST_LOOK_UP_FILE_DIR,
         SIZE_FILE_DIR,
         FONT_DIR
-    
+
     output:
         osjoin(VIZ_FIGURE_DIR, "umap_coordinate_nation_Brazil-Portugal-Argentina-Colombia-Chile-Mexico-Peru-Uruguay-Spain.pdf"),
-        
+
     run:
         shell('python3 script/draw_south_america_figure.py {input} {output}')
-        
-        
-        
+
+
+
 rule draw_massachusetts_figure:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_region_Massachusetts.pkl"),
@@ -132,13 +138,13 @@ rule draw_massachusetts_figure:
         SIMPLIFIED_ORG_FILE_DIR,
         SIZE_FILE_DIR,
         FONT_DIR
-    
+
     output:
         osjoin(VIZ_FIGURE_DIR, "umap_coordinate_region_Massachusetts.pdf"),
-    
+
     run:
         shell('python3 script/draw_massachusetts_figure.py {input} {output}')
-        
+
 rule draw_usa_figure:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_nation_United_States.pkl"),
@@ -146,14 +152,27 @@ rule draw_usa_figure:
         USA_STATES_TO_REGION_FILE_DIR,
         SIZE_FILE_DIR,
         FONT_DIR
-    
+
     output:
         osjoin(VIZ_FIGURE_DIR, "umap_coordinate_nation_United_States.pdf"),
-    
+
     run:
         shell('python3 script/draw_usa_figure.py {input} {output}')
-        
-        
+
+rule draw_netherlands_figure:
+    input:
+        osjoin(UMAP_COORD_DIR, "umap_coordinate_nation_Netherlands.pkl"),
+        INST_LOOK_UP_FILE_DIR,
+        SIZE_FILE_DIR,
+        FONT_DIR
+
+    output:
+        osjoin(VIZ_FIGURE_DIR, "umap_coordinate_nation_Netherlands.pdf"),
+
+    run:
+        shell('python3 script/draw_netherlands_figure.py {input} {output}')
+
+
 rule draw_global_figure:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_global_global.pkl"),
@@ -161,13 +180,13 @@ rule draw_global_figure:
         ISO_TO_CONTI_FILE_DIR,
         SIZE_FILE_DIR,
         FONT_DIR
-    
+
     output:
         osjoin(VIZ_FIGURE_DIR, "umap_coordinate_global_global.pdf"),
-    
+
     run:
         shell('python3 script/draw_global_figure.py {input} {output}')
-        
+
 
 rule get_umap_coords:
     input:
