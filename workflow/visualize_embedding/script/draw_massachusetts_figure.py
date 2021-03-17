@@ -34,12 +34,8 @@ def draw_figure(
     )
 
     size_data = pd.read_csv(INPUT_SIZE_FILE, sep="\t", dtype={"cwts_org_no": str})
-    size_data = size_data.drop(size_data.index[len(size_data) - 1])
-    size_data.person_count = size_data.person_count.astype(int)
-    mean_size_dict = (
-        size_data.groupby("cwts_org_no")["person_count"].apply(np.mean).to_dict()
-    )
-    size_list = np.array([mean_size_dict[inst] for inst in institute_list])
+    size_dict = size_data.set_index('cwts_org_no')['size'].to_dict()
+    size_list = np.array([size_dict[inst] for inst in institute_list])
 
     rcParams["figure.figsize"] = 20, 18
     if FONT_PATH:
@@ -61,36 +57,36 @@ def draw_figure(
         linewidth=0.3,
         edgecolor="white",
     )
-    plt.text(4.7, -4.3, "Boston,\nCambridge", c="black", fontproperties=large_prop)
-    plt.text(7, -1.8, "Worcester", c="black", fontproperties=large_prop)
+#     plt.text(4.7, -4.3, "Boston,\nCambridge", c="black", fontproperties=large_prop)
+#     plt.text(7, -1.8, "Worcester", c="black", fontproperties=large_prop)
 
-    ## Univ annoate
-    c = awesome_c_list[4]
-    plt.text(8.2, -2.8, "The UMass\nSystem", c=c, fontproperties=prop)
-    plt.text(4.1, -2.8, "MIT", c=c, fontproperties=prop)
-    plt.text(4.0, -4.6, "Harvard", c=c, fontproperties=prop)
-    plt.text(6.1, -4.1, "Boston \nUniversity", c=c, fontproperties=prop)
-    plt.text(5.8, -5, "Northeastern\nUniversity", c=c, fontproperties=prop)
-    plt.text(7.5, -1.4, "Clark University", c=c, fontproperties=prop)
-    plt.text(3.2, -6.3, "Tufts\nUniversity", c=c, fontproperties=prop)
-    plt.text(6.7, -5.6, "Brandeis\nUniversity", c=c, fontproperties=prop)
+#     ## Univ annoate
+#     c = awesome_c_list[4]
+#     plt.text(8.2, -2.8, "The UMass\nSystem", c=c, fontproperties=prop)
+#     plt.text(4.1, -2.8, "MIT", c=c, fontproperties=prop)
+#     plt.text(4.0, -4.6, "Harvard", c=c, fontproperties=prop)
+#     plt.text(6.1, -4.1, "Boston \nUniversity", c=c, fontproperties=prop)
+#     plt.text(5.8, -5, "Northeastern\nUniversity", c=c, fontproperties=prop)
+#     plt.text(7.5, -1.4, "Clark University", c=c, fontproperties=prop)
+#     plt.text(3.2, -6.3, "Tufts\nUniversity", c=c, fontproperties=prop)
+#     plt.text(6.7, -5.6, "Brandeis\nUniversity", c=c, fontproperties=prop)
 
-    ## Hospital annoate
-    c = awesome_c_list[3]
-    plt.text(3.85, -5.55, "Brigham And \nWomen's Hospital", c=c, fontproperties=prop)
-    plt.text(2.7, -4.5, "Massachusetts\nGeneral Hospital", c=c, fontproperties=prop)
-    plt.text(6.85, -2.2, "UMass General\nHealth Care", c=c, fontproperties=prop)
+#     ## Hospital annoate
+#     c = awesome_c_list[3]
+#     plt.text(3.85, -5.55, "Brigham And \nWomen's Hospital", c=c, fontproperties=prop)
+#     plt.text(2.7, -4.5, "Massachusetts\nGeneral Hospital", c=c, fontproperties=prop)
+#     plt.text(6.85, -2.2, "UMass General\nHealth Care", c=c, fontproperties=prop)
 
-    ## Inst annoate
-    c = awesome_c_list[0]
-    plt.text(4.1, -6.43, "New England\nResearch\nInstitute", c=c, fontproperties=prop)
-    plt.text(
-        4.3,
-        -3.6,
-        "Harvard-MIT Health \nSciences and Technology",
-        c=c,
-        fontproperties=prop,
-    )
+#     ## Inst annoate
+#     c = awesome_c_list[0]
+#     plt.text(4.1, -6.43, "New England\nResearch\nInstitute", c=c, fontproperties=prop)
+#     plt.text(
+#         4.3,
+#         -3.6,
+#         "Harvard-MIT Health \nSciences and Technology",
+#         c=c,
+#         fontproperties=prop,
+#     )
 
     plt.axis("off")
 
@@ -104,7 +100,7 @@ def draw_figure(
         marker="o",
     )[0]
     handles = [lp(k) for k in ["Institute", "Hospital", "University", "Teaching"]]
-    plt.legend(handles=handles, bbox_to_anchor=(1, 0.15), prop=prop, frameon=False)
+    plt.legend(handles=handles, bbox_to_anchor=(1, 0.2), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
 
 

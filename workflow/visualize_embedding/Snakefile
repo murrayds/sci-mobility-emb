@@ -8,26 +8,27 @@ ASSET_DIR = osjoin(PROJ_HOME, 'Assets')
 ADDITIONAL_DATA_DIR = osjoin(DATA_DIR, 'Additional')
 RAW_DIR = osjoin(DATA_DIR, 'raw')
 DERIVED_DATA_DIR = osjoin(DATA_DIR, 'Derived')
-UMAP_COORD_DIR = osjoin(DERIVED_DATA_DIR, 'Visualzation_coordinates')
-EMBEDDINGS_ARCHIVE_DIR = osjoin(PROJ_HOME, 'Archive','Embeddings_20191209','word2vec')
-VIZ_FIGURE_DIR = osjoin(FIGURE_DIR, 'Visualzation')
+EMBEDDINGS_DIR = osjoin(DERIVED_DATA_DIR, 'Embeddings', 'precedence')
+UMAP_COORD_DIR = osjoin(DERIVED_DATA_DIR, 'umap_coords')
+VIZ_FIGURE_DIR = osjoin(FIGURE_DIR, 'Viz')
 
 # Assets
 FONT_DIR = osjoin(ASSET_DIR, 'Helvetica.ttf')
 
 # Meta_info_files 
-EMBEDDINGS_ARCHIVE_FILE_DIR = osjoin(EMBEDDINGS_ARCHIVE_DIR, "2008-2019_word2vec_d200_ws2_model.bin")
+EMBEDDING_FILE_DIR = osjoin(EMBEDDINGS_DIR, "word2vec_d300_ws1_gamma1.0_model.bin")
 INST_LOOK_UP_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "institution_lookup_with_states.txt")
 ISO_TO_CONTI_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "iso_to_country.txt")
 SIMPLIFIED_ORG_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "org_types.csv")
 USA_STATES_TO_REGION_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR , "usa_states_to_regions.csv")
-SIZE_FILE_DIR = osjoin(RAW_DIR, "2008-2019_inst_sizes.txt")
+SIZE_FILE_DIR = osjoin(ADDITIONAL_DATA_DIR, "2008-2019_inst_sizes_all.txt")
 
 # Config
 LEVEL_LIST = ['global', 'nation', 'region', 'nation', 'nation', 'region', 'region', 'region', 'region']
 TARGET_LIST = ["global", "United_States", "Massachusetts","Brazil-Portugal-Argentina-Colombia-Chile-Mexico-Peru-Uruguay-Spain", "Viet_Nam-Philippines-Egypt-Indonesia-Thailand-Qatar-Saudi_Arabia-United_Arab_Emirates-Malaysia-Bangladesh-Oman-Jordan-Pakistan-Sri_Lanka-Iraq-Palestine,_State_of", "California", "New_York", "Pennsylvania", "Texas"]
 N_NEIGHBOR_LIST = [10, 10, 5, 7, 7, 7, 7, 7, 7]
 MIN_DIST_LIST = [0.3, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
+RANDOM_SEED_LIST = [35, 35, 35, 35, 35, 35, 35, 35, 35]
 
 
 # Reult Files
@@ -38,7 +39,7 @@ rule all:
     input:
         COORDS_FILES,
         VIZ_FIGURE_FILES
-
+        
 rule draw_texas_figure_si:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_region_Texas.pkl"),
@@ -95,8 +96,6 @@ rule draw_california_figure_si:
     run:
         shell('python3 script/draw_california_figure_si.py {input} {output}')
         
-        
-
 rule draw_western_south_asia_figure:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_nation_Viet_Nam-Philippines-Egypt-Indonesia-Thailand-Qatar-Saudi_Arabia-United_Arab_Emirates-Malaysia-Bangladesh-Oman-Jordan-Pakistan-Sri_Lanka-Iraq-Palestine,_State_of.pkl"),
@@ -110,7 +109,7 @@ rule draw_western_south_asia_figure:
     run:
         shell('python3 script/draw_western_south_asia_figure.py {input} {output}')
         
-       
+        
 rule draw_south_america_figure:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_nation_Brazil-Portugal-Argentina-Colombia-Chile-Mexico-Peru-Uruguay-Spain.pkl"),
@@ -120,11 +119,12 @@ rule draw_south_america_figure:
     
     output:
         osjoin(VIZ_FIGURE_DIR, "umap_coordinate_nation_Brazil-Portugal-Argentina-Colombia-Chile-Mexico-Peru-Uruguay-Spain.pdf"),
-    
+        
     run:
         shell('python3 script/draw_south_america_figure.py {input} {output}')
         
-
+        
+        
 rule draw_massachusetts_figure:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_region_Massachusetts.pkl"),
@@ -138,8 +138,7 @@ rule draw_massachusetts_figure:
     
     run:
         shell('python3 script/draw_massachusetts_figure.py {input} {output}')
-
-
+        
 rule draw_usa_figure:
     input:
         osjoin(UMAP_COORD_DIR, "umap_coordinate_nation_United_States.pkl"),
@@ -172,10 +171,10 @@ rule draw_global_figure:
 
 rule get_umap_coords:
     input:
-        EMBEDDINGS_ARCHIVE_FILE_DIR,
+        EMBEDDING_FILE_DIR,
         INST_LOOK_UP_FILE_DIR,
     output:
         COORDS_FILES
     run:
-        for level, target, n_neighbor, min_dist, output_file in zip(LEVEL_LIST, TARGET_LIST, N_NEIGHBOR_LIST, MIN_DIST_LIST, COORDS_FILES):
-            shell('python3 script/get_umap_coordinate.py {input} {level} {target} {n_neighbor} {min_dist} {output_file}')
+        for level, target, n_neighbor, min_dist, random_seed, output_file in zip(LEVEL_LIST, TARGET_LIST, N_NEIGHBOR_LIST, MIN_DIST_LIST, RANDOM_SEED_LIST, COORDS_FILES):
+            shell('python3 script/get_umap_coordinate.py {input} {level} {target} {n_neighbor} {min_dist} {random_seed} {output_file}')

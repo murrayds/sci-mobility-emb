@@ -19,6 +19,7 @@ def get_umap_coordinate_by_level(
     TARGET,
     N_NEIGHBOR,
     MIN_DIST,
+    RANDOM_SEED,
     OUTPUT_FILE,
 ):
 
@@ -51,19 +52,20 @@ def get_umap_coordinate_by_level(
         institute_list,
         n_neighbor=N_NEIGHBOR,
         min_dist=MIN_DIST,
+        random_state=RANDOM_SEED,
         out_file_path=OUTPUT_FILE,
     )
 
 
 if __name__ == "__main__":
-    print(sys.argv)
     INPUT_EMBEDDING_FILE = sys.argv[1]
     INPUT_META_INFO_FILE = sys.argv[2]
     LEVEL = sys.argv[3]
     TARGET = sys.argv[4]
     N_NEIGHBOR = int(sys.argv[5])
     MIN_DIST = float(sys.argv[6])
-    OUTPUT_FILE = sys.argv[7]
+    RANDOM_SEED = int(sys.argv[7])
+    OUTPUT_FILE = sys.argv[8]
 
     get_umap_coordinate_by_level(
         INPUT_EMBEDDING_FILE,
@@ -72,5 +74,6 @@ if __name__ == "__main__":
         TARGET,
         N_NEIGHBOR,
         MIN_DIST,
+        RANDOM_SEED,
         OUTPUT_FILE,
     )
