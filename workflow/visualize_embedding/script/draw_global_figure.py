@@ -37,12 +37,8 @@ def draw_figure(
     )
 
     size_data = pd.read_csv(INPUT_SIZE_FILE, sep="\t", dtype={"cwts_org_no": str})
-    size_data = size_data.drop(size_data.index[len(size_data) - 1])
-    size_data.person_count = size_data.person_count.astype(int)
-    mean_size_dict = (
-        size_data.groupby("cwts_org_no")["person_count"].apply(np.mean).to_dict()
-    )
-    size_list = np.array([mean_size_dict[inst] for inst in institute_list])
+    size_dict = size_data.set_index('cwts_org_no')['size'].to_dict()
+    size_list = np.array([size_dict[inst] for inst in institute_list])
 
     # plot config
     rcParams["figure.figsize"] = 20, 18
@@ -66,80 +62,80 @@ def draw_figure(
 
     # draw figure
     plt.scatter(
-        umap_coords[:, 1],
-        umap_coords[:, 0],
+        -umap_coords[:, 1],
+        -umap_coords[:, 0],
         s=argumented_size_list * 1.5,
         c=c_list,
         linewidth=0.3,
         edgecolor="white",
     )
 
-    ## NA annoate
-    c = awesome_c_list[0]
-    plt.text(-8.2, -6.5, "U.S.A.", c=c, fontproperties=prop)
-    plt.text(-4.8, 0.3, "Canada", c=c, fontproperties=prop)
-    plt.text(3, -6, "Canada,\nQuebec-\nMontreal", c=c, fontproperties=prop)
-    plt.text(-1.1, -10.5, "Mexico", c=c, fontproperties=prop)
+#     ## NA annoate
+#     c = awesome_c_list[0]
+#     plt.text(-8.2, -6.5, "U.S.A.", c=c, fontproperties=prop)
+#     plt.text(-4.8, 0.3, "Canada", c=c, fontproperties=prop)
+#     plt.text(3, -6, "Canada,\nQuebec-\nMontreal", c=c, fontproperties=prop)
+#     plt.text(-1.1, -10.5, "Mexico", c=c, fontproperties=prop)
 
-    ## Asia annotate
-    c = awesome_c_list[3]
-    plt.text(-12.2, 0.6, "China", c=c, fontproperties=prop)
-    plt.text(-0.1, 8.9, "Japan", c=c, fontproperties=prop)
-    plt.text(-5.2, 9.7, "S.Korea", c=c, fontproperties=prop)
-    plt.text(-8.1, 0.9, "Singapore", c=c, fontproperties=prop)
-    plt.text(-6.3, 6.2, "India", c=c, fontproperties=prop)
-    plt.text(-2, -8.2, "Israel", c=c, fontproperties=prop)
-    plt.text(-10.2, 6.9, "Taiwan", c=c, fontproperties=prop)
-    plt.text(-2.9, 6.4, "Vietnam", c=c, fontproperties=prop)
-    plt.text(-5.7, 13.8, "Iran", c=c, fontproperties=prop)
-    plt.text(-3.5, 11, "Thailand", c=c, fontproperties=prop)
+#     ## Asia annotate
+#     c = awesome_c_list[3]
+#     plt.text(-12.2, 0.6, "China", c=c, fontproperties=prop)
+#     plt.text(-0.1, 8.9, "Japan", c=c, fontproperties=prop)
+#     plt.text(-5.2, 9.7, "S.Korea", c=c, fontproperties=prop)
+#     plt.text(-8.1, 0.9, "Singapore", c=c, fontproperties=prop)
+#     plt.text(-6.3, 6.2, "India", c=c, fontproperties=prop)
+#     plt.text(-2, -8.2, "Israel", c=c, fontproperties=prop)
+#     plt.text(-10.2, 6.9, "Taiwan", c=c, fontproperties=prop)
+#     plt.text(-2.9, 6.4, "Vietnam", c=c, fontproperties=prop)
+#     plt.text(-5.7, 13.8, "Iran", c=c, fontproperties=prop)
+#     plt.text(-3.5, 11, "Thailand", c=c, fontproperties=prop)
 
-    ## Europe annotate
-    c = awesome_c_list[2]
-    plt.text(6.5, -6.5, "France", c=c, fontproperties=prop)
-    plt.text(0.5, -4.8, "U.K.", c=c, fontproperties=prop)
-    plt.text(-1.3, 1.3, "Norway", c=c, fontproperties=prop)
-    plt.text(0.6, 0.7, "Sweden", c=c, fontproperties=prop)
-    plt.text(12, 1.8, "Italy", c=c, fontproperties=prop)
-    plt.text(2.4, -10.8, "Spain", c=c, fontproperties=prop)
-    plt.text(0.2, 3.7, "Netherlands", c=c, fontproperties=prop)
-    plt.text(6, 4.2, "Germany", c=c, fontproperties=prop)
-    plt.text(4.8, 2.5, "Austria", c=c, fontproperties=prop)
-    plt.text(5.3, 12, "Romania", c=c, fontproperties=prop)
-    plt.text(9.1, 10.6, "Poland", c=c, fontproperties=prop)
-    plt.text(13, -4.8, "Greece", c=c, fontproperties=prop)
-    plt.text(3.5, 7.5, "Russia", c=c, fontproperties=prop)
-    plt.text(3, -13.5, "Portugal", c=c, fontproperties=prop)
-    plt.text(6.4, 0, "Belgium", c=c, fontproperties=prop)
-    plt.text(6.8, 1.9, "Switzerland", c=c, fontproperties=prop)
-    plt.text(3.1, 0.4, "Finland", c=c, fontproperties=prop)
-    plt.text(5.7, 9.8, "Hungary", c=c, fontproperties=prop)
-    plt.text(10.5, 4.8, "Czechia", c=c, fontproperties=prop)
-    plt.text(10.5, 6, "Slovakia", c=c, fontproperties=prop)
-    plt.text(3, 13.4, "Turkey", c=c, fontproperties=prop)
-    plt.text(7.0, 7.9, "Ukraine", c=c, fontproperties=prop)
-    plt.text(-4.5, 3.4, "Denmark", c=c, fontproperties=prop)
-    plt.text(10.2, 7.8, "Latvia", c=c, fontproperties=prop)
-    plt.text(10.6, 8.7, "Lithuania", c=c, fontproperties=prop)
+#     ## Europe annotate
+#     c = awesome_c_list[2]
+#     plt.text(6.5, -6.5, "France", c=c, fontproperties=prop)
+#     plt.text(0.5, -4.8, "U.K.", c=c, fontproperties=prop)
+#     plt.text(-1.3, 1.3, "Norway", c=c, fontproperties=prop)
+#     plt.text(0.6, 0.7, "Sweden", c=c, fontproperties=prop)
+#     plt.text(12, 1.8, "Italy", c=c, fontproperties=prop)
+#     plt.text(2.4, -10.8, "Spain", c=c, fontproperties=prop)
+#     plt.text(0.2, 3.7, "Netherlands", c=c, fontproperties=prop)
+#     plt.text(6, 4.2, "Germany", c=c, fontproperties=prop)
+#     plt.text(4.8, 2.5, "Austria", c=c, fontproperties=prop)
+#     plt.text(5.3, 12, "Romania", c=c, fontproperties=prop)
+#     plt.text(9.1, 10.6, "Poland", c=c, fontproperties=prop)
+#     plt.text(13, -4.8, "Greece", c=c, fontproperties=prop)
+#     plt.text(3.5, 7.5, "Russia", c=c, fontproperties=prop)
+#     plt.text(3, -13.5, "Portugal", c=c, fontproperties=prop)
+#     plt.text(6.4, 0, "Belgium", c=c, fontproperties=prop)
+#     plt.text(6.8, 1.9, "Switzerland", c=c, fontproperties=prop)
+#     plt.text(3.1, 0.4, "Finland", c=c, fontproperties=prop)
+#     plt.text(5.7, 9.8, "Hungary", c=c, fontproperties=prop)
+#     plt.text(10.5, 4.8, "Czechia", c=c, fontproperties=prop)
+#     plt.text(10.5, 6, "Slovakia", c=c, fontproperties=prop)
+#     plt.text(3, 13.4, "Turkey", c=c, fontproperties=prop)
+#     plt.text(7.0, 7.9, "Ukraine", c=c, fontproperties=prop)
+#     plt.text(-4.5, 3.4, "Denmark", c=c, fontproperties=prop)
+#     plt.text(10.2, 7.8, "Latvia", c=c, fontproperties=prop)
+#     plt.text(10.6, 8.7, "Lithuania", c=c, fontproperties=prop)
 
-    ## Africa annotate
-    c = awesome_c_list[8]
-    plt.text(8, -2.1, "Algeria,\nMorocco", c=c, fontproperties=prop)
+#     ## Africa annotate
+#     c = awesome_c_list[8]
+#     plt.text(8, -2.1, "Algeria,\nMorocco", c=c, fontproperties=prop)
 
-    ## SA annotate
-    c = awesome_c_list[5]
-    plt.text(-2.8, -14.5, "Brazil", c=c, fontproperties=prop)
+#     ## SA annotate
+#     c = awesome_c_list[5]
+#     plt.text(-2.8, -14.5, "Brazil", c=c, fontproperties=prop)
 
-    ## Oceneia annotate
-    c = awesome_c_list[4]
-    plt.text(-8.5, 3.2, "Austrailia", c=c, fontproperties=prop)
-    plt.text(-7, 5.3, "New Zealand", c=c, fontproperties=prop)
-    plt.annotate(
-        "",
-        xy=(-5.5, 5.2),
-        xytext=(-5, 4.5),
-        arrowprops=dict(arrowstyle="-", color=c, lw=2),
-    )
+#     ## Oceneia annotate
+#     c = awesome_c_list[4]
+#     plt.text(-8.5, 3.2, "Austrailia", c=c, fontproperties=prop)
+#     plt.text(-7, 5.3, "New Zealand", c=c, fontproperties=prop)
+#     plt.annotate(
+#         "",
+#         xy=(-5.5, 5.2),
+#         xytext=(-5, 4.5),
+#         arrowprops=dict(arrowstyle="-", color=c, lw=2),
+#     )
 
     plt.axis("off")
 
@@ -164,7 +160,7 @@ def draw_figure(
             "Africa",
         ]
     ]
-    plt.legend(handles=handles, bbox_to_anchor=(0.2, 0.25), prop=prop, frameon=False)
+    plt.legend(handles=handles, bbox_to_anchor=(0.2, 0.26), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
 
 

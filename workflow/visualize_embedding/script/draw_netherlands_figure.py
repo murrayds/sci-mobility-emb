@@ -13,12 +13,14 @@ from py_scimobility.core import get_awesome_c_list
 def draw_figure(
     INPUT_UMAP_COORD_FILE,
     INPUT_META_INFO_FILE,
-    INPUT_STATE_TO_REGION,
     INPUT_SIZE_FILE,
     FONT_PATH,
     OUTPUT_FILE,
 ):
     umap_result = pickle.load(open(INPUT_UMAP_COORD_FILE, "rb"))
+
+    result = pd.DataFrame.from_dict(umap_result, orient = "index", columns = ["x", "y"])
+    result.to_csv("~/Desktop/netherlands_umap.csv")
     institute_list = np.array(list(umap_result.keys()))
     umap_coords = np.array([umap_result[inst] for inst in institute_list])
 
@@ -27,12 +29,22 @@ def draw_figure(
     code_to_city = meta_info["city"].to_dict()
     code_to_state = meta_info["region"].to_dict()
 
-    states_to_region = pd.read_csv(INPUT_STATE_TO_REGION)
-    states_to_region = states_to_region.set_index("region")
-    states_to_census_division = states_to_region["census_division"].to_dict()
-    census_division_list = np.array(
-        [states_to_census_division[code_to_state[int(inst)]] for inst in institute_list]
-    )
+    region_list = {
+                  "North Holland": "Western",
+                  "Utrecht": "Western",
+                  "Flevoland": "Western",
+                  "South Holland": "Western",
+                  "Gelderland": "Eastern",
+                  "Overijssel": "Eastern",
+                  "Groningen": "Northern",
+                  "Friesland": "Northern",
+                  "Drenthe": "Northern",
+                  "North Brabant": "Southern",
+                  "Limburg": "Southern",
+                  "Zeeland": "Southern"
+    }
+
+    region_list = np.array([region_list[code_to_state[int(inst)]] for inst in institute_list])
 
     size_data = pd.read_csv(INPUT_SIZE_FILE, sep="\t", dtype={"cwts_org_no": str})
     size_dict = size_data.set_index('cwts_org_no')['size'].to_dict()
@@ -45,9 +57,13 @@ def draw_figure(
         prop = font_manager.FontProperties(size=28)
 
     awesome_c_list = get_awesome_c_list()
-    color_dict = {"west": 4, "pacific": 8, "midwest": 0, "northeast": 2, "south": 3}
-    c_list = [awesome_c_list[color_dict[row]] for row in census_division_list]
-    argumented_size_list = np.array([np.log(size) / np.log(1.3) for size in size_list])
+    color_dict = {"Western": 1,
+                  "Northern": 10,
+                  "Eastern": 4,
+                  "Southern": 8,
+    }
+    c_list = [awesome_c_list[color_dict[row]] for row in region_list]
+    argumented_size_list = np.array([np.log(size) / np.log(1.1) for size in size_list])
 
     plt.scatter(
         umap_coords[:, 1],
@@ -69,23 +85,22 @@ def draw_figure(
         ls="",
         marker="o",
     )[0]
-    handles = [lp(k) for k in ["west", "south", "midwest", "northeast", "pacific"]]
-    plt.legend(handles=handles, bbox_to_anchor=(0.9, 0.23), prop=prop, frameon=False)
+    handles = [lp(k) for k in ["Western", "Northern", "Eastern", "Southern"]]
+
+    plt.legend(handles=handles, bbox_to_anchor=(0.23, 0.23), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
 
 
 if __name__ == "__main__":
     INPUT_UMAP_COORD_FILE = sys.argv[1]
     INPUT_META_INFO_FILE = sys.argv[2]
-    INPUT_STATE_TO_REGION = sys.argv[3]
-    INPUT_SIZE_FILE = sys.argv[4]
-    FONT_PATH = sys.argv[5] if sys.argv[5] != "None" else None
-    OUTPUT_FILE = sys.argv[6]
+    INPUT_SIZE_FILE = sys.argv[3]
+    FONT_PATH = sys.argv[4] if sys.argv[4] != "None" else None
+    OUTPUT_FILE = sys.argv[5]
 
     draw_figure(
         INPUT_UMAP_COORD_FILE,
         INPUT_META_INFO_FILE,
-        INPUT_STATE_TO_REGION,
         INPUT_SIZE_FILE,
         FONT_PATH,
         OUTPUT_FILE,

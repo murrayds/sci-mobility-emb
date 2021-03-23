@@ -25,14 +25,10 @@ def draw_figure(
     meta_info = meta_info.set_index("cwts_org_no")
     code_to_country = meta_info["country_iso_name"].to_dict()
     country_list = np.array([code_to_country[int(inst)] for inst in institute_list])
-
+    
     size_data = pd.read_csv(INPUT_SIZE_FILE, sep="\t", dtype={"cwts_org_no": str})
-    size_data = size_data.drop(size_data.index[len(size_data) - 1])
-    size_data.person_count = size_data.person_count.astype(int)
-    mean_size_dict = (
-        size_data.groupby("cwts_org_no")["person_count"].apply(np.mean).to_dict()
-    )
-    size_list = np.array([mean_size_dict[inst] for inst in institute_list])
+    size_dict = size_data.set_index('cwts_org_no')['size'].to_dict()
+    size_list = np.array([size_dict[inst] for inst in institute_list])
 
     # plot config
     rcParams["figure.figsize"] = 10, 9
@@ -74,34 +70,34 @@ def draw_figure(
     # draw figure
     plt.scatter(
         umap_coords[:, 0],
-        umap_coords[:, 1],
+        -umap_coords[:, 1],
         s=argumented_size_list * 1.5,
         c=c_list,
         linewidth=0.3,
         edgecolor="white",
     )
 
-    ## Western Asia annotate
-    c = awesome_c_list[color_by_category[0]]
-    plt.text(7.8, 3.8, "Egypt", c=c, fontproperties=prop)
-    plt.text(6.6, 1.2, "Oman", c=c, fontproperties=prop)
-    plt.text(4.5, 3.8, "Jordan", c=c, fontproperties=prop)
-    plt.text(4.4, 2.2, "Qatar", c=c, fontproperties=prop)
-    plt.text(6.8, 1.9, "Saudi Arabia", c=c, fontproperties=prop)
-    plt.text(5.6, 0.7, "Iraq, Palestine", c=c, fontproperties=prop)
-    plt.text(4.4, 3.1, "U.A.E", c=c, fontproperties=prop)
+#     ## Western Asia annotate
+#     c = awesome_c_list[color_by_category[0]]
+#     plt.text(7.8, 3.8, "Egypt", c=c, fontproperties=prop)
+#     plt.text(6.6, 1.2, "Oman", c=c, fontproperties=prop)
+#     plt.text(4.5, 3.8, "Jordan", c=c, fontproperties=prop)
+#     plt.text(4.4, 2.2, "Qatar", c=c, fontproperties=prop)
+#     plt.text(6.8, 1.9, "Saudi Arabia", c=c, fontproperties=prop)
+#     plt.text(5.6, 0.7, "Iraq, Palestine", c=c, fontproperties=prop)
+#     plt.text(4.4, 3.1, "U.A.E", c=c, fontproperties=prop)
 
-    c = awesome_c_list[color_by_category[1]]
-    plt.text(6.5, -4, "Thailand", c=c, fontproperties=prop)
-    plt.text(3.6, -3.2, "Philippines", c=c, fontproperties=prop)
-    plt.text(1.2, -1.8, "Vietnam", c=c, fontproperties=prop)
-    plt.text(4.3, -1.6, "Indonesia", c=c, fontproperties=prop)
-    plt.text(5.7, 0, "Malaysia", c=c, fontproperties=prop)
+#     c = awesome_c_list[color_by_category[1]]
+#     plt.text(6.5, -4, "Thailand", c=c, fontproperties=prop)
+#     plt.text(3.6, -3.2, "Philippines", c=c, fontproperties=prop)
+#     plt.text(1.2, -1.8, "Vietnam", c=c, fontproperties=prop)
+#     plt.text(4.3, -1.6, "Indonesia", c=c, fontproperties=prop)
+#     plt.text(5.7, 0, "Malaysia", c=c, fontproperties=prop)
 
-    c = awesome_c_list[color_by_category[2]]
-    plt.text(7.4, -1.2, "Sri Lanka", c=c, fontproperties=prop)
-    plt.text(2.3, -0.4, "Bangladesh", c=c, fontproperties=prop)
-    plt.text(2.5, 1.1, "Pakistan", c=c, fontproperties=prop)
+#     c = awesome_c_list[color_by_category[2]]
+#     plt.text(7.4, -1.2, "Sri Lanka", c=c, fontproperties=prop)
+#     plt.text(2.3, -0.4, "Bangladesh", c=c, fontproperties=prop)
+#     plt.text(2.5, 1.1, "Pakistan", c=c, fontproperties=prop)
 
     plt.axis("off")
     lp = lambda i: plt.plot(
@@ -114,7 +110,7 @@ def draw_figure(
         marker="o",
     )[0]
     handles = [lp(k) for k in list(color_by_category_dict.keys())]
-    plt.legend(handles=handles, bbox_to_anchor=(0.33, 0.22), prop=prop, frameon=False)
+    plt.legend(handles=handles, bbox_to_anchor=(0.41, 0.25), prop=prop, frameon=False)
     plt.savefig(OUTPUT_FILE, bbox_inches="tight")
 
 
