@@ -203,24 +203,14 @@ Although mobile authors who publish more papers will have longer trajectories, \
 {\bf Network-based personalized page rank distances.}
 
 
-We examine the gravity model on the Personalized Page Rank (PPR)\autocite{jeh2003scaling} as a benchmark on the network. We construct the co-occurrence network of $N$ organizations, in which each edge between organizations $i$ and $j$ represents a co-occurence of $i$ and $j$ in the same affiliation trajectory, with weight $W_{ij}$ given by the sum of the co-occurences over all researchers. and edges are co-occurrence between two organizations. The Personalized Page Rank is a ranking algorithm for nodes based on a random walk process on networks.
+We examine the gravity model on the Personalized Page Rank (PPR)\autocite{jeh2003scaling} as a benchmark on the network. We construct the co-occurrence network of $N$ organizations, in which each edge between organizations $i$ and $j$ represents a co-occurence of $i$ and $j$ in the same affiliation trajectory, with weight given by the sum of the co-occurences over all researchers. and edges are co-occurrence between two organizations. The Personalized Page Rank is a ranking algorithm for nodes based on a random walk process on networks.
 The walker visiting at a node moves to a neighboring node chosen randomly with a probability proportionally to the weight of the edge in one step. Furthermore, with probability $\alpha$, the walker is teleported back to the starting node. The rank of a node is determined by the probability that the walker visits the node in the stationary state. The stationary distribution of the random walker starting from node $i$, denoted by $p_i=(p_{ik})$, is given by
 
 \begin{equation}
 	\label{eq:ppr}
-<<<<<<< HEAD
-<<<<<<< HEAD
-      p_i = (1 - \alpha) W p_i + \alpha v_i
-=======
 	p_i = (1 - \alpha) W p_i +  \alpha v_i 
->>>>>>> 850926b056dff23098e7eaa0aa8bdd3df0047c96
-=======
-  
-	p_i = (1 - \alpha) W p_i +  \alpha v_i 
-
->>>>>>> a27b043dc70df52d2152e3299509060c16def219
 \end{equation}
-where $v_i$ is a column vector of length $N$ with entries that are all zero except the $i$th entry that equals to one, $W = (W_{ij})$ is the weighted adjacency matrix. We used $\alpha=0.9$ here.
+where $v_i$ is a column vector of length $N$ with entries that are all zero except the $i$th entry that equals to one, $W = (W_{ij})$ is the weighted transition matrix of the unbiased random walker. We used $\alpha=0.9$ here.
 
  We can think $p_i$ as a representation vector of the organization $i$, and calculate the distance between organizations $i$ and $j$, $d_{ij}$ with measuring distance between $p_i$ and $p_j$ to examine the gravity law. We consider two distance measures in this analysis. The first one is cosine distance which is used for our embedding method, $d_{ij} = 1 - \frac{\bm{p}_{i} \cdot \bm{p}_{j}}{\lVert \bm{p}_{i} \rVert \lVert \bm{p}_{j} \rVert}$. Also, if we think $p_i$ as a discrete probability distribution, then we can consider Jensen–Shannon divergence (JSD), can be written as,
 
