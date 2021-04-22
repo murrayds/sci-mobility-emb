@@ -50,11 +50,13 @@
 \def\vs{vs.\ }
 
 % Refs
-\usepackage[style=nature,
+%\usepackage{scicite}
+\usepackage[style=science,
 					backend=biber,
 					sortcites=true,
 					autocite=superscript
 ]{biblatex}
+
 
 
 % Ignore irrelevant biblatex fields
@@ -64,6 +66,26 @@
  \clearfield{issn}%
  \clearfield{doi}%%
 }
+
+
+\usepackage{times}
+
+
+% Setup the margins of the page
+\topmargin 0.0cm
+\oddsidemargin 0.2cm
+\textwidth 16cm
+\textheight 21cm
+\footskip 1.0cm
+
+
+%The next command sets up an environment for the abstract to your paper.
+
+\newenvironment{sciabstract}{%
+\begin{quote} \bf}
+{\end{quote}}
+
+
 
 
 \addbibresource{mobility.bib}
@@ -137,25 +159,25 @@
 \affil[\Yinyang]{These authors contributed equally: Jisung Yoon, Dakota Murray.}
 
 \date{\today}
+
+% Double-space the manuscript.
+
+\baselineskip24pt
+
+
 \maketitle %}}}
 
 %
 % ABSTRACT
 %
-
-\begin{abstract}
-
-	Human mobility and migration drive major societal phenomena such as the growth and evolution of cities~\autocite{wef2017migration, curiel2018citygravity},  epidemics~\autocite{kraemer2020covid, truscott2012epidemicgravity}, economies~\autocite{kaluza2010cargo, kerr2011immigration}, and innovation~\autocite{kaiser2018innovation, sugimoto2017mostimpact, petersen2018multiscale}.
-	Historically, human mobility has been strongly constrained by physical separation---geographic distance~\autocite{zipf1946gravity}.
-	However, geographic distance is becoming less relevant in the increasingly-globalized world~\autocite{czaika2018globalisation, buchan2009globalization} in which physical barriers are shrinking while linguistic, cultural, and historical relationships are becoming more important.
-	As understanding mobility is becoming critical for contemporary society, finding frameworks that can capture this complexity is of paramount importance.
-	Here, we reveal that the neural embedding model \textit{word2ec}~\autocite{mikolov2013word2vec} is mathematically equivalent to the gravity model of mobility and, using three distinct human trajectory datasets, demonstrate that a neural embedding model can encode nuanced relationships between locations into a vector-space, providing an effective measure of distance that reflects the multi-faceted structure of human mobility.
-	Focusing on the case of scientific mobility, we show that embeddings of scientific organizations uncover cultural and linguistic relations, and even academic prestige, at multiple levels of granularity.
-	Furthermore, the embedding vectors reveal universal relationships between organizational characteristics and their place in the global landscape of scientific mobility.
-	The ability to learn scalable, dense, and meaningful representations of mobility directly from the data can open up new avenues for the study of mobility across domains.
-
-
-\end{abstract}
+\newpage
+\begin{sciabstract}
+	Human mobility drives major societal phenomena including epidemics, economies, and innovation.
+	Historically, mobility was constrained by geographic distance, however, in the globalizing world, language, culture, and history are increasingly important.
+	Here, we show the mathematical equivalence between \textit{word2vec} model and the gravity model of mobility and the demonstrate that, by using three human trajectory datasets, \textit{word2vec} encodes nuanced relationships between locations into a vector-space, providing a measure of effective distance.
+	Focusing on the case of scientific mobility, we show that embeddings uncover cultural, linguistic, and hierarchical relationships at multiple levels of granularity.
+	Connecting neural embeddings to the gravity model opens up new avenues for the study of mobility.
+\end{sciabstract}
 
 
 
@@ -395,7 +417,7 @@ Similar structures can be observed in other states such as among New York's CUNY
 Just as the embedding space makes it possible to \textit{zoom in} on subsets of organizations, it is also possible to \textit{zoom out} by aggregating organizational vectors.
 In doing so, we can examine the country-level structure that governs scientific mobility.
 We define the representative vector of each country as the average of their organizational vectors and, using their cosine similarities, perform hierarchical clustering of nations that have at least 25 organizations represented in the embedding space (see Fig. \ref{fig:clustering}a).
-The six identified clusters roughly correspond to countries in Asia and North America (orange), Northern Europe (dark blue), the British Commonwealth and Iran (purple), Central and Eastern Europe (light blue), South America and Iberia (dark green), and Western Europe and the Mediterranean (light green). 
+The six identified clusters roughly correspond to countries in Asia and North America (orange), Northern Europe (dark blue), the British Commonwealth and Iran (purple), Central and Eastern Europe (light blue), South America and Iberia (dark green), and Western Europe and the Mediterranean (light green).
 The cluster structure shows that not only geography but also linguistic ties and cultural between countries are related to scientific mobility.
 
 We quantify the relative importance of geography (by region), and language (by the most widely-spoken language of each country) using the element-centric clustering similarity~\autocite{gates2019element}, a method that can compare hierarchical clustering and disjoint clustering (geography, language...) at the different level of hierarchy by explicitly adjusting a scaling parameter $r$, acting like a \textit{zooming lens}.
@@ -528,10 +550,10 @@ Embedding distance outperformed geographic distance across distinct and disparat
 We discover that this performance results from neural embeddings implicitly learning gravity law relationships between locations, making them particularly well suited to representing mobility.
 Focusing on scientific mobility, we find that the embedding successfully encodes many aspects of scientific mobility into a single representation, including global and regional geography, shared languages, and prestige hierarchies, even without explicit information on these factors.
 
-In revealing the correspondence between neural embeddings and the gravity model, the study of human mobility can move beyond geographic and network-based models of mobility, and instead leverage the high-order structure from individuals' mobility trajectories using these robust and efficient methods. 
+In revealing the correspondence between neural embeddings and the gravity model, the study of human mobility can move beyond geographic and network-based models of mobility, and instead leverage the high-order structure from individuals' mobility trajectories using these robust and efficient methods.
 While we focus on three domains of mobility, this approach could be applied to many different domains, such as general human migration, transit-network mobility, and more.
 Once learned, functional distances between locations, such as countries, cities, or organizations, can be published to support future research.
-Moreover, this approach can be used to learn a functional distance even between entities for which no geographic analog exists, such as between occupational categories based on individuals' career trajectories. 
+Moreover, this approach can be used to learn a functional distance even between entities for which no geographic analog exists, such as between occupational categories based on individuals' career trajectories.
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, the structure of the neural embedding space is amenable to a range of unique applications for studying mobility.
 As we have shown, the embedding space allows the visualization of the complex structure of scientific mobility at high resolution across multiple scales, providing a large and detailed map of the landscape of global scientific mobility.
 Embedding also allows us to quantitatively explore abstract notions such as academic prestige, and can potentially be generalized to other abstract axes.
