@@ -193,14 +193,14 @@ The question is surprisingly hard to answer when it involves human mobility.
 Although geographic distance has historically constrained human movements, it is becoming less relevant in a world connected by rapid transit and global airline networks.
 For instance, a person living in Australia is more likely to migrate to the United Kingdom, a far-away country with similar language and culture, than to a much closer country such as Indonesia~\autocite{pew2018migration}.
 Similarly, a student in South Korea is more likely to attend a university in Canada than one in North Korea~\autocite{unesco2019students}.
-Although geographic distance has been used as the most prominent basis for models of mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} models, there have been attempts to define alternative notions of distance, or functional distances~\autocite{boschma2005proximity, brown1970migration, kim2018functional}, from real-world data or \textit{a priori} relationships between geographic entities.
+Although geographic distance has been used as the most prominent basis for models of mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} models,  \js{these models could be enhance by adopting the concept of functional distances between places. There have been attempts to define alternative notions of distance, or functional distances~\autocite{boschma2005proximity, brown1970migration, kim2018functional}, from real-world data or \textit{a priori} relationships between geographic entities.}
 
 Yet, functional distances are often low-resolution, computed at the level of countries rather than regions, cities, or organizations, and have focused on only a single facet of mobility at a time, whereas real-world mobility is multi-faceted, influenced simultaneously by geography, language, culture, history, and economic opportunity.
 Low dimensional distance alone cannot represent the multitude of inter-related factors that drive mobility.
 Networks offer a solution to representing many dimensions of mobility, yet edges only encode simple relationships between connected entities.
 Capturing the complexity of mobility requires moving beyond simple functional distances and networks, to learning high-dimensional landscapes of mobility that incorporate the many facets of mobility into a single fine-grained and continuous representation.
 
-Here, we apply a neural embedding framework to real-world mobility trajectories and demonstrate that it can encode the complex landscape of human mobility into a dense and continuous vector-space representation, from which we can not only derive a meaningful functional distance between locations but also probe relationships based on culture, language, and even prestige along with the geographic relationship.
+\js{Here, we apply a neural embedding framework to real-world mobility trajectories to derive the functional distance between locations and demonstrate that it can encode the complex landscape of human mobility into a dense and continuous vector-space representation that also can probe relationships based on culture, language, and even prestige along with the geographic relationship.}
 We embed trajectories from three massive datasets: U.S. passenger flight itinerary records, Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records (Detailed descriptions are available in the Methods).
 
 
@@ -220,7 +220,7 @@ Thus, the trajectories encode both migration and co-affiliation---the holding of
 A vector-space embedding of locations (airports, accommodations, and organizations) is learned by using trajectories as input to the standard with skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
 This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
 It works under the notion that a good representation should facilitate prediction, learning a mapping between words that can predict a target word based on its context (surrounding words).
-The model is also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis}.
+The model is also computationally efficient, \js{easy to run}, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis, hashimoto2016word}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
 
 
@@ -269,15 +269,14 @@ performance of the embedding distance is similar between the functional forms, t
 %
 \subsection*{Embeddings provide functional distance between locations}
 
-We show that the embedding distance better predicts actual mobility flows than the geographic distance across three disparate datasets.
-In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$).
+\js{We prove that the gravity could be more powerful by using mobility-aware embedding distance between places as a distance measure. Our approach always better predicts actual mobility flows than the geographic distance and other baseline methods across three disparate datasets consistently.} In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$).
 Also, the embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}b).
 In the case of Korean accommodation reservations, embedding distance better explains the expected flux ($R^{2} = 0.57$, Fig.~\ref{fig:gravity_performance}c) than does geographic distance ($R^{2} = 0.25$), and predictions made using the embedding distance outperform those made with geographic distance (Fig.~\ref{fig:gravity_performance}d).
 This performance is consistent in the case of scientific mobility:
 the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
 These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
-The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores calculated from the underlying mobility network (Fig.~\ref{fig:supp:distancemetrics}, Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baselines, such as distances derived from a singular-value decomposition and a Laplacian Eigenmap embedding~\autocite{belkin2003laplacian} of the underlying location co-occurrence matrix, Levy's symmetric \textit{word2vec}\autocite{levy2014neural}, and even direct optimization of the gravity model (Fig.\ref{fig:supp:distancemetrics} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores calculated from the underlying mobility network (Fig.~\ref{fig:gravity_performance}, Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
+The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baselines, such as distances derived from a singular-value decomposition and a Laplacian Eigenmap embedding~\autocite{belkin2003laplacian} of the underlying location co-occurrence matrix, Levy's symmetric \textit{word2vec}\autocite{levy2014neural}, and even direct optimization of the gravity model (Fig.\ref{fig:gravity_performance} and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
 In sum, our results demonstrate that, consistently and efficiently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
 
 
@@ -288,7 +287,7 @@ In sum, our results demonstrate that, consistently and efficiently, the embeddin
 	\centering
 	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance.pdf}
 	\caption{
-		\textbf{Embedding distance encodes functional distance and better predicts mobility in flights, accommodation reservations, and global scientific mobility.}
+		\textbf{Embedding distance encodes functional distance and better predicts mobility in flights, accommodation reservations, and global scientific mobility compared to various baselines. }
 		\textbf{a.} Embedding distance (cosine distance between organization vectors, top) better explains the expected flux of passengers between U.S. airports than does geographic distance (bottom).
 		The red line is the line of the best fit.
 		Black dots are mean flux across binned distances.
@@ -303,7 +302,8 @@ In sum, our results demonstrate that, consistently and efficiently, the embeddin
 		Results are consistent in the case of scientific mobility.
 		For Korean accommodation reservations, embedding distance better explains the expected flux than does geographic distance (\textbf{c}), and produces better predictions (\textbf{d}).
 		Similarly, in the case of global scientific mobility, embedding distance explains the expected flux between organizations (\textbf{e)} and allows for better predictions (\textbf{f}) than geographic distance.
-	}
+		\js{\textbf{g.}  The correlation between the flux and baseline distances, measured with $R^{2}$, and  \textbf{h.}  the  root-mean-squared error between the actual and predicted values across various baselines.
+    The asterisk denotes the top-performing method. Our approach better explains and predicts flux than any other baseline (Table~\ref{supp:table:r2_table}, Table~\ref{supp:table:rmse_exp_table}, and Table~\ref{supp:table:rmse_power_table}).}}
 	\label{fig:gravity_performance}
 \end{figure}
 
@@ -355,7 +355,7 @@ Taken together, the {\it word2vec} model with the negative sampling predicts a f
 \end{align}
 
 In other words, \emph{word2vec with the skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
-While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds locations that best explain the given mobility flow.
+While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds locations that best explain the given mobility flow. \js{Also, our finding is aligned with a perspective on word embedding methods as a metric recovery~\autocite{hashimoto2016word}, which recover the underlying metric of the semantic manifold not for a particular task.}
 Therefore, the embedding distance is inherently tied to the mobility flow, and hence, has greater predictive power than the geographic distance and other baselines.
 
 In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may only approximately hold.
