@@ -295,7 +295,9 @@ While the gravity model describes mobility flows from the given mass and locatio
 %
 \subsection*{Embeddings provide functional distance between locations}
 
-\js{We prove that the gravity could be more powerful by using mobility-aware embedding distance between places as a distance measure. Our approach always better predicts actual mobility flows than the geographic distance and other baseline methods across three disparate datasets consistently.} In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$).
+Given their equivalence, we expect that the \textit{word2vec} embedding can encode effective functional distances between locations according to the gravity law. 
+Here, we test this notion using three human mobility datasets, showing that \textit{word2vec}  consistently offers a better representation of actual mobility flows than baselines methods.
+In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$), which has traditionally been used to quantify distance for the gravity model.
 Also, the embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}b).
 In the case of Korean accommodation reservations, embedding distance better explains the expected flux ($R^{2} = 0.57$, Fig.~\ref{fig:gravity_performance}c) than does geographic distance ($R^{2} = 0.25$), and predictions made using the embedding distance outperform those made with geographic distance (Fig.~\ref{fig:gravity_performance}d).
 This performance is consistent in the case of scientific mobility:
