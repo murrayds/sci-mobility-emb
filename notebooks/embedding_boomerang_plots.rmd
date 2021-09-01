@@ -12,7 +12,7 @@ library(readr)
 
 meta <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t")
 
-df <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Embeddings/precedence/factors/d300_ws1_precedence_w2vfactors.csv") %>%
+df <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Embeddings/precedence/factors/d300_ws1_precedence_gamma1.0_w2vfactors.csv") %>%
   select(cwts_org_no, l2norm) %>%
   left_join(meta, by = "cwts_org_no")
 
@@ -20,11 +20,7 @@ df <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Embeddings/
 types <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/org_types.csv")
 
 
-sizes <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/raw/2008-2019_inst_sizes.txt", delim = "\t") %>%
-  group_by(cwts_org_no) %>%
-  summarize(
-    size = mean(person_count)
-  )
+sizes <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/2008-2019_inst_sizes_all.txt", delim = "\t") 
   
 df <- df %>% left_join(sizes, by = "cwts_org_no")
 country <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/country_metadata.csv")
@@ -92,12 +88,12 @@ plot <- plotdata %>%
   guides(shape = F,
          color = guide_colorbar(reverse = T)) +
   theme_minimal() +
-  annotate(geom = "label", x = 1.5e4, y = 3.6, label = "Harvard", size = 3.5) +
-  annotate(geom = "label", x = 1.6e3, y = 3.65, label = "Princeton", size = 3.5) +
-  annotate(geom = "label", x = 8.5e3, y = 5.9, label = "Univ Tennessee\nKnoxville", size = 3.5) +
+  annotate(geom = "label", x = 1.6e4, y = 3.55, label = "Harvard", size = 3.5) +
+  annotate(geom = "label", x = 1.6e3, y = 3.5, label = "Princeton", size = 3.5) +
+  annotate(geom = "label", x = 8.5e3, y = 5.8, label = "Univ Tennessee\nKnoxville", size = 3.5) +
   annotate(geom = "label", x = 1.8e2, y = 1.55, label = "Univ Alaska\nFairbanks", size = 3.5) +
-  annotate(geom = "label", x = 4e2, y = 6.2, label = "NY Medical College", size = 3.5) +
-  annotate(geom = "label", x = 2e1, y = 4.6, label = "Univ Michigan\nFlint", size = 3.4) +
+  annotate(geom = "label", x = 4e2, y = 6.0, label = "NY Medical College", size = 3.5) +
+  annotate(geom = "label", x = 1.5e1, y = 4.6, label = "Univ Michigan\nFlint", size = 3.4) +
   annotate(geom = "label", x = 6.8e1, y = 2.48, label = "Barry University", size = 3.5) +
   theme(
     text = element_text(family = "Helvetica", size = 12),
