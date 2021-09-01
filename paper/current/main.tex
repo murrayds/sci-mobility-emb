@@ -287,11 +287,6 @@ In other words, \emph{word2vec with the skip-gram negative sampling is equivalen
 While the gravity model describes mobility flows from the given mass and locations, {\it word2vec} finds locations that best explain the given mobility flow. 
 \js{Also, our finding is aligned with a perspective on word embedding methods as a metric recovery~\autocite{hashimoto2016word}, which recover the underlying metric of the semantic manifold not for a particular task.}
 
-In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may only approximately hold.
-Indeed, we find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
-This result echos other applications of word embedding, such as word analogy testing~\autocite{levy2015improving}, in which cosine distance also outperformed dot similarity.
-Nevertheless, a model with dot similarity has the second-best performance after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
-
 
 
 %
@@ -341,7 +336,10 @@ The embedding distance also out-performs alternative diffusion-based network dis
 The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baselines, such as distances derived from a singular-value decomposition and a Laplacian Eigenmap embedding~\autocite{belkin2003laplacian} of the underlying location co-occurrence matrix, Levy's symmetric \textit{word2vec}\autocite{levy2014neural}, and even direct optimization of the gravity model (Fig.\ref{fig:gravity_performance}b and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
 In sum, our results demonstrate that, consistently and efficiently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
 
-
+In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may only approximately hold.
+Indeed, we find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
+This result echos other applications of word embedding, such as word analogy testing~\autocite{levy2015improving}, in which cosine distance also outperformed dot similarity.
+Nevertheless, a model with dot similarity has the second-best performance after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
 
 
 \subsection*{Embeddings capture global structure of mobility}
