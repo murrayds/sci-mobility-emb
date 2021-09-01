@@ -238,56 +238,8 @@ The power-law decay function performs best with the geographic distance, likely 
 performance of the embedding distance is similar between the functional forms, though best for the exponential form, which stems from an underlying connection between the function and \textit{word2vec} that we discuss later.
 
 
-
 %
-% Subsection: Embedding performance
-%
-%
-\subsection*{Embeddings provide functional distance between locations}
-
-\js{We prove that the gravity could be more powerful by using mobility-aware embedding distance between places as a distance measure. Our approach always better predicts actual mobility flows than the geographic distance and other baseline methods across three disparate datasets consistently.} In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$).
-Also, the embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}b).
-In the case of Korean accommodation reservations, embedding distance better explains the expected flux ($R^{2} = 0.57$, Fig.~\ref{fig:gravity_performance}c) than does geographic distance ($R^{2} = 0.25$), and predictions made using the embedding distance outperform those made with geographic distance (Fig.~\ref{fig:gravity_performance}d).
-This performance is consistent in the case of scientific mobility:
-the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
-These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
-
-
-%
-% Figure - Example of mobility sentences
-%
-%
-% Figure - Gravity law performance
-%
-\begin{figure}[!htp]
-	\centering
-	\includegraphics[width=0.9\textwidth]{\figdir/GravityLawFig/gravity_performance_new.pdf}
-	\caption{
-		\textbf{Embedding distance encodes functional distance and better predicts mobility across three distinct human trajectory datasets. }
-		\textbf{a.} A unique identifier is assigned to each organization and they are assembled into an affiliation trajectory ordered by year of publication (top). If an author lists multiple organization affiliations within the same year,  we shuffle the order within that year in each training iteration (bottom, see \SI).		
-		\textbf{b.} Neural embeddings outperform baselines for scientific mobility.
-The correlation between the flux and baseline distances $R^{2}$ (left), and the  root-mean-squared error between the actual and predicted values (right). The asterisk indicates the top-performing method.
-		\textbf{c.} Embedding distance (top) better explains the expected flux of passengers between U.S. airports than does geographic distance (bottom).
-		The red line is the line of the best fit.
-		%Black dots are mean flux across binned distances.
-		99\% confidence intervals are plotted for the mean flux in each bin.
-		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
-		%The lightness of each hex bin indicates the frequency of organization pairs within it.
-		\textbf{d.} Predictions of flux between airport pairs made using embedding distance (top) outperform those made using geographic distance (bottom).
-		Box-plots show the distribution of actual flux for binned values of predicted flux.
-		Box color corresponds to the degree to which the distribution overlaps with $y = x$.
-		%a perfect prediction yields all points on the black line.
-		``RMSE'' is the root-mean-squared error between the actual and predicted values.
-	Embedding distance consistently produce powerful functional distance compare to geographic distance for Korean accommodation reservations (\textbf{e,f}), and global scientific mobility (\textbf{g,h})}
-	\label{fig:gravity_performance}
-\end{figure}
-
-The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores calculated from the underlying mobility network (Fig.~\ref{fig:gravity_performance}b, Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
-The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baselines, such as distances derived from a singular-value decomposition and a Laplacian Eigenmap embedding~\autocite{belkin2003laplacian} of the underlying location co-occurrence matrix, Levy's symmetric \textit{word2vec}\autocite{levy2014neural}, and even direct optimization of the gravity model (Fig.\ref{fig:gravity_performance}b and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
-In sum, our results demonstrate that, consistently and efficiently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
-
-
-
+% Wordvec and the gravity model
 \subsection*{word2vec and the gravity model}
 
 Why does \textit{word2vec} with the skip-gram with negative sampling model (SGNS) work so well to model mobility?
@@ -341,6 +293,57 @@ In practice, because we only have limited amounts of noisy data and the optimiza
 Indeed, we find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
 This result echos other applications of word embedding, such as word analogy testing~\autocite{levy2015improving}, in which cosine distance also outperformed dot similarity.
 Nevertheless, a model with dot similarity has the second-best performance after cosine similarity (Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}), and the embedding distance still outperforms all alternatives we considered.
+
+
+
+%
+% Subsection: Embedding performance
+%
+%
+\subsection*{Embeddings provide functional distance between locations}
+
+\js{We prove that the gravity could be more powerful by using mobility-aware embedding distance between places as a distance measure. Our approach always better predicts actual mobility flows than the geographic distance and other baseline methods across three disparate datasets consistently.} In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$).
+Also, the embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}b).
+In the case of Korean accommodation reservations, embedding distance better explains the expected flux ($R^{2} = 0.57$, Fig.~\ref{fig:gravity_performance}c) than does geographic distance ($R^{2} = 0.25$), and predictions made using the embedding distance outperform those made with geographic distance (Fig.~\ref{fig:gravity_performance}d).
+This performance is consistent in the case of scientific mobility:
+the embedding distance explains more than twice the expected flux ($R^{2} = 0.48$, Fig.~\ref{fig:gravity_performance}e) than does the geographic distance ($R^{2} = 0.22$), and predictions made using the embedding distance outperform those using the geographic distance (Fig.~\ref{fig:gravity_performance}f).
+These patterns hold for the subsets of only domestic (within-country organization pairs, Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:gravity_correlation}c) and only international mobility flows (across-country organization pairs, Fig.~\ref{fig:supp:gravity_correlation}d).
+
+
+%
+% Figure - Example of mobility sentences
+%
+%
+% Figure - Gravity law performance
+%
+\begin{figure}[!htp]
+	\centering
+	\includegraphics[width=0.9\textwidth]{\figdir/GravityLawFig/gravity_performance_new.pdf}
+	\caption{
+		\textbf{Embedding distance encodes functional distance and better predicts mobility across three distinct human trajectory datasets. }
+		\textbf{a.} A unique identifier is assigned to each organization and they are assembled into an affiliation trajectory ordered by year of publication (top). If an author lists multiple organization affiliations within the same year,  we shuffle the order within that year in each training iteration (bottom, see \SI).		
+		\textbf{b.} Neural embeddings outperform baselines for scientific mobility.
+The correlation between the flux and baseline distances $R^{2}$ (left), and the  root-mean-squared error between the actual and predicted values (right). The asterisk indicates the top-performing method.
+		\textbf{c.} Embedding distance (top) better explains the expected flux of passengers between U.S. airports than does geographic distance (bottom).
+		The red line is the line of the best fit.
+		%Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin.
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
+		%The lightness of each hex bin indicates the frequency of organization pairs within it.
+		\textbf{d.} Predictions of flux between airport pairs made using embedding distance (top) outperform those made using geographic distance (bottom).
+		Box-plots show the distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps with $y = x$.
+		%a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
+	Embedding distance consistently produce powerful functional distance compare to geographic distance for Korean accommodation reservations (\textbf{e,f}), and global scientific mobility (\textbf{g,h})}
+	\label{fig:gravity_performance}
+\end{figure}
+
+The embedding distance also out-performs alternative diffusion-based network distance measures including the personalized-page rank scores calculated from the underlying mobility network (Fig.~\ref{fig:gravity_performance}b, Fig.~\ref{fig:supp:gravity_pprcos}, Fig.~\ref{fig:supp:gravity_pprjsd}).
+The embedding distance derived from neural embedding also explains more of the flux and better predicts mobility flows than simpler embedding baselines, such as distances derived from a singular-value decomposition and a Laplacian Eigenmap embedding~\autocite{belkin2003laplacian} of the underlying location co-occurrence matrix, Levy's symmetric \textit{word2vec}\autocite{levy2014neural}, and even direct optimization of the gravity model (Fig.\ref{fig:gravity_performance}b and Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+In sum, our results demonstrate that, consistently and efficiently, the embedding distance better captures patterns of actual mobility than does the geographic distance.
+
+
 
 
 \subsection*{Embeddings capture global structure of mobility}
