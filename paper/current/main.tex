@@ -242,9 +242,7 @@ performance of the embedding distance is similar between the functional forms, t
 % Wordvec and the gravity model
 \subsection*{word2vec and the gravity model}
 
-Why does \textit{word2vec} with the skip-gram with negative sampling model (SGNS) work so well to model mobility?
-The reason for that is the mathematical equivalence between the SGNS model and the gravity model which we demonstrate below.
-
+We first demonstrate the mathematical equivalence between the SGNS model and the gravity model.
 The {\it word2vec} model takes a location trajectory, denoted by ($a_{1}, a_{2}, \ldots, a_{T}$), as input.
 A target location $a_t=i$ is considered to have a context location $a_{t'}=j$ that appears in the previous or subsequent $w$ locations in the trajectory, \ie  $j \in [a_{t-w}, \ldots, a_{t-1}, a_{t+1},\ldots, a_{t+w}]$.
 	{\it word2vec} learns an embedding by estimating the probability that location $i$ has context $j$:
@@ -254,7 +252,7 @@ A target location $a_t=i$ is considered to have a context location $a_{t'}=j$ th
 where the denominator $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
 Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---referred to as the in-vector and out-vector, respectively---we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$.
 
-Our experiments show that {\it word2vec} best explains real-world mobility flow when $w=1$ (Fig.~\ref{fig:supp:hyperparameter}), with the flow predicted by
+When $w=1$ (Fig.~\ref{fig:supp:hyperparameter}), the flow can be written as
 \begin{align}
 	\label{eq:flow_w2v}
 	\hat{T}_{ij} \propto P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
@@ -286,8 +284,8 @@ Taken together, the {\it word2vec} model with the negative sampling predicts a f
 \end{align}
 
 In other words, \emph{word2vec with the skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
-While the gravity model predicts mobility flows from the given mass and locations, {\it word2vec} finds locations that best explain the given mobility flow. \js{Also, our finding is aligned with a perspective on word embedding methods as a metric recovery~\autocite{hashimoto2016word}, which recover the underlying metric of the semantic manifold not for a particular task.}
-Therefore, the embedding distance is inherently tied to the mobility flow, and hence, has greater predictive power than the geographic distance and other baselines.
+While the gravity model describes mobility flows from the given mass and locations, {\it word2vec} finds locations that best explain the given mobility flow. 
+\js{Also, our finding is aligned with a perspective on word embedding methods as a metric recovery~\autocite{hashimoto2016word}, which recover the underlying metric of the semantic manifold not for a particular task.}
 
 In practice, because we only have limited amounts of noisy data and the optimization may not find the true optimum, the mathematical result may only approximately hold.
 Indeed, we find that the in- and out-vectors tend to be different and that the cosine similarity tends to better capture real-world mobility than the dot similarity.
