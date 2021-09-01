@@ -193,41 +193,33 @@ The question is surprisingly hard to answer when it involves human mobility.
 Although geographic distance has historically constrained human movements, it is becoming less relevant in a world connected by rapid transit and global airline networks.
 For instance, a person living in Australia is more likely to migrate to the United Kingdom, a far-away country with similar language and culture, than to a much closer country such as Indonesia~\autocite{pew2018migration}.
 Similarly, a student in South Korea is more likely to attend a university in Canada than one in North Korea~\autocite{unesco2019students}.
-Although geographic distance has been used as the most prominent basis for models of mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} models,  \js{these models could be enhance by adopting the concept of functional distances between places. There have been attempts to define alternative notions of distance, or functional distances~\autocite{boschma2005proximity, brown1970migration, kim2018functional}, from real-world data or \textit{a priori} relationships between geographic entities.}
+Although geographic distance has been used as the most prominent basis for models of mobility, such as the Gravity~\autocite{zipf1946gravity} and Radiation~\autocite{simini2012universal} models, the decreasing relevance of geography calls for alternative ways of conceptualizing ``distance''~\autocite{boschma2005proximity, brown1970migration, kim2018functional}.
 
 Yet, functional distances are often low-resolution, computed at the level of countries rather than regions, cities, or organizations, and have focused on only a single facet of mobility at a time, whereas real-world mobility is multi-faceted, influenced simultaneously by geography, language, culture, history, and economic opportunity.
 Low dimensional distance alone cannot represent the multitude of inter-related factors that drive mobility.
 Networks offer a solution to representing many dimensions of mobility, yet edges only encode simple relationships between connected entities.
-Capturing the complexity of mobility requires moving beyond simple functional distances and networks, to learning high-dimensional landscapes of mobility that incorporate the many facets of mobility into a single fine-grained and continuous representation.
+Capturing the complexity of mobility requires moving beyond simple functional distances and networks, to learning high-dimensional landscapes of mobility that incorporate many facets of mobility into a single fine-grained and continuous representation.
 
-\js{Here, we apply a neural embedding framework to real-world mobility trajectories to derive the functional distance between locations and demonstrate that it can encode the complex landscape of human mobility into a dense and continuous vector-space representation that also can probe relationships based on culture, language, and even prestige along with the geographic relationship.}
-We embed trajectories from three massive datasets: U.S. passenger flight itinerary records, Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records (Detailed descriptions are available in the Methods).
+Here, we demonstrate that the \textit{word2vec} model (Skip-Gram Negative Sampling) is equivalent to the gravity law of mobility, a fundamental mobility framework. 
+We then empirically test the resulting representation by its ability to derive functional effective distances between from trajectories.
+After validating that it accurately represents real-world data, we demonstrate \textit{word2vec}'s capacity for encoding rich information relating to geography, culture, language, and even prestige, at multiple scales of analysis. 
+We embed trajectories from three datasets: U.S. passenger flight itinerary records, Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records (Detailed descriptions are available in the Methods).
 
-
-The flight itinerary data, from the Airline Origin and Destination Survey, consists of records of more than 300 million itineraries between 1993 and 2020 documenting domestic flights between 828 airports in the United States.
-A trajectory is constructed for each passenger flight itinerary, forming an ordered sequence of unique identifiers of the origin and destination airports.
-The Korean accommodation reservations consist of customer reservation histories across 2018 and 2020 for 1,038 unique accommodation locations in Seoul, South Korea.
-A trajectory is constructed for each customer, containing the ordered sequences of accommodations they reserved over time.
-Finally, we use scientific mobility data that captures the affiliation trajectories of nearly 3 million scientists across ten years.
 We focus in more detail on scientific mobility due to its richness and importance.
 Scientific mobility---which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, morgan2018prestige}---is not only an important topic in the Science of Science but also ideal for our study thanks to its well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{clauset2015hierarchy, deville2014career}.
-In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, deville2014career}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility.
-
-Trajectories of scientific mobility are constructed using more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database (see Methods).
+In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, deville2014career}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility. Trajectories of scientific mobility are constructed using more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database (see Methods).
 As a scientist's career progresses, they move between organizations or pick up additional (simultaneous) affiliations forming \textit{affiliation trajectories} (Fig.~\ref{fig:gravity_performance}a).
 Thus, the trajectories encode both migration and co-affiliation---the holding of multiple simultaneous affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, sugimoto2017mostimpact} (see \SI).
 
-A vector-space embedding of locations (airports, accommodations, and organizations) is learned by using trajectories as input to the standard with skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
+Here, we study the skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
 This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
 It works under the notion that a good representation should facilitate prediction, learning a mapping between words that can predict a target word based on its context (surrounding words).
-The model is also computationally efficient, \js{easy to run}, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis, hashimoto2016word}.
+The model is also computationally efficient, easy to use, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis, hashimoto2016word}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
 
 
-
-
-To validate our approach, we evaluate the quality of vector representations based on their performance in predicting real-world mobility flows using the gravity model framework~\autocite{zipf1946gravity}.
-The gravity model is a widely used mobility model~\autocite{curiel2018citygravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity} that connects the \textit{expected flux}, $\hat{T}_{ij}$, between locations based on their populations and distance:
+Our study builds on the gravity model framework~\autocite{zipf1946gravity}.
+This is a widely-used, fundamental mobility model~\autocite{curiel2018citygravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity} that connects the \textit{expected flux}, $\hat{T}_{ij}$, between locations based on their populations and distance:
 
 \begin{equation}
 	\label{eq:gravity_basic}
@@ -574,16 +566,18 @@ Mobility is at the core of many global challenges, and the insights brought fort
 \section*{Methods}
 \label{sec:datamethods} %{{{
 
+
 \subsection*{U.S. flight itinerary data}
 We source U.S. airport itinerary data from the Origin and Destination Survey (DB1B), provided by the Bureau of Transportation Statistics at the United States Department of Transportation.
 DB1B is a sample of 10 percent of domestic airline tickets between 1993 and 2020, comprising 307,760,841 passenger itineraries between 828 U.S. airports.
+A trajectory is constructed for each passenger flight itinerary, forming an ordered sequence of unique identifiers of the origin and destination airports.
 Each itinerary is associated with a trajectory of airports including the origin, destination, and intermediary stops.
 
 
 \subsection*{Korean accommodation reservation data}
 We source Korean accommodation reservation data from collaboration with Goodchoice Company LTD.
 The data contains customer-level reservation trajectories spanning the period of August 2018 through July 2020 and comprising 1,038 unique accommodation locations in Seoul, South Korea.
-
+A trajectory is constructed for each customer, containing the ordered sequences of accommodations they reserved over time.
 
 \subsection*{Scientific mobility data}
 %% Main dataset
