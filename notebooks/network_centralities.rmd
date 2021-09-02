@@ -1,0 +1,205 @@
+---
+title: "Network Centralities"
+output: html_notebook
+---
+
+
+```{r}
+
+library(tidyverse)
+library(readr)
+
+meta <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t")
+
+
+l2norm  <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Embeddings/precedence/factors/d300_ws1_precedence_w2vfactors.csv") %>%
+  select(cwts_org_no, l2norm) 
+
+sizes <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/raw/2008-2019_inst_sizes.txt", delim = "\t") %>%
+  group_by(cwts_org_no) %>%
+  summarize(
+    size = mean(person_count)
+  )
+
+
+types <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/org_types.csv")
+
+semaxis <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/SemAxis/precedence/prestige/times_d300_ws1_n5_precedence_semaxis.csv")
+country <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/country_metadata.csv")
+leiden <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/leiden_ranking.csv")
+times <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/times_ranking.csv")
+centralities <- read_csv('/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Network/precedence_net_centralities.csv')
+impact <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/org_impact_scores.txt", delim = "\t")
+```
+
+
+```{r}
+
+# Impact rankings
+# Semaxis rankings
+# Sizes 
+# Metadata 
+# Org type
+base_data <- impact %>%
+  mutate(mncs = as.numeric(mncs)) %>%
+  left_join(meta, by = "cwts_org_no") %>%
+  filter(country_iso_alpha == "USA") %>%
+  left_join(types, by = "org_type") %>%
+  left_join(sizes)
+  
+  
+  filter(size > 50) %>%
+  
+  arrange(desc(mncs)) %>%
+  mutate(impact_rank = row_number()) %>%
+  left_join(semaxis, by = "cwts_org_no") %>%
+  arrange(desc(sim)) %>%
+  mutate(semaxis_rank = row_number())
+  
+print(dim(df))
+
+# Correlation test
+cor.test( ~ impact_rank + semaxis_rank,
+            data = df,
+            method = "spearman",
+            continuity = FALSE,
+            conf.level = 0.95)
+```
+
+
+```{r}
+
+thresholds <- c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150)
+
+all.sectors <- data.table::rbindlist(lapply(c("Institute", "Government", "Teaching"), function(sector) {
+  for_sector <- data.table::rbindlist(lapply(thresholds, function(x) {
+    df <- base_data %>%
+      filter(org_type_simplified == sector) %>%
+      filter(size > x) %>%
+      arrange(desc(mncs)) %>%
+      mutate(impact_rank = row_number()) %>%
+      left_join(semaxis, by = "cwts_org_no") %>%
+      arrange(desc(sim)) %>%
+      mutate(semaxis_rank = row_number())
+    
+    if (dim(df)[1] > 10) {
+      test <- cor.test( ~ impact_rank + semaxis_rank,
+              data = df,
+              method = "spearman",
+              continuity = FALSE,
+              conf.level = 0.95)
+      stat = test$estimate[[1]]
+    } else {
+      stat = NA
+    }
+    
+    return(data.frame(statistic = stat, threshold = x, sector = sector, n = dim(df)[1]))
+  }))
+  
+}))
+
+
+
+plotdata <- all.sectors %>%
+  mutate(statistic = abs(statistic)) %>%
+  mutate(
+    sector = factor(sector, levels = c("Teaching", "Institute", "Government")),
+    sector = factor(sector, 
+                    labels = c("Regional & Liberal\nArts Colleges", 
+                               "Research Institute",
+                               "Government Organization"))
+  ) 
+
+plotdata %>%
+  ggplot(aes(x = threshold, y = statistic, color = sector)) +
+  geom_point() +
+  geom_line() +
+  geom_text(data = plotdata %>% filter(threshold %in% c(0, 50, 100)),
+            aes(label = paste0("n=", n), x = threshold, y = abs(statistic)),
+            vjust = -0.5, hjust = -0.25
+  ) +
+  scale_x_continuous(limits = c(-10, NA)) +
+  facet_wrap(~sector) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = 'Helvetica', size = 12),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    legend.position = "none",
+    strip.text = element_text(face = "bold", size = 14),
+    plot.title = element_text(face = "bold")
+  ) +
+  xlab("Threshold for # of yearly authors") +
+  ylab(latex2exp::TeX("Spearman's $\\rho")) +
+  ggtitle("SemAxis rank vs. MNCS rank by size threshold")
+
+ggsave("~/Desktop/rho_impact_semaxis_rank.png", width = 8, height = 4)
+```
+
+
+
+```{r}
+plot <- centralities %>%
+  left_join(meta, by = "cwts_org_no") %>%
+  left_join(l2norm, by = c("cwts_org_no")) %>%
+  mutate(eigen = log10(eigen)) %>%
+  ggplot(aes(x = eigen, y = l2norm)) +
+  geom_point() +
+  #scale_x_continuous(limits = c(-10, 0)) +
+  #theme_minimal() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    text = element_text(family = "Helvetica", size = 14),
+    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
+  )
+
+
+plot
+
+
+#plotly::ggplotly(plot)
+```
+
+
+
+
+```{r}
+sizes %>%
+  left_join(centralities) %>%
+  ggplot(aes(x = (size), y = (eigen))) +
+  geom_point() +
+  scale_x_log10(
+    breaks = scales::trans_breaks("log10", function(x) 10^x),
+    labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) +
+  scale_y_log10(
+    breaks = scales::trans_breaks("log10", function(x) 10^x),
+    labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) +
+  ggpmisc::stat_poly_eq(formula = y ~ x,
+                          geom = "text_npc",
+                          aes(label = paste(..rr.label.., sep = "~~~")),
+                          parse=TRUE,
+                          label.x.npc = 0.1,
+                          label.y.npc = 0.96,
+                          rr.digits = 2,
+                          size = 7
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    text = element_text(family = "Helvetica", size = 14),
+    axis.title.x = element_text(angle = 0, size = 16, face = "bold", vjust = 0.5),
+    axis.title.y = element_text(angle = 90, size = 16, face = "bold"),
+  ) +
+  annotation_logticks(sides = "b") +
+  xlab("Organization size") +
+  ylab("Eigenvector centrality") 
+  
+
+
+```

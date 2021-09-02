@@ -1,0 +1,242 @@
+\documentclass[12pt]{article} %{{{
+
+% Figures
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\def\figdir{figs}
+
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\DeclareMathOperator*{\argmax}{\arg\!\max}
+\def\given{\mid}
+
+% abbreviations
+\def\etal{\emph{et~al}.\ }
+\def\eg{e.g.,~}
+\def\ie{i.e.,~}
+\def\cf{cf.\ }
+\def\viz{viz.\ }
+\def\vs{vs.\ }
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{newtxmath}
+\DeclareMathAlphabet{\mathpzc}{T1}{pzc}{m}{it}
+\usepackage{bm}
+\def\tnull{{\text{null}}}
+\def\vec#1{{\bm #1}}
+\def\mat#1{\mathbf{#1}}
+
+% Refs
+\usepackage{biblatex}
+\addbibresource{main.bib}
+
+\usepackage{url}
+
+\newcommand{\secref}[1]{Section~\ref{sec:#1}}
+\newcommand{\figref}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\tabref}[1]{Table~\ref{tab:#1}}
+%\newcommand{\eqnref}[1]{\eqref{eq:#1}}
+%\newcommand{\thmref}[1]{Theorem~\ref{#1}}
+%\newcommand{\prgref}[1]{Program~\ref{#1}}
+%\newcommand{\algref}[1]{Algorithm~\ref{#1}}
+%\newcommand{\clmref}[1]{Claim~\ref{#1}}
+%\newcommand{\lemref}[1]{Lemma~\ref{#1}}
+%\newcommand{\ptyref}[1]{Property~\ref{#1}}
+
+% for quick author comments 
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\definecolor{light-gray}{gray}{0.8}
+\def\del#1{ {\color{light-gray}{#1}} }
+\def\yy#1{ {\color{red}\textbf{yy: #1}} }
+
+%}}}
+
+\begin{document} %{{{
+
+\title{Gravity model and \textit{\textit{word2vec}}} %{{{
+\date{\today}
+\maketitle %}}}
+
+\section{From \textit{word2vec} to gravity model}
+
+Our results show that the \textit{word2vec} better explain a wide range of mobilities than conventional embedding methods, which prompts us to ask: why does the \textit{word2vec} work well for the mobility data?
+Here, we show that the \textit{word2vec} is tied to a gravity model, a widespread and long-standing model that well explains human mobility.
+%While the gravity model predicts a flow from given locations and populations, the \textit{word2vec} is a reverse engineering model that estimates the location and population from flows.
+
+Let us approach the connection by initially focusing on the gravity model.
+Suppose that flow of people between $N$ locations. The gravity model models the expected flow $\hat{T_{ij}}$ from location $i$ to $j$ by
+\begin{align}
+    \hat{T_{ij}} = C m_i m_j f(r_{ij}), \label{eq:gravity_model}
+\end{align}
+where $m_i$ is the population of locations of $i$, $r_{ij}$ is their distance, $f$ is a decreasing function of $r_{ij}$, and $C$ is a constant.
+In the following, we refer to a measure of dissimilarity as a distance for brevity.
+In gravity model, the flow is symmetric, \ie $\hat{T_{ij}}=\hat{T_{ji}}$, which ensures the stationarity in population $m_{i}$.
+
+
+Now, let us move our focus to the \textit{word2vec}.
+In out setting, the model takes a sequence of locations and models the co-occurrence of center location $i$ and context location $j$ by
+\begin{equation}
+    p(j \given i) = \frac{\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
+\end{equation}
+where $\bm{v}$ and $\bm{u}$ are the ``in-vector" and ``out-vector", respectively,  $Z_i=\sum_{x \in \mathcal{A}} \exp(\bm{u}_{x} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
+Under restricting window size to be one, the expected flow between center location $i$ and context location $j$ is given by
+\begin{align}
+    \label{eq:flow_w2v}
+    \hat{T_{ij}}=s_i P(j\given i) = \frac{s_i\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
+\end{align}
+where $s_i$ is the frequency of location $i$ summed for all trajectories in the dataset.
+Although there are some similarities, Eq.~\ref{eq:flow_w2v} does not have a population term $m_i$. In addition, the distance can be asymmetric, $r_{ij}=- \bm{u}_{j} \cdot \bm{v}_{i} \neq - \bm{u}_{i} \cdot \bm{v}_{j}=r_{ji}$.
+
+The gap between the gravity model and {\it word2vec} is filled by taking into account how we train the \textit{word2vec}---\emph{the negative sampling}.
+The negative sampling is an optimization method widely used for training the machine learning model, which operates as follows.
+For each center--context word pair $(i,j)$, one generates $k$ noise center--context word pairs, denoted by $(i, \ell)$, where context word $\ell$ for the noise pair is sampled from a noise distribution, denoted by $p_{0}(\ell)$.
+Given a center-context word pair, $(i,j)$, as an input, one predicts whether it comes from the original data or noise distribution based on a similarity between two words, \eg dot similarity in case of the \textit{word2vec}.
+
+The negative sampling does not directly fit the \textit{word2vec} to the data but through the synthetic classification task.
+An often underappreciated fact is that negative sampling has a bias and maximizes a different objective function~\autocite{Gutmann2010}.
+With the negative sampling, the correct expression for the conditional probability is given by
+\begin{align}
+    P\left(j \given i \right):= \frac{p_0(j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}, \label{eq:prob_w2v_ng0}
+\end{align}
+where $Z'_i=\sum_{x \in \mathcal{A}} p_0(x) \exp(\bm{u}_{x} \cdot \bm{v}_{i})$ is a normalization constant, and a noise distribution given by $p_{0}(j) = s^{\gamma} _j / \sum_{\ell'} s^{\gamma}_{\ell'}$, where $\gamma$ is a free parameter typically set to $3/4$ or $1$.
+See Section \ref{sec:correct_word2vec} for full calculations.
+
+
+Parameter $\gamma=1$ is a special choice that ensures that the in-vector and out-vector are the same, \ie $\bm{u}_i = \bm{v}_i$ \autocite{levy2014neural}.
+Setting $\gamma = 1$, and substituting $\bm{u}_i = \bm{v}_j$ and $p_0(j) = s_j / \sum_{\ell'} s_{\ell'}$ into Eq~\eqref{eq:flow_w2v_ng0}, we have
+\begin{align}
+    P\left(j \given i \right) & := \frac{ p_0 (j) \exp(\bm{v}_j \cdot \bm{v}_{i})}{ Z'_i}                      \\
+                              & =  \frac{s _j  \exp(\bm{v}_j \cdot \bm{v}_{i})}{ Z' _i\sum_{\ell'} s_{\ell'}},
+\end{align}
+which leads to the expected flow for the word2vec model, \ie
+\begin{align}
+    \hat{T_{ij}}=s_i P(j\given i) =  \frac{s_i s _j  \exp(\bm{v}_j \cdot \bm{v}_{i})}{  Z'_i\sum_{\ell'} s_{\ell'}}. \label{eq:flow_w2v_ng0}
+\end{align}
+In the \textit{word2vec}, the flow $\hat{T_{ij}}_{ij}$ is symmetric by design (\ie $\hat{T_{ij}}=\hat{T_{ji}}$) because the model neglects whether the context $j$ appears later or earlier from center $i$.
+Therefore, we have
+\begin{align}
+    T_{ij} = T_{ji}
+     & \Rightarrow
+    \frac{s_i s _j  \exp(\bm{v}_j \cdot \bm{v}_{i})}{  Z'_i\sum_{\ell'} s_{\ell'}} =  \frac{s_j s _i  \exp(\bm{v}_i \cdot \bm{v}_{j})}{  Z'_j\sum_{\ell'} s_{\ell'}} \\
+     & \Rightarrow
+    Z'_i = Z'_j, \label{eq:euqal_rel}
+\end{align}
+suggesting that the normalization constant $Z' _i$ is constant.
+Combining Eqs.~\eqref{eq:flow_w2v_ng0} and \eqref{eq:euqal_rel}, we have
+\begin{align}
+    \hat{T_{ij}}=  C s_i s _j  \exp(\bm{v}_j \cdot \bm{v}_{i}),
+\end{align}
+where $C$ is a positive constant.
+Eq.~\eqref{eq:flow_w2v_ng0} reveals the connection between the \textit{word2vec} and the gravity model, with with $d_{ij} = - \bm{u}_{j} \cdot \bm{v}_{i}$ and $f(x) = \exp(-x)$.
+In sum, the \textit{word2vec} is a gravity model, in which the mass of location $i$ is its frequency in the trajectory data, and the distance between locations is measured by their dot similarities.
+
+\section{From gravity model to \textit{word2vec}}
+\label{sec:from_gravity_to_word2vec}
+
+Let us approach from the gravity model to the word2vec.
+In the gravity model, the probability that a person moves from location $i$ to $j$ is given by
+\begin{align}
+    P\left(j \given i \right) = T_{ij} / m_i = C m_j f(d_{ij}). \label{eq:gravity_prob}
+\end{align}
+Because, the sum of probabilities should be one,
+\begin{align}
+     & \sum_{j} P(j \given i) = 1 \nonumber                                     \\
+     & \Rightarrow C \sum_{k} m_k f(d_{ik}) = 1 \nonumber                       \\
+     & \Rightarrow C  = 1 / \sum_{k} m_k f(d_{ik}), \label{eq:gravity_constant}
+\end{align}
+which ensures that $\sum_{j} m_j f(d_{ij})$ is constant.
+Substituting \eqref{eq:gravity_constant}  into Eq.~\eqref{eq:gravity_prob} yields a model having the same functional form with the word2vec, \ie
+\begin{align}
+    P\left(j \given i \right) = \frac{m_i f(d_{ij})}{\sum_{k} m_k f(d_{ik})}. \label{eq:gravity_prob2}
+\end{align}
+
+
+\section{Correct representation of word2vec section}
+\label{sec:correct_word2vec}
+
+Many probability models including the \textit{word2vec} can be represented in form
+\begin{align}
+    f(x) / \sum_{x' \in {\cal X}} f(x'),
+\end{align}
+where $f$ is a nonnegative function.
+Fitting the probability models are computationally expensive as its denominator involves a sum over all possible entities ${\cal X}$ in data.
+The negative sampling is introduced as a way to avoid computing the denominator.
+To this end, the negative sampling solves a synthetic binary classification task, in which
+we are asked to classify an actual data $x$ and a noise data $\tilde x$ using a sigmoid function
+\begin{align}
+    \label{eq:sigmoid}
+    \frac{1}{1 + \exp\left( -\log f(z) \right)}.
+\end{align}
+Because this sigmoid function does not involve the normalization constant, the model fitting can be done with less computational burden.
+
+
+The negative sampling does not directly fit a probability model to data but does so through the synthetic classification task.
+This has a side effect: the negative sampling has a bias and hence does not correctly train the model \cite{Dyer2014}.
+The bias can be corrected using the noise contrastive estimation (NCE) \cite{Chia2010}, which solves the
+same classification task but with a bias-corrected sigmoid function, \ie
+\begin{align}
+    \label{eq:sigmoid2}
+    \frac{1}{1 + \exp\left( -\log f(z) + \log p_0(z) \right)}.
+\end{align}
+Note that Eq.~\eqref{eq:sigmoid2} has an additional term $\log p_0(z)$, which is the log-probability of $z$ for a noise distribution.
+
+If the bias is not corrected, what model does the negative sampling actually fit?
+To see this, we rewrite the sigmoid function (Eq.~\eqref{eq:sigmoid}) in form of the bias-corrected sigmoid function, \ie
+\begin{align}
+    \label{eq:sigmoid3}
+    \frac{1}{1 + \exp\left[ - \log \tilde f(z) + \log p_0(z)  \right]},
+\end{align}
+where we have defined
+\begin{align}
+    \label{eq:unnormalized}
+    \tilde f(z) = f(z) p_0(z).
+\end{align}
+This sigmoid function correctly fits a probability model:
+\begin{align}
+    f'(x) / \sum_{x' \in {\cal X}} f'(x),
+\end{align}
+or, by substituting Eq.~\eqref{eq:unnormalized},
+\begin{align}
+    p_0(x)f(x) / \sum_{x' \in {\cal X}} p_0(x')f(x').
+\end{align}
+For the \textit{word2vec}, the correct expression optimized with the negative sampling is given by
+\begin{align}
+    P\left(j \given i \right):= \frac{p_0(j)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}.
+\end{align}
+
+
+%What if we train the word2vec without the correction?
+
+
+%\section{Optimization based on the multidimensional scaling}
+
+%
+%The euclidean \textit{word2vec} takes flow as input and outputs the location and population at each location.
+%This algorithm is reminiscent of the multidimensional scaling (MDS), which maps entities onto a Euclidean space by preserving their dissimilarity as distance as much as possible.
+%Specifically, given a dissimilarity matrix $D=(D_{ij})$, MDS aims to map entities such that $D_{ij} \approx ||u_i - u_j||$ for all $i$ and $j$.
+%This connection allows us to optimize the euclidean \textit{word2vec} using the MDS algorithm, as we will see in the following.
+%
+%For a moment, let us consider an ideal situation in which the given data is generated from Eq~\eqref{eq:flow_w2v_ng} and how we can fit the model.
+%Denoted by $T_{ij} ^\text{data}$ as the actual flow, and $T^{\text{model}}_ij$ by the flow modeled by the \textit{word2vec}.
+%When embedding dimension $K$ is small, the \textit{word2vec} has a limited expression power and thus the modeled flow can be considerably different to the actual flow.
+%As we increase $K$, however, the model gains more expression power and eventually achieves an exact fit, $T_{ij} ^\text{data} = T_{ij} ^\text{model}$, just like fitting a high-order polynomial function (\eg quadratic function) to two data points.
+%In this case, the distance is given by solving Eq.~\eqref{eq:flow_w2v_ng}, or
+%\begin{align}
+%    ||u_i - u_j|| = - \log \frac{T^\text{data}_{ij}}{\pi_i \pi_j} + \log c.
+%\end{align}
+%This problem is equivalent to the MDS problem, taking $R=(R_ij)$ with entries $R_{ij}= - \log \frac{T_{ij}}{\pi_i \pi_j} + \log c$ as the dissimilarity matrix.
+%It should be noted that MDS problem does not have a unique solution.
+%
+%In practice, we may want a compact embedding space, $K\ll N$.
+%Furthermore, given data may not be generated from the same model.
+%Yet, solving the MDS problem would provide a good approximate for embedding.
+%
+%An implementation issue is that the dissimilarity $R_{ij}$ can be infinity because flow $T_{ij}$ can be zero, making the MDS problem invalid.
+%To circumvent this problem, we add a small synthetic flow $\tilde \epsilon_{ij}$ to the actual flow given by $\epsilon_{ij} = \alpha \pi_i \pi_j$, where $\alpha = 1e-3$.
+
+\printbibliography{}
+
+\end{document} %}}}

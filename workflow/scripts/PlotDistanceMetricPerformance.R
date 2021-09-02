@@ -41,8 +41,13 @@ r2 <- read_csv(opt$r2, col_types = readr::cols()) %>%
 rmse <- read_csv(opt$rmse, col_types = readr::cols()) %>%
   select(error.exp, error.power, traj, metric, case, dim, ws, gamma, sizetype) %>%
   gather(type, value, error.exp, error.power) %>%
-  mutate(performance = "Root mean squared error")
+  mutate(performance = "Root mean squared error") %>%
+  group_by(traj, metric, case, dim, ws, gamma, sizetype) %>%
+  filter(value == max(value)) %>%
+  ungroup() %>%
+  mutate(type = "error")
 
+print(head(rmse))
 # The metrics to focus on for this plot
 metric_levels <- c("emb", 'gravmds', 'levyeuc', "svdcos", "lapcos", "pprjsd", 'gravsvd', "geo")
 
@@ -65,10 +70,9 @@ plotdata <- data.table::rbindlist(list(r2, rmse), use.names = T) %>%
                                "Gravity SVD\ncosine distance",
                                "Geographic\ndistance"))),
     type = factor(type,
-                  levels = c("r2", "error.power", "error.exp"),
+                  levels = c("r2", "error"),
                   labels = c("Flux explained",
-                             "Prediction error\n(Power-law model)",
-                             "Prediction error\n(Exponential model)"))
+                             "Prediction error"))
   )
 
 # Get the top-performing for each set of parameters
@@ -92,8 +96,8 @@ plot <- plotdata %>%
     limits = c(0, 1.15),
     breaks = c(0, 0.25, 0.5, 0.75, 1.0)
   ) +
-  scale_shape_manual(values = c(23, 24, 25)) +
-  scale_fill_manual(values = c("black", "darkgrey", "white")) +
+  scale_shape_manual(values = c(16, 18)) +
+  scale_fill_manual(values = c("black", "darkgrey")) +
   theme_minimal() +
   theme(
     panel.grid.minor = element_blank(),
@@ -103,7 +107,7 @@ plot <- plotdata %>%
     strip.text = element_text(size = 12, face = "bold"),
     strip.text.y.right = element_text(angle = 0, hjust = 0),
     #axis.title = element_text(size = 12),
-    legend.position = "bottom",
+    legend.position = "none",
     legend.title = element_blank(),
     #legend.key.height = unit(1.5, "cm"),
     axis.title = element_blank()

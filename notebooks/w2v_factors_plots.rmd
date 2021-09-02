@@ -1,0 +1,517 @@
+---
+title: "Mobility W2V Factors"
+output: html_notebook
+---
+
+```{r}
+library(readr)
+library(tidyverse)
+factors <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Embeddings/precedence/factors/d300_ws1_precedence_w2vfactors.csv")
+
+meta <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t")
+
+
+mobile <- read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/raw/mobile_researcher_trajectories.txt", delim = "\t")
+```
+
+8,445
+
+3,709,869
+
+```{r}
+mobile2 <- mobile %>%
+  group_by(cluster_id) %>%
+  summarize(
+    count = n()
+  )
+```
+
+
+
+```{r}
+mobile %>%
+  group_by(cwts_org_no) %>%
+  summarize(
+    count = n()
+  ) %>%
+  arrange(desc(count)) %>%
+  mutate(
+    index = row_number(),
+    ind = factor(index)
+  ) %>%
+  ggplot(aes(x = index, y = count)) +
+  geom_point() +
+  scale_y_log10() +
+  theme_minimal() +
+  xlab("Org Index") +
+  ylab("Frequency")
+```
+
+```{r}
+library(readxl)
+carnegie <- read_excel("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/CCIHE2018-PublicData.xlsx", sheet = "Data", trim_ws = T)
+uni_crosswalk <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/carnegie_cwts_us_uni_crosswalk.csv")
+leiden = read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/leiden_ranking.csv")
+census <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/usa_states_to_regions.csv")
+inst_sizes = read_delim("/Users/dakotamurray/Dropbox/SME-dropbox/Data/raw/2008-2019_inst_sizes.txt", delim = "\t") %>% 
+  group_by(cwts_org_no) %>%
+  summarize(
+    count = mean(person_count)
+  )
+
+org_types <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Additional/org_types.csv")
+```
+
+
+```{r}
+meta.all <- meta %>% 
+  filter(country_iso_alpha == "USA" & org_type_code == "U") %>%
+  left_join(uni_crosswalk, by = "cwts_org_no") %>%
+  left_join(org_types, by = "org_type") %>%
+  left_join(leiden, by = "cwts_org_no") %>%
+  left_join(census, by = "region") %>%
+  left_join(inst_sizes, by = "cwts_org_no") %>%
+  left_join(carnegie, by = c("cc_id" = "UNITID"))
+
+
+mobile.usa <- mobile %>%
+  inner_join(meta.all['cwts_org_no']) %>%
+  group_by(cluster_id) %>%
+  mutate(
+    traj_len = length(cwts_org_no)
+  ) %>%
+  group_by(cwts_org_no) %>%
+  summarize(
+    mean_traj_len = mean(traj_len),
+    num_traj = length(unique(cluster_id)),
+    num_total = n()
+  )
+
+mobile.usa
+
+
+factors.usa <- factors %>%
+  inner_join(meta.all, by = "cwts_org_no") %>%
+  left_join(mobile.usa, by = "cwts_org_no") %>%
+  mutate(
+    research = recode(BASIC2018, `15` = "R1", `16` = "R2", `17` = "R3", .default = "Other"),
+    urban = recode(LOCALE, 
+                   `11` = "City", `12` = "City", `13` = "City",
+                   `21` = "Suburb", `22` = "Suburb", `23` = "Suburb",
+                   .default = "Rural"),
+    urban = factor(urban, levels = c("Rural", "Suburb", "City"))
+  ) %>%
+  arrange(desc(impact_frac_mncs)) %>%
+  mutate(
+    leiden_rank = row_number()
+  )
+
+factors.usa
+```
+
+
+```{r}
+factors.usa %>%
+  group_by(census_division) %>%
+  mutate(
+    med = median(s_i)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    type = factor(census_division),
+    type = reorder(type, desc(med))
+  ) %>%
+  ggplot(aes(x = type, y = s_i)) +
+  geom_violin() +
+  geom_jitter(width = 0.1, alpha = 0.5) +
+  geom_boxplot(width=0.1) +
+  scale_y_log10(labels = function(x) { parse(text=paste0("10^", log10(x))) }) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.title.x = element_blank()
+  ) +
+  ylab(bquote(~log[10]~(s['in'])))
+```
+
+```{r}
+factors.usa %>%
+  group_by(urban) %>%
+  mutate(
+    med = median(s_i)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    type = factor(urban),
+    type = reorder(type, desc(med))
+  ) %>%
+  filter(!is.na(type)) %>%
+  ggplot(aes(x = type, y = s_i)) +
+  geom_violin() +
+  geom_jitter(width = 0.1, alpha = 0.5) +
+  geom_boxplot(width=0.1) +
+  scale_y_log10(labels = function(x) { parse(text=paste0("10^", log10(x))) }) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.title.x = element_blank()
+  ) +
+  ylab(bquote(~log[10]~(s['in'])))
+```
+
+
+```{r}
+factors.usa %>%
+  group_by(research) %>%
+  mutate(
+    med = median(s_i)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    type = factor(research),
+    type = reorder(type, desc(med))
+  ) %>%
+  filter(!is.na(type)) %>%
+  ggplot(aes(x = type, y = s_i)) +
+  geom_violin() +
+  geom_jitter(width = 0.1, alpha = 0.5) +
+  geom_boxplot(width=0.1) +
+  scale_y_log10(labels = function(x) { parse(text=paste0("10^", log10(x))) }) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks = element_line(),
+    axis.ticks.length=unit(-0.25, "cm"), 
+    axis.ticks.margin=unit(0.5, "cm")
+  ) +
+  ylab(bquote(~log[10]~(s['in'])))
+```
+
+
+```{r}
+plot <- factors.usa %>%
+  gather(key, measure, s_i, gravity_potential) %>%
+  mutate(
+    #measure = log10(measure),
+    key = factor(key, 
+                 levels = c("s_i", "gravity_potential"),
+                 labels = c("s_i", "phi"))
+  ) %>%
+  ggplot(aes(x = num_traj, y = measure, label = full_name)) +
+  geom_point() +
+  facet_wrap(~key) +
+  scale_x_log10(
+    #breaks = c(1, 5)
+  ) +
+  scale_y_log10(
+    #breaks = c(0, 8)
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica"),
+    strip.text = element_text(face = "bold"),
+    axis.title = element_text(face = "bold"),
+    panel.grid = element_blank(),
+    panel.border = element_rect(size = 0.5, fill = NA)
+  ) +
+  xlab("# Trajectories with University") +
+  ylab("Measure")
+
+plot
+plotly.plot <- ggplotly(plot, tooltip = "all")
+plotly.plot
+```
+
+```{r}
+
+plot <- factors.usa %>%
+  ggplot(aes(x = s_i, y = mean_traj_len, label = full_name)) +
+  geom_point() +
+  scale_x_log10() +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica"),
+    strip.text = element_text(face = "bold"),
+    axis.title = element_text(face = "bold"),
+    panel.grid = element_blank(),
+    panel.border = element_rect(size = 0.5, fill = NA)
+  ) +
+  ylab("Mean Trajectory Length") +
+  xlab("s_i")
+
+plot
+plotly.plot <- ggplotly(plot, tooltip = "all")
+plotly.plot
+```
+
+```{r}
+factors.usa %>%
+  ggplot(aes(x = impact_frac_mncs, y = mean_traj_len)) +
+  geom_point()
+
+```
+
+```{r}
+data <- factors.usa %>%
+  select(s_i, gravity_potential, count, leiden_rank, FALLENR17, GRFTF17, GRCIP4PR, HUM_RSD, OTHER_RSD, STEM_RSD, SOCSC_RSD, `S&ER&D`, `NONS&ER&D`, full_name) %>%
+  mutate(s_i = log10(s_i),
+         gravity_potential = log10(gravity_potential),
+         count = log10(count)) %>%
+  na.omit()
+
+library(plotly)
+```
+
+
+
+```{r}
+count <- 0
+breaks_fun <- function(x) {
+  count <<- count + 1L
+  switch(
+    floor(count / 2),
+    c(1, 4),
+    c(0, 6),
+    c(1, 400),
+    c(0, 120),
+    c(0, 2e+06),
+    c(0, 1e+05),
+    c(0, 6e+4),
+    c(0, 20000),
+    c(0, 600),
+    c(0, 100),
+    c(0, 150),
+    c(0, 250)
+  )
+}
+
+
+plot <- data %>%
+  gather(key, value, count, leiden_rank, FALLENR17, GRFTF17, GRCIP4PR, HUM_RSD, OTHER_RSD, STEM_RSD, SOCSC_RSD, `S&ER&D`, `NONS&ER&D`, gravity_potential) %>%
+  mutate(
+    key = factor(key, 
+                 levels = c("count", "gravity_potential", "leiden_rank", "GRCIP4PR",
+                            "S&ER&D", "NONS&ER&D", "FALLENR17", "GRFTF17", 
+                            "STEM_RSD", "SOCSC_RSD", "HUM_RSD", "OTHER_RSD"),
+                 labels = c("Log10(#authors)", "Log10(Φ)", "Leiden Rank",  "#Doctoral Fields",
+                            "S&E $ (1000's)", "Non S&E $ (1000's)", "Total Enrollment", "Graduate Enrollment", 
+                            "#STEM PhDs", "#Soc. Sci. PhDs", "#Humanities PhDs", "#Other PhDs"))
+  ) %>%
+  ggplot(aes(x = value, y = s_i, label = full_name)) +
+  geom_point(alpha = 0.8, size = 1) +
+  facet_wrap(~key, scale = "free_x", nrow = 3) +
+  stat_smooth(method = "loess",
+              formula = y ~ x,
+              color = "dodgerblue4",
+              size = 0.5,
+              fullrange = T) +
+  stat_smooth(method = "lm",
+              formula = y ~ x,
+              color = "firebrick4",
+              size = 1,
+              fullrange = T) +
+  ggpmisc::stat_poly_eq(formula = y ~ x,
+                        geom = "text_npc",
+                        aes(label = paste(..rr.label.., sep = "~~~")),
+                        parse=TRUE,
+                        label.x.npc = 0.95,
+                        rr.digits = 1,
+                        size = 3,
+                        color = "firebrick4"
+  ) +
+  scale_x_continuous(
+    breaks = breaks_fun,
+    expand = c(0.1, 0)
+  ) +
+  scale_y_continuous(
+    breaks = c(0, 4, 8),
+    labels = function(x) { parse(text=paste0("10^", x)) },
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    axis.title = element_text(size = 14, face = "bold"),
+    axis.title.x = element_blank(),
+    panel.spacing = unit(0.2, "lines"),
+    panel.spacing.x = unit(0.5, "lines"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_rect(size = 0.5, fill = NA),
+    strip.text = element_text(face = "bold"),
+    axis.ticks = element_line()
+  ) +
+  ylab(bquote(~log[10]~(s['in'])))
+
+
+ggsave("~/Desktop/all_factors_pulling.pdf", plot, height = 6, width = 8)
+#plotly.plot <- ggplotly(plot, tooltip = "all")
+#plotly.plot
+#htmlwidgets::saveWidget(plotly.plot, "~/Desktop/all_factors_pulling.html")
+```
+
+
+
+```{r}
+count <- 0
+breaks_fun <- function(x) {
+  count <<- count + 1L
+  switch(
+    count,
+    c(1, 4),
+    c(1, 7),
+    c(1, 400),
+    c(0, 120),
+    c(0, 2e+06),
+    c(0, 1e+05),
+    c(0, 6e+4),
+    c(0, 20000),
+    c(0, 600),
+    c(0, 100),
+    c(0, 150),
+    c(0, 250)
+  )
+}
+
+
+plot <- data %>%
+  gather(key, value, count, leiden_rank, FALLENR17, GRFTF17, GRCIP4PR, HUM_RSD, OTHER_RSD, STEM_RSD, SOCSC_RSD, `S&ER&D`, `NONS&ER&D`, s_i) %>%
+  mutate(
+    key = factor(key, 
+                 levels = c("count", "s_i", "leiden_rank", "GRCIP4PR",
+                            "S&ER&D", "NONS&ER&D", "FALLENR17", "GRFTF17", 
+                            "STEM_RSD", "SOCSC_RSD", "HUM_RSD", "OTHER_RSD"),
+                 labels = c("Log10(#authors)", "Log10(s)", "Leiden Rank",  "#Doctoral Fields",
+                            "S&E $ (1000's)", "Non S&E $ (1000's)", "Total Enrollment", "Graduate Enrollment", 
+                            "#STEM PhDs", "#Soc. Sci. PhDs", "#Humanities PhDs", "#Other PhDs"))
+  ) %>%
+  ggplot(aes(x = value, y = gravity_potential, label = full_name)) +
+  geom_point(alpha = 0.8, size = 1) +
+  facet_wrap(~key, scale = "free_x", nrow = 3) +
+  stat_smooth(method = "loess",
+              formula = y ~ x,
+              color = "dodgerblue4",
+              size = 0.5,
+              fullrange = T) +
+  stat_smooth(method = "lm",
+              formula = y ~ x,
+              color = "firebrick4",
+              size = 1,
+              fullrange = T) +
+  ggpmisc::stat_poly_eq(formula = y ~ x,
+                        geom = "text_npc",
+                        aes(label = paste(..rr.label.., sep = "~~~")),
+                        parse=TRUE,
+                        label.x.npc = 0.95,
+                        rr.digits = 1,
+                        size = 3,
+                        color = "firebrick4"
+  ) +
+  scale_x_continuous(
+    breaks = breaks_fun,
+    expand = c(0.1, 0)
+  ) +
+  scale_y_continuous(
+    breaks = c(0, 4, 8),
+    labels = function(x) { parse(text=paste0("10^", x)) },
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    axis.title = element_text(size = 14, face = "bold"),
+    axis.title.x = element_blank(),
+    panel.spacing = unit(0.2, "lines"),
+    panel.spacing.x = unit(0.5, "lines"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_rect(size = 0.5, fill = NA),
+    strip.text = element_text(face = "bold"),
+    axis.ticks = element_line()
+  ) +
+  ylab(bquote(~log[10]~(phi)))
+  
+
+
+ggsave("~/Desktop/all_factors_potential.pdf", plot, height = 6, width = 8)
+#plotly.plot <- ggplotly(plot, tooltip = "all")
+#plotly.plot
+#htmlwidgets::saveWidget(plotly.plot, "~/Desktop/all_factors_potential.html")
+```
+
+
+```{r}
+data %>%
+  rename(measure = "s_i", to.copmare = "gravity_potential")
+
+data
+```
+
+
+```{r}
+summary(lm(log(s_i) ~ log(count) + census_division, data = factors.usa))
+```
+
+```{r}
+summary(lm(log(s_i) ~ log(count) + research, data = factors.usa))
+```
+
+
+
+```{r}
+summary(lm(log(s_i) ~ log(count) + leiden_rank, data = factors.usa))
+```
+
+
+
+```{r}
+summary(lm(log(s_i) ~ log(count) + urban, data = factors.usa))
+```
+
+
+# Total enrollment
+```{r}
+summary(lm(log10(s_i) ~ log(count) + FALLENR17, data = factors.usa))
+```
+
+
+# Graduate full-time enrollment
+```{r}
+summary(lm(log10(s_i) ~ log10(count) + GRFTF17, data = factors.usa))
+```
+
+
+# Number of programs in which a graduate degree is conferred
+```{r}
+summary(lm(log(s_i) ~ log(count) + GRCIP4PR, data = factors.usa))
+```
+
+
+
+
+
+# Number of doctors degrees conferred
+```{r}
+summary(lm(log(s_i) ~ log(count) + DOCRSDEG, data = factors.usa))
+```
+
+
+# Number of doctors degrees conferred
+```{r}
+summary(lm(log(s_i) ~ log(count) + HUM_RSD + OTHER_RSD + STEM_RSD + SOCSC_RSD, data = factors.usa))
+```
+
+
+# R&D Expenditure for STEM (S&ER&D) and Non-STEM (NONS$ER&D) research
+```{r}
+summary(lm(log(s_i) ~ log(count) + `S&ER&D` + `NONS&ER&D`, data = factors.usa))
+```
+

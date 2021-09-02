@@ -20,10 +20,10 @@ rmse <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Stat/aggr
 r2 <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Stat/aggregate_r2.csv")
 
 metric_levels <- c("emb", "levyeuc", "dot", "pprjsd", "svdcos", "levycos", "geo",
-                   "lapcos", "pprcos", "levydot")
+                   "lapcos", "pprcos", "levydot", "gravsvd", "gravmds")
 
-metric_labels <- c("Embedding cosine", "Factorized euclidean", "Embedding dot", "PPR JSD", 
-                   "SVD cosine", "Factorized cosine", "Geographic", "Laplacian cosine", "PPR cosine", "Factorized dot")
+metric_labels <- c("Embedding cosine", "Levy's euclidean", "Embedding dot", "PPR JSD", 
+                   "SVD cosine", "Levy's cosine", "Geographic", "Laplacian cosine", "PPR cosine", "Levy's dot", "Gravity SVD cosine", "Gravity MDS euclidean")
 
 
 r2.tab <- r2 %>%
@@ -66,9 +66,9 @@ r2.hux <- as_hux(r2.tab) %>%
   set_header_rows(1:2, TRUE) %>% 
   set_header_cols(1, TRUE) %>% 
   style_headers(bold = TRUE) %>%
-  set_right_border(1:12, 1, value = 0.5) %>%
-  set_right_border(1:12, 4, value = 0.5) %>%
-  set_right_border(1:12, 7, value = 0.5) %>%
+  set_right_border(1:14, 1, value = 0.5) %>%
+  set_right_border(1:14, 4, value = 0.5) %>%
+  set_right_border(1:14, 7, value = 0.5) %>%
   set_bottom_border(2, 1:10, value = 0.5)
   
 
@@ -82,10 +82,10 @@ rmse <- read_csv("/Users/dakotamurray/Dropbox/SME-dropbox/Data/Derived/Stat/aggr
 
 
 metric_levels <- c("emb", "levyeuc", "dot", "pprjsd", "svdcos", "levycos", "geo",
-                   "lapcos", "pprcos", "levydot")
+                   "lapcos", "pprcos", "levydot", "gravsvd", "gravmds")
 
-metric_labels <- c("Embedding cosine", "Factorized euclidean", "Embedding dot", "PPR JSD", 
-                   "SVD cosine", "Factorized cosine", "Geographic", "Laplacian cosine", "PPR cosine", "Factorized dot")
+metric_labels <- c("Embedding cosine", "Levy's euclidean", "Embedding dot", "PPR JSD", 
+                   "SVD cosine", "Levy's cosine", "Geographic", "Laplacian cosine", "PPR cosine", "Levy's dot", "Gravity SVD cosine", "Gravity MDS euclidean")
 
 
 rmse.tab <- rmse %>%
@@ -129,9 +129,9 @@ rmse.hux <- as_hux(rmse.tab) %>%
   set_header_rows(1:2, TRUE) %>% 
   set_header_cols(1, TRUE) %>% 
   style_headers(bold = TRUE) %>%
-  set_right_border(1:12, 1, value = 0.5) %>%
-  set_right_border(1:12, 4, value = 0.5) %>%
-  set_right_border(1:12, 7, value = 0.5) %>%
+  set_right_border(1:14, 1, value = 0.5) %>%
+  set_right_border(1:14, 4, value = 0.5) %>%
+  set_right_border(1:14, 7, value = 0.5) %>%
   set_bottom_border(2, 1:10, value = 0.5)
 
 rmse.hux %>%
@@ -183,9 +183,9 @@ rmse.hux <- as_hux(rmse.tab) %>%
   set_header_rows(1:2, TRUE) %>% 
   set_header_cols(1, TRUE) %>% 
   style_headers(bold = TRUE) %>%
-  set_right_border(1:12, 1, value = 0.5) %>%
-  set_right_border(1:12, 4, value = 0.5) %>%
-  set_right_border(1:12, 7, value = 0.5) %>%
+  set_right_border(1:14, 1, value = 0.5) %>%
+  set_right_border(1:14, 4, value = 0.5) %>%
+  set_right_border(1:14, 7, value = 0.5) %>%
   set_bottom_border(2, 1:10, value = 0.5)
   
 rmse.hux %>%
