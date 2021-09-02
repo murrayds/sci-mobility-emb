@@ -184,7 +184,7 @@
 %
 % INTRODUCTION
 %
-\section{Introduction}\label{sec:introduction} %{{{
+\section*{Introduction}\label{sec:introduction} %{{{
 
 % Introduce the question, why is it important?
 
@@ -215,7 +215,8 @@ Here, we study the skip-gram negative sampling, or \textit{word2vec} neural-netw
 This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
 It works under the notion that a good representation should facilitate prediction, learning a mapping between words that can predict a target word based on its context (surrounding words).
 The model is also computationally efficient, easy to use, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis, hashimoto2016word}.
-As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory.
+As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory. Also,  \textit{word2vec} can be intepreted as a metric recovery, which recover the underlying metric of the semantic manifold ~\autocite{hashimoto2016word}.
+
 
 
 Our study builds on the gravity model framework~\autocite{zipf1946gravity}.
@@ -237,7 +238,7 @@ Though there is no qualitative difference, the embedding distance outperforms ge
 The power-law decay function performs best with the geographic distance, likely resulting from the  function's suitability for large, complex, and scale-free spatial systems~\autocite{chen2015distance};
 performance of the embedding distance is similar between the functional forms, though best for the exponential form, which stems from an underlying connection between the function and \textit{word2vec} that we discuss later.
 
-
+\section*{Results}
 %
 % Wordvec and the gravity model
 \subsection*{word2vec and the gravity model}
@@ -285,7 +286,6 @@ Taken together, the {\it word2vec} model with the negative sampling predicts a f
 
 In other words, \emph{word2vec with the skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
 While the gravity model describes mobility flows from the given mass and locations, {\it word2vec} finds locations that best explain the given mobility flow. 
-\js{Also, our finding is aligned with a perspective on word embedding methods as a metric recovery~\autocite{hashimoto2016word}, which recover the underlying metric of the semantic manifold not for a particular task.}
 
 
 
