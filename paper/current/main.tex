@@ -174,8 +174,8 @@
 \begin{sciabstract}
 	Human mobility drives major societal phenomena including epidemics, economies, and innovation.
 	Historically, mobility was constrained by geographic distance, however, in the globalizing world, language, culture, and history are increasingly important.
-	Here, we show a mathematical equivalence between \textit{word2vec} model and the gravity model of mobility and demonstrate that, by using three human trajectory datasets, \textit{word2vec} encodes nuanced relationships between locations into a vector-space, providing a measure of effective distance.
-	Focusing on the case of scientific mobility, we show that embeddings uncover cultural, linguistic, and hierarchical relationships at multiple levels of granularity.
+	Here, we show a mathematical equivalence between \textit{word2vec} model and the gravity model of mobility and demonstrate that, by using three human trajectory datasets, \textit{word2vec} encodes nuanced relationships between locations into an accurate and meaningful vector-space, providing a functional distance between locations, as well as a representation for studying the many dimensions of mobility.
+	Focusing on the case of scientific mobility, we show that embeddings implicitly learn cultural, linguistic, and hierarchical relationships at multiple levels of granularity.
 	Connecting neural embeddings to the gravity model opens up new avenues for the study of mobility.
 \end{sciabstract}
 
@@ -201,18 +201,18 @@ Networks offer a solution to representing many dimensions of mobility, yet edges
 Capturing the complexity of mobility requires moving beyond simple functional distances and networks, to learning high-dimensional landscapes of mobility that incorporate many facets of mobility into a single fine-grained and continuous representation.
 
 Here, we demonstrate that the \textit{word2vec} model (Skip-Gram Negative Sampling) is equivalent to the gravity law of mobility, a fundamental mobility framework. 
-We then empirically test the resulting representation by its ability to derive functional effective distances between from trajectories.
-After validating that it accurately represents real-world data, we demonstrate \textit{word2vec}'s capacity for encoding rich information relating to geography, culture, language, and even prestige, at multiple scales of analysis. 
+We then empirically test the resulting representation by its ability to derive from mobility trajectories the functional distances between locations.
+After validating that it accurately represents real-world data, we leverage unique embedding-based methods to demonstrate \textit{word2vec}'s capacity for encoding rich information relating to geography, culture, language, and even prestige, at multiple scales of analysis. 
 We embed trajectories from three datasets: U.S. passenger flight itinerary records, Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records (Detailed descriptions are available in the Methods).
 
-We focus in more detail on scientific mobility due to its richness and importance.
+We focus in most detail on scientific mobility due to its richness and importance.
 Scientific mobility---which is a central driver of the globalized scientific enterprise~\autocite{czaika2018globalisation, box2008competition} and strongly related to innovation~\autocite{braunerhjelm2020labor, kaiser2018innovation}, impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale}, collaboration~\autocite{rodrigues2016mobility}, and the diffusion of knowledge~\autocite{braunerhjelm2020labor, morgan2018prestige}---is not only an important topic in the Science of Science but also ideal for our study thanks to its well-known structural properties such as the centrality of scientifically advanced countries and the strong prestige hierarchy~\autocite{clauset2015hierarchy, deville2014career}.
 In spite of its importance, understandings of scientific mobility have been limited by the sheer scope and complexity of the phenomenon~\autocite{robinson2019mobility, deville2014career}, being further confounded by the diminishing role of geography in shaping the landscape of scientific mobility. Trajectories of scientific mobility are constructed using more than three million name-disambiguated authors who were \textit{mobile}---having more than one affiliation---between 2008 and 2019, as evidenced by their publications indexed in the Web of Science database (see Methods).
 As a scientist's career progresses, they move between organizations or pick up additional (simultaneous) affiliations forming \textit{affiliation trajectories} (Fig.~\ref{fig:gravity_performance}a).
 Thus, the trajectories encode both migration and co-affiliation---the holding of multiple simultaneous affiliations involving the sharing of time and capital between locations---that is typical of scientific mobility~\autocite{rodrigues2016mobility, sugimoto2017mostimpact} (see \SI).
 
 Here, we study the skip-gram negative sampling, or \textit{word2vec} neural-network architecture (see Methods).
-This neural embedding model, originally designed for learning language models~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
+This neural embedding model, originally designed for learning models of language~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, perozzi2014deepwalk, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
 It works under the notion that a good representation should facilitate prediction, learning a mapping between words that can predict a target word based on its context (surrounding words).
 The model is also computationally efficient, easy to use, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis, hashimoto2016word}.
 As a result, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory. Also,  \textit{word2vec} can be intepreted as a metric recovery, which recover the underlying metric of the semantic manifold ~\autocite{hashimoto2016word}.
@@ -231,12 +231,13 @@ For the flight itinerary data, we use population $m_{i}$ as the total number of 
 $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini2012universal}, is the expected frequency of the co-occurrence of location $i$ and $j$ in the trajectory in the gravity model.
 
 The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij }= \hat{T}_{ji}$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
-We define the distance function in terms of either the geographic distance between locations or their functional distance in the vector space, which is calculated as the cosine distance between their vectors, termed the \textit{embedding distance}.
+Traditionally, the decay function has been defined in terms of geographic distance, due to its intuitiveness and availability. 
+Here, we also consider the \textit{embedding distance}, calculated as the cosine distance between location vectors modeled by \textit{word2vec}. 
 The decay function $f(r_{ij})$ defines the effect of distance, and different decay functions can model fundamentally different mechanisms \autocite{barthelemy2011spatial} such as the cost functions for a given distance and the spatial granularity of the observation.
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}).
-Though there is no qualitative difference, the embedding distance outperforms geographic distance regardless of the type of gravity model used (see Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
-The power-law decay function performs best with the geographic distance, likely resulting from the  function's suitability for large, complex, and scale-free spatial systems~\autocite{chen2015distance};
-performance of the embedding distance is similar between the functional forms, though best for the exponential form, which stems from an underlying connection between the function and \textit{word2vec} that we discuss later.
+Our results show embedding distance to be a better representation of mobility than geographic distance, no matter decay function (see Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+However, we note that the geographic distance best models real-world mobility with the power-law decay function, likely resulting from the function's suitability for large, complex, and scale-free spatial systems~\autocite{chen2015distance};
+the embedding distance, in contrast, models our mobility data best for the exponential decay function, which stems from an underlying connection between the function and \textit{word2vec}.
 
 \section*{Results}
 %
@@ -284,9 +285,10 @@ Taken together, the {\it word2vec} model with the negative sampling predicts a f
 	\hat{T}_{ij}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}). \label{eq:flow_w2v_ng0}
 \end{align}
 
-In other words, \emph{word2vec with the skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
-While the gravity model describes mobility flows from the given mass and locations, {\it word2vec} finds locations that best explain the given mobility flow. 
-
+In other words, \emph{word2vec with skip-gram negative sampling is equivalent to the gravity model}, with the mass given by the location's frequency $P(i)$, and the distance measured by their dot similarities.
+While the gravity model describes mobility flows from the given mass and locations, {\it word2vec} 
+finds locations that best explain the given mobility flow. 
+This makes \textit{word2vec} a powerful tool for learning models of mobility.
 
 
 %
@@ -295,8 +297,12 @@ While the gravity model describes mobility flows from the given mass and locatio
 %
 \subsection*{Embeddings provide functional distance between locations}
 
-Given their equivalence, we expect that the \textit{word2vec} embedding can encode effective functional distances between locations according to the gravity law. 
-Here, we test this notion using three human mobility datasets, showing that \textit{word2vec}  consistently offers a better representation of actual mobility flows than baselines methods.
+To ensure that \textit{word2vec} learns an accurate representation of mobility that encodes meaningful functional distances, we devise an empirical validation task. 
+Past studies have utilized a range of validating tasks for assessing the accuracy \textit{word2vec}, including analogy completion~\cite{mikolov2013word2vec} and human surveys~\cite{kozlowski2018geometry}, in the case of natural language, or link prediction, in the case of network embedding~\cite{perozzi2014deepwalk, grover2016node2vec}.
+Here, we expect that an accurate representation of the mobility data should provide a functional distance that better models the flux between institutions than does geographic distance, which is at present the most widely measure used in the gravity model. 
+We test this notion using three human mobility datasets, showing that \textit{word2vec} consistently offers a better representation of actual mobility flows than geographic distance, as well as alternative network and direct optimization approaches. 
+
+
 In the case of flight itineraries, the embedding distance explains more than twice the expected flux between airports ($R^{2} = 0.51$, Fig.~\ref{fig:gravity_performance}a) than does geographic distance ($R^{2} = 0.22$), which has traditionally been used to quantify distance for the gravity model.
 Also, the embedding distance produces better predictions of actual flux between airports than does the geographic distance (Fig.~\ref{fig:gravity_performance}b).
 In the case of Korean accommodation reservations, embedding distance better explains the expected flux ($R^{2} = 0.57$, Fig.~\ref{fig:gravity_performance}c) than does geographic distance ($R^{2} = 0.25$), and predictions made using the embedding distance outperform those made with geographic distance (Fig.~\ref{fig:gravity_performance}d).
@@ -348,7 +354,7 @@ Nevertheless, a model with dot similarity has the second-best performance after 
 
 In the remainder of the paper, we focus on scientific mobility and interrogate the geometric space generated by the neural embedding to shed light on the multi-faceted relationships between organizations.
 To explore the topological structure of the embedding, we use a topology-based dimensionality reduction method (UMAP~\autocite{mcinnes2018umap}) to obtain a two-dimensional representation of the embedding space (Fig.~\ref{fig:projection}a).
-By showing relationships between individual organizations, rather than aggregates such as nations or cities, this projection constitutes the largest and highest resolution ``map'' of scientific mobility to date.
+By leveraging the unique characteristics of \textit{word2vec}, we are able to show the relationships between individual organizations, rather than aggregates such as nations or cities, this projection constitutes the largest and highest resolution ``map'' of scientific mobility to date.
 
 Globally, the geographic constraints are conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors.
 At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network representations (Fig.~\ref{fig:supp:network_vis}) that have been common in studies of scientific mobility~\autocite{chinchilla2018global, czaika2018globalisation}.
@@ -432,7 +438,9 @@ This suggests that the embedding space captures the hierarchical structure of mo
 %
 \subsection*{Embeddings capture latent prestige hierarchy}
 
-Prestige hierarchy is known to underpin the dynamics of scientific mobility, in which researchers tend to move to similar or less prestigious organizations~\autocite{deville2014career, clauset2015hierarchy}. Could the embedding space, to which no explicit prestige information is given, encode a prestige hierarchy?
+The embedding space can also encode more fine-grained relationships between entities. 
+For examples, prestige hierarchies are known to underpin the dynamics of scientific mobility, in which researchers tend to move to similar or less prestigious organizations~\autocite{deville2014career, clauset2015hierarchy}. 
+Could the embedding space, to which no explicit prestige information is given, encode a prestige hierarchy?
 This question is tested by exploiting the geometric properties of the embedding space with SemAxis~\autocite{an2018semaxis}.
 Here, we use SemAxis to operationalize the abstract notion of academic prestige, defining an axis in the embedding space where poles are defined using known high- and low-ranked universities.
 As an external proxy of prestige, we use the Times Ranking of World Universities (we also use research impact from the Leiden Ranking~\autocite{waltman2012leidenrankings}, see \SI);
@@ -525,18 +533,18 @@ Similar patterns can be found across many of the 30 countries with the most tota
 \section*{Conclusion}
 
 Neural embedding approaches offer a novel, data-driven solution for efficiently learning an effective and robust representation of locations based on trajectory data, encoding the complex and multi-faceted nature of mobility.
-We demonstrated that a functional distance derived from the embedding can be used with the gravity model of mobility to better predict real-world mobility than does geographic distance.
-Embedding distance outperformed geographic distance across distinct and disparate domains, including U.S. flight itineraries, Korean hotel accommodation reservations, and global scientific mobility.
-We discover that this performance results from neural embeddings implicitly learning gravity law relationships between locations, making them particularly well suited to representing mobility.
-Focusing on scientific mobility, we find that the embedding successfully encodes many aspects of scientific mobility into a single representation, including global and regional geography, shared languages, and prestige hierarchies, even without explicit information on these factors.
+Its unique strength stems from our discovery that \textit{word2vec} is equivalent to a gravity model, making it a natural and theoretically-grounded tool for modeling mobility. 
+By virtue of this equivalency, \textit{word2vec} learns accurate representations of mobility across disparate domains, including U.S. flight itineraries, Korean hotel accommodation reservations, and global scientific mobility.
+Focusing on the case of scientific mobility, we leverage the unique topological structure of the embedding space to reveal how it encodes nuanced aspects of mobility, including global and regional geography, shared languages, and prestige hierarchies, all of which are learned using only the mobility trajectories of individuals. 
 
 In revealing the correspondence between neural embeddings and the gravity model, the study of human mobility can move beyond geographic and network-based models of mobility, and instead leverage the high-order structure from individuals' mobility trajectories using these robust and efficient methods.
-While we focus on three domains of mobility, this approach could be applied to many different domains, such as general human migration, transit-network mobility, and more.
-Once learned, functional distances between locations, such as countries, cities, or organizations, can be published to support future research.
+While we focus on three domains of human mobility, this approach could be applied to many different domains, such as animal migration, transit-network mobility, international trade, and more.
+Once learned, functional distances between locations, such as countries, cities, or organizations, or the embedding model itself, can be published to facilitate re-use, and support reproducibility and transparency in cases when the underlying data is too sensitive to make available.
 Moreover, this approach can be used to learn a functional distance even between entities for which no geographic analog exists, such as between occupational categories based on individuals' career trajectories.
-In addition to providing a functional distance that supports modeling and predicting mobility patterns, the structure of the neural embedding space is amenable to a range of unique applications for studying mobility.
+In addition to providing a functional distance that supports modeling and predicting mobility patterns, the topology of the embedding space is amenable to a range of unique applications for studying mobility.
 As we have shown, the embedding space allows the visualization of the complex structure of scientific mobility at high resolution across multiple scales, providing a large and detailed map of the landscape of global scientific mobility.
-Embedding also allows us to quantitatively explore abstract notions such as academic prestige, and can potentially be generalized to other abstract axes.
+Other operations such as comparing entities or calculating aggregates, which could be complex and computationally-expensive for other methods, are here reduced to simple vector arithmetic. 
+Embeddings also allows us to quantitatively explore abstract notions such as academic prestige, and can potentially be generalized to other abstract axes.
 Investigation of the structure of the embedding space, such as the vector norm, reveals universal patterns based on the organization's size and their vector norm that could be leveraged in future studies of mobility.
 
 This approach, and our study, also have several limitations.
@@ -558,7 +566,6 @@ Traditional hubs of migration have experienced many politically-motivated policy
 At the same time, other nations, such as China, are growing into major scientific powers and attractors of talent~\autocite{cao2020returning}.
 Unprecedented health crises such as the COVID-19 pandemic threaten to bring drastic global changes to migration by tightening borders and halting travel.
 By revealing the correspondence between neural embedding and the gravity model and revealing their utility and efficacy, our study opens a new avenue in the study of mobility.
-Mobility is at the core of many global challenges, and the insights brought forth by our tool can be put to use to inform a better understanding of human mobility, and to inform sensible, effective, sustainable, and humane policies.
 
 
 %
