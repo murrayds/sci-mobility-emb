@@ -232,10 +232,10 @@ $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini
 
 The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij }= \hat{T}_{ji}$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
 Traditionally, the decay function has been defined in terms of geographic distance, due to its intuitiveness and availability.
-Here, we also consider the \textit{embedding distance}, calculated as the cosine distance between location vectors modeled by \textit{word2vec} to test the ability to encode the mobility data.
+Here, we also consider the \textit{embedding distance}, calculated as the cosine distance between location vectors modeled by \textit{word2vec}, to test the ability to encode the mobility data.
 The decay function $f(r_{ij})$ defines the effect of distance, and different decay functions can model fundamentally different mechanisms \autocite{barthelemy2011spatial} such as the cost functions for a given distance and the spatial granularity of the observation.
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}).
-Our results show embedding distance to be a better representation of mobility than geographic distance, no matter decay function (see Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
+Our results show that embedding distance deriving from the \textit{word2vec} significantly improves the ability to predict mobility compare to geographical distance no matter decay function while providing useful representation of locations as well (see Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
 However, we note that the geographic distance best models real-world mobility with the power-law decay function, likely resulting from the function's suitability for large, complex, and scale-free spatial systems~\autocite{chen2015distance};
 the embedding distance, in contrast, models our mobility data best for the exponential decay function, which stems from an underlying connection between the function and \textit{word2vec}.
 
