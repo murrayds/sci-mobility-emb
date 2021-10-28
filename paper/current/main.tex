@@ -274,7 +274,7 @@ Setting $\gamma = 1$ and substituting $\vect{v}_i = \vect{u}_i$ into Eq.~\ref{eq
 \begin{align}
 	\widehat{T}_{ij} \propto  N(i) P(j\given i) = \frac{NP(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
 \end{align}
-where $N$ is the sum of frequencies of all locations and $N(i) = NP(i)$ is the frequency of location $i$ in the data.
+where $N$ is the sum of frequencies in all locations and $N(i) = NP(i)$ is the frequency of location $i$ in the data.
 
 The flow $\widehat{T}_{ij}$ is symmetric (\ie $\widehat{T}_{ij}=\widehat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
 If we swap $i$ and $j$ in Eq.~\ref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
@@ -747,7 +747,7 @@ The embedding distance with the cosine distance, $d_{ij}$, is calculated as $d_{
 where $v_i$ and $v_j$ are the embedding vectors for locations $i$ and $j$, respectively.
 Note that $d_{ij}$ is not a formal metric because it does not satisfy the triangle inequality.
 Nevertheless, cosine distance is often shown to be useful in practice~\autocite{lerman2007embedding, brown1970migration, kim2018functional}.
-We compare the performance of this cosine-based embedding distance against those derived using dot product similarity and euclidean distance.
+We compare the performance of this cosine-based embedding distance against those derived using inner product similarity and euclidean distance.
 
 We compare the performance of the embedding distance to many baselines.
 These include distances derived from simpler embedding approaches, such as Singular Value Decomposition (SVD) and a Laplacian Eigenmap embedding performed on the underlying location co-occurrence matrix.
