@@ -7,4 +7,4 @@ conda list -e > requirements.txt
 
 # Export the .yml file
 # Can load file from .yml using `conda env create -f mobility.yml`
-conda env export | grep -v "^prefix: " > mobility.yml
+conda env export --no-builds | grep -v "^prefix: " > mobility.yml
