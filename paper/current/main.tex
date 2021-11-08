@@ -51,7 +51,7 @@
 
 % Refs
 %\usepackage{scicite}
-\usepackage[style=science,
+\usepackage[style=nature,
 					backend=biber,
 					sortcites=true,
 					autocite=superscript
@@ -174,7 +174,7 @@
 \begin{sciabstract}
 	Human mobility drives major societal phenomena including epidemics, economies, and innovation.
 	Historically, mobility was constrained by geographic distance, however, in the globalizing world, language, culture, and history are increasingly important.
-	Here, we show a mathematical equivalence between \textit{word2vec} model and the gravity model of mobility and demonstrate that, by using three human trajectory datasets, \textit{word2vec} encodes nuanced relationships between locations into an accurate and meaningful vector-space, providing a functional distance between locations, as well as a representation for studying the many dimensions of mobility.
+	Here, we show a mathematical equivalence between \textit{word2vec} model and the gravity model of mobility and demonstrate that, by using three human trajectory datasets, \textit{word2vec} encodes nuanced relationships between locations into a systematic and meaningful vector-space, providing a functional distance between locations, as well as a representation for studying the many dimensions of mobility.
 	Focusing on the case of scientific mobility, we show that embeddings implicitly learn cultural, linguistic, and hierarchical relationships at multiple levels of granularity.
 	Connecting neural embeddings to the gravity model opens up new avenues for the study of mobility.
 \end{sciabstract}
@@ -202,7 +202,7 @@ Capturing the complexity of mobility requires moving beyond simple functional di
 
 Here, we demonstrate that the \textit{word2vec} model (Skip-Gram Negative Sampling) is equivalent to the gravity law of mobility, a fundamental mobility framework.
 We then empirically test the resulting representation by its ability to derive from mobility trajectories the functional distances between locations.
-After validating that it accurately represents real-world data, we leverage unique embedding-based methods to demonstrate \textit{word2vec}'s capacity for encoding rich information relating to geography, culture, language, and even prestige, at multiple scales of analysis.
+After validating that it coherently represents real-world data, we leverage unique embedding-based methods to demonstrate \textit{word2vec}'s capacity for encoding rich information relating to geography, culture, language, and even prestige, at multiple scales of analysis.
 We embed trajectories from three datasets: U.S. passenger flight itinerary records, Korean accommodation reservations, and a dataset of scientists' career mobility between organizations captured in bibliometric records (Detailed descriptions are available in the Methods).
 
 We focus in most detail on scientific mobility due to its richness and importance.
@@ -215,12 +215,11 @@ Here, we study the skip-gram negative sampling (SGNS), or \textit{word2vec} neur
 This neural embedding model, originally designed for learning models of language~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, perozzi2014deepwalk, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
 It works under the notion that a good representation should facilitate prediction, learning a mapping between words that can predict a target word based on its context (surrounding words).
 The model is also computationally efficient, easy to use, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis, hashimoto2016word}.
-When applied to the trajectory data, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory. Also,  \textit{word2vec} can be intepreted as a metric recovery, which recover the underlying metric of the semantic manifold ~\autocite{hashimoto2016word}.
+When applied to the trajectory data, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory. Also,  \textit{word2vec} can be intepreted as a metric recovery, which recovers the underlying metric of the semantic manifold ~\autocite{hashimoto2016word}.
 
 
 
-Our study builds on the gravity model framework~\autocite{zipf1946gravity}.
-This is a widely-used, fundamental mobility model~\autocite{curiel2018citygravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity} that connects the \textit{expected flux}, $\hat{T}_{ij}$, between locations based on their populations and distance:
+Our study builds on the gravity model framework~\autocite{zipf1946gravity}, widely-used, fundamental mobility model~\autocite{curiel2018citygravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity} that connects the \textit{expected flux}, $\hat{T}_{ij}$, between locations based on their populations and distance:
 
 \begin{equation}
 	\label{eq:gravity_basic}
@@ -232,7 +231,7 @@ $\hat{T}_{ij}$, which is often referred to as ``expected flux''~\autocite{simini
 
 The gravity model dictates that the expected flow, $\hat{T}_{ij}$, ($\hat{T}_{ij }= \hat{T}_{ji}$), is proportional to the locations' population, $\hat{T}_{ij} \propto m_{i} m_{j}$, and decays as a function of their distance, $f(r_{ij})$.
 Traditionally, the decay function has been defined in terms of geographic distance, due to its intuitiveness and availability.
-Here, we also consider the \textit{embedding distance}, calculated as the cosine distance between location vectors modeled by \textit{word2vec}, to test the ability to encode the mobility data.
+Here, we also consider the \textit{embedding distance}, calculated as the cosine distance between location vectors modeled by \textit{word2vec}, to test the ability to encode the complex relationships in the mobility data.
 The decay function $f(r_{ij})$ defines the effect of distance, and different decay functions can model fundamentally different mechanisms \autocite{barthelemy2011spatial} such as the cost functions for a given distance and the spatial granularity of the observation.
 For geographic distance, we define $f(r_{ij})$ as the standard power-law function, and for the embedding distance, we use the exponential function, selected as the best performing for each case (Fig.~\ref{fig:supp:predict_geo_bymodel} and Fig.~\ref{fig:supp:predict_emb_bymodel}).
 Our results show that embedding distance deriving from the \textit{word2vec} significantly improves the ability to predict the mobility compare to geographical distance no matter decay function while providing the useful representation of locations as well (see Tables~\ref{supp:table:r2_table},~\ref{supp:table:rmse_exp_table},~\ref{supp:table:rmse_power_table}).
@@ -297,9 +296,9 @@ This makes \textit{word2vec} a powerful tool for learning models of mobility.
 %
 \subsection*{Embeddings provide functional distance between locations}
 
-To ensure that \textit{word2vec} learns an accurate representation of mobility that encodes meaningful functional distances, we devise an empirical validation task.
-Past studies have utilized a range of validating tasks for assessing the accuracy \textit{word2vec}, including analogy completion~\cite{mikolov2013word2vec} and human surveys~\cite{kozlowski2018geometry}, in the case of natural language, or link prediction, in the case of network embedding~\cite{perozzi2014deepwalk, grover2016node2vec}.
-Here, we expect that an accurate representation of the mobility data should provide a functional distance that better models the flux between institutions than does geographic distance, which is at present the most widely measure used in the gravity model.
+To ensure that \textit{word2vec} learns an systematic representation of mobility that encodes meaningful functional distances, we devise an empirical validation task.
+Past studies have utilized a range of validating tasks for assessing the accuracy \textit{word2vec}, including analogy completion~\autocite{mikolov2013word2vec} and human surveys~\autocite{kozlowski2018geometry}, in the case of natural language, or link prediction, in the case of network embedding~\autocite{perozzi2014deepwalk, grover2016node2vec}.
+Here, we expect that an extracted representation from the mobility data should provide a functional distance that better models the flux between institutions than does geographic distance, which is at present the most widely measure used in the gravity model.
 We test this notion using three human mobility datasets, showing that \textit{word2vec} consistently offers a better representation of actual mobility flows than geographic distance, as well as alternative network and direct optimization approaches.
 
 
@@ -532,7 +531,7 @@ Similar patterns can be found across many of the 30 countries with the most tota
 
 Neural embedding approaches offer a novel, data-driven solution for efficiently learning an effective and robust representation of locations based on trajectory data, encoding the complex and multi-faceted nature of mobility.
 Its unique strength stems from our discovery that \textit{word2vec} is equivalent to a gravity model, making it a natural and theoretically-grounded tool for modeling mobility.
-By virtue of this equivalency, \textit{word2vec} learns accurate representations of mobility across disparate domains, including U.S. flight itineraries, Korean hotel accommodation reservations, and global scientific mobility.
+By virtue of this equivalency, \textit{word2vec} learns systematic representations of mobility across disparate domains, including U.S. flight itineraries, Korean hotel accommodation reservations, and global scientific mobility.
 Focusing on the case of scientific mobility, we leverage the unique topological structure of the embedding space to reveal how it encodes nuanced aspects of mobility, including global and regional geography, shared languages, and prestige hierarchies, all of which are learned using only the mobility trajectories of individuals.
 
 In revealing the correspondence between neural embeddings and the gravity model, the study of human mobility can move beyond geographic and network-based models of mobility, and instead leverage the high-order structure from individuals' mobility trajectories using these robust and efficient methods.
@@ -547,7 +546,7 @@ Investigation of the structure of the embedding space, such as the vector norm, 
 
 This approach, and our study, also have several limitations.
 First, the skip-gram \textit{word2vec} model does not leverage directionality, meaning that embedding will be less effective at capturing mobility for which directionality is critical.
-Future studies may consider bi-directional embeddings, such as BERT~\autocite{devlin2018bert}, to incorporate directionality, as well as their correspondance to asymetric mobility models, such as the radiation model~\cite{simini2012universal}.
+Future studies may consider bi-directional embeddings, such as BERT~\autocite{devlin2018bert}, to incorporate directionality, as well as their correspondance to asymetric mobility models, such as the radiation model~\autocite{simini2012universal}.
 Second, the neural embedding approach is most useful in cases of mobility between discrete geographic units such as between countries, cities, and businesses; this approach is less useful in the case of mobility between locations represented using geographic coordinates, such as in the modeling of animal movements.
 Third, neural embeddings are an inherently stochastic procedure, and so results may change across different iterations.
 However, in this study we observe all results to be robust to stochasticity, likely emerging from the limited ``vocabulary'' of scientific mobility, airports, and accommodations (several thousand) and the relatively massive datasets used to learn representations (several million trajectories).
