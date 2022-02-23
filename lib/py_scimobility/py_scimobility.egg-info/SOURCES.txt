@@ -1,0 +1,10 @@
+setup.py
+py_scimobility/SemAxis.py
+py_scimobility/__init__.py
+py_scimobility/core.py
+py_scimobility.egg-info/PKG-INFO
+py_scimobility.egg-info/SOURCES.txt
+py_scimobility.egg-info/dependency_links.txt
+py_scimobility.egg-info/top_level.txt
+py_scimobility/tests/__init__.py
+py_scimobility/tests/test_core.py
