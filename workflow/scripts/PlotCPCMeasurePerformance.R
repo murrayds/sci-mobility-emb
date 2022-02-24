@@ -52,6 +52,8 @@ plot <- cpc %>%
   mutate(metric = reorder(metric, value)) %>%
   ggplot(aes(x = value, y = metric)) +
   geom_point(size = 3, shape = 16) +
+  geom_text(aes(label = round(value, 3)), nudge_y = 0.25) +
+  scale_x_continuous(limits = c(0, 0.5)) +
   theme_minimal() +
   theme(
     panel.grid.minor = element_blank(),
