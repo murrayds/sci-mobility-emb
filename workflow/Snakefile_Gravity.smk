@@ -44,6 +44,18 @@ rule plot_predicted_vs_actual_filtered:
         "Rscript scripts/PlotPredictedVsActual.R --input {input} --output {output} \
         --model {wildcards.model} --geo {wildcards.geo_constraint_filt}"
 
+rule calculate_cpc_measures:
+    input: expand(rules.calculate_predicted_vs_actual.output, traj = "precedence", geo_constraint = "global", dimensions = 300, window = 1, gamma = 1.0, model = GRAVITY_MODEL_TYPES, sizetype = "all", distance = DISTANCE_PARAMS),
+    output: CPC_MEASURES
+    shell:
+        "python scripts/calculate_cpc_measures.py --output {output} --input {input}"
+
+rule plot_cpc_performance:
+    input: rules.calculate_cpc_measures.output
+    output: CPC_PERFORMANCE_PLOT
+    shell:
+        "Rscript scripts/PlotCPCMeasurePerformance.R --input {input} --output {output}"
+
 ###############################################################################
 # HYPERPARAMETER PERFORMANCE
 ###############################################################################
