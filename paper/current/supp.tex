@@ -357,7 +357,7 @@ The disambiguation algorithm is conservative, favoring splitting clusters over m
 Past studies have validated this data and shown that the disambiguated authors are comparable to ground-truth records such as those from ORCID and useful for a wide range of bibliometric studies~\autocite{sugimoto2017mostimpact, robinson2019mobility, chinchilla2018global, chinchilla2018travelban}.
 
 
-% S11 TEXT
+% S12 TEXT
 \paragraph*{S12 Text}
 \label{si:text:disambiguation}
 {\bf Derivation of Eq.\ref{eq:nce} - Noise Contrastive Estimation}
@@ -471,6 +471,26 @@ For some countries, their organizations are positively-skewed, though seemingly 
 For example, Austria has a balanced distribution of organization vector norms, suggesting a diverse range of organizations with most being well connected ($\bar{l} =2.64$, $s = 0.18$);
 Russia, in contrast, has a number of organization vectors of moderate norms, but also several isolated organizations with large vector norms ($\bar{l} = 3.08$, $s = 0.67$).
 
+
+%
+% S15 TEXT
+\paragraph*{S15 Text}
+\label{si:text:generalized_gravity_model}
+{\bf Generalized gravity model.}
+
+Generalized gravity models use external information about each location to inform mobility predictions. 
+    Here, we test whether a generalized gravity model that includes information about shared city, region, nation, continent, and language alongside geographic distance offers better predictions than embedding distance. 
+    We specify the generalized model as follows,
+    \begin{equation}
+      \log{\frac{T_{ij}}{M_iM_j}} =  \gamma \log{d_{ij}} +  \sum_{x} \alpha^{x}*{g_{ij}^x} +  \sum_{x} \beta^{x}*{l_{ij}^x} 
+   \end{equation}
+    where $g_{ij}^{x}, x \in [\text{city, region, nation, and continent}]$ is a dummy variable that is given a value of 1 when two organizations are located in the same geographic city, region, nation, or continent, respectively; 
+    otherwise, dummy variable is zero.
+    Similarly, $l_{ij}^x,  x \in [\text{language, language family}]$ is an dummy variable that is set to 1 if two organizations are in countries that share the same language or language family, respectively. 
+    
+    Better results are obtained using the generalized gravity model ($R^2=0.242$, $RSME=0.861$, and $CPC=0.383$) compared to standard gravity model using only geographical distance ($R^2=0.219$, $RSME=0.874$, and $CPC=0.373$).
+    However, the gravity model using embedding distance results in the best performance by a wide margin ($R^2=0.482$, $RSME=0.711$, and $CPC=0.459$). 
+    These findings demonstrate how the embedding space can encode the complex and multi-faceted nature of mobility into a single robust vector-space representation, even without any external information provided. 
 
 
 \newpage
@@ -1645,6 +1665,18 @@ Taiwan           & 3.67             & 72
 	\label{fig:supp:gravity_pprjsd}
 \end{figure}
 
+
+%
+% Figure — CPC Measures
+% 
+\begin{figure}
+    \centering
+    \includegraphics{\figdir/Descriptive/sizeall_precedence_exp_global_cpc-measures_d300_ws1_gamma1.0.pdf}
+    \caption{\textbf{Embedding distance outperforms alternatives in common part of commuters (CPC).}
+    The CPC measure is calculated for both the power and exponential form of the gravity model, with the highest value reported for each distance type. 
+    }
+    \label{fig:supp:cpc-performance}
+\end{figure}
 
 %
 % Figure - Global Network Projection
