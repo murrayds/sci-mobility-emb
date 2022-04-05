@@ -135,7 +135,7 @@
 
 
 \begin{document} %{{{
-\title{Unsupervised embedding of trajectories captures the latent structure of mobility} %{{{
+\title{Unsupervised embedding of trajectories captures the latent structure of discrete mobility.} %{{{
 \author[1,\Yinyang]{Dakota Murray}
 \author[1,2,\Yinyang]{Jisung Yoon}
 \author[1]{Sadamori Kojaku}
@@ -215,9 +215,9 @@ Here, we study the skip-gram negative sampling (SGNS), or \textit{word2vec} neur
 This neural embedding model, originally designed for learning models of language~\autocite{mikolov2013word2vec}, has been making breakthroughs by revealing novel insights into texts~\autocite{tshitoyan2019mat2vec, garg2018gender, kozlowski2018geometry, hamilton2016diachronic, le2014doc2vec, nakandala2017gendered}, networks~\autocite{grover2016node2vec, perozzi2014deepwalk, linzhuo2020hyperbolic} and trajectories\autocite{liu2016exploring, feng2017poi2vec, yao2018representing, cao2019habit2vec, crivellari2019motion, solomon2018predict}.
 It works under the notion that a good representation should facilitate prediction, learning a mapping between words that can predict a target word based on its context (surrounding words).
 The model is also computationally efficient, robust to noise, and can encode relations between entities as geometric relationships in the vector space~\autocite{levy2014neural, nakandala2017gendered, kozlowski2018geometry, an2018semaxis, hashimoto2016word}.
-When applied to the trajectory data, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory. Also, \textit{word2vec} can be interpreted as a kind of metric recovery, which recovers the underlying metric of the semantic manifold ~\autocite{hashimoto2016word}.
-Although more sophisticated embedding techniques have been built atop \textit{word2vec}~\autocite{devlin2018bert, pennington2014glove}, some even adapted towards mobility data~\autocite{pennington2014glove, zhai2019beyond,gao2018place2vec, bo2017place2vec, simini2021deep}, the standard \textit{word2vec} model remains a powerful technique for representing mobility data, owing to its intuitiveness, accessibility, and mathematical equivalence to the gravity model of mobility. 
-
+When applied to the trajectory data, each location is encoded into a single vector representation, and vectors relate to one another based on the likelihood of locations appearing adjacent to one another in the same trajectory. 
+Also, \textit{word2vec} can be interpreted as a kind of metric recovery, which recovers the underlying metric of the semantic manifold ~\autocite{hashimoto2016word}.
+Although word2vec has been developed into more sophisticated embedding techniques~\autocite{devlin2018bert, pennington2014glove}, some adapted towards mobility data~\autocite{pennington2014glove, zhai2019beyond,gao2018place2vec, bo2017place2vec, simini2021deep}, the standard word2vec remains a powerful model for representing mobility data, owing to its simplicity, intuitiveness, accessibility, and mathematical equivalence to the gravity model of mobility.
 
 The gravity model framework~\autocite{zipf1946gravity} is a widely-used, fundamental mobility model~\autocite{curiel2018citygravity, jung2008highwaygravity, hong2016busgravity, truscott2012epidemicgravity} that connects the \textit{expected flux}, $\hat{T}_{ij}$, between locations based on their populations and distance:
 
@@ -252,33 +252,87 @@ A target location $a_t=i$ is considered to have a context location $a_{t'}=j$ th
 \end{align}
 where the denominator $Z_i=\sum_{j' \in \mathcal{A}} \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$ is a normalization constant, and $\mathcal{A}$ is the set of all locations.
 Although {\it word2vec} generates two embedding vectors $\bm{v_i}$ and $\bm{u}_i$---referred to as the in-vector and out-vector, respectively---we follow convention to use the in-vector $\bm{v}_i$ as an embedding of location $i$.
+Training {\it word2vec} is computationally expensive because of $Z_i$ that extends over all $|{\cal A}|$ locations.
 
-When $w=1$ (Fig.~\ref{fig:supp:hyperparameter}), the flow can be written as
+Negative sampling is a widely used heuristics to efficiently train {\it word2vec} without calculating $Z_i$.
+Negative sampling was introduced as a \textit{simplified} version of Noise Contrastive Estimation (NCE)~\autocite{mikolov2013word2vec,Gutmann2010}. 
+We show that this simplification gives rise to the equivalence between SGNS word2vec and the gravity model. 
+
+NCE is a generic estimator for probability model~\autocite{Gutmann2010}
+\begin{align}
+	\label{eq:nce-model}
+	P_m(x) = \frac{ f(x) }{\sum_{ x' \in {\cal X}} f(x') },
+\end{align}
+where $f$ is a positive real-valued likelihood function of data $x$, and ${\cal X}$ is the set of all data.
+Note that word2vec belongs to this class of probability models, with $x=\vect{u}_i\cdot \vect{v}_j$ and $f(x)=\exp(x)$.
+To train {\it word2vec} with NCE~\autocite{mikolov2013word2vec}, one samples a center-context pair $(i,j)$ from the given data and labels the pair as $Y=1$. 
+Then, one replaces the context location $j$ with a random location $j'$ sampled from a noise distribution $p_0(j')$ and labels the pair as $Y=0$. 
+NCE finds the embedding that can classify the center-context pairs using a logistic function 
+\begin{align}
+	\label{eq:nce}
+	P^{\text{NCE}}\left(Y_{j}=1 \vert j\right) = \frac{
+		1
+	}{
+		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i})  + \ln p_0(j) \right]
+	},
+\end{align}
+by maximizing the log-likelihood
+\begin{align}
+	\label{eq:log-likelihood-logistic-regress}
+	{\cal J}^{\text{NCE}} = \sum_{i \in {\cal A}}\sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NCE}}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{\text{NCE}}(Y_{j} = 0 \vert j)\right].
+\end{align}
+Note that NCE is an unbiased estimator that has asymptomatic convergence to the optimal embedding in terms of the original word2vec's objective function, ${\cal J}$~\autocite{Chia2010,Dyer2014}.
+
+Negative sampling simplifies NCE by dropping $ \ln p_0(j)$ in the logistic function, i.e.,
+\begin{align}
+	\label{eq:logistic-regress}
+	P^{\text{NS}}(Y_{j} = 1; \vect{v}_{i}, \vect{u}_j) = \frac{1}{1 + \exp(-\vect{u}_j \cdot \vect{v}_{i})}.
+\end{align}
+Despite its innocuous appearance, this simplification produces substantial biases. 
+To see this, we rewrite $P^{\text{NS}}$ in form of $P^{\text{NCE}}$ as 
+\begin{align}
+	P^{NS}\left(Y_{j}=1 \vert j\right) & = \frac{
+		1
+	}{
+		1 + \exp\left[ - \left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c \right) + \ln p_0(j) + c \right]
+	}                                             \\
+	                                   & = \frac{
+		1
+	}{
+		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i}) + \ln p_0(j) + c \right]
+	},
+\end{align}
+where we define the likelihood function $f$ by
+\begin{align}
+	f(\vect{u}_j \cdot \vect{v}_{i}) = \exp\left( \vect{u}_j \cdot \vect{v}_{i} + \ln p_0(j) + c\right),
+\end{align}
+which is the unbiased estimator for the probability model
+\begin{align}
+	\label{eq:unbiasef}
+	P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i}) & = \frac{ f(\vect{u}_j \cdot \vect{v}_{i}) }{\sum_{ j' \in {\cal A}} f(\vect{u}_{j'} \cdot \vect{v}_{i}) },                                                                                               \\
+	                                        & = \frac{  p_0(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  p_0(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})},                                                                      \\
+	                                        & = \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})} \hspace{0.3cm}(\because p_0(\ell) \propto P^\gamma (\ell)).
+\end{align}
+Taken together, the conditional probability that SGNS \textit{word2vec} actually optimizes is
+\begin{align}
+\label{eq:ns_gamma}
+	P^{NS}(j\given i) = P_m^{NS}(\vect{u}_j \cdot \vect{v}_{i})  =  \frac{  P^\gamma(j)\exp( \vect{u}_j \cdot \vect{v}_{i} ) }{Z'_i},
+\end{align}
+where $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \vect{v}_{i})$.
+Equation \eqref{eq:ns_gamma}  makes clear the bias due to negative sampling, i.e., 
+the noise distribution $p_0(j)=P^\gamma(j)$ appears in the numerator and, thus, is a part of the {\it word2vec} model.
+
+Armed with this result, we can now show the equivalence between the SGNS {\it word2vec} model and the gravity model.
+We set the window length to $w=1$ to restrict {\it word2vec} to predict the first-order flux $\hat T_{ij}$ between locations, as is the case for the gravity model.
+Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimal in-vectors and out-vectors such that $\vect{v}_i = \vect{u}_i$ \autocite{levy2014neural}.
+By setting $\gamma=1$,  we have 
 \begin{align}
 	\label{eq:flow_w2v}
-	\hat{T}_{ij} \propto P(i) P(j\given i) = \frac{P(i)\exp(\bm{u}_j \cdot \bm{v}_{i})}{Z_i},
+	\hat{T}_{ij} \propto P(i) P^{NS}(j\given i) \propto \frac{P(i)P(j)\exp(\bm{u}_j \cdot \bm{u}_{i})}{Z_i}.
 \end{align}
-where $P(j)$ is the fraction of location $j$'s frequency in the data.
-In general, calculating $Z_i$ is computationally expensive and there are two common approximations: hierarchical softmax \autocite{morin2005hierarchical} and negative sampling \autocite{mikolov2013word2vec}.
-Due to its simplicity and performance, negative sampling is the most widely used strategy, which we also adopt in our study.
-
-Although negative sampling is the most common approximation, it is a biased estimator~\autocite{Chia2010,Dyer2014} and fits a different probability model. When taking into account this bias, {\it word2vec} with skip-gram and negative sampling fits a probability model given by
-\begin{align}
-	P\left(j \given i \right):= \frac{P^ \gamma(j) \exp(\bm{u}_j \cdot \bm{v}_{i})}{Z'_i}, \label{eq:prob_w2v_ng0}
-\end{align}
-where we redefine the normalization constant as $Z'_i=\sum_{j' \in \mathcal{A}} P^ \gamma (j') \exp(\bm{u}_{j'} \cdot \bm{v}_{i})$. (See the Methods and Supporting Information for the full derivation).
-
-Parameter $\gamma=1$ is a special choice that ensures that, when the embedding dimension is sufficiently large, there exists optimal in-vectors and out-vectors such that $\vect{v}_i = \vect{u}_i$ \autocite{levy2014neural}.
-Setting $\gamma = 1$ and substituting $\vect{v}_i = \vect{u}_i$ into Eq.~\ref{eq:prob_w2v_ng0}, the flow predicted by {\it word2vec} is given by
-\begin{align}
-	\widehat{T}_{ij} \propto  N(i) P(j\given i) = \frac{NP(i)P(j)\exp(\vect{v}_j \cdot \vect{v}_{i})}{Z'_i}. \label{eq:flow_w2v_ng1}
-\end{align}
-where $N$ is the sum of frequencies in all locations and $N(i) = NP(i)$ is the frequency of location $i$ in the data.
-
 The flow $\widehat{T}_{ij}$ is symmetric (\ie $\widehat{T}_{ij}=\widehat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
-If we swap $i$ and $j$ in Eq.~\ref{eq:flow_w2v_ng1}, the numerator remains the same but the denominator can be different.
+If we swap $i$ and $j$ in Eq.~\eqref{eq:flow_w2v}, the numerator remains the same but the denominator can be different.
 Therefore, to ensure $\widehat{T}_{ij}=\widehat{T}_{ji}$, the denominator $Z_i$ should be a constant.
-
 Taken together, the {\it word2vec} model with the negative sampling predicts a flow in the same form as in the gravity model:
 \begin{align}
 	\hat{T}_{ij}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}). \label{eq:flow_w2v_ng0}
@@ -290,6 +344,9 @@ estimates proper locations in the vector space which best explain the given mobi
 This makes \textit{word2vec} a powerful tool for learning models of mobility.
 
 
+
+
+
 %
 % Subsection: Embedding performance
 %
@@ -297,7 +354,7 @@ This makes \textit{word2vec} a powerful tool for learning models of mobility.
 \subsection*{Embeddings provide functional distance between locations}
 
 To ensure that \textit{word2vec} learns an accurate representation of mobility that encodes meaningful functional distances, we devise an empirical validation task.
-Past studies have utilized a range of validating tasks for assessing the accuracy \textit{word2vec}, including analogy completion~\cite{mikolov2013word2vec} and human surveys~\cite{kozlowski2018geometry}, in the case of natural language, or link prediction, in the case of network embedding~\cite{perozzi2014deepwalk, grover2016node2vec}.
+Past studies have utilized a range of validating tasks for assessing the accuracy of \textit{word2vec}, including analogy completion~\cite{mikolov2013word2vec} and human surveys~\cite{kozlowski2018geometry}, in the case of natural language, or link prediction, in the case of network embedding~\cite{perozzi2014deepwalk, grover2016node2vec}.
 Here, we expect that an accurate representation of the mobility data should provide a functional distance that better models the flux between institutions than does geographic distance, which is at present the most widely measure used in the gravity model.
 We test this notion using three human mobility datasets, showing that \textit{word2vec} consistently offers a better representation of actual mobility flows than geographic distance, as well as alternative network and direct optimization approaches.
 
@@ -354,7 +411,7 @@ Nevertheless, a model with the inner product similarity has the second-best perf
 In the remainder of the paper, we focus on scientific mobility as a case study to interrogate the geometric space generated by the neural embedding.
 In the process, we also shed light on the multi-faceted relationships between organizations.
 To explore the topological structure of the embedding, we use a topology-based dimensionality reduction method (UMAP~\autocite{mcinnes2018umap}) to obtain a two-dimensional representation of the embedding space (Fig.~\ref{fig:projection}a).
-By leveraging the unique characteristics of representation learning approach, we are able to show the relationships between individual organizations, rather than aggregates such as nations or cities, this projection constitutes the largest and highest resolution ``map'' of scientific mobility to date.
+By leveraging the unique characteristics of representation learning approach, we are able to show the relationships between individual organizations, rather than aggregates such as nations or cities, producing the largest and highest resolution ``map'' of scientific mobility to date.
 
 Globally, the geographic constraints are conspicuous; organizations tend to form clusters based on their national affiliations and national clusters tend to be near their geographic neighbors.
 At the same time, the embedding space also reflects a mix of geographic, historic, cultural, and linguistic relationships between regions much more clearly than alternative network representations (Fig.~\ref{fig:supp:network_vis}) that have been common in studies of scientific mobility~\autocite{chinchilla2018global, czaika2018globalisation}.
