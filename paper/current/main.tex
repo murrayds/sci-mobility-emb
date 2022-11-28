@@ -330,9 +330,13 @@ By setting $\gamma=1$,  we have
 	\label{eq:flow_w2v}
 	\hat{T}_{ij} \propto P(i) P^{NS}(j\given i) \propto \frac{P(i)P(j)\exp(\bm{u}_j \cdot \bm{u}_{i})}{Z_i}.
 \end{align}
-The flow $\widehat{T}_{ij}$ is symmetric (\ie $\widehat{T}_{ij}=\widehat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory.
-If we swap $i$ and $j$ in Eq.~\eqref{eq:flow_w2v}, the numerator remains the same but the denominator can be different.
-Therefore, to ensure $\widehat{T}_{ij}=\widehat{T}_{ji}$, the denominator $Z_i$ should be a constant.
+The flow $\widehat{T}_{ij}$ is symmetric (\ie $\widehat{T}_{ij}=\widehat{T}_{ji}$) because the skip-gram model neglects whether the context $j$ appears before or after the target $i$ in the trajectory which produces,
+\begin{align}
+	\label{eq:unbiasef2}
+	T_{ij}=T_{ji} &\iff \frac{P(j) f(\vect{u}_j \cdot \vect{u}_{i}) }{Z_i} P(i) = \frac{P(i)  f(\vect{u}_i \cdot \vect{u}_{j}) }{Z_j} P(j) \nonumber \\
+	&\iff \frac{1}{Z_i}= \frac{1}{Z_j}  \nonumber \\
+	&\iff Z_i = Z_j
+\end{align}
 Taken together, the {\it word2vec} model with the negative sampling predicts a flow in the same form as the gravity model:
 \begin{align}
 	\hat{T}_{ij}=  C P(i) P(j)  \exp(\bm{v}_j \cdot \bm{v}_{i}). \label{eq:flow_w2v_ng0}
@@ -342,6 +346,10 @@ In other words, \emph{word2vec with skip-gram negative sampling is mathematicall
 While the gravity model describes mobility flows from the given mass and locations, {\it word2vec}
 estimates proper locations in the vector space which best explain the given mobility flow.
 This makes \textit{word2vec} a powerful tool for learning models of mobility.
+
+We further demonstrate the ability of \textit{word2vec} to effectively represent gravity-like relationships with an synthetic benchmark. Namely, we train a \textit{word2vec} model using synthetic mobility trajectories that strictly adhere to the gravity model (see Supporting Information for details). 
+We find that distances in the embedding space strongly correlates with distances in the synthetic space which was explicitly structured according to the gravity model (Pearson correlation of 0.943 and 0.801, depending on the distance metric used, Fig. S4).
+The results of this experiment align with a previous study which interpreted \textit{word2vec} as able to recover the metric underlying a semantic manifold~\autocite{hashimoto2016word}.
 
 
 
@@ -559,7 +567,8 @@ We report that this curve is almost universal across many countries.
 For instance, China's curve closely mirrors that of the United States (Fig.~\ref{fig:length}b).
 Smaller but scientifically advanced countries such as Australia and other populous countries such as Brazil also exhibit curves similar to the United States (Fig.~\ref{fig:length}b, inset).
 Other nations exhibit different curves which lack the portions with decreasing norm, probably indicating the lack of internationally-prestigious institutions.
-Similar patterns can be found across many of the 30 countries with the most total researchers (Fig.~\ref{fig:concave30}; see \SI{} for more discussion).
+Similar patterns can be found across many of the 30 countries with the most total researchers (Fig.~\ref{fig:concave30}; see \SI{} for more discussion).  Although we speculate on potential explanations for this pattern (see \SI{} for more discussion), we don't intend to make general claims about scientific mobility, or mobility more generally, but rather to illustrate how \textit{word2vec} can facilitate new kinds of investigations into mobility.
+Further work is necessary to determine what causes this curve pattern in so many countries and whether the same pattern can be found in other domains of human mobility.
 
 
 
@@ -599,7 +608,7 @@ This correspondence supplies a much-needed theoretical justification for the app
 In addition to being intuitive, accessible, and theoretically grounded, the \textit{word2vec} approach outlined here also has the advantage of learning complex and implicit features of mobility directly from raw trajectory data, rather than exploiting \textit{a priori} location features~\cite{simini2021deep}.
 
 
-While we focus on three domains of human mobility and illustrate its potential using scientific mobility, this approach is general and can be applied to many different domains, such as animal migration, transit-network mobility, and international trade.
+While we focus on three domains of human mobility and illustrate its potential using scientific mobility, this approach is general and can be applied to many different domains, such as animal migration, transit-network mobility,  discretized cell-phone location data,  and international trade.
 Once learned, functional distances between locations, such as countries, cities, or organizations, or the embedding model itself, can be published to facilitate re-use, and support reproducibility and transparency in cases when the underlying data is too sensitive to be made available.
 Moreover, this approach can be used to learn a functional distance even between entities for which no geographic analog exists, such as between occupational categories based on individuals' career trajectories.
 In addition to providing a functional distance that supports modeling and predicting mobility patterns, we also demonstrate how the topology of the embedding space can be leveraged to facilitate interpretation and application of the complex features of mobility.
@@ -795,7 +804,7 @@ where $Z'_i=\sum_{j' \in \mathcal{A}}  P^\gamma(j') \exp(\vect{u}_{j'} \cdot \ve
 %% Distance calculations
 We calculate $T_{ij}$ as the total number of co-occurrences between two locations $i$ and $j$ across the data-set.
 In scientific mobility, $T_{ij} = 10$ indicates that the number of co-occurrences between both organization $i$ and $j$ between 2008 and 2019 is 10, as evidenced from their publications.
-Here, we treat $T_{ij} = T_{ji}$ for the sake of simplicity and, in the case of scientific mobility, because directionality cannot easily be derived from bibliometric records, or may not be particularly informative (see \SI).
+Here, we treat $T_{ij} = T_{ji}$ for the sake of simplicity and, in the case of scientific mobility,  because directionality cannot easily be derived from bibliometric records, or may not be particularly informative (see \SI).
 
 We calculate two main forms of distance between locations.
 The geographic distance, $g_{ij}$, is the pairwise geographic distance between locations.

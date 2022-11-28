@@ -188,18 +188,42 @@ If a researcher published papers with affiliation $A$ in year $t$, $B$ in $t+1$,
 
 In the case that an individual lists multiple affiliations in a single year, affiliations listed on publications published in that year are shuffled between each iteration of the \textit{word2vec} training process (each epoch).
 For example, an author who published with affiliation $A$ in $t_{0}$, and affiliations $B$ and $C$ in $t_{1}$ could appear as one of $(A, B, C)$ or $(A, C, B)$ in each training iteration.
-This effectively removes the effect of order within a year, as the order cannot be meaningfully established based on co-affiliations in a single paper, or on different affiliations listed on separate papers, for which the date of publication may not be representative of the actual completion of the project.
+This effectively removes the effect of order within a year, as the order cannot be mFigeaningfully established based on co-affiliations in a single paper, or on different affiliations listed on separate papers, for which the date of publication may not be representative of the actual completion of the project.
 
 Other than restricting to only mobile researchers, we do not perform any filtering or reductions to affiliation trajectories.
 In the case that an author publishes with organization $A$ four times in $t_{0}$, and affiliation $B$ two times in $t_{1}$,  their trajectory will be $(A, A, A, A, B, B)$.
 Although mobile authors who publish more papers will have longer trajectories, \textit{word2vec} will skip duplicate consecutive organization IDs, mitigating the impact of long repetitive trajectories.
 
+\paragraph*{S4 Text}
+\label{si:text:synthetic_exp}
+{\bf Demonstration on ability of \textit{word2vec} to effectively represent gravity-like relationships with a simulation experiment}
+
+We conducted an additional experiment to test the ability of \textit{word2vec} to recover the metric between locations, and to further demonstrate its equivalency with the gravity model. Specifically, we perform a synthetic benchmark to test whether \textit{word2vec} can effectively recover gravity-like relationships in data that is known to contain them.
+
+We start by generating synthetic mobility trajectories structured according the gravity model. For this purpose, we first generate an artificial ``geographic'' space. 1,000 points are generated in a 2-dimensional space, with their coordinates distributed evenly between -1 and 1. These points act as the ``locations'' in our simulation. Each point is also assigned a ``mass'' randomly drawn from a power-law distribution $p(x) \propto x^{-k}$ (we use $k=2$) that is meant to represent the ``population'' or ``size'' of each location. 
+
+With this simulated geography in place, we calculate the pairwise distance matrix $r_{ij}^{synthetic}$, which is then used to calculate a transition matrix between points, defined as $T_{ij} = M_i M_j f(r_{ij})$, with transition probabilities following the gravity law. The purpose of this transition matrix is to define the likelihood of movement between points (or \textit{locations}) in our simulated geography based on their mass and pairwise distances. We conduct this experiment with two different transition matrices, one based on cosine distance where $f(r_{ij})=e^{-\beta r_{ij}}$ and another with euclidean distance where $f(r_{ij})=r_{ij}^{-\alpha}$. For simplicity, we use $\beta=2$ and $\alpha=2$, though the analysis was repeated for multiple parameters in order to assess robustness. 
+
+Finally, synthetic trajectories are generated based on the probabilities in the transition matrix.
+Specifically, we use a random walker based approach, where random walkers are initialized in locations with a probability proportional to their mass and transition between points according to the transition matrix. 
+These synthetic trajectories are then used to train the skip-gram \textit{word2vec} model. 
+For parameters, we set window size to $w=1$ and the embedding dimension to $d=100$. 
+
+From the embedding trained with synthetic trajectories, we calculate the pairwise embedding distances between points, $r_{ij}^{embedding}$.
+To evaluate the ability \textit{word2vec} to recover the known gravity-like structure of the synthetic data, we compare the embedding distance to the distances between the 1,000 points in the synthetic space, $r_{ij}^{synthetic}$ using the Pearson correlation coefficient. 
+This result is repeated 100 times, and the correlation coefficients are aggregated across iterations. 
+
+We find that \textit{word2vec} effectively recovers the gravity-like relationships in the synthetic data. 
+Based on cosine distance, the Pearson correlation between the embedding and synthetic distances is 0.943, with a standard error of 0.01. 
+Based on euclidean distance, the correlation was 0.801, with a standard error of 0.01.
+To better illustrate this point, Fig. \ref{fig:supp:synthetic_exp} shows the correlation for one representative iteration of this experiment.
 
 
+\
 
 %
 % S4 TEXT
-\paragraph*{S4 Text}
+\paragraph*{S5 Text}
 \label{si:text:ppr_dist}
 {\bf Network-based personalized Page Rank distances.}
 
@@ -231,7 +255,7 @@ Even though the length of the PPR vectors is much larger than the length of our 
 
 %
 % S5 Text
-\paragraph*{S5 Text}
+\paragraph*{S6 Text}
 \label{si:text:Raw SVD}
 {\bf Singular value decomposition distance.}
 
@@ -245,7 +269,7 @@ When used as an input to the gravity model, this distance produces better predic
 
 %
 % S6 Text
-\paragraph*{S6 Text}
+\paragraph*{S7 Text}
 \label{si:text:Laplacian}
 {\bf Laplacian Eigenmap distance.}
 
@@ -258,7 +282,7 @@ When used as an input to the gravity model, the Laplacian cosine distance produc
 
 %
 % S7 Text
-\paragraph*{S7 Text}
+\paragraph*{S8 Text}
 \label{si:text:levy}
 {\bf Levy's  symmetric SVD \textit{word2vec} distance}
 
@@ -281,7 +305,7 @@ Focusing on the Euclidean distance, we find that using it as input to the gravit
 
 %
 % S8 Text
-\paragraph*{S8 Text}
+\paragraph*{S9 Text}
 \label{si:text:direct}
 {\bf Direct optimization of gravity model}
 
@@ -301,7 +325,7 @@ MDS is also computationally-intensive, requiring upwards of 6 times more time to
 
 %
 % S9 Text
-\paragraph*{S9 Text}
+\paragraph*{S10 Text}
 \label{si:text:whynueralbetter}
 {\bf Why do neural embeddings outperform direct matrix factorization?}
 
@@ -319,7 +343,7 @@ The stochastic gradient descent algorithm, which is employed in SGNS \textit{wor
 
 %
 % S10 TEXT
-\paragraph*{S10 Text}
+\paragraph*{S11 Text}
 \label{si:text:organizations}
 {\bf Organization disambiguation and metadata.}
 
@@ -349,7 +373,7 @@ trajectories containing only a general designation are not altered.
 
 %
 % S11 TEXT
-\paragraph*{S11 Text}
+\paragraph*{S12 Text}
 \label{si:text:disambiguation}
 {\bf Author name disambiguation.}
 
@@ -361,7 +385,7 @@ Past studies have validated this data and shown that the disambiguated authors a
 
 
 % S12 TEXT
-\paragraph*{S12 Text}
+\paragraph*{S13 Text}
 \label{si:text:disambiguation}
 {\bf Derivation of Eq.\ref{eq:nce} - Noise Contrastive Estimation}
 
@@ -445,7 +469,7 @@ An important consequence of this framework is that NCE is an unbiased estimator 
 
 %
 % S13 TEXT
-\paragraph*{S13 Text}
+\paragraph*{S14 Text}
 \label{si:text:network_ranking}
 {\bf Reconstructing Times ranking with network measure.}
 
@@ -458,7 +482,7 @@ This suggests that the embedding encodes information on prestige hierarchy at le
 
 %
 % S14 TEXT
-\paragraph*{S14 Text}
+\paragraph*{S15 Text}
 \label{si:text:boomerang_speculation}
 {\bf Speculation on variations of the convex-curve pattern.}
 
@@ -477,7 +501,7 @@ Russia, in contrast, has a number of organization vectors of moderate norms, but
 
 %
 % S15 TEXT
-\paragraph*{S15 Text}
+\paragraph*{S16 Text}
 \label{si:text:generalized_gravity_model}
 {\bf Generalized gravity model.}
 
@@ -1019,7 +1043,8 @@ Taiwan           & 3.67             & 72
 
 \multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}} &
-\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 
+7 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.871 \hspace{6pt}\huxbpad{6pt}} &
 \multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.828 \hspace{6pt}\huxbpad{6pt}} &
@@ -1450,6 +1475,18 @@ Taiwan           & 3.67             & 72
 	\label{fig:supp:rcdf_by_scale}
 \end{figure}
 
+
+\newpage
+%
+% Figure - reverse CDF by scale
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{\figdir/rebuttal/test_result.pdf}
+	    \caption{\textbf{Neural embedding recovers the underlying distance from trajectories. }\textbf{a.} The trajectories generated with cosine distance an \textbf{b.} The trajectories generated with euclidean distance. Illustratively, we show the result of the representative iteration of the experiment whose correlation is close to the average. The embedding distance shows a good agreement with underlying distance. Orange dots represent the average embedding distance across binned synthetic distances with standard error.
+    }
+	\label{fig:supp:synthetic_exp}
+\end{figure}
 
 
 
