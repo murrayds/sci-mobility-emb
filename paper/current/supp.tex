@@ -202,7 +202,7 @@ We conducted an additional experiment to test the ability of \textit{word2vec} t
 
 We start by generating synthetic mobility trajectories structured according the gravity model. For this purpose, we first generate an artificial ``geographic'' space. 1,000 points are generated in a 2-dimensional space, with their coordinates distributed evenly between -1 and 1. These points act as the ``locations'' in our simulation. Each point is also assigned a ``mass'' randomly drawn from a power-law distribution $p(x) \propto x^{-k}$ (we use $k=2$) that is meant to represent the ``population'' or ``size'' of each location. 
 
-With this simulated geography in place, we calculate the pairwise distance matrix $r_{ij}^{synthetic}$, which is then used to calculate a transition matrix between points, defined as $T_{ij} = M_i M_j f(r_{ij})$, with transition probabilities following the gravity law. The purpose of this transition matrix is to define the likelihood of movement between points (or \textit{locations}) in our simulated geography based on their mass and pairwise distances. We conduct this experiment with two different transition matrices, one based on cosine distance where $f(r_{ij})=e^{-\beta r_{ij}}$ and another with euclidean distance where $f(r_{ij})=r_{ij}^{-\alpha}$. For simplicity, we use $\beta=2$ and $\alpha=2$, though the analysis was repeated for multiple parameters in order to assess robustness. 
+With this simulated geography in place, we calculate the pairwise distance matrix $r_{ij}^{synthetic}$, which is then used to calculate a transition matrix between points, defined as $T_{ij} = M_i M_j f(r_{ij})$, with transition probabilities following the gravity law. The purpose of this transition matrix is to define the likelihood of movement between points (or \textit{locations}) in our simulated geography based on their mass and pairwise distances. We conduct this experiment with two different transition matrices, one based on cosine distance where $f(r_{ij})=e^{-\beta r_{ij}}$ and another with euclidean distance where $f(r_{ij})=r_{ij}^{-\alpha}$. For simplicity, we use $\beta=2$ and $\alpha=2$. 
 
 Finally, synthetic trajectories are generated based on the probabilities in the transition matrix.
 Specifically, we use a random walker based approach, where random walkers are initialized in locations with a probability proportional to their mass and transition between points according to the transition matrix. 
@@ -217,6 +217,13 @@ We find that \textit{word2vec} effectively recovers the gravity-like relationshi
 Based on cosine distance, the Pearson correlation between the embedding and synthetic distances is 0.943, with a standard error of 0.01. 
 Based on euclidean distance, the correlation was 0.801, with a standard error of 0.01.
 To better illustrate this point, Fig. \ref{fig:supp:synthetic_exp} shows the correlation for one representative iteration of this experiment.
+
+In order to evaluate the robustness of the outcome across hyperparameter settings, we repeat our synthetic benchmark (using cosine distance) varying values for the mass exponent, $k$ and distance exponent $\beta$. 
+In Fig. \ref{fig:supp:synthetic_robust}) presents the average Pearson correlation between the synthetic and embedding distance over ten iterations with for different values of $k$ and $\beta$. 
+This shows our findings to be robust. 
+Neural embedding consistently recovers the distance from the synthetic trajectories across a broad range of hyperparameter values. 
+A low correlation occurs only when the mass distribution is too heterogeneous ($k < 1.9$).
+In a heterogeneous mass distribution, most of the trajectories will concentrate on just a few high-mass locations, regardless of distance, which makes learning a distance challenging.  Meanwhile, the exponent of the city population usually ranges between 2 and 3~\autocite{clauset2009power}.
 
 
 \
@@ -1487,6 +1494,19 @@ Taiwan           & 3.67             & 72
     }
 	\label{fig:supp:synthetic_exp}
 \end{figure}
+
+
+\newpage
+%
+% Figure - reverse CDF by scale
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{\figdir/rebuttal/robustness_check.pdf}
+	    \caption{\textbf{Neural embedding consistently recovers the underlying distance from trajectories across diverse hyperparameter settings.} We repeat our synthetic benchmark varying mass exponent $k$ and distance exponent $\beta$. The color of each cell represents the average Pearson correlation of the synthetic distance and embedding distances over ten repetitions with given $k$ and $\beta$.}
+	\label{fig:supp:synthetic_robust}
+\end{figure}
+
 
 
 
