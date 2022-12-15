@@ -188,7 +188,7 @@ If a researcher published papers with affiliation $A$ in year $t$, $B$ in $t+1$,
 
 In the case that an individual lists multiple affiliations in a single year, affiliations listed on publications published in that year are shuffled between each iteration of the \textit{word2vec} training process (each epoch).
 For example, an author who published with affiliation $A$ in $t_{0}$, and affiliations $B$ and $C$ in $t_{1}$ could appear as one of $(A, B, C)$ or $(A, C, B)$ in each training iteration.
-This effectively removes the effect of order within a year, as the order cannot be mFigeaningfully established based on co-affiliations in a single paper, or on different affiliations listed on separate papers, for which the date of publication may not be representative of the actual completion of the project.
+This effectively removes the effect of order within a year, as the order cannot be meaningfully established based on co-affiliations in a single paper, or on different affiliations listed on separate papers, for which the date of publication may not be representative of the actual completion of the project.
 
 Other than restricting to only mobile researchers, we do not perform any filtering or reductions to affiliation trajectories.
 In the case that an author publishes with organization $A$ four times in $t_{0}$, and affiliation $B$ two times in $t_{1}$,  their trajectory will be $(A, A, A, A, B, B)$.
@@ -200,9 +200,9 @@ Although mobile authors who publish more papers will have longer trajectories, \
 
 We conducted an additional experiment to test the ability of \textit{word2vec} to recover the metric between locations, and to further demonstrate its equivalency with the gravity model. Specifically, we perform a synthetic benchmark to test whether \textit{word2vec} can effectively recover gravity-like relationships in data that is known to contain them.
 
-We start by generating synthetic mobility trajectories structured according the gravity model. For this purpose, we first generate an artificial ``geographic'' space. 1,000 points are generated in a 2-dimensional space, with their coordinates distributed evenly between -1 and 1. These points act as the ``locations'' in our simulation. Each point is also assigned a ``mass'' randomly drawn from a power-law distribution $p(x) \propto x^{-k}$ (we use $k=2$) that is meant to represent the ``population'' or ``size'' of each location. 
+We start by generating synthetic mobility trajectories structured according to the gravity model. For this purpose, we first generate an artificial ``geographic'' space. 1,000 points are generated in a 2-dimensional space, with their coordinates distributed evenly between -1 and 1. These points act as the ``locations'' in our simulation. Each point is also assigned a ``mass'' randomly drawn from a power-law distribution $p(x) \propto x^{-k}$ (we use $k=2$) that is meant to represent the ``population'' or ``size'' of each location. 
 
-With this simulated geography in place, we calculate the pairwise distance matrix $r_{ij}^{synthetic}$, which is then used to calculate a transition matrix between points, defined as $T_{ij} = M_i M_j f(r_{ij})$, with transition probabilities following the gravity law. The purpose of this transition matrix is to define the likelihood of movement between points (or \textit{locations}) in our simulated geography based on their mass and pairwise distances. We conduct this experiment with two different transition matrices, one based on cosine distance where $f(r_{ij})=e^{-\beta r_{ij}}$ and another with euclidean distance where $f(r_{ij})=r_{ij}^{-\alpha}$. For simplicity, we use $\beta=2$ and $\alpha=2$. 
+With this simulated geography in place, we calculate the pairwise distance matrix $r_{ij}^{synthetic}$, which is then used to calculate a transition matrix between points, defined as $T_{ij} = M_i M_j f(r_{ij})$, with transition probabilities following the gravity law. The purpose of this transition matrix is to define the likelihood of movement between points (or \textit{locations}) in our simulated geography based on their mass and pairwise distances. We conduct this experiment with two different transition matrices, one based on cosine distance where $f(r_{ij})=e^{-\beta r_{ij}}$ and another with Euclidean distance where $f(r_{ij})=r_{ij}^{-\alpha}$. For simplicity, we use $\beta=2$ and $\alpha=2$. 
 
 Finally, synthetic trajectories are generated based on the probabilities in the transition matrix.
 Specifically, we use a random walker based approach, where random walkers are initialized in locations with a probability proportional to their mass and transition between points according to the transition matrix. 
@@ -210,16 +210,16 @@ These synthetic trajectories are then used to train the skip-gram \textit{word2v
 For parameters, we set window size to $w=1$ and the embedding dimension to $d=100$. 
 
 From the embedding trained with synthetic trajectories, we calculate the pairwise embedding distances between points, $r_{ij}^{embedding}$.
-To evaluate the ability \textit{word2vec} to recover the known gravity-like structure of the synthetic data, we compare the embedding distance to the distances between the 1,000 points in the synthetic space, $r_{ij}^{synthetic}$ using the Pearson correlation coefficient. 
+To evaluate the ability of \textit{word2vec} to recover the known gravity-like structure of the synthetic data, we compare the embedding distance to the distances between the 1,000 points in the synthetic space, $r_{ij}^{synthetic}$ using the Pearson correlation coefficient. 
 This result is repeated 100 times, and the correlation coefficients are aggregated across iterations. 
 
 We find that \textit{word2vec} effectively recovers the gravity-like relationships in the synthetic data. 
 Based on cosine distance, the Pearson correlation between the embedding and synthetic distances is 0.943, with a standard error of 0.01. 
-Based on euclidean distance, the correlation was 0.801, with a standard error of 0.01.
+Based on Euclidean distance, the correlation was 0.801, with a standard error of 0.01.
 To better illustrate this point, Fig. \ref{fig:supp:synthetic_exp} shows the correlation for one representative iteration of this experiment.
 
 In order to evaluate the robustness of the outcome across hyperparameter settings, we repeat our synthetic benchmark (using cosine distance) varying values for the mass exponent, $k$ and distance exponent $\beta$. 
-In Fig. \ref{fig:supp:synthetic_robust}) presents the average Pearson correlation between the synthetic and embedding distance over ten iterations with for different values of $k$ and $\beta$. 
+Fig. \ref{fig:supp:synthetic_robust} presents the average Pearson correlation between the synthetic and embedding distance over ten iterations with for different values of $k$ and $\beta$. 
 This shows our findings to be robust. 
 Neural embedding consistently recovers the distance from the synthetic trajectories across a broad range of hyperparameter values. 
 A low correlation occurs only when the mass distribution is too heterogeneous ($k < 1.9$).
