@@ -1,0 +1,2040 @@
+
+\documentclass[12pt]{article} %{{{
+
+% Text
+\setlength{\marginparwidth}{2.3cm}
+
+% Figures
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\def\figdir{../Figs}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+% define a command to setup the format of supporting infomration figures and tables.
+% source: http://bytesizebio.net/2013/03/11/adding-supplementary-tables-and-figures-in-latex/
+\newcommand{\beginsupplement}{%
+        \setcounter{table}{0}
+        \renewcommand{\thetable}{S\arabic{table}}%
+        \setcounter{figure}{0}
+        \renewcommand{\thefigure}{S\arabic{figure}}%
+     }
+
+
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{newtxmath}
+\DeclareMathAlphabet{\mathpzc}{T1}{pzc}{m}{it}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+\DeclareMathOperator*{\argmax}{\arg\!\max}
+\usepackage{bm}
+\def\tnull{{\text{null}}}
+\def\vec#1{{\bm #1}}
+\def\mat#1{\mathbf{#1}}
+
+
+%
+% Huxtable dependencies (see R package)
+\usepackage{array}
+\usepackage{siunitx}
+%\usepackage{ulem}
+\usepackage{colortbl}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{calc}
+\usepackage{tabularx}
+\usepackage{threeparttable}
+\usepackage{adjustbox}
+
+% Allow landscape rotation on table page
+\usepackage{lscape}
+
+
+
+% abbreviations
+\def\etal{\emph{et~al}.\ }
+\def\eg{e.g.,~}
+\def\ie{i.e.,~}
+\def\cf{cf.\ }
+\def\viz{viz.\ }
+\def\vs{vs.\ }
+
+% Refs
+\usepackage[style=nature,
+					backend=biber,
+					sortcites=true,
+					autocite=superscript
+]{biblatex}
+
+% Ignore irrelevant biblatex fields
+\AtEveryBibitem{%
+ \clearfield{url}%
+  \clearfield{month}%
+ \clearfield{issn}%
+ \clearfield{doi}%%
+}
+\newcommand{\todo}[1]{{\leavevmode\color{orange}[TODO: #1]}}
+
+\addbibresource{mobility.bib}
+
+\usepackage{url}
+
+\usepackage{changepage}
+
+
+% External file referencing
+\usepackage{xr}
+\externaldocument{main}
+
+% Figure caption
+\usepackage{setspace}
+\usepackage[font=small,labelfont=bf]{caption}
+\captionsetup[subfigure]{font={bf,small}, skip=1pt, singlelinecheck=false}
+
+\newcommand{\secref}[1]{Section~\ref{sec:#1}}
+\newcommand{\figref}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\tabref}[1]{Table~\ref{tab:#1}}
+%\newcommand{\eqnref}[1]{\eqref{eq:#1}}
+%\newcommand{\thmref}[1]{Theorem~\ref{#1}}
+%\newcommand{\prgref}[1]{Program~\ref{#1}}
+%\newcommand{\algref}[1]{Algorithm~\ref{#1}}
+%\newcommand{\clmref}[1]{Claim~\ref{#1}}
+%\newcommand{\lemref}[1]{Lemma~\ref{#1}}
+%\newcommand{\ptyref}[1]{Property~\ref{#1}}
+
+% for quick author comments
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\definecolor{light-gray}{gray}{0.8}
+\def\del#1{ {\color{light-gray}{#1}} }
+\def\yy#1{ {\color{red}\textbf{yy: #1}} }
+\def\dk#1{ {\color{red}\textbf{dk: #1}} }
+\def\js#1{ {\color{red}\textbf{js: #1}} }
+
+
+
+
+
+%}}}
+
+\begin{document} %{{{
+
+\title{Supporting Information: Unsupervised embedding of trajectories captures the latent structure of mobility} %{{{
+\date{\today}
+\maketitle %}}}
+
+\beginsupplement
+
+%
+%
+\paragraph*{S1 Text}
+\label{si:text:mobility_science}
+{\bf Mobility and science.}
+
+As scholars move, they bring their knowledge, skills, and social connections with them---collectively the movements of researchers shape the structure and direction of the global scientific enterprise.
+For example, prestige-driven mobility between doctoral-granting and employing institutions is highly unequal~\autocite{clauset2015hierarchy, deville2014career}, which affects the diffusion of ideas across academia~\autocite{morgan2018prestige}.
+By placing researchers in new social settings, mobility can lead to the formation of new collaborative relationships~\autocite{rodrigues2016mobility}, which in turn spurs the further diffusion of knowledge and innovations~\autocite{braunerhjelm2020labor, azoulay2011diffusion, kaiser2018innovation, armano2017innovation}.
+Perhaps resulting from the selection effects of who gets to move, or the reconfiguring of social and epistemic networks, movement is associated with increased scientific impact~\autocite{sugimoto2017mostimpact, petersen2018multiscale, jonkers2013return, franzoni2014advantage}.
+At the national level, the understanding of mobility has progressed beyond simplistic narratives of brain drain and brain gain, and instead adopts a new perspective of \textit{flows} of talent~\autocite{meyer2001network, ioannidis2014braindrain, gaillard1998circulation}.
+Under this flow model, a mobile researcher is viewed as contributing to both their origin and destination countries, a perspective that highlights the benefits of mobility to both the origin and destination countries. 
+Perhaps because of these individual and national benefits, policy-makers have come to recognize the importance of global mobility~\autocite{box2008competition, oecd2010innovation}.
+Movement is a key mechanism that has clear impact on the composition and direction of the global scientific workforce and our collective scientific understanding.
+Understanding the structure and dynamics of mobility is thus essential for understanding global science.
+
+
+%
+% S2 Text
+\paragraph*{S2 Text}
+\label{si:text:mobility_models}
+{\bf Modeling scientific mobility.}
+
+Modeling scientific mobility requires many considerations. 
+First, the unit of analysis must be set. 
+Most studies of mobility have focused on \textit{country-level} mobility--the flows of researchers across nations~\autocite{sugimoto2017mostimpact, scellato2015migrant, robinson-garcia2018indicators, franzoni2012foreign-born}.
+Practically, country-level analyses benefit from higher reliability, such that idiosyncrasies and errors inherent to bibliographic databases are mitigated by this higher level of aggregation.
+Epistemically, country-level analysis is useful for national science governance which aims to understand the status of their country in the global landscape and make informed policy decisions.
+Analyses at lower units of analysis are far less common.
+\textit{Regional}-level scientific mobility--the flow of researchers between regions or cities within or across countries has been only minimally studied~\autocite{vaccario2019mobility}, possibly due to lack of reliable long-term data and lack of policy relevance to national-level lawmakers.
+\textit{Organization}-level mobility has the potential to inform institutional policy and to understand the composition of mobility within a single country or region, especially as it relates to organization performance, prestige, and inequality~\autocite{albarran2017topeconomic, deville2014career, morgan2018prestige, clauset2015hierarchy}.
+However, affiliation disambiguation and noise in bibliographic data makes large-scale organization-level analysis challenging.
+Here, we learn neural-network embeddings of scientific mobility at the level of organizations using a curated bibliographic database.
+These embeddings are robust to noise, and so are capable of representing clear structure despite issues with organizational disambiguation.
+In doing so, embeddings also capture a more detailed understanding of mobility than has been previously studied.
+
+
+Another consideration when analyzing scientific mobility is what kinds of mobility to study.
+Typical understandings of mobility are directional: movement is always \textit{from} one place and \textit{to} another.
+However, scientific mobility is more complicated.
+For example, scientists often hold multiple affiliations at a time~\autocite{markova2016synchronous}, listing them as co-affiliations on a single paper, or even choosing a subset of affiliations to use across multiple simultaneous projects~\autocite{robinson2019mobility}.
+Even clearly-directional migration to another institution is complex--researchers may continue to publish with an old affiliation for projects that began before their move, and they may maintain social and organizational links to their old institution (e.g., collaborators, projects, graduate students) such that there is no clear breakage after migrating.
+There is also a whole range of short-term scientific mobility, such as visiting scholarships and short-term visits that are only visible through intensive efforts such as manual extraction from CVs~\autocite{woolley2009cv, sandstrom2009cv, canibano2011temporary}.
+Here, we focus on more long-term mobility that can be derived from bibliographic data.
+Due to the complexity of scientific mobility, we make the simplifying assumption that all scientific mobility is \textit{symmetric} or without direction such that any move from an organization $A$ to organization $B$ is equivalent to a move from $B$ to $A$.
+By assuming non-directional mobility, all mobility events are commensurate, meaning that they can be treated identically in our analysis--this allows us to represent the complexity of mobility without making decisions regarding the directionality of researchers' mobility or main affiliation.
+Moreover, this assumption has the practical advantage of matching the data format expected by the \textit{word2vec} model, as well as the theoretical advantage of adhering to the symmetricity assumption of the gravity model of mobility.
+
+
+
+%
+% S3 TEXT
+\paragraph*{S3 Text}
+\label{si:text:mobility_traj}
+{\bf Building affiliation trajectories.}
+
+For each mobile researcher who has at least two distinct affiliations, we construct an affiliation trajectory based on the affiliations listed on their published papers indexed in the Web of Science database between 2008 and 2019.
+An author is considered mobile if they published with at least two distinct affiliations during the time period of study.
+Affiliation names were manually disambiguated, and each was mapped to a unique organization identifier.
+An affiliation trajectory for an individual researcher is a sequence of organizations in ascending order of year of publication.
+If a researcher published papers with affiliation $A$ in year $t$, $B$ in $t+1$, $C$ in $t+2$ and $A$ again in $t+3$, then the affiliation trajectory is expressed as $(A, B, C, A)$.
+
+In the case that an individual lists multiple affiliations in a single year, affiliations listed on publications published in that year are shuffled between each iteration of the \textit{word2vec} training process (each epoch).
+For example, an author who published with affiliation $A$ in $t_{0}$, and affiliations $B$ and $C$ in $t_{1}$ could appear as one of $(A, B, C)$ or $(A, C, B)$ in each training iteration.
+This effectively removes the effect of order within a year, as the order cannot be meaningfully established based on co-affiliations in a single paper, or on different affiliations listed on separate papers, for which the date of publication may not be representative of the actual completion of the project.
+
+Other than restricting to only mobile researchers, we do not perform any filtering or reductions to affiliation trajectories.
+In the case that an author publishes with organization $A$ four times in $t_{0}$, and affiliation $B$ two times in $t_{1}$,  their trajectory will be $(A, A, A, A, B, B)$.
+Although mobile authors who publish more papers will have longer trajectories, \textit{word2vec} will skip duplicate consecutive organization IDs, mitigating the impact of long repetitive trajectories.
+
+\paragraph*{S4 Text}
+\label{si:text:synthetic_exp}
+{\bf Demonstration on ability of \textit{word2vec} to effectively represent gravity-like relationships with a simulation experiment}
+
+We conducted an additional experiment to test the ability of \textit{word2vec} to recover the metric between locations, and to further demonstrate its equivalency with the gravity model. Specifically, we perform a synthetic benchmark to test whether \textit{word2vec} can effectively recover gravity-like relationships in data that is known to contain them.
+
+We start by generating synthetic mobility trajectories structured according to the gravity model. For this purpose, we first generate an artificial ``geographic'' space. 1,000 points are generated in a 2-dimensional space, with their coordinates distributed evenly between -1 and 1. These points act as the ``locations'' in our simulation. Each point is also assigned a ``mass'' randomly drawn from a power-law distribution $p(x) \propto x^{-k}$ (we use $k=2$) that is meant to represent the ``population'' or ``size'' of each location. 
+
+With this simulated geography in place, we calculate the pairwise distance matrix $r_{ij}^{synthetic}$, which is then used to calculate a transition matrix between points, defined as $T_{ij} = M_i M_j f(r_{ij})$, with transition probabilities following the gravity law. The purpose of this transition matrix is to define the likelihood of movement between points (or \textit{locations}) in our simulated geography based on their mass and pairwise distances. We conduct this experiment with two different transition matrices, one based on cosine distance where $f(r_{ij})=e^{-\beta r_{ij}}$ and another with Euclidean distance where $f(r_{ij})=r_{ij}^{-\alpha}$. For simplicity, we use $\beta=2$ and $\alpha=2$. 
+
+Finally, synthetic trajectories are generated based on the probabilities in the transition matrix.
+Specifically, we use a random walker based approach, where random walkers are initialized in locations with a probability proportional to their mass and transition between points according to the transition matrix. 
+These synthetic trajectories are then used to train the skip-gram \textit{word2vec} model. 
+For parameters, we set window size to $w=1$ and the embedding dimension to $d=100$. 
+
+From the embedding trained with synthetic trajectories, we calculate the pairwise embedding distances between points, $r_{ij}^{embedding}$.
+To evaluate the ability of \textit{word2vec} to recover the known gravity-like structure of the synthetic data, we compare the embedding distance to the distances between the 1,000 points in the synthetic space, $r_{ij}^{synthetic}$ using the Pearson correlation coefficient. 
+This result is repeated 100 times, and the correlation coefficients are aggregated across iterations. 
+
+We find that \textit{word2vec} effectively recovers the gravity-like relationships in the synthetic data. 
+Based on cosine distance, the Pearson correlation between the embedding and synthetic distances is 0.943, with a standard error of 0.01. 
+Based on Euclidean distance, the correlation was 0.801, with a standard error of 0.01.
+To better illustrate this point, Fig. \ref{fig:supp:synthetic_exp} shows the correlation for one representative iteration of this experiment.
+
+In order to evaluate the robustness of the outcome across hyperparameter settings, we repeat our synthetic benchmark (using cosine distance) varying values for the mass exponent, $k$ and distance exponent $\beta$. 
+Fig. \ref{fig:supp:synthetic_robust} presents the average Pearson correlation between the synthetic and embedding distance over ten iterations with for different values of $k$ and $\beta$. 
+This shows our findings to be robust. 
+Neural embedding consistently recovers the distance from the synthetic trajectories across a broad range of hyperparameter values. 
+A low correlation occurs only when the mass distribution is too heterogeneous ($k < 1.9$).
+In a heterogeneous mass distribution, most of the trajectories will concentrate on just a few high-mass locations, regardless of distance, which makes learning a distance challenging.  Meanwhile, the exponent of the city population usually ranges between 2 and 3~\autocite{clauset2009power}.
+
+
+\
+
+%
+% S4 TEXT
+\paragraph*{S5 Text}
+\label{si:text:ppr_dist}
+{\bf Network-based personalized Page Rank distances.}
+
+
+We examine the gravity model on the Personalized Page Rank (PPR)\autocite{jeh2003scaling} as a benchmark on the network. We construct the co-occurrence network of $N$ organizations, in which each edge between organizations $i$ and $j$ represents a co-occurence of $i$ and $j$ in the same affiliation trajectory, with weight given by the sum of the co-occurences over all researchers. and edges are co-occurrence between two organizations. The Personalized Page Rank is a ranking algorithm for nodes based on a random walk process on networks.
+At each step, the walker visiting a node moves to a neighboring node chosen randomly with a probability proportional to the weight of the edge. Furthermore, with probability $\alpha$, the walker is teleported back to the starting node. The rank of a node is determined by the probability that the walker visits the node in the stationary state. The stationary distribution of the random walker starting from node $i$, denoted by $p_i=(p_{ik})$, is given by
+
+\begin{equation}
+	\label{eq:ppr}
+	p_i = (1 - \alpha) W p_i +  \alpha v_i 
+\end{equation}
+where $v_i$ is a column vector of length $N$ with entries that are all zero except the $i$th entry that equals one, $W = (W_{ij})$ is the weighted transition matrix of the unbiased random walker. We used $\alpha=0.9$ here.
+
+We can think of $p_i$ as a representation vector of the organization $i$, and calculate the distance between organizations $i$ and $j$, $d_{ij}$, with measuring distance between $p_i$ and $p_j$ to examine the gravity law. We consider two distance measures in this analysis. The first one is cosine distance which is used for our embedding method, $d_{ij} = 1 - \frac{\bm{p}_{i} \cdot \bm{p}_{j}}{\lVert \bm{p}_{i} \rVert \lVert \bm{p}_{j} \rVert}$. 
+Also, if we think of $p_i$ as a discrete probability distribution, then we can consider Jensen–Shannon divergence (JSD), which can be written as,
+
+\begin{equation}
+	\label{eq:JSD}
+	d_{ij} = JSD(p_i||p_j) = \frac{1}{2}D_{KL}(p_i||m) + \frac{1}{2}D_{KL}(p_j||m),
+\end{equation}
+
+\begin{equation}
+	\label{eq:KL}
+	D_{KL}(p_i||m) = \sum^x p_{ix}\log\frac{p_{ix}}{m_x},
+\end{equation}
+where $m=\frac{1}{2}(p_i+p_j)$. We report the result with cosine distance ($R^2=0.14$, Fig. \ref{fig:supp:gravity_pprcos}) and  Jensen–Shannon divergence ($R^2=0.19$, Fig. \ref{fig:supp:gravity_pprjsd}). In both cases, the performance is under the performance of the model with geographical distance. 
+Even though the length of the PPR vectors is much larger than the length of our embedding vectors, the result with the embedding distance outperforms both of them.
+
+
+%
+% S5 Text
+\paragraph*{S6 Text}
+\label{si:text:Raw SVD}
+{\bf Singular value decomposition distance.}
+
+We use the truncated singular value decomposition (SVD) on the underlying mobility co-occurrence matrix as a baseline embedding.
+In short, truncated SVD performs linear low-rank approximation of the matrix with given dimensions, $d$.
+First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory.
+Then, we apply truncated singular value decomposition with $d=300$ on the flow matrix $A$ directly.
+
+We calculate the distance between organizations in the SVD embedding space using cosine distance, finding that it explains slighly more of the flux between organizations than geographic distance ($R^2=0.247$, Table~\ref{supp:table:r2_table}).
+When used as an input to the gravity model, this distance produces better predictions than geographic distance using both the exponential (RMSE $= 0.859$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE $= 0.839$, Table~\ref{supp:table:rmse_exp_table}), performing slightly better with the power-law formulation.
+
+%
+% S6 Text
+\paragraph*{S7 Text}
+\label{si:text:Laplacian}
+{\bf Laplacian Eigenmap distance.}
+
+We also consider Laplacian Eigenmap embeddings~\autocite{belkin2003laplacian} as a baseline, which is one of the most fundamental approaches for graph embedding.
+First, we construct the co-occurrence matrix of $N$ organizations, $A_{ij}$ given by the co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory and degree matrix $D$ which is the diagonal matrix for which $D_{ii}=\sum_j {A_{ij}}$. Then we construct graph Lapalcian matrix $L = D-A$  and apply truncated singular value decomposition in the matrix $L$ with $d=300$.
+
+We only report results based on the cosine distance between Laplacian embedding vectors, finding that it explains less of the total flux than geographic distance ($R^{2} = 0.212$, Table~\ref{supp:table:r2_table}).
+When used as an input to the gravity model, the Laplacian cosine distance produces marginally-better predictions than geographic distance using both the exponential (RMSE $= 0.878$, Table~\ref{supp:table:rmse_exp_table}) and power-law models (RMSE = $0.87$, Table~\ref{supp:table:rmse_power_table}), performing slightly better with the power-law formulation.
+
+
+%
+% S7 Text
+\paragraph*{S8 Text}
+\label{si:text:levy}
+{\bf Levy's  symmetric SVD \textit{word2vec} distance}
+
+
+We also compare the \textit{word2vec} embedding distance against a baseline of direct matrix factorization approach, using the symmetric SVD  \textit{word2vec} method~\autocite{levy2014neural}.
+Based on notion that \textit{word2vec} is equivalent to implicit matrix factorization, Levy proposed symmetric SVD \textit{word2vec} embedding, which should directly compute the embedding that \textit{word2vec} only attempts to efficiently approximate.
+First, we construct the matrix of $N$ organizations
+
+\begin{equation}
+ M_{ij} = \log\left( \frac{N(i,j) |D|}{N(i) N(j)} \right)- \log k,
+\end{equation}
+where $N(i,j)$ is the number of times the location pair $(i,j)$ appears given the window size $w$ in the total corpus $D$, $N(i)=\sum_{j=N}^i N(i,j)$ as the number of items $i$ occurred given the window size $w$ in $D$, and $k$ is the number of negative samples. We used $w=1$ and $k=5$ which is the same setting as in our main result. Then, we factorized matrix $M$ with truncated singular value decomposition in the matrix with $d=300$ into $U_d \Sigma_d V_d$, and used the embedding vector as $U_d\sqrt{\Sigma_d}$.
+
+For this baseline, we report results using the cosine distance, Euclidean distance, and dot product between the embedding vectors.
+We find that the dot product performs by far the worst, worse than any other baseline considered $R^{2} = 0.004$, Table~\ref{supp:table:r2_table}).
+The cosine distance performs better, but worse than geographic distance ($R^{2} = 0.212$, Table~\ref{supp:table:r2_table}).
+The Euclidean distance performs best, explaining more of the flux than geographic distance, and only being below the embedding distance ($R^{2} = 0.341$, Table~\ref{supp:table:r2_table}).
+Focusing on the Euclidean distance, we find that using it as input to the gravity model results in better predictions than geographic distance using both the exponential model (RMSE $= 0.803$, Table~\ref{supp:table:rmse_exp_table}) and power law models, (RMSE $= 0.78$, Table~\ref{supp:table:rmse_power_table}), though it performs slightly better with the power law formulation.
+
+
+%
+% S8 Text
+\paragraph*{S9 Text}
+\label{si:text:direct}
+{\bf Direct optimization of gravity model}
+
+Finally, we create an embedding by optimizing for the gravity law directly. 
+Specifically, we construct a gravity matrix of $N$ organizations, where each cell of the matrix is calculated as $T_{ij}/m_i m_j$, where $T_{ij}$ is co-occurrence of organizations $i$ and $j$ in the same affiliation trajectory, and $m_i$ and $m_j$ are the organizations' populations, defined here as the mean annual number of unique mobile and non-mobile authors affiliated.
+
+We then embed the gravity matrix using two approaches: a truncated singular value decomposition (SVD) and multidimensional scaling (MDS), which embeds each location in a N-dimensional space such that pairwise distances are preserved as well as possible. 
+Typically, MDS uses Euclidean distance to measure distance between vectors. 
+
+For this analysis, we report results using the cosine distance between embedding vectors for the SVD embedding, and the logged Euclidean distance for the MDS embedding. 
+We observe that the gravity-optimized SVD cosine distance has poor performance, more weakly correlated with actual flux than geographic distance ($R^{2} = 0.122$, Table~\ref{supp:table:r2_table}), and similarly poor prediction error when used as input to the gravity mode.
+In contrast, the cosine distance between MDS vectors has the second-highest correlation with actual flux, after only the embedding distance ($R^{2} = 0.355$, Table~\ref{supp:table:r2_table}), and third best for predicting actual flux using both the power-law version of the gravity model (RMSE = $0.795$, Table~\ref{supp:table:rmse_power_table}) and the exponential form (RMSE = $0.904$, Table~\ref{supp:table:rmse_exp_table}). 
+We note that the MDS embedding actually has the lowest error when organizations' populations are defined as the raw frequency when using the power-law model (RMSE = $0.691$, Table~\ref{supp:table:rmse_power_table}).
+However, we note that the MDS distance is defined with a population of ``all'' mobile and non-mobile scholars, whereas the predictions made in Table~\ref{supp:table:rmse_power_table} use the raw frequency, which likely confounds this result. 
+MDS is also computationally-intensive, requiring upwards of 6 times more time to compute (on the machine used in this analysis) than the more computationally efficient \textit{word2vec} model.
+
+
+%
+% S9 Text
+\paragraph*{S10 Text}
+\label{si:text:whynueralbetter}
+{\bf Why do neural embeddings outperform direct matrix factorization?}
+
+Why do neural-embedding approaches, which rely on stochastic gradient descent, outperform Levy's direct matrix factorization~\autocite{levy2014neural}, especially given that \textit{word2vec} \emph{is} implicitly approximating factorization?
+We speculate that is stems, in part, from the sensitivity of matrix factorization to small flows between locations.  
+Levy's matrix factorization embeds affiliations $i$ and $j$ such that their dot similarity is as close as possible to $\log (T_{ij} / P(i) P(j))$. 
+If the flow $T_{ij}$ is considerably small or zero, the dot similarity goes to $-\infty$, pushing $i$ and $j$ very far from other affiliations in the embedding space~\autocite{levy2014neural, Qui2018}. 
+This is particularly problematic when the window size is small because most affiliation pairs would have no flow, which is indeed the case in our experiments. 
+To circumvent this problem, previous studies~\autocite{levy2014neural, Qui2018} added a constant flow between the affiliation pairs with no flow. 
+However, in addition to altering the underlying data, these small flows can still have a strong impact on the embedding.
+
+It is also well known that singular value decomposition (SVD) is vulnerable to outliers~\autocite{xu2012robust, huber1981robust, xu1995robust, chandrasekaran2011rank, candes2011robust}.
+The stochastic gradient descent algorithm, which is employed in SGNS \textit{word2vec}, is more robust than SVD and can enhance generalization and effectiveness of {\it word2vec} model \autocite{ma2018power, smith2020generalization, zhang2019algorithmic}.
+
+
+%
+% S10 TEXT
+\paragraph*{S11 Text}
+\label{si:text:organizations}
+{\bf Organization disambiguation and metadata.}
+
+Affiliations are mapped to one of 8,661 organizations and disambiguated following the procedure originally designed for the Leiden Rankings of World Universities~\autocite{waltman2012leidenrankings}.
+Organizational records were associated with a full name, a type indicating the sector (e.g., University, Government, Industry), and an identifier for the country and city of the organization.
+Sixteen different sector types were included in the analysis, which we aggregated to four high-level codes: \textit{University}, \textit{Hospital}, \textit{Government}, and \textit{Other}.
+Each record was also associated with a latitude and longitude.
+However, for many organizations, these geographic coordinates were missing or incorrect.
+We manually updated the coordinates of 2,267 organizations by searching the institution name and city on Google Maps;
+in cases where a precise location of the organization could not be identified, we used the coordinates returned when searching the name of the city.
+The data was further enriched with country-level information, including region, most widely-spoken language, and its language family (e.g., the language family of \textit{Spanish} is \textit{Italic}).
+State/province-level information was added using the reverse geocoding service LocationIQ using each organization's latitude and longitude as input.
+Regional census classifications were added for states in the United States.
+For each organization, we calculated size as the average number of unique authors (mobile and non-mobile) who published with that organization across each year of our dataset;
+in the case that authors publish with multiple affiliations in a single year, they are counted towards each.
+
+
+As a result of our disambiguation procedure, some affiliations are mapped to two organizations, one specific, and one more general.
+For example, any author affiliated with ``Indiana University Bloomington'' will also be listed as being affiliated with the ``Indiana University System'', a more general designation for all public universities in Indiana.
+However, a more general organization may not always occur alongside the more specific one.
+For example, a researcher affiliated with the smaller regional school ``Indiana University South Bend'' will be listed as affiliated with only the ``Indiana University System''.
+We identify all specific organizations that always co-occur along with a more general one.
+For every career trajectory that includes one of these specific organizations, we remove all occurrences of the more general organization;
+trajectories containing only a general designation are not altered.
+
+
+
+%
+% S11 TEXT
+\paragraph*{S12 Text}
+\label{si:text:disambiguation}
+{\bf Author name disambiguation.}
+
+Author-name disambiguation, the problem of associating names on papers with individuals authors, remains difficult for the use of bibliographic data~\autocite{dangelo2020disambiguation}.
+Authors in our dataset have been disambiguated using a rule-based algorithm that makes use of author and paper metadata, such as physical addresses, co-authors, and journal, to score papers on the likelihood of belonging to an author cluster---a cluster of publications believed to have been authored by the same individual~\autocite{caron2014disambiguation}.
+We limit our analysis to the period from 2008 to 2019, as in 2008 the Web of Science began indexing additional author-level metadata such as full names and email addresses.
+The disambiguation algorithm is conservative, favoring splitting clusters over merging.
+Past studies have validated this data and shown that the disambiguated authors are comparable to ground-truth records such as those from ORCID and useful for a wide range of bibliometric studies~\autocite{sugimoto2017mostimpact, robinson2019mobility, chinchilla2018global, chinchilla2018travelban}.
+
+
+% S12 TEXT
+\paragraph*{S13 Text}
+\label{si:text:disambiguation}
+{\bf Derivation of Eq.\ref{eq:nce} - Noise Contrastive Estimation}
+
+The noise contrastive estimation (NCE)~\autocite{Chia2010,Dyer2014}.
+NCE is an unbiased estimator for a probability model $P_m$ of the form:
+\begin{align}
+	\label{eq:nce-model}
+	P_m(x) = \frac{ f(x) }{\sum_{ x' \in {\cal X}} f(x') },
+\end{align}
+where $f$ is a non-negative likelihood function of data $x$, and ${\cal X}$ is the set of all data.
+This general form includes the \textit{word2vec} model (Eq.~\eqref{eq:cond_prob_w2v}), where $f(x) = \exp(x)$ and $x = \vect{u}_j \cdot \vect{v}_{i}$.
+NCE fits the probability model using a binary classification task in the same way as in negative sampling but using a Bayesian formalism for logistic regression.
+Specifically, before the training, we know that $1$ in $1+k$ words is sampled from the given data, which can be modeled as prior probabilities
+\begin{align}
+	\label{eq:prior}
+	P(Y_{j} = 1) = \frac{1}{k + 1},\quad P(Y_{j} = 0) = \frac{k}{k + 1}.
+\end{align}
+Using the Bayes rule, the posterior probability for $Y_{j}$ given word $j$ is given by
+\begin{align}
+	\label{eq:posterior}
+	P\left(Y_{j} \vert j\right) = \frac{
+		P\left(j \vert Y_{j}\right)P(Y_{j})
+	}{
+		P\left(j \vert Y_{j} = 0\right)P(Y_{j} = 0)
+		+ P\left(j \vert Y_{j} = 1\right)P(Y_{j} = 1)
+	}.
+\end{align}
+Bearing in mind that word $j$ is sampled from the given data if $Y_{j}=1$ and from the noise distribution $p_0$ if $Y_j = 0$.
+Assuming that the given data is generated from the probability model to fit, the class-conditional probability, $P\left(j \vert Y_{j}\right)$, is given by
+\begin{align}
+	\label{eq:class-cond}
+	P(j \vert Y_{j} = 1) & = P_m(\vect{u}_j \cdot \vect{v}_{i}),
+	\quad
+	P(j \vert Y_{j} = 0)  = p_0 (j).
+\end{align}
+Putting Eqs.~\eqref{eq:prior}, \eqref{eq:posterior} and \eqref{eq:class-cond} together, the posterior probability for $Y_j$ is given by
+\begin{align}
+	\label{eq:nce}
+	P\left(Y_{j} = 1 \vert j\right) & =
+	\frac{
+		P_m(\vect{u}_j \cdot \vect{v}_{i}) / (k + 1)
+	}{
+		P_m(\vect{u}_j \cdot \vect{v}_{i}) / (k + 1)  + kp_0(j) / (k + 1)
+	}                                          \\
+	                                & = \frac{
+		P_m(\vect{u}_j \cdot \vect{v}_{i})
+	}{
+		P_m(\vect{u}_j \cdot \vect{v}_{i})  + kp_0(j)
+	},
+\end{align}
+which can be rewritten in form of sigmoid function:
+\begin{align}
+	\label{eq:nce}
+	P^{\text{NCE}}\left(Y_{j}=1 \vert j\right) =
+	 & = \frac{
+		1
+	}{
+		1 + kp_0(j) / P_m(\vect{u}_j \cdot \vect{v}_{i})
+	}           \\
+	 & = \frac{
+		1
+	}{
+		1 + \exp\left[ \ln kp_0(j) - \ln P_m(\vect{u}_j \cdot \vect{v}_{i}) \right]
+	}           \\
+	 & = \frac{
+		1
+	}{
+		1 + \exp\left[ - \ln f(\vect{u}_j \cdot \vect{v}_{i})  + \ln p_0(j) + c \right]
+	},
+\end{align}
+where $c = \ln k + \ln\sum_{ x' \in {\cal X}} f(x') $ is a constant.
+NCE maximizes the log-likelihood
+\begin{align}
+	\label{eq:log-likelihood-logistic-regress}
+	{\cal J}^{\text{NCE}} = \sum_{i \in {\cal A}}\sum_{j \in {\cal D}} \left[ Y_{j} \log P^{\text{NCE}}(Y_{j} = 1\vert j) + (1-Y_{j}) \log P^{\text{NCE}}(Y_{j} = 0 \vert j)\right].
+\end{align}
+by calculating the gradients for embedding vectors $\vect{u}_j$, $\vect{v}_{i}$ and iteratively updating them.
+An important consequence of this framework is that NCE is an unbiased estimator that has convergence to the optimal embedding in terms of the original \textit{word2vec's} objective function, ${\cal J}$~ if we increase the number of words to sample and the training iterations \autocite{Chia2010,Dyer2014}.
+
+
+
+%
+% S13 TEXT
+\paragraph*{S14 Text}
+\label{si:text:network_ranking}
+{\bf Reconstructing Times ranking with network measure.}
+
+The performance of the embedding ranking in reconstructing the Times ranking is comparable to that of network-derived measures such as degree strength (Spearman's $\rho = 0.73$, Fig.~\ref{fig:supp:centrality_times_compare}a) and eigenvector centrality (Spearman's $\rho = 0.76$, Fig.~\ref{fig:supp:centrality_times_compare}b).
+However, while both embedding- and network-based measures relate to university prestige, they are qualitatively and quantitatively different.
+The embedding-ranking of U.S. universities is less correlated with degree strength (Spearman's $\rho = 0.45$, Fig.~\ref{fig:supp:centrality_semaxis_compare}a) and eigenvector  centrality (Spearman's $\rho = 0.55$) than with the Times ranking itself (Spearman's $\rho = 0.73$, Fig.~\ref{fig:supp:centrality_semaxis_compare}b).
+The embedding ranking over-ranks large research-intensive universities such as North Carolina State University, University of Florida, and Texas A\&M University, whereas the network-derived ranking over-ranks smaller, more specialized universities such as Brandeis University, Yeshiva University, and University of San Francisco.
+This suggests that the embedding encodes information on prestige hierarchy at least as well as a network representation, with some noticeable qualitative differences.
+
+
+%
+% S14 TEXT
+\paragraph*{S15 Text}
+\label{si:text:boomerang_speculation}
+{\bf A convex-curve pattern in organization prestige.}
+We also find that the size (L2 norm) of the organization embedding vectors provides insights into the characteristics of organizations (Fig.~\ref{fig:length}).
+Up to a point (around 1,000 researchers), the size of U.S. organization's vectors tends to increase proportionally to the number of researchers (both mobile and non-mobile) with published work;
+these organizations are primarily teaching-focused institutions, agencies, and hospitals that either are not ranked or have a low ranking.
+However, at around 1,000 researchers, the size of the vector \emph{decreases} as the number of researchers increases.
+These organizations are primarily research-intensive and prestigious universities with higher rank, research outputs, R\&D funding, and doctoral students (Fig.~\ref{fig:supp:length_vs_metaInfo}).
+A similar pattern has been observed in applications of neural embedding to natural language, in which the size of word vectors were found to represent the word's \emph{specificity}, i.e., the word associated with the vector frequently co-appears with particular context words\autocite{schakel2015measuring}.
+If the word in question is universal, appearing frequently in many different contexts, it would not have a large norm due to a lack of strong association with a particular context.
+Likewise, an organization with a small norm, such as Harvard, appears in many contexts alongside many different organizations in affiliation trajectories---it is well-connected.
+The concavity of the curve emerges in part from the relationship between the size of the vector and the expected connectedness of the organization, given its size ($R^{2} = 0.17$).
+Large, prestigious, and well-funded research universities such as Princeton and Harvard have smaller vector norms because they appear in many different contexts compared to more teaching-focused organizations such as NY Medical College, and the University of Michigan at Flint.
+Some universities, such as the University of Alaska at Fairbanks, have considerably small vectors, which may be a result of their remote locations and unique circumstances.
+
+We report that this curve is almost universal across many countries.
+For instance, China's curve closely mirrors that of the United States (Fig.~\ref{fig:length}b).
+Smaller but scientifically advanced countries such as Australia and other populous countries such as Brazil also exhibit curves similar to the United States (Fig.~\ref{fig:length}b, inset).
+Other nations exhibit different curves which lack the portions with decreasing norm, probably indicating the lack of internationally-prestigious institutions.
+Similar patterns can be found across many of the 30 countries with the most total researchers (Fig.~\ref{fig:concave30}).  Although we speculate on potential explanations for this pattern below, we don't intend to make general claims about scientific mobility, or mobility more generally, but rather to illustrate how \textit{word2vec} can facilitate new kinds of investigations into mobility.
+Further work is necessary to determine what causes this curve pattern in so many countries and whether the same pattern can be found in other domains of human mobility.
+
+The convex-curve pattern observed in Fig.~\ref{fig:length} repeats across many countries, with variations.
+For example, the representative vector of Chinese organizations has a larger norm than that of the U.S. ($\bar{l} = 2.97$ vs $\bar{l} = 2.39$, Table~\ref{table:supp:norm}), causing its curve to be shifted upwards with a larger peak vector norm;
+this may reflect a tendency for organizations in the U.S. to appear more frequently in different contexts than Chinese organizations.
+Other nations such as Poland, Iran, and Turkey show a linear relationship between an organization's number of researchers and the vector norm, indicating that their largest organizations belong to very specific contexts (Fig.~\ref{fig:concave30}).
+The organization-level distribution of vector norms reveals deeper heterogeneity.
+The distribution of the vector norms for the U.S. is relatively skewed, suggesting their large norm is driven by a small and tight community of organizations (\textit{skew}$ = -0.82$, Fig.~\ref{fig:norm_dist}).
+Germany and the U.K. have comparable representative vector norms to the U.S. ($\bar{l} = 2.6$ and $\bar{l} = 2.61$, respectively), with lower skewness (\textit{skew}$ = -0.63$ and \textit{skew}$ = -0.55$), suggesting more tight community of organizations.
+The vector norms of organizations in some countries are even more skewed, such as in Iran ($\bar{l} = 3.57$, \textit{skew}$ = -2.13$) and China ($\bar{l} = 2.97$, \textit{skew}$ = -1.08$), indicating the strong difference between their most- and least-connected organizations.
+For some countries, their organizations are positively-skewed, though seemingly for different reasons.
+For example, Austria has a balanced distribution of organization vector norms, suggesting a diverse range of organizations with most being well connected ($\bar{l} =2.64$, $s = 0.18$);
+Russia, in contrast, has a number of organization vectors of moderate norms, but also several isolated organizations with large vector norms ($\bar{l} = 3.08$, $s = 0.67$).
+
+
+%
+% S15 TEXT
+\paragraph*{S16 Text}
+\label{si:text:generalized_gravity_model}
+{\bf Generalized gravity model.}
+
+Generalized gravity models use external information about each location to inform mobility predictions. 
+    Here, we test whether a generalized gravity model that includes information about shared city, region, nation, continent, and language alongside geographic distance offers better predictions than embedding distance. 
+    We specify the generalized model as follows,
+    \begin{equation}
+      \log{\frac{T_{ij}}{M_iM_j}} =  \gamma \log{d_{ij}} +  \sum_{x} \alpha^{x}*{g_{ij}^x} +  \sum_{x} \beta^{x}*{l_{ij}^x} 
+   \end{equation}
+    where $g_{ij}^{x}, x \in [\text{city, region, nation, and continent}]$ is a dummy variable that is given a value of 1 when two organizations are located in the same geographic city, region, nation, or continent, respectively; 
+    otherwise, dummy variable is zero.
+    Similarly, $l_{ij}^x,  x \in [\text{language, language family}]$ is a dummy variable that is set to 1 if two organizations are in countries that share the same language or language family, respectively. 
+    
+    Better results are obtained using the generalized gravity model ($R^2=0.242$, $RSME=0.861$, and $CPC=0.383$) compared to standard gravity model using only geographical distance ($R^2=0.219$, $RSME=0.874$, and $CPC=0.373$).
+    However, the gravity model using embedding distance results in the best performance by a wide margin ($R^2=0.482$, $RSME=0.711$, and $CPC=0.459$). 
+    These findings demonstrate how the embedding space can encode the complex and multi-faceted nature of mobility into a single robust vector-space representation, even without any external information provided. 
+
+
+\newpage
+
+% latex table generated in R 3.5.1 by xtable 1.8-2 package
+% Thu Apr  2 13:43:00 2020
+\begin{table}[ht]
+\centering
+\caption{\textbf{Full organization names}}
+\label{table:supp:orglabels}
+\begin{adjustwidth}{-2cm}{}
+\begingroup\scriptsize
+\begin{tabular}{llll}
+  \hline
+Short & Full & Short & Full \\
+  \hline
+Stanford & Stanford Univ & Northwestern & Northwestern Univ \\
+  Columbia & Columbia Univ & Ball State & Ball State Univ \\
+  Harvard & Harvard Univ & IU Bloomington & Indiana Univ, Bloomington \\
+  UCLA & Univ of California, Los Angeles & Stevens Institute & Stevens Institute of Technology \\
+  Cal State Long Beach & California State Univ, Long Beach & NJIT & New Jersey Institute of Technology \\
+  Wright State & Wright State Univ & NYU & New York Univ \\
+  U Toledo & Univ of Toledo & SUNY Albany & Univ at Albany, The State Univ of New York \\
+  Boston U & Boston Univ & NY Medical College & New York Medical College \\
+  Suffolk & Suffolk Univ & Miami University & Miami Univ \\
+  CUNY & City Univ of New York (CUNY) & IU Pennsylvania & Indiana Univ of Pennsylvania \\
+  U Arizona & Univ of Arizona & Baylor & Baylor College of Medicine \\
+  OSU & Ohio State Univ & UT Health Center & Univ of Texas Health Science Center \\
+  MIT & Massachusetts Institute of Technology & Bard College & Bard College \\
+  Princeton & Princeton Univ & Stonehill College & Stonehill College \\
+  GCU & Grand Canyon Univ & Carleton College & Carleton College \\
+  Northcentral & Northcentral Univ & Hanover College & Hanover College \\
+  UCSF & Univ of California, San Francisco & Queens College & Queens College \\
+  Fielding & Fielding Graduate Univ & DePauw & DePauw College \\
+  Pepperdine & Pepperdine Univ & Naval Academy & United States Naval Academy \\
+  Argosy & Argosy Univ & Cal State San Marcos & California State Univ San Marcos \\
+  Yale & Yale Univ & Broad Inst & Broad Institute \\
+  U Hartford & Univ of Hartford & Forsyth Inst & Forsyth Institute \\
+  FAU & Florida Atlantic Univ & U Alaska Museum & Univ of Alaska Museum of the North \\
+  U Miami & Univ of Miami & Lawrence Berkeley & Lawrence Berkeley Natl Laboratory \\
+  UWF & The Univ of West Florida & Allen Institute & Allen Institute for Brain Science \\
+  FIT & Florida Institute of Technology & RTI International & RTI InterNatl \\
+  Purdue & Purdue Univ, West Lafayette & Fermilab & Fermilab \\
+  Notre Dame & Univ of Notre Dame & State of NY & State of New York \\
+  Indiana State & Indiana State Univ & Mayo Clinic & Mayo Clinic \\
+  Saint Mary's & Saint Mary's College & Fish and Wildlife & Fish and Wildlife Research Institute \\
+  Tufts & Tufts Univ & EPA & United States Environmental Protection Agency \\
+  Mattel & Mattel Children's Hospital & US Army & United States Army \\
+  Clark & Clark Univ & NSF & Natl Science Foundation \\
+  UMass Amherst & Univ of Massachusetts Amherst & US Navy & United States Navy \\
+  Montclair & Montclair State Univ & US Air Force & United States Air Force \\
+  Farleigh Dickinson & Fairleigh Dickinson Univ-Metro Campus & Ames Laboratory & Ames Laboratory \\
+  Rockefeller & Rockefeller Univ & Olin College & Oin College of Engineering \\
+  Adelphi & Adelphi Univ & Scrips Institute & Scrips Institute \\
+  Barnard & Barnard College & Idaho Natl Lab & Idaho Natl Laboratory \\
+  Saint John Fisher & Saint John Fisher College & Dana Faber & Dana Faber Cancer Institute \\
+  U Penn & Univ of Pennsylvania & Dept of Agriculture & United States Department of Agriculture \\
+  Villanova & Villanova Univ & DOE & United States Department of Energy \\
+  Widener & Widener Univ-Main Campus & NIAMS & Natl Institute of Arthritis, Skin Diseases \\
+  Robert Morris & Robert Morris Univ & JMI Labs & JMI Laboratories \\
+  U Cincinnati & Univ of Cincinnati & Whitehead Inst & Whitehead Institute of Biomedical Research \\
+  Case Western & Case Western Reserve Univ & Wellesley & Wellesley Univ\\
+  Ashland & Ashland Univ & UT Health, San Antonio & Univ of Texas Health Science Center, San Antonio \\
+  Texas A\&M & Texas A\&M Univ-Commerce & UNT & Univ of North Texas \\
+  Texas Southern & Texas Southern Univ & UT Southwestern Med & Univ of Texas Southwestern Medical Center \\
+  Baylor & Univ of Mary Hardin-Baylor & UT El Paso & Univ of Texas, El Paso \\
+  U Washington & Univ of Washington - Seattle & USF & Univ of South Florida, Tampa \\
+  Washington State & Washington State Univ & Florida A\&M & Florida Agricultural and Mechanical Univ \\
+  Seattle Pacific & Seattle Pacific Univ & Barry & Barry Univ \\
+  Cal State Fresno & California State Univ-Fresno & UMass Dartmouth & Univ of Massachusetts Dartmouth \\
+  Northern Arizona & Northern Arizona Univ & Worcester Poly & Worcester Polytechnic Institute \\
+  IUPUI & Indiana Univ - Purdue Univ Indianapolis & Umass Boston & Univ of Massachusetts Boston \\
+  U Dayton & Univ of Dayton & MGH Inst & MGH Institute of Health Professions \\
+  U Conn & Univ of Connecticut & Joseph W. Jones Center & Joseph W. Jones Ecological Research Center \\
+  ASU & Arizona State Univ & Vaccine Research Center & Vaccine Research Center, San Diego \\
+  U Florida & Univ of Florida & LA Ag Center & Lousianna Agricultural Center \\
+  Northern Illinois & Northern Illinois Univ & FL Fish and Wildlife & Florida Fish and Wildlife Conservation Commission \\
+  Concordia Chicago & Concordia Univ-Chicago & NHLBI & Natl Heart, Lung, and Blood Institute \\
+  U Chicago & Univ of Chicago & NY Dept. of Health & New York Department of Health \\
+  SIU Edwardsville & Southern Illinois Univ, Edwardsville & St Michaels & Saint Michaels College \\
+  SIU Carbondale & Southern Illinois Univ, Carbondale &  &  \\
+   \hline
+\end{tabular}
+\endgroup
+\end{adjustwidth}
+\end{table}
+
+
+\newpage
+
+\begin{table}[]
+\centering
+\caption{\textbf{L2 Norm of country's representative vectors}.
+			 Shown for top 30 countries with the most unique mobile and non-mobile researchers}
+\label{table:supp:norm}
+\begin{tabular}{lrr}
+\textbf{Country} & \textbf{L2 Norm} & \textbf{\# Organizations} \\ \hline
+United States    & 2.39             & 1281                      \\
+Germany          & 2.6              & 485                       \\
+United Kingdom   & 2.61             & 514                       \\
+Austria          & 2.64             & 74                        \\
+France           & 2.83             & 688                       \\
+Belgium          & 2.84             & 84                        \\
+Switzerland      & 2.85             & 66                        \\
+Spain            & 2.94             & 322                       \\
+China            & 2.97             & 497                       \\
+India            & 2.99             & 114                       \\
+Poland           & 3.02             & 145                       \\
+Canada           & 3.02             & 147                       \\
+Italy            & 3.04             & 386                       \\
+Russia           & 3.08             & 187                       \\
+Norway           & 3.1              & 122                       \\
+Netherlands      & 3.11             & 136                       \\
+Sweden           & 3.16             & 75                        \\
+Brazil           & 3.16             & 286                       \\
+Finland          & 3.17             & 66                        \\
+Denmark          & 3.21             & 54                        \\
+Czech Republic   & 3.23             & 97                        \\
+Greece           & 3.24             & 62                        \\
+Australia        & 3.24             & 90                        \\
+Turkey           & 3.28             & 99                        \\
+South Korea      & 3.28             & 156                       \\
+Israel           & 3.32             & 71                        \\
+Portugal         & 3.33             & 57                        \\
+Japan            & 3.35             & 465                       \\
+Iran             & 3.57             & 68                        \\
+Taiwan           & 3.67             & 72
+\end{tabular}
+\end{table}
+
+
+
+
+
+%
+% R2 Table
+%
+\clearpage
+\begin{landscape}
+
+  \providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}
+  \providecommand{\huxvb}[2]{\color[RGB]{#1}\vrule width #2pt}
+  \providecommand{\huxtpad}[1]{\rule{0pt}{#1}}
+  \providecommand{\huxbpad}[1]{\rule[-#1]{0pt}{#1}}
+
+\begin{table}[ht]
+\caption{
+	\textbf{Correlation between flux and distance over metrics, experimental parameters}.
+			Each cell corresponds to the correlation between the real-world flux between scientific organizations (measured with $R^{2}$) and baseline metrics, shown by subsets of mobility data and by definitions of organization population.
+			The asterisk denotes the top-performing distance metric by column.
+			Distance metrics are ordered from highest $R^{2}$ to lowest, based on global mobility with organization population defined using all mobile and non-mobile authors.
+			``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+			population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
+			``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
+			Embedding distance, measured as the cosine distance between embedding vectors, explains more of the flux than baselines in nearly every case, except using raw frequency population and domestic and international mobility, where direct optimization of the gravity model works better, as well as Levy's factorization~\autocite{levy2014neural} for domestic and international only mobility.
+}
+\label{supp:table:r2_table}
+\begin{centerbox}
+\begin{threeparttable}
+\small
+ \setlength{\tabcolsep}{0pt}
+\begin{tabular}{l l l l l l l l l l}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{All} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Mobile only} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Raw freq} \hspace{6pt}\huxbpad{0pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{ } \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}-}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.481 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.418 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.435 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.492 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.456 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.489 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.325 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.251 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.252 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.355 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.165 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.161 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.328 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.112 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.115 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.369 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.174 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.164 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's Euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.341 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.369 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.382 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.213 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.271 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.284 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.305 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.323 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.334 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.341 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.313 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.316 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.254 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.265 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.267 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.218 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.181 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.177 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.247 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.297 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.309 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.213 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.314 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.325 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.111 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.152 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.16 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.219 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.174 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.197 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.188 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.157 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.176 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.04 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.019 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.03 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.212 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.199 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.218 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.176 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.157 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.18 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.079 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.1 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.111 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.208 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.227 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.231 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.169 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.246 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.246 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.057 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.054 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.053 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.194 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.276 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.276 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.218 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.335 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.335 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.012 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.077 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.069 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.138 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.136 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.143 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.196 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.186 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.197 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.13 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.149 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.152 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.122 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.118 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.122 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.118 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.133 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.138 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.056 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.047 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.05 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.004 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.013 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.002 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.004 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.039 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.034 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.035 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+\end{tabular}
+\end{threeparttable}\par\end{centerbox}
+
+\end{table}
+
+\end{landscape}
+
+
+
+%
+% RMSE TABLE --- Exponential model
+%
+\clearpage
+\begin{landscape}
+
+  \providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}
+  \providecommand{\huxvb}[2]{\color[RGB]{#1}\vrule width #2pt}
+  \providecommand{\huxtpad}[1]{\rule{0pt}{#1}}
+  \providecommand{\huxbpad}[1]{\rule[-#1]{0pt}{#1}}
+
+
+\begin{table}[ht]
+\caption{
+	\textbf{Prediction error between actual and predicted mobility with exponential gravity model, by metrics and experimental parameters}.
+	Each cell corresponds to the prediction error (measured with root mean squared error) when using each distance as input to the exponential form of the gravity model of mobility to predict the flux between organizations, shown by subsets of mobility data, and by definitions of organization population.
+	The asterisk denotes the top-performing distance metric by column (lowest prediction error).
+	Distance metrics are ordered from lowest prediction error to highest, based on global mobility with organization population defined using all mobile and non-mobile authors.
+	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+		population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
+		``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
+		Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions of mobility than baselines in nearly every case, however Levy's 's factorization~\autocite{levy2014neural} perform better in the case of international and domestic only mobility when using raw frequency populations.
+}
+\label{supp:table:rmse_exp_table}
+\begin{centerbox}
+\begin{threeparttable}
+\small
+ \setlength{\tabcolsep}{0pt}
+\begin{tabular}{l l l l l l l l l l}
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{All} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Mobile only} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Raw freq} \hspace{6pt}\huxbpad{0pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{ } \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}-}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.713 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.76 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.737 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.702 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.749 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.713 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.715 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.764 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.748 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's Euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.803 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.791 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.771 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.725 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.726 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.705 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.803 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.825 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.811 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.851 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.87 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.854 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.769 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.798 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.784 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.859 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.82 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.82 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.792 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.878 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.891 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.894 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.904 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.837 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.881 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.875 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.882 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.866 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.858 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 
+7 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.835 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.871 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.828 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.814 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS Euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.904 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.944 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.907 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.972 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.955 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.793 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.838 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.821 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.918 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.925 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.908 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.884 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.916 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.894 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.814 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.796 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.929 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.951 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.928 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.973 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.002 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.856 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.875 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.939 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.923 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.92 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.946 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.987 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.995 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.98 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.979 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.014 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.996 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.853 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.867 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.849 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+\end{tabular}
+\end{threeparttable}\par\end{centerbox}
+
+\end{table}
+
+\end{landscape} % End r2 table page
+
+
+
+
+%
+% RMSE TABLE --- Power Law
+%
+\clearpage
+\begin{landscape}
+
+  \providecommand{\huxb}[2]{\arrayrulecolor[RGB]{#1}\global\arrayrulewidth=#2pt}
+  \providecommand{\huxvb}[2]{\color[RGB]{#1}\vrule width #2pt}
+  \providecommand{\huxtpad}[1]{\rule{0pt}{#1}}
+  \providecommand{\huxbpad}[1]{\rule[-#1]{0pt}{#1}}
+
+\begin{table}[ht]
+\caption{
+	\textbf{Prediction error between actual and predicted mobility with power-law gravity model, by metrics and experimental parameters}.
+	Each cell corresponds to the prediction error (measured with root mean squared error) when using each distance as input to the power-law form of the gravity model of mobility to predict the flux between organizations, shown by subsets of mobility data, and by definitions of organization population.
+	The asterisk denotes the top-performing distance metric by column (lowest prediction error).
+	Distance metrics are ordered from lowest prediction error to highest, based on global mobility with organization population defined using all mobile and non-mobile authors.
+	``All'' means that population is defined as the average yearly number of unique mobile and non-mobile scholars who published with the organizations' affiliation;
+		population is defined in the same way for ``Mobile only'', except only using unique mobile researchers;
+		``Raw freq'' means that organization populations are defined as their frequency across all the trajectories, similar to word frequency in language embedding.
+		Embedding distance, measured as the cosine distance between embedding vectors, results in better predictions for global mobility with ``All'; and ``Mobile only'' definitions of population, though direvt gravity-law opimization with MDS performs better when using raw frequencies to measure organization population, and Levy's factorization~\autocite{levy2014neural} perform better here with domestic and international only mobility. 
+}
+\label{supp:table:rmse_power_table}
+\begin{centerbox}
+\begin{threeparttable}
+\small
+ \setlength{\tabcolsep}{0pt}
+\begin{tabular}{l l l l l l l l l l}
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{All} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Mobile only} \hspace{6pt}\huxbpad{0pt}} &
+\multicolumn{3}{c!{\huxvb{0, 0, 0}{0}}}{\huxtpad{0pt + 1em}\centering \hspace{6pt} \textbf{Raw freq} \hspace{6pt}\huxbpad{0pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{ } \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Global} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{Domestic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} \textbf{International} \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}->{\huxb{0, 0, 0}{0.5}}-}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.743 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.784 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.76 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.73 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.784 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.749 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.714 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.762 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.745 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's Euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.78 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.776 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.755 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.703 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.711 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity MDS Euclidean} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.898 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.808 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.957 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.939 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} *0.691 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.802 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.79 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Embedding dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.822 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.844 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.831 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.864 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.863 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.783 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.809 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.795 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.839 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.785 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.761 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.89 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.81 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.792 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.752 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.728 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Laplacian cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.87 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.837 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.801 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.937 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.919 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.886 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.804 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.772 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.735 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Geographic} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.905 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.879 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.888 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.933 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.906 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.852 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.874 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.851 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR JSD} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.889 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.85 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.838 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.871 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.819 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.865 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.847 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.834 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{PPR cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.92 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.91 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.885 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.918 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.896 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.812 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.815 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.797 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.927 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.926 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.911 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.93 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.924 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.909 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.861 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.872 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.854 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Gravity SVD cosine} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.965 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.95 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.955 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.958 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.941 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.873 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.883 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.866 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+
+\multicolumn{1}{!{\huxvb{0, 0, 0}{0}}l!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedright \hspace{6pt} \textbf{Levy's dot} \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.99 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.998 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.983 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.977 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 1.015 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0.5}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.997 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.845 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.86 \hspace{6pt}\huxbpad{6pt}} &
+\multicolumn{1}{r!{\huxvb{0, 0, 0}{0}}}{\huxtpad{6pt + 1em}\raggedleft \hspace{6pt} 0.841 \hspace{6pt}\huxbpad{6pt}} \tabularnewline[-0.5pt]
+
+
+\hhline{>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|>{\huxb{0, 0, 0}{0.5}}|}
+\arrayrulecolor{black}
+\end{tabular}
+\end{threeparttable}\par\end{centerbox}
+
+\end{table}
+
+
+\end{landscape}
+
+
+
+
+
+
+%
+%
+%
+% FIGURES
+%
+%
+%
+%
+%
+\newpage
+
+%
+% Figure - publications over time
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Descriptive/pubs_over_time.pdf}
+	\caption{
+		\textbf{Publications over time.}
+		\textbf{a.}
+		The number of papers published by mobile authors has been steadily increasing from 2008 to 2017, with a small decrease in 2018,  which may be due to an artifact of the Web of Science indexing process.
+		Lines correspond to publications by mobile authors, by authors with affiliations in at least two cities, at least two regions, and at least two countries.
+		We did not find major changes in the publication patterns of mobile authors during this time period.
+		\textbf{b.}
+		Lines correspond to the proportion of publications classified as Biology and Health (black), Physics and Engineering (purple), Life and Earth Science (magenta), Social Science and Humanities (orange), and Math and Computer Science (yellow).
+		The rate of publication in Biology and Health has leveled since about 2013, whereas the rate of publication in other fields has steadily increased.
+		\textbf{c.}
+		While the absolute count of publications has increased, the percentage of mobile scholars, and those with affiliations in at least least two cities, regions, or countries, as a proportion of all publications, has remained stable over time.
+		\textbf{d.}
+		The proportion of authors' publications across fields has largely remained steady.
+		Biology and Health Science has comprised the majority of publications across nearly all years but has steadily declined in proportion.
+		However, the proportion of Social Science and Humanities publications has been steadily increasing.
+	}
+	\label{fig:supp:pubs_over_time}
+\end{figure}
+
+
+
+%
+% Figure - descriptives
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Descriptive/mobility_by_country.pdf}
+	\caption{
+		\textbf{Extent and nature of mobility by country.}
+		\textbf{a.}
+		The proportion of all mobile researchers contributed by each country.
+		Over 30\% of all mobile researchers have been affiliated with organizations in the U.S. during the period of study.
+		\textbf{b.}
+		Cumulative distribution of data shown in (\textbf{a}).
+		The U.S., China, and France, the U.K., and Germany comprise about 70\% of all mobile researchers.
+		\textbf{c.}
+		The proportion of each country's researchers who are mobile.
+		The dashed line indicates the proportion of all researchers in the data who are mobile.
+		France, followed by Qatar and the U.S. have the highest proportion of mobile researchers.
+		\textbf{d.} First two principal components of four variables: proportion of researchers in each country mobile across organizations, proportion mobile across cities, proportion mobile across regions, and proportion mobile across countries.
+		The countries are roughly sorted in order of the number of mobile researchers and the fraction of international mobile researchers in the first and second principal components, which are indicated by PC1 and PC2, respectively.
+		PC1 explains 88.3\% of the total variance, whereas PC2 explains 9.5\% of the total variance.
+	}
+	\label{fig:supp:descriptives}
+\end{figure}
+
+
+
+
+\newpage
+%
+% Figure - reverse CDF by scale
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{\figdir/Descriptive/rcdf_by_scale.pdf}
+	\caption{
+		\textbf{Reverse cumulative-distribution function of mobile researchers by geographic scale.}
+		\textbf{a.}
+		Survival probability of mobile researchers with respect to the number of organizations in the their affiliation trajectory.
+		All mobile authors were affiliated with at least two organizations (i.e., survival probability of one) and about 25.0\% were affiliated with three or more.
+		\textbf{b.} About 70\% of mobile authors listed at least two cities represented in their career trajectories.
+		\textbf{c.} 50\% of mobile authors have two or more regions represented in their career trajectories.
+		\textbf{d.} Only 17\% of mobile authors had two or more countries represented in their career trajectories.
+	}
+	\label{fig:supp:rcdf_by_scale}
+\end{figure}
+
+
+\newpage
+%
+% Figure - reverse CDF by scale
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{\figdir/rebuttal/test_result.pdf}
+	    \caption{\textbf{Neural embedding recovers the underlying distance from trajectories. }\textbf{a.} The trajectories generated with cosine distance an \textbf{b.} The trajectories generated with euclidean distance. Illustratively, we show the result of the representative iteration of the experiment whose correlation is close to the average. The embedding distance shows a good agreement with underlying distance. Orange dots represent the average embedding distance across binned synthetic distances with standard error.
+    }
+	\label{fig:supp:synthetic_exp}
+\end{figure}
+
+
+\newpage
+%
+% Figure - reverse CDF by scale
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{\figdir/rebuttal/robustness_check.pdf}
+	    \caption{\textbf{Neural embedding consistently recovers the underlying distance from trajectories across diverse hyperparameter settings.} We repeat our synthetic benchmark varying mass exponent $k$ and distance exponent $\beta$. The color of each cell represents the average Pearson correlation of the synthetic distance and embedding distances over ten repetitions with given $k$ and $\beta$.}
+	\label{fig:supp:synthetic_robust}
+\end{figure}
+
+
+
+
+%
+% Figure - Hyperparameter performance
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Descriptive/hyperparameter_performance.pdf}
+	\caption{
+		\textbf{Larger dimensions, smaller window size improves embedding performance.}
+		The correlation, or amount of flux explained by the embedding distance with varying skip-gram negative sampling hyperparameters.
+		Window size refers to $w$, the size of the context window that defines the context in a trajectory.
+		Smaller window sizes result in an embedding that explains more flux.
+		Embedding dimensions refer to the size of the embedding vector.
+		Larger vectors perform better, though with little difference between 200 and 300.
+		Gamma refers to the $\gamma$ parameter in \textit{word2vec}, which shapes the negative sampling distribution.
+		A value of $\gamma = 0.75$ is the default for \textit{word2vec}.
+		There is virtually no difference in performance based on $\gamma$.
+		All variants perform better on same-country organization pairs, and worse on different-country pairs, than on all pairs of  of organizations than on all pairs.
+		Embeddings with larger dimensions outperform mid-size embeddings for the different-country case.
+	}
+
+	\label{fig:supp:hyperparameter}
+\end{figure}
+
+
+%
+% Figure---Metric performance
+%
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.95\textwidth]{\figdir/Descriptive/distance_metric_performance.pdf}
+	\caption{
+	\textbf{Neural embeddings outperform baselines for scientific mobility.}
+		Cosine distance between embedding vectors generated with \textit{word2vec} explains more of the flux, and better predicts flux when used in the gravity model of mobility than geographic distance and other baselines.
+		Shown is the correlation between the flux and embedding distances, measured with $R^{2}$ (left), and the prediction error when using the distance as input to the gravity model of mobility.
+    The asterisk denotes the top-performing metric.
+		For prediction error, we show results based on both the exponential and power-law forms of the gravity model.
+		All embedding-based methods use dimensions of 300.
+		Here, embedding distance is obtained from neural embeddings learned with window size of 1 and $\gamma = 1$.
+		In all cases, organization population is defined as the mean annualized number of unique mobile and non-mobile authors, and flux is calculated for all global mobility.
+		Baselines include the top-performing distance metrics calculated between vectors obtained by personalized-page rank (PPR), singular value decomposition (SVD), laplacian eigenmap, direct-factorization following Levy's approach~\autocite{levy2014neural}, and direct optimization of the gravity model using SVD and multidimensional scaling (MDS), as well as the geographic distance between organizations.
+		Embedding distance better explains and predicts flux than any other baseline, though there is some variation by experimental parameters (Table~\ref{supp:table:r2_table}, Table~\ref{supp:table:rmse_exp_table}, and Table~\ref{supp:table:rmse_power_table}).
+	}
+	\label{fig:supp:distancemetrics}
+\end{figure}
+
+
+
+%
+% Figure - Dot product and cosine similarity
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/d300_ws1_dot_cosine.pdf}
+	\caption{
+		\textbf{Cosine distance is correlated with dot product similarity.}
+		We find a relatively high correlation between the embedding distance---one minus the cosine similarity---and the dot product similarity between organization vectors ($R^2 = 0.73$).
+		Color of each hex bin indicates the frequency of organization pairs.
+				The red line is the line of the best fit.
+		Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution.
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$).
+	}
+	\label{fig:supp:cosdot}
+\end{figure}
+
+
+
+%
+% Figure - Geographic predictions, by model
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_geo_bymodel.pdf}
+	\caption{
+		\textbf{For geographic distance, the power-decay gravity model is better.}
+		Flux between organization pairs predicted by the gravity model with different distance decay functions, i.e., exponential decay function (\textbf{a}) and power-law decay function (\textbf{b}) using geographic distance.
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps with $x = y$;
+		a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
+		Shown for all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility.
+		The gravity model with the power-decay function outperforms that with an exponential decay function.
+	}
+	\label{fig:supp:predict_geo_bymodel}
+\end{figure}
+
+
+
+%
+% Figure - Embedding predictions, by model
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_performance_emb_bymodel.pdf}
+	\caption{
+		\textbf{For embedding distance, the exponential-decay gravity model is slightly better.}
+		Flux between organization pairs predicted by the gravity model with different distance decay functions, i.e., exponential decay function (\textbf{a}) and power-law decay function (\textbf{b}) using embedding distance.
+		Boxplots show the distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps with $x = y$;
+		a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
+		Shown for all pairs of organization (\textbf{a-b}), domestic (\textbf{c-d}), and international only (\textbf{e-f}) mobility.
+		The gravity model with the exponential decay function slightly outperforms that with a power-decay function except in the case of international-only mobility, for which power-decay performs slightly better.
+	}
+	\label{fig:supp:predict_emb_bymodel}
+\end{figure}
+
+
+
+%
+% Figure - gravity correlation
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_correlations.pdf}
+	\caption{
+		\textbf{Embedding distance explains more variance for global, within, and across country flux than geographic distance.}
+		\textbf{a.}
+		Embedding distance explains more flux than geographic distance (\textbf{b}).
+		The red line is the line of the best fit.
+		Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution.
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
+		Color of each hex bin indicates frequency of organization pairs.
+		Results here are identical to those shown in Fig.~\ref{fig:gravity_performance}.
+		\textbf{c-d.}	embedding distance explains more variance when considering only within-country organization pairs.
+		\textbf{e-f.} embedding distance is more robust than geographic distance when considering only across-country organization pairs.
+	}
+	\label{fig:supp:gravity_correlation}
+\end{figure}
+
+
+
+
+%
+% Figure - Dot product distance
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_dot.pdf}
+	\caption{
+		\textbf{Examine gravity model with dot product on the embedding space.}
+		Performance of dot product similarities in explaining and predicting mobility.
+		Similarity scores are calculated as the pairwise dot product between organizational vectors.
+		Dot product similarity performs better than geographic distance, though worse than cosine similarity in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
+		The red line is the line of the best fit.
+		Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution.
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
+		Color indicates frequency of organization pairs within each hex bin.
+		Similarly, PPR distance performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$;
+		a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
+	}
+	\label{fig:supp:gravity_dot}
+\end{figure}
+
+
+
+
+%
+% Figure - PPR with COSINE DISTANCE gravity model and predictions
+%
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_pprcos.pdf}
+	\caption{
+		\textbf{Personalized page rank with cosine distance.}
+		Performance of personalized page rank scores in explaining and predicting mobility.
+		Personalized page rank is calculated for the underlying mobility network, and distance measured as the cosine distance between PPR probability distribution vectors.
+		PPR cosine distance performs roughly similar to geographic distance in explaining global(\textbf{a}), domestic (\textbf{b}), or international (\textbf{c}) country mobility.
+		The red line is the line of the best fit.
+		Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution.
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
+		Color of hex bind indicates frequency of organization pairs.
+		Similarly, PPR distance performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$;
+		a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
+	}
+	\label{fig:supp:gravity_pprcos}
+\end{figure}
+
+
+%
+% Figure - PPR with JSD gravity model and predictions
+%
+
+\begin{figure}[p!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/GravityLawFig/gravity_pprjsd.pdf}
+	\caption{
+		\textbf{Personalized page rank with Jensen-Shannon Divergence.}
+		Performance of personalized page rank scores in explaining and predicting mobility.
+		Personalized page rank is calculated for the underlying mobility network, and distance measured as the Jensen-Shannon Divergence (JSD) between PPR probability distribution vectors.
+		PPR JSD performs roughly similar to geographic distance in explaining global mobility (\textbf{a}), or domestic (\textbf{b}) or international (\textbf{c}) country mobility.
+		Overall, PPR JSD explains more variance in mobility than using cosine distance (Fig.~\ref{fig:supp:gravity_pprcos}), except for international mobility, for which cosine similarity out-performs JSD.
+		The red line is the line of the best fit.
+		Black dots are mean flux across binned distances.
+		99\% confidence intervals are plotted for the mean flux in each bin based on a normal distribution.
+		Correlation is calculated on the data in the log-log scale ($p < 0.0001$ across all fits).
+		Color of hex bind indicates frequency of organization pairs.
+		Similarly, PPR JSD performs comparably to geographic distance in predicting global (\textbf{d}), domestic (\textit{e}) and international (\textbf{f}) scientific mobility.
+		Boxplots show distribution of actual flux for binned values of predicted flux.
+		Box color corresponds to the degree to which the distribution overlaps $x = y$;
+		a perfect prediction yields all points on the black line.
+		``RMSE'' is the root-mean-squared error between the actual and predicted values.
+	}
+	\label{fig:supp:gravity_pprjsd}
+\end{figure}
+
+
+%
+% Figure — CPC Measures
+% 
+\begin{figure}
+    \centering
+    \includegraphics{\figdir/Descriptive/sizeall_precedence_exp_global_cpc-measures_d300_ws1_gamma1.0.pdf}
+    \caption{\textbf{Embedding distance outperforms alternatives in common part of commuters (CPC).}
+    The CPC measure is calculated for both the power and exponential form of the gravity model, with the highest value reported for each distance type. 
+    }
+    \label{fig:supp:cpc-performance}
+\end{figure}
+
+%
+% Figure - Global Network Projection
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Projection/co_occur_with_label.pdf}
+	\caption{
+		\textbf{Visualization of global mobility network.}
+		The network demonstrates country-level structure, but not at the detail or the extent of the global UMAP projection (Fig.~\ref{fig:projection}a).
+		Each node corresponds to an organization, whereas  weighted edges (not shown) correspond to the flow of mobile researchers between the two organization.
+		Nodes are colored by the country of the organization.
+		Nodes are positioned using the Force Atlas layout algorithm.
+	}
+	\label{fig:supp:network_vis}
+\end{figure}
+
+
+
+%
+% Figure - New York Projection
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_New_York.pdf}
+	\caption{
+		\textbf{UMAP Projection of organizations in New York.}
+		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019.
+		Color indicates the sector.
+	}
+	\label{fig:supp:proj_newyork}
+\end{figure}
+
+
+%
+% Figure - Pennsylvania Projection
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Pennsylvania.pdf}
+	\caption{
+		\textbf{UMAP Projection of organizations in Pennsylvania.}
+		UMAP projection of the embedding space of organizations in Pennsylvania reveals clustering based on geography, sector, and academic prestige.
+		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019.
+		Color indicates the sector.
+	}
+	\label{fig:supp:proj_pennsylvania}
+\end{figure}
+
+
+%
+% Figure - Texas Projection
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_Texas.pdf}
+	\caption{
+		\textbf{UMAP Projection of organizations in Texas.}
+		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019.
+		Color indicates the sector.
+	}
+	\label{fig:supp:proj_texas}
+\end{figure}
+
+
+
+%
+% Figure - California Projection
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Projection/umap_coordinate_region_California.pdf}
+	\caption{
+		\textbf{UMAP Projection of organizations in California.}
+		Each point corresponds to an organization and its size indicates the average annual number of mobile and non-mobile authors affiliated with that organization from 2008 to 2019.
+		Color indicates the sector.
+	}
+	\label{fig:supp:proj_california}
+\end{figure}
+
+
+
+
+%
+% Figure - SemAxis results
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_compare_fig.pdf}
+	\caption{
+		\textbf{SemRank hierarchy is robust.}
+		\textbf{a.} Spearman's $\rho$ ($n = 143$) between Times prestige rank and embedding rank derived using SemAxis, with poles defined using the top and bottom (geographically matched) ranked universities.
+		Black points show spearman correlation using all organizations; white points show correlation using only universalizes not aggregated in the poles.
+		Including more universities improves performance, but quickly saturates after around five universities.
+		\textbf{b - f.} Comparison between the Times and SemAxis ranks of universities, by the number of universities used to define the poles (n).
+		White points are those top and bottom 20 universities aggregated to define the ends of the axis.
+		The grey box corresponds to the top 20 and bottom 20 ranks.
+	  	Spearman's $\rho$ details the estimate from Spearman correlation between the two rankings using all universities, including those used to define the ends of each axis.
+	  	All correlations are significant with $p < 0.0001$.
+	}
+	\label{fig:supp:semaxis_compare}
+\end{figure}
+
+
+
+%
+% Figure - Network Centrality vs. Times
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/centrality_times_compare.pdf}
+	\caption{
+		\textbf{Network centrality is strongly correlated with Times ranking.}
+		Comparison between the ranking of organizations by their network-centrality rank and their rank in the 2018 Times Higher Education ranking of U.S. Universities .
+		The Times rank is correlated with degree centrality rank (\textbf{a}) with Spearman's $\rho = 0.73$, and is correlated with the eigenvector centrality rank (\textbf{b}) with Spearman's $\rho = 0.76$.
+		All correlations are significant with $p < 0.0001$.
+	}
+	\label{fig:supp:centrality_times_compare}
+\end{figure}
+
+
+
+%
+% Figure - Network Centrality vs. SemAxis
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_network_compare.pdf}
+	\caption{
+		\textbf{Network centrality less correlated with Embedding rank.}
+		Comparison between the ranking of organizations by their network-centrality rank and the embedding rank derived with SemAxis with poles defined using the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities .
+		Embedding rank is correlated with degree centrality rank (\textbf{a}) with Spearman's $\rho = 0.45$, and is correlated with the eigenvector centrality rank (\textbf{b}) with Spearman's $\rho = 0.55$.
+		All correlations are significant with $p < 0.0001$.
+	}
+	\label{fig:supp:centrality_semaxis_compare}
+\end{figure}
+
+
+%
+% Figure - SemAxis By State
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_states_fig.pdf}
+	\caption{
+		\textbf{Geography and prestige SemAxis by U.S. state.}
+		SemAxis projection along two axes, comparing California to Massachusetts universities (left to right), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 Times Higher Education ranking of U.S. Universities (bottom to top).
+		Points correspond to universities shown for California (\textbf{a}), Arizona (\textbf{b}), Washington (\textbf{c}), Massachusetts (\textbf{d}), Connecticut (\textbf{e}), New York (\textbf{f}), Texas (\textbf{g}), Pennsylvania (\textbf{h}), and Florida (\textbf{i}).
+		Grey points correspond to all other U.S. universities.
+		Full organization names listed in Table~\ref{table:supp:orglabels}.
+	}
+	\label{fig:supp:semaxis_states}
+\end{figure}
+
+
+
+
+
+%
+% Figure - SemAxis By State
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/SemAxis/sector_rank_comparison.pdf}
+	\caption{
+		\textbf{SemAxis reconstructs publication impact in non-university sectors.}
+		Comparison between the ranking of organizations in each non-university sector by their citation impact and the embedding rank.
+		Citation impact is calculated as the mean-normalized citation score using papers published in the Web of Science database between 2008 and 2019.
+		The embedding rank is derived by first projecting non-university organizations onto the SemAxis axis formed with poles defined using the top five to geographically-matched bottom five universities ranked by the 2018 Times Higher Education ranking of U.S. Universities.
+		\textbf{a} Shows how the correlation between the citation impact and SemAxis rankings differ while varying the size threshold for including an organization.
+		Size is calculated as the mean annualized number of unique authors publishing with that organization.
+		Annotations show the number of organizations remaining at thresholds of 0, 50, and 100.
+		\textbf{b}. Comparison of organizations using a size threshold of 10 for regional and liberal arts colleges, and 50 for research institutes and government organizations;
+		these thresholds were chosen as points thresholds of stability in \textbf{a}.
+		The impact rank is correlated with the embedding rank for regional and liberal arts colleges with Spearman's $\rho = 0.49\,(n = 48)$, research institutes with Spearman's $\rho = 0.58\,(n = 159)$, and for government organizations with Spearman's $\rho = 0.36\,(n = 55)$.
+		All correlations are significant with $p < 0.001$.
+	}
+	\label{fig:supp:sector_semaxis_impact}
+\end{figure}
+
+
+%
+% Figure - SemAxis By Sector
+%
+%\begin{figure}[hp!]
+%	\centering
+%	\includegraphics[width=\textwidth]{\figdir/SemAxis/semaxis_sectors_fig.pdf}
+%	\caption{
+%		\textbf{Geography and prestige SemAxis in U.S. by Sector.}
+%		SemAxis projection along two axes, comparing California to Massachusetts universities (left to r%ight), and between the top 20 and geographically-matched bottom 20 universities ranked by the 2018 %Times Higher Education ranking of U.S. Universities (bottom to top).
+%		Points correspond to organizations labeled as Government (\textbf{a}), Institute (\textbf{b}), and %Teaching (\textbf{c}), corresponding to government organizations, research institutes, and teaching o%rganizations, respectively.
+%		Grey points correspond to all U.S. universities.
+%	    	Full organization names listed in Table~\ref{table:supp:orglabels}.
+%	}
+%	\label{fig:supp:semaxis_sectors}
+%\end{figure}
+
+
+
+
+
+%
+% Figure - Boomerang
+%
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/boomerang.pdf}
+	\caption{
+		\textbf{Size of organization embedding vectors captures prestige and size of organizations.}
+		\textbf{a.} Size (L2 norm) of organization embedding vectors compared to the number of researchers for U.S. universities.
+		Color indicates the rank of the university from the Times ranking, with 1 being the highest ranked university.
+		Uncolored points are universities not listed on the Times ranking.
+		A concave-shape emerges, wherein larger universities tend to be more distant from the origin (large L2 norm); however, the more prestigious universities tend to have smaller L2 norms.
+		\textbf{b.} We find a similar concave-curve pattern across many countries such as the United States, China, Australia, Brazil, and others (\textbf{inset}, and Fig.~\ref{fig:concave30}).
+		Some countries exhibit variants of this pattern, such as Egypt, which is missing the right side of the curve.
+		The loess regression lines are shown for each selected country, and for the aggregate of remaining countries, with ribbons mapping to the 99\% confidence intervals based on a normal distribution.
+		Loess lines are also shown for organizations in Australia, Brazil, and Egypt (\textbf{inset}).
+	}
+	\label{fig:length}
+\end{figure}
+
+
+
+%
+% Figure - length by factors
+%
+\begin{figure}[hp!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/l2_org_meta.pdf}
+	\caption{
+		\textbf{Factors relating to the L2 norm of vectors for U.S. universities}
+		Correlation between the L2 norm of organization embedding vectors of U.S. universities and characteristics of U.S. universities.
+		Dots correspond to organizations.
+		The red line is the line of  the best fit with corresponding 99\% confidence intervals.
+		Red text is the regression estimate.
+		The blue line is the loess regression line with 99\% confidence intervals.
+		Number of authors is the average annual count of unique mobile and non-mobile authors.
+		Rankings are derived from the Times Ranking of World Universities, and the Leiden Rankings of Universities.
+		Remaining variables come from the Carnegie Classification of Higher Education Institutions.
+		The factors that best explain $s_i$ are the number of authors, the rank, the amount of Science and Engineering (S\&E) funding, and the number of doctorates granted.
+	}
+	\label{fig:supp:length_vs_metaInfo}
+\end{figure}
+
+
+
+%
+% Figure - Concave-curves countries
+%
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/boomerang_30_countries.pdf}
+	\caption{
+		\textbf{Concave-curve repeats across most of 30 countries with most researchers.}
+		Size (L2 norm) of organization embedding vectors compared to their number of researchers for U.S. universities.
+		Loess regression line is shown for each country with 99\% confidence intervals.
+		Countries shown are the 30 with the largest number of total unique mobile and non-mobile researchers.
+	}
+	\label{fig:concave30}
+\end{figure}
+
+
+
+%
+% Figure - Norm distribution by country
+%
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{\figdir/Math/l2_org_dist.pdf}
+	\caption{
+		\textbf{Distribution of organization embedding vector norms by country.}
+		Histogram showing the distribution of L2 norm values of organization embedding vectors in each of the 30 countries with the largest number of total unique mobile and non-mobile researchers.
+		Text in each panel shows the number of organizations in the country (n) and the GINI index of inequality of the distribution (g);
+		a small GINI index indicates that the L2 norms of organizations are more balanced, whereas a high GINI value indicates that they are more unequal.
+	}
+	\label{fig:norm_dist}
+\end{figure}
+
+
+\clearpage
+\printbibliography{}
+
+\end{document} %}}}

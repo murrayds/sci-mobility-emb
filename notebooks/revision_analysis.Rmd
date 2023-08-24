@@ -1,0 +1,744 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+lookup_file("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_fixed.txt", delim="\t")
+geo <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/SemAxis/precedence/geography/coasts_d300_ws1_gamma1.0_n20_semaxis.csv")
+
+
+
+new <- orgs %>%
+  filter(country_iso_alpha == "USA") %>%
+  left_join(geo, by = "cwts_org_no") %>%
+  select(cwts_org_no, sim, longitude)
+```
+
+
+```{r}
+# Sectors may be one of: All, University, Teaching, Institute, or Government"
+SECTOR <- "All"
+
+# Load organization meta-info
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  filter(country_iso_alpha == "USA") %>% # select only the specified country
+  select(cwts_org_no, country_iso_alpha, region, org_type_code, org_type, latitude, longitude)
+
+
+axis2 <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/SemAxis/precedence/prestige/leiden_d300_ws1_n5_gamma1.0_precedence_semaxis.csv", col_types = readr::cols())
+
+org_types <-  read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/org_types.csv")
+
+
+# Load the axis data and filter to only specified countries
+sims <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/SemAxis/precedence/geography/coasts_d300_ws1_gamma1.0_n20_semaxis.csv", col_types = readr::cols()) %>%
+  inner_join(lookup, by = "cwts_org_no") %>%
+  inner_join(axis2, by = "cwts_org_no") %>%
+  left_join(org_types, by = "org_type")
+
+# Enforce orientation. Not sure how we can automate this, so we will
+# likely have to create separate rules for each kind of axis we choose
+# I am defining these rules here based on what we know about the data already, namely
+# which regions have more and less elite, or which are more or near the coasts.
+cali_avg <- mean(subset(sims, region == "California")$sim.x)
+mass_avg <- mean(subset(sims, region == "Massachusetts")$sim.x)
+if (cali_avg > mass_avg) {
+  sims$sim.x <- -sims$sim.x
+}
+
+ny_avg <- mean(subset(sims, region == "New York")$sim.y)
+bama_avg <- mean(subset(sims, region == "Alabama")$sim.y)
+if (bama_avg > ny_avg) {
+  sims$sim.y <- -sims$sim.y
+}
+
+
+if (SECTOR != "All") {
+  sims <- sims %>% filter(org_type_simplified == SECTOR)  
+}
+
+table(sims$org_type_simplified)
+
+
+#
+cor.test(~ longitude + sim.x,
+            data = sims,
+            method = "spearman",
+            continuity = FALSE,
+            conf.level = 0.99)
+```
+
+
+
+```{r}
+
+leiden <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/leiden_ranking.csv")
+
+
+# Load organization meta-info
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  #filter(country_iso_alpha == "CHN") %>% # select only the specified country
+  select(cwts_org_no, country_iso_alpha, region, org_type_code, org_type, latitude, longitude)
+
+res_list <- lapply(
+  c("USA","CHN","DEU","GBR","JPN","ITA","KOR","ESP","CAN","AUS"),
+  function(x) {
+    axis <- read_csv(
+      sprintf(
+      "/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/SemAxis/OTHER_COUNTRIES/precedence/prestige/%s_leiden_d300_ws1_n5_gamma1.0_precedence_semaxis.csv", 
+        x), 
+      col_types = readr::cols()
+    ) # end read_csv
+    sims <- lookup %>%
+      inner_join(axis, by = "cwts_org_no") %>%
+      inner_join(leiden, by = "cwts_org_no") %>%
+      filter(country_iso_alpha == x)
+  
+    t <- cor.test(~ impact_frac_mncs + sim,
+                data = sims,
+                method = "spearman",
+                continuity = FALSE,
+                conf.level = 0.99)
+    
+   return(data.frame(
+       Country=x,
+       `Count of orgs` = dim(sims)[1], 
+       `Spearmans rho` = abs(t$estimate)
+      )
+    )
+    
+  }
+)
+
+df = data.table::rbindlist(res_list)
+
+library(stargazer)
+stargazer(df, summary=F, rownames=F)
+
+```
+
+Individual-level analysis
+- Look at the RoG of 
+```{r}
+people <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Misc/2008-2019_people_details.tsv", delim="\t") %>%
+  select(-first_name, -full_name)
+
+times <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/times_ranking.csv")
+
+# Load organization meta-info
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  #filter(country_iso_alpha == "CHN") %>% # select only the specified country
+  select(cwts_org_no, country_iso_alpha, org_type_code)
+
+traj <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Raw/precedence_mobility_trajectories.txt", delim="\t") %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  group_by(cluster_id) %>%
+  filter(first(country_iso_alpha) =="USA" & first(org_type_code) == "U") %>%
+  distinct(cluster_id, cwts_org_no, .keep_all = TRUE) %>%
+  filter(row_number() <= 2) # get first 2 per group
+  filter(length(unique(country_iso_alpha)) == 1) # Limit to those who stay within US
+  
+# So what is the analysis exactly?
+  # Begin with only authors in the United States who have been affiliated with a uni
+  # Mark each author by the prestige of their first university...
+    # What about age? Could control for it
+    # Also can control for total number of moves, which will effect RoG...
+    # Perhaps control for gender?
+
+
+# What is the question we want to answer?
+  # Do we want to use radius of gyration, or is the distance from one to the next 
+  # enough? What does it mean to do a typical vs. atypical move?
+  # Maybe instead of RoG, we use something even simpler...the embedding distance between the moves...
+  # Then, we don't have to introduce any new concepts. I don't think gender should be a aprt of it. We have a whole section about prestige, so we should stick to that narrative. 
+
+
+# Maybe something like, "holding all else constant, what is the largest driver of making a typical vs. atypical move?
+# By avoiding the RoG, and just using first-second, we can simplify a lot of things. # Depending on where you start, holding other factors equal, is a person more likely
+# to travel between a nearby or a distant university, measured by the embedding space. 
+```
+
+
+```{r}
+# We need to investigate whether there is some kind of symmetry in the mobility patterns
+# of smaller and larger universities...
+library(igraph)
+library(tidyverse)
+# Load organization meta-info
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  select(cwts_org_no, wos_name, country_iso_alpha, org_type_code) %>%
+  filter(country_iso_alpha == "USA" & org_type_code == "U")
+sizes <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/2008-2019_inst_sizes_all.txt", delim="\t")
+edges <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/Network/precedence_flows_edgelist.csv")
+```
+
+
+```{r}
+# First, get the total degree...
+g <- graph.data.frame(edges, directed=FALSE)
+df <- data.frame(degree(g, mode="all"))
+df$cwts_org_no <- as.numeric(row.names(df))
+colnames(df)[1] <- "degree"
+
+sizes %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  filter(country_iso_alpha == "USA") %>%
+  inner_join(df, by = "cwts_org_no") %>%
+  ggplot(aes(x = size, y = degree)) + 
+  geom_point() +
+  scale_x_log10()
+# What this shows is that as the size of the institution increases, the degree centrality also increases...
+```
+
+```{r}
+code <- 1179
+# UMich Flint
+umich <- edges %>%
+  filter(Source == code | Target == code)
+
+library(DescTools)
+
+res <- lapply(unique(lookup$cwts_org_no), function(org) {
+  sub_df <- edges %>%
+    filter(Source == org | Target == org)
+  
+  return(data.frame(cwts_org_no = org, gini = Gini(sub_df$weight)))
+})
+
+all_gini <- data.table::rbindlist(res)
+
+p <- all_gini %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  left_join(sizes, by = "cwts_org_no") %>%
+  filter(size >= 10) %>%
+  ggplot(aes(x = size, y = gini, label=wos_name)) +
+  geom_point() +
+  scale_x_log10()
+# Calculate gini index
+
+
+ggplotly(p)
+# 
+# How do we get at the idea of "different contexts"?
+# That is, how do we test the idea that its not just the distribution across topics, but the 
+# occurrence in very different "topics", that's a bit more abstract to test...
+#
+# I guess we could use embedding distance? That is, perhaps smaller colleges are connected with 
+# a more disparate collection of other universities??? That is, people from smaller colleges 
+# are move likely to take atypical paths, whereas those in more elite colleges are likely to 
+# follow more standard paths...perhaps this is something??
+#
+# We could look at international connectivity of universities, the proportion of their 
+# researchers that are internationally mobile?? That might correlate with the curve, and 
+# get at the idea of comparing different curves
+
+```
+
+
+```{r}
+dist <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/Descriptive/org/aggregate/precedence/aggregate_org_distances_precedence_d300_ws1_gamma1.0_sizeall.csv")
+
+colnames(dist)
+```
+
+
+```{r}
+res <- lapply(unique(lookup$cwts_org_no), function(org) {
+  sub_df <- dist %>%
+    filter(org1 == org | org2 == org)
+  
+  return(data.frame(cwts_org_no = org, gini = Gini(sub_df$emb_distance)))
+})
+
+all_gini <- data.table::rbindlist(res)
+
+library(plotly)
+p <- all_gini %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  left_join(sizes, by = "cwts_org_no") %>%
+  filter(size >= 10) %>%
+  ggplot(aes(x = size, y = gini, label=wos_name)) +
+  geom_point() +
+  geom_smooth(method="loess") +
+  scale_x_log10()
+
+ggplotly(p)
+
+# The idea is that the L2-norm scales with frequency, until we hit bigger more "universal" terms, 
+# at which case the scaling is counterbalanced by appearing in a greater diversity of contexts, which 
+# in turn "average out" the vector until its norm is small, because it isn't weighted towards any 
+# particular context
+#
+# So the idea says more about big elite colleges, rather than it does about symmetry. So we don't 
+# really need to show symmetry between elite and non-elite, but rather simply that elite colleges 
+# appear in a greater variety of contexts...
+#
+#
+# So these results show that yes, more elite universities share their researchers with a wider
+# variety of places...but can we talk about this further???
+#
+# But I still don't think it touches on the idea of compression in the embedding space.
+
+```
+
+
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+lookup_file("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_fixed.txt", delim="\t")
+geo <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/SemAxis/precedence/geography/coasts_d300_ws1_gamma1.0_n20_semaxis.csv")
+
+
+
+new <- orgs %>%
+  filter(country_iso_alpha == "USA") %>%
+  left_join(geo, by = "cwts_org_no") %>%
+  select(cwts_org_no, sim, longitude)
+```
+
+
+```{r}
+# Sectors may be one of: All, University, Teaching, Institute, or Government"
+SECTOR <- "All"
+
+# Load organization meta-info
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  filter(country_iso_alpha == "USA") %>% # select only the specified country
+  select(cwts_org_no, country_iso_alpha, region, org_type_code, org_type, latitude, longitude)
+
+
+axis2 <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/SemAxis/precedence/prestige/leiden_d300_ws1_n5_gamma1.0_precedence_semaxis.csv", col_types = readr::cols())
+
+org_types <-  read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/org_types.csv")
+
+
+# Load the axis data and filter to only specified countries
+sims <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/SemAxis/precedence/geography/coasts_d300_ws1_gamma1.0_n20_semaxis.csv", col_types = readr::cols()) %>%
+  inner_join(lookup, by = "cwts_org_no") %>%
+  inner_join(axis2, by = "cwts_org_no") %>%
+  left_join(org_types, by = "org_type")
+
+# Enforce orientation. Not sure how we can automate this, so we will
+# likely have to create separate rules for each kind of axis we choose
+# I am defining these rules here based on what we know about the data already, namely
+# which regions have more and less elite, or which are more or near the coasts.
+cali_avg <- mean(subset(sims, region == "California")$sim.x)
+mass_avg <- mean(subset(sims, region == "Massachusetts")$sim.x)
+if (cali_avg > mass_avg) {
+  sims$sim.x <- -sims$sim.x
+}
+
+ny_avg <- mean(subset(sims, region == "New York")$sim.y)
+bama_avg <- mean(subset(sims, region == "Alabama")$sim.y)
+if (bama_avg > ny_avg) {
+  sims$sim.y <- -sims$sim.y
+}
+
+
+if (SECTOR != "All") {
+  sims <- sims %>% filter(org_type_simplified == SECTOR)  
+}
+
+table(sims$org_type_simplified)
+
+
+#
+cor.test(~ longitude + sim.x,
+            data = sims,
+            method = "spearman",
+            continuity = FALSE,
+            conf.level = 0.99)
+```
+
+
+
+```{r}
+
+leiden <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/leiden_ranking.csv")
+
+
+# Load organization meta-info
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  #filter(country_iso_alpha == "CHN") %>% # select only the specified country
+  select(cwts_org_no, country_iso_alpha, region, org_type_code, org_type, latitude, longitude)
+
+res_list <- lapply(
+  c("USA","CHN","DEU","GBR","JPN","ITA","KOR","ESP","CAN","AUS"),
+  function(x) {
+    axis <- read_csv(
+      sprintf(
+      "/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/SemAxis/OTHER_COUNTRIES/precedence/prestige/%s_leiden_d300_ws1_n5_gamma1.0_precedence_semaxis.csv", 
+        x), 
+      col_types = readr::cols()
+    ) # end read_csv
+    sims <- lookup %>%
+      inner_join(axis, by = "cwts_org_no") %>%
+      inner_join(leiden, by = "cwts_org_no") %>%
+      filter(country_iso_alpha == x)
+  
+    t <- cor.test(~ impact_frac_mncs + sim,
+                data = sims,
+                method = "spearman",
+                continuity = FALSE,
+                conf.level = 0.99)
+    
+   return(data.frame(
+       Country=x,
+       `Count of orgs` = dim(sims)[1], 
+       `Spearmans rho` = abs(t$estimate)
+      )
+    )
+    
+  }
+)
+
+df = data.table::rbindlist(res_list)
+
+library(stargazer)
+stargazer(df, summary=F, rownames=F)
+
+```
+
+Individual-level analysis
+- Look at the RoG of 
+```{r}
+people <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Misc/2008-2019_people_details.tsv", delim="\t") %>%
+  select(-first_name, -full_name)
+
+times <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/times_ranking.csv")
+
+# Load organization meta-info
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  #filter(country_iso_alpha == "CHN") %>% # select only the specified country
+  select(cwts_org_no, country_iso_alpha, org_type_code)
+
+traj <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Raw/precedence_mobility_trajectories.txt", delim="\t") %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  group_by(cluster_id) %>%
+  filter(first(country_iso_alpha) =="USA" & first(org_type_code) == "U") %>%
+  distinct(cluster_id, cwts_org_no, .keep_all = TRUE) %>%
+  filter(row_number() <= 2) # get first 2 per group
+  filter(length(unique(country_iso_alpha)) == 1) # Limit to those who stay within US
+  
+# So what is the analysis exactly?
+  # Begin with only authors in the United States who have been affiliated with a uni
+  # Mark each author by the prestige of their first university...
+    # What about age? Could control for it
+    # Also can control for total number of moves, which will effect RoG...
+    # Perhaps control for gender?
+
+
+# What is the question we want to answer?
+  # Do we want to use radius of gyration, or is the distance from one to the next 
+  # enough? What does it mean to do a typical vs. atypical move?
+  # Maybe instead of RoG, we use something even simpler...the embedding distance between the moves...
+  # Then, we don't have to introduce any new concepts. I don't think gender should be a aprt of it. We have a whole section about prestige, so we should stick to that narrative. 
+  # Perhaps could we do something w/ attrition???
+
+
+# Maybe something like, "holding all else constant, what is the largest driver of making a typical vs. atypical move?
+# By avoiding the RoG, and just using first-second, we can simplify a lot of things. # Depending on where you start, holding other factors equal, is a person more likely
+# to travel between a nearby or a distant university, measured by the embedding space. 
+```
+
+
+```{r}
+# We need to investigate whether there is some kind of symmetry in the mobility patterns
+# of smaller and larger universities...
+library(igraph)
+library(tidyverse)
+# Load organization meta-info
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  select(cwts_org_no, wos_name, country_iso_alpha, org_type_code) %>%
+  filter(country_iso_alpha == "USA" & org_type_code == "U")
+sizes <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/2008-2019_inst_sizes_all.txt", delim="\t")
+edges <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/Network/precedence_flows_edgelist.csv")
+```
+
+
+```{r}
+# First, get the total degree...
+g <- graph.data.frame(edges, directed=FALSE)
+df <- data.frame(degree(g, mode="all"))
+df$cwts_org_no <- as.numeric(row.names(df))
+colnames(df)[1] <- "degree"
+
+sizes %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  filter(country_iso_alpha == "USA") %>%
+  inner_join(df, by = "cwts_org_no") %>%
+  ggplot(aes(x = size, y = degree)) + 
+  geom_point() +
+  scale_x_log10()
+# What this shows is that as the size of the institution increases, the degree centrality also increases...
+```
+
+```{r}
+library(DescTools)
+
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  select(cwts_org_no, wos_name, country_iso_alpha, org_type_code) %>%
+  filter(country_iso_alpha == "USA" & org_type_code == "U")
+
+res <- lapply(unique(lookup$cwts_org_no), function(org) {
+  sub_df <- edges %>%
+    filter(Source == org | Target == org)
+  
+  return(data.frame(cwts_org_no = org, gini = Gini(sub_df$weight)))
+})
+
+all_gini <- data.table::rbindlist(res)
+
+p <- all_gini %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  left_join(sizes, by = "cwts_org_no") %>%
+  filter(size >= 10) %>%
+  ggplot(aes(x = size, y = gini, label=wos_name)) +
+  geom_point() +
+  scale_x_log10()
+# Calculate gini index
+
+
+ggplotly(p)
+# 
+# How do we get at the idea of "different contexts"?
+# That is, how do we test the idea that its not just the distribution across topics, but the 
+# occurrence in very different "topics", that's a bit more abstract to test...
+#
+# I guess we could use embedding distance? That is, perhaps smaller colleges are connected with 
+# a more disparate collection of other universities??? That is, people from smaller colleges 
+# are move likely to take atypical paths, whereas those in more elite colleges are likely to 
+# follow more standard paths...perhaps this is something??
+#
+# We could look at international connectivity of universities, the proportion of their 
+# researchers that are internationally mobile?? That might correlate with the curve, and 
+# get at the idea of comparing different curves
+
+```
+
+
+```{r}
+dist <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/Descriptive/org/aggregate/precedence/aggregate_org_distances_precedence_d300_ws1_gamma1.0_sizeall.csv")
+
+colnames(dist)
+```
+
+
+```{r}
+library(plotly)
+
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  select(cwts_org_no, wos_name, country_iso_alpha, org_type_code) %>%
+  filter((country_iso_alpha %in% c("USA", "CHN", "EGY", "BRA", "AUS")) & org_type_code == "U")
+
+# What fraction of their total mobility is international???
+dist <- dist %>%
+  mutate(international = org1_country != org2_country)
+
+
+res <- lapply(unique(lookup$cwts_org_no), function(org) {
+  sub_df <- dist %>%
+    filter(org1 == org | org2 == org) %>%
+    mutate(international = factor(international, levels = c(TRUE, FALSE))) %>%
+    complete(international, fill= list(count=0)) %>%
+    group_by(international) %>%
+    summarize(count = sum(count)) %>%
+    ungroup() %>%
+    filter(!is.na(international)) %>%
+    pivot_wider(names_from = international, values_from = count) %>%
+    mutate(cwts_org_no = org)
+    
+  
+  return(sub_df)
+})
+
+
+all_gini <- data.table::rbindlist(res)
+
+
+p <- all_gini %>%
+  mutate(international = `TRUE` / (`TRUE` + `FALSE`)) %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  left_join(sizes, by = "cwts_org_no") %>%
+  filter(size >= 10) %>%
+  ggplot(aes(x = size, y = international, label=wos_name, color=country_iso_alpha)) +
+  geom_point() +
+  geom_smooth(method="loess") +
+  scale_x_log10()
+
+ggplotly(p)
+
+# The idea is that the L2-norm scales with frequency, until we hit bigger more "universal" terms, 
+# at which case the scaling is counterbalanced by appearing in a greater diversity of contexts, which 
+# in turn "average out" the vector until its norm is small, because it isn't weighted towards any 
+# particular context
+#
+# So the idea says more about big elite colleges, rather than it does about symmetry. So we don't 
+# really need to show symmetry between elite and non-elite, but rather simply that elite colleges 
+# appear in a greater variety of contexts...
+#
+#
+# So these results show that yes, more elite universities share their researchers with a wider
+# variety of places...but can we talk about this further???
+#
+# But I still don't think it touches on the idea of compression in the embedding space.
+# Maybe number of different countries??
+```
+
+
+
+
+```{r}
+library(plotly)
+
+lookup <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/institution_lookup_with_states.txt", delim = "\t", col_types = readr::cols()) %>%
+  select(cwts_org_no, wos_name, country_iso_alpha, org_type_code) %>%
+  filter((country_iso_alpha %in% c("USA", "CHN", "EGY", "BRA", "GBR")) & org_type_code == "U")
+
+countries <- unique(c(dist$org1_country, dist$org2_country))
+# 
+res <- lapply(unique(lookup$cwts_org_no), function(org) {
+  sub_df <- dist %>%
+    filter(org1 == org | org2 == org) %>%
+    filter(org1_country != org2_country) %>%
+    mutate(
+      # make sure destination is always org2
+      destination = ifelse(org1 == org, org2_country, org1_country)
+    ) %>%
+    mutate(destination = factor(destination, levels=countries)) %>%
+    complete(destination, fill=list(count=0)) %>%
+    # group by destination
+    group_by(destination) %>% 
+    summarize(
+      cwts_org_no = org,
+      count = sum(count)
+    ) %>%
+    ungroup()
+  
+  return(data.frame(cwts_org_no = org, gini = Gini(sub_df$count)))
+})
+
+res[[3]]
+all_gini <- data.table::rbindlist(res)
+
+
+p <- all_gini %>%
+  left_join(lookup, by = "cwts_org_no") %>%
+  left_join(sizes, by = "cwts_org_no") %>%
+  filter(size >= 10) %>%
+  ggplot(aes(x = size, y = gini, label=wos_name, color=country_iso_alpha)) +
+  geom_point() +
+  geom_smooth(method="loess") +
+  scale_x_log10()
+
+p
+
+all_gini
+# So we should calculate "more people from a more narrow set of places", or "more people from a broader 
+# set of places..."
+#
+# So if we do a GINI index, but fill in all missing countries with a zero, then that could be a good way of
+# showing this...
+# I bet we see something even more stark when we do this gini calculation...
+```
+
+```{r}
+library(igraph)
+
+#' This adds the gadd graph to the main graph, g, and wires all of its vertices
+#' to the central vertex of g
+attach_to_center <- function(g, gadd) {
+  g <- g + gadd + edges(as.vector(rbind(1, gorder(g) + 1:gorder(gadd))))
+}
+
+nIter <- 4
+nChild <- 6
+
+# The initial graph
+g <- make_empty_graph(5, directed = FALSE) + edges(1,2,1,3,1,4,1,5,2,3,3,4,4,5,5,2)
+
+for (j in 1:nIter) {
+  g0 <- g
+  for (i in 1:nChild) {
+    g <- attach_to_center(g, g0)
+  }
+}
+
+V(g)
+```
+
+
+```{r}
+library(igraph)
+library(tidyverse)
+# Lets create a random graph with the same degree seq
+edges <- read_csv("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Derived/Network/precedence_flows_edgelist.csv")
+g0 <- graph.data.frame(edges, directed=FALSE)
+
+#sample_degseq(degree_distribution(g0))
+my_fit_g0 <- fit_power_law(degree(g0, mode = "all"), implementation = "plfit")
+
+g1 <- sample_fitness_pl(length(V(g0)), length(E(g0)), my_fit_g0$alpha)
+#my_fit_g1 <- fit_power_law(degree(g1, mode = "all"), implementation = "plfit")
+
+# for every node, generate a number of random walkers equal to its degree...
+#g1 <- sample_pa(10000, m=100, power=6.83, directed=F)
+#g1 <- g0
+library(igraph)
+traj <- sapply(names(V(g1)), function(x1) {
+  d <- as.numeric(degree(g1, x1)) # get degree of node
+  
+  # sample trajectories starting at the node
+  l <- sapply(c(1:d), function(x2) {
+    paste(as.numeric(random_walk(g1, start=x1, steps=3)), collapse=" ")
+  })
+  
+  return(l)
+})
+
+write_graph(g1, file="~/Desktop/murray_sample_network.gml")
+write.csv(unlist(traj), "~/Desktop/mobility_network_trajectories_pa-model.csv")
+```
+
+```{r}
+as.numeric(degree(g1, '1292'))
+random_walk(g1, start='1292', steps=3)
+```
+
+
+```{r}
+names(sapply(V(g1), function(x1) { x1 }))
+new_traj
+unlist(traj)
+(unlist(traj))
+
+edges %>%
+  filter(Source == '1' | Target == '1')
+```
+
+
+```{r}
+#hist(log10(degree_distribution(g1)))
+
+```
+
+```{r}
+library(tidyverse)
+df2 <- read_csv("~/Desktop/mobility_network_trajectories_real_final.csv")
+
+sizes <- read_delim("/Users/dmurray/Dropbox (Personal)/SME-dropbox/Data/Additional/2008-2019_inst_sizes_all.txt", delim="\t") %>%
+  mutate(all_size = )
+df2
+df2 %>%
+  mutate(token = as.character(token)) %>%
+  left_join(sizes, by = c(cwts_org_no=token)) %>%
+  ggplot(aes(x = size, y = norm)) +
+  geom_point() +
+  scale_x_log10()
+```

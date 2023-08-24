@@ -456,5 +456,3 @@ dependencies:
   - zipp=3.6.0
   - zlib=1.2.11
   - zstd=1.5.0
-  - pip:
-    - py-scimobility==0.1
